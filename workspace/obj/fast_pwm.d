@@ -1,0 +1,14 @@
+.\obj\fast_pwm.o: ..\source\Marlin\src\HAL\STM32F1\fast_pwm.cpp
+.\obj\fast_pwm.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/MarlinConfigPre.h
+.\obj\fast_pwm.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\fast_pwm.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/../HAL/platforms.h
+.\obj\fast_pwm.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/../core/boards.h
+.\obj\fast_pwm.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/../core/macros.h
+.\obj\fast_pwm.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/../../Configuration.h
+.\obj\fast_pwm.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/Version.h
+.\obj\fast_pwm.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/Conditionals_LCD.h
+.\obj\fast_pwm.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/../HAL/STM32F1/inc/Conditionals_LCD.h
+.\obj\fast_pwm.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/../core/drivers.h
+.\obj\fast_pwm.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/../../Configuration_adv.h
+.\obj\fast_pwm.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/Conditionals_adv.h
+.\obj\fast_pwm.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/../HAL/STM32F1/inc/Conditionals_adv.h

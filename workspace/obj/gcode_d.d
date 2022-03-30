@@ -1,0 +1,14 @@
+.\obj\gcode_d.o: ..\source\Marlin\src\gcode\gcode_d.cpp
+.\obj\gcode_d.o: ..\source\Marlin\src\gcode\../inc/MarlinConfigPre.h
+.\obj\gcode_d.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\gcode_d.o: ..\source\Marlin\src\gcode\../inc/../HAL/platforms.h
+.\obj\gcode_d.o: ..\source\Marlin\src\gcode\../inc/../core/boards.h
+.\obj\gcode_d.o: ..\source\Marlin\src\gcode\../inc/../core/macros.h
+.\obj\gcode_d.o: ..\source\Marlin\src\gcode\../inc/../../Configuration.h
+.\obj\gcode_d.o: ..\source\Marlin\src\gcode\../inc/Version.h
+.\obj\gcode_d.o: ..\source\Marlin\src\gcode\../inc/Conditionals_LCD.h
+.\obj\gcode_d.o: ..\source\Marlin\src\gcode\../inc/../HAL/STM32F1/inc/Conditionals_LCD.h
+.\obj\gcode_d.o: ..\source\Marlin\src\gcode\../inc/../core/drivers.h
+.\obj\gcode_d.o: ..\source\Marlin\src\gcode\../inc/../../Configuration_adv.h
+.\obj\gcode_d.o: ..\source\Marlin\src\gcode\../inc/Conditionals_adv.h
+.\obj\gcode_d.o: ..\source\Marlin\src\gcode\../inc/../HAL/STM32F1/inc/Conditionals_adv.h

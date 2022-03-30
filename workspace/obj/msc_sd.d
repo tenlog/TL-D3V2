@@ -1,0 +1,14 @@
+.\obj\msc_sd.o: ..\source\Marlin\src\HAL\STM32F1\msc_sd.cpp
+.\obj\msc_sd.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/MarlinConfigPre.h
+.\obj\msc_sd.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\msc_sd.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/../HAL/platforms.h
+.\obj\msc_sd.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/../core/boards.h
+.\obj\msc_sd.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/../core/macros.h
+.\obj\msc_sd.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/../../Configuration.h
+.\obj\msc_sd.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/Version.h
+.\obj\msc_sd.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/Conditionals_LCD.h
+.\obj\msc_sd.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/../HAL/STM32F1/inc/Conditionals_LCD.h
+.\obj\msc_sd.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/../core/drivers.h
+.\obj\msc_sd.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/../../Configuration_adv.h
+.\obj\msc_sd.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/Conditionals_adv.h
+.\obj\msc_sd.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/../HAL/STM32F1/inc/Conditionals_adv.h
