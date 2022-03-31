@@ -140,10 +140,11 @@
 #define HEATER_1_PIN                        PA4   // HEATER1
 #define HEATER_BED_PIN                      PD0   // PA6 HOT BED
 
-#ifndef FAN_PIN
-  #define FAN_PIN                           PA1   // FAN  FC
-#endif
-#define FAN1_PIN                            PA0    //FAN1 FZ
+#define FAN_PIN                             PA1   // FAN  FC1
+#define FAN2_PIN                            PA0    //FAN1 FZ1
+
+#define FAN1_PIN                            PE8   // FAN  FC2
+#define FAN3_PIN                            PE7    //FAN1 FZ2
 
 #if PIN_EXISTS(FAN)
   #define FAN_SOFT_PWM
