@@ -1,6 +1,6 @@
 .\obj\m0_m1.o: ..\source\Marlin\src\gcode\lcd\M0_M1.cpp
 .\obj\m0_m1.o: ..\source\Marlin\src\gcode\lcd\../../inc/MarlinConfigPre.h
-.\obj\m0_m1.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\m0_m1.o: C:\Tenlog\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\m0_m1.o: ..\source\Marlin\src\gcode\lcd\../../inc/../HAL/platforms.h
 .\obj\m0_m1.o: ..\source\Marlin\src\gcode\lcd\../../inc/../core/boards.h
 .\obj\m0_m1.o: ..\source\Marlin\src\gcode\lcd\../../inc/../core/macros.h

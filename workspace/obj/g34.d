@@ -1,6 +1,6 @@
 .\obj\g34.o: ..\source\Marlin\src\gcode\calibrate\G34.cpp
 .\obj\g34.o: ..\source\Marlin\src\gcode\calibrate\../../inc/MarlinConfigPre.h
-.\obj\g34.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\g34.o: C:\Tenlog\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\g34.o: ..\source\Marlin\src\gcode\calibrate\../../inc/../HAL/platforms.h
 .\obj\g34.o: ..\source\Marlin\src\gcode\calibrate\../../inc/../core/boards.h
 .\obj\g34.o: ..\source\Marlin\src\gcode\calibrate\../../inc/../core/macros.h

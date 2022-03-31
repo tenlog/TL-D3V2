@@ -1,6 +1,6 @@
 .\obj\pause.o: ..\source\Marlin\src\feature\pause.cpp
 .\obj\pause.o: ..\source\Marlin\src\feature\../inc/MarlinConfigPre.h
-.\obj\pause.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\pause.o: C:\Tenlog\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\pause.o: ..\source\Marlin\src\feature\../inc/../HAL/platforms.h
 .\obj\pause.o: ..\source\Marlin\src\feature\../inc/../core/boards.h
 .\obj\pause.o: ..\source\Marlin\src\feature\../inc/../core/macros.h

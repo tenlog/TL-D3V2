@@ -1,6 +1,6 @@
 .\obj\msc_sd.o: ..\source\Marlin\src\HAL\STM32F1\msc_sd.cpp
 .\obj\msc_sd.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/MarlinConfigPre.h
-.\obj\msc_sd.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\msc_sd.o: C:\Tenlog\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\msc_sd.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/../HAL/platforms.h
 .\obj\msc_sd.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/../core/boards.h
 .\obj\msc_sd.o: ..\source\Marlin\src\HAL\STM32F1\../../inc/../core/macros.h

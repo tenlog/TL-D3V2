@@ -1,6 +1,6 @@
 .\obj\gcode_d.o: ..\source\Marlin\src\gcode\gcode_d.cpp
 .\obj\gcode_d.o: ..\source\Marlin\src\gcode\../inc/MarlinConfigPre.h
-.\obj\gcode_d.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\gcode_d.o: C:\Tenlog\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\gcode_d.o: ..\source\Marlin\src\gcode\../inc/../HAL/platforms.h
 .\obj\gcode_d.o: ..\source\Marlin\src\gcode\../inc/../core/boards.h
 .\obj\gcode_d.o: ..\source\Marlin\src\gcode\../inc/../core/macros.h

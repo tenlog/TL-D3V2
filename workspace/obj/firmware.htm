@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\obj\firmware.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\obj\firmware.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Thu Mar 24 15:00:37 2022
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Thu Mar 31 11:14:19 2022
 <BR><P>
 <H3>Maximum Stack Usage =          0 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -6563,14 +6563,14 @@ Global Symbols
 <P><STRONG><a name="[c6]"></a>Print::write(const char*)</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, print.o(i._ZN5Print5writeEPKc))
 <BR><BR>[Calls]<UL><LI><a href="#[16f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
-<BR>[Address Reference Count : 3]<UL><LI> print.o(.constdata__ZTV5Print)
-<LI> hardwareserial.o(.constdata__ZTV14HardwareSerial)
+<BR>[Address Reference Count : 3]<UL><LI> hardwareserial.o(.constdata__ZTV14HardwareSerial)
 <LI> hardwareserial.o(.constdata__ZTV6Stream)
+<LI> print.o(.constdata__ZTV5Print)
 </UL>
 <P><STRONG><a name="[c7]"></a>Print::write(const void*, unsigned)</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, print.o(i._ZN5Print5writeEPKvj))
-<BR>[Address Reference Count : 3]<UL><LI> print.o(.constdata__ZTV5Print)
-<LI> hardwareserial.o(.constdata__ZTV14HardwareSerial)
+<BR>[Address Reference Count : 3]<UL><LI> hardwareserial.o(.constdata__ZTV14HardwareSerial)
 <LI> hardwareserial.o(.constdata__ZTV6Stream)
+<LI> print.o(.constdata__ZTV5Print)
 </UL>
 <P><STRONG><a name="[3f4]"></a>Print::println(const char*)</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, print.o(i._ZN5Print7printlnEPKc))
 <BR><BR>[Calls]<UL><LI><a href="#[19c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Print::print(const char*)
@@ -7559,8 +7559,8 @@ Global Symbols
 <P><STRONG><a name="[c4]"></a>__cxa_pure_virtual</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, cxxabi-compat.o(i.__cxa_pure_virtual))
 <BR>[Address Reference Count : 4]<UL><LI> ipaddress.o(.constdata__ZTV9Printable)
 <LI> cardreader.o(.constdata__ZTV12DiskIODriver)
-<LI> print.o(.constdata__ZTV5Print)
 <LI> hardwareserial.o(.constdata__ZTV6Stream)
+<LI> print.o(.constdata__ZTV5Print)
 </UL>
 <P><STRONG><a name="[440]"></a>__hardfp___mathlib_tofloat</STRONG> (Thumb, 232 bytes, Stack size 0 bytes, narrow.o(i.__hardfp___mathlib_tofloat))
 <BR><BR>[Calls]<UL><LI><a href="#[22d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_cdrcmple

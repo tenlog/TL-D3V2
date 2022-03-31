@@ -1,7 +1,7 @@
 .\obj\numtostr.o: ..\source\Marlin\src\libs\numtostr.cpp
 .\obj\numtostr.o: ..\source\Marlin\src\libs\numtostr.h
 .\obj\numtostr.o: ..\source\Marlin\src\libs\../inc/MarlinConfigPre.h
-.\obj\numtostr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\numtostr.o: C:\Tenlog\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\numtostr.o: ..\source\Marlin\src\libs\../inc/../HAL/platforms.h
 .\obj\numtostr.o: ..\source\Marlin\src\libs\../inc/../core/boards.h
 .\obj\numtostr.o: ..\source\Marlin\src\libs\../inc/../core/macros.h
@@ -14,7 +14,7 @@
 .\obj\numtostr.o: ..\source\Marlin\src\libs\../inc/Conditionals_adv.h
 .\obj\numtostr.o: ..\source\Marlin\src\libs\../inc/../HAL/STM32F1/inc/Conditionals_adv.h
 .\obj\numtostr.o: ..\source\Marlin\src\libs\../core/types.h
-.\obj\numtostr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
-.\obj\numtostr.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\obj\numtostr.o: C:\Tenlog\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+.\obj\numtostr.o: C:\Tenlog\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\obj\numtostr.o: ..\source\Marlin\src\libs\../core/millis_t.h
 .\obj\numtostr.o: ..\source\Marlin\src\libs\../core/utility.h
