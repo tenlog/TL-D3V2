@@ -1,8 +1,8 @@
 {
-	"folders": [
-		{
-			"path": "source"
+	"folders": [],
+	"settings": {
+		"files.associations": {
+			"bitset": "cpp"
 		}
-	],
-	"settings": {}
+	}
 }
