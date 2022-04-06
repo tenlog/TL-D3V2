@@ -26,10 +26,15 @@
  * Copyright (c) Tenlog 3D / Zyf
  * **/
 #include "../gcode.h"
-#if ENABLED(ESP8266_WIFI)
+#if ENABLED(HAS_WIFI)
 #include "../../MarlinCore.h"
 
+#if ENABLED(ESP8266_WIFI)
 #include "../../HAL/ESP8266_AT/esp8266_wifi.h"
+#elif ENABLED(ESP32_WIFI)
+#include "../../HAL/ESP32_SPI/esp32_wifi.h"
+#endif
+
 #include "../../lcd/tenlog/tenlog_touch_lcd.h"
 
 void GcodeSuite::M1501() {

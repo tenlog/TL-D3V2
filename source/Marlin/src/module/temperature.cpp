@@ -35,6 +35,10 @@
   #include "../lcd/tenlog/tenlog_touch_lcd.h"
 #endif
 
+#ifdef TLCHAMBER_AUTO_FAN_PIN 
+#include "../stepper/indirection.h"
+#endif
+
 #include "temperature.h"
 #include "endstops.h"
 #include "planner.h"
@@ -814,7 +818,29 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
     #if HAS_AUTO_CHAMBER_FAN
       if (temp_chamber.celsius >= CHAMBER_AUTO_FAN_TEMPERATURE)
         SBI(fanState, pgm_read_byte(&fanBit[CHAMBER_FAN_INDEX]));
+    #elif defined(TLCHAMBER_AUTO_FAN_PIN)
+      bool isStepEna = (X_ENABLE_READ() == X_ENABLE_ON || Y_ENABLE_READ() == Y_ENABLE_ON || Z_ENABLE_READ() == Z_ENABLE_ON
+      #if HAS_X2_ENABLE
+        || X2_ENABLE_READ() == X_ENABLE_ON
+      #endif
+      #if HAS_Y2_ENABLE
+        || Y2_ENABLE_READ() == Y_ENABLE_ON
+      #endif
+      #if HAS_Z2_ENABLE
+        || Z2_ENABLE_READ() == Z_ENABLE_ON
+      #endif
+      #if E_STEPPERS
+        #define _OR_ENABLED_E(N) || E##N##_ENABLE_READ() == E_ENABLE_ON
+        REPEAT(E_STEPPERS, _OR_ENABLED_E)
+      #endif
+      ); //bool isStepEna
+      
+      bool isHeating =  isHeatingHotend(0) && degTargetHotend(0) > 20 || isHeatingHotend(1) && degTargetHotend(1) > 20 || isHeatingBed() && degTargetBed() > 20 ;
+      if(isStepEna || isHeating)
+        SBI(fanState, pgm_read_byte(&fanBit[CHAMBER_FAN_INDEX]));
+      
     #endif
+  
 
     #if HAS_AUTO_COOLER_FAN
       if (temp_cooler.celsius >= COOLER_AUTO_FAN_TEMPERATURE)
@@ -873,6 +899,12 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
         #endif
         #if HAS_AUTO_CHAMBER_FAN && !AUTO_CHAMBER_IS_E
           case CHAMBER_FAN_INDEX: _UPDATE_AUTO_FAN(CHAMBER, fan_on, CHAMBER_AUTO_FAN_SPEED); break;
+        #endif
+
+        #if HAS_AUTO_CHAMBER_FAN && !AUTO_CHAMBER_IS_E
+          case CHAMBER_FAN_INDEX: _UPDATE_AUTO_FAN(CHAMBER, fan_on, CHAMBER_AUTO_FAN_SPEED); break;
+        #elif defined (TLCHAMBER_AUTO_FAN_PIN)
+          case CHAMBER_FAN_INDEX: _UPDATE_AUTO_FAN(TLCHAMBER, fan_on, CHAMBER_AUTO_FAN_SPEED); break;
         #endif
       }
       SBI(fanDone, realFan);
@@ -2184,6 +2216,10 @@ void Temperature::init() {
   #endif
   #if HAS_AUTO_CHAMBER_FAN && !AUTO_CHAMBER_IS_E
     INIT_CHAMBER_AUTO_FAN_PIN(CHAMBER_AUTO_FAN_PIN);
+  #endif
+
+  #if(TLCHAMBER_AUTO_FAN_PIN)
+    INIT_CHAMBER_AUTO_FAN_PIN(TLCHAMBER_AUTO_FAN_PIN);
   #endif
 
   // Wait for temperature measurement to settle

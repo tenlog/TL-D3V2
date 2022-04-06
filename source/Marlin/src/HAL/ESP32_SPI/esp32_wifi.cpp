@@ -26,6 +26,14 @@
 #include "../../inc/MarlinConfig.h"
 
 #ifdef ESP32_WIFI
+
+char wifi_status[100] = "";
+char wifi_ssid[20] = WIFI_DEFAULT_SSID;
+char wifi_pswd[20] = WIFI_DEFAULT_PSWD;
+uint8_t wifi_ena = WIFI_DEFAULT_ENA;
+uint32_t http_port = WIFI_DEFAULT_PORT;
+
+
 #include "esp32_wifi.h"
 
 //【2】其次是GPIO口初始化（这边将SPI的CS脚当作GPIO进行初始化）：
@@ -199,6 +207,14 @@ void WIFI_AllInit(void)
     WIFI_InitGPIO();  //初始化几个GPIO口，包括BL、DC、RES以及SPI的CS
     WIFI_InitSPI1();  //初始化SPI的几个口，包括SCK、MOSI以及MISO
     WIFI_HardwareReset();  //WIFI复位
+}
+
+///////////zyf
+void wifiResetEEPROM(){
+    wifi_ena = WIFI_DEFAULT_ENA;
+    sprintf_P(wifi_ssid, "%s", WIFI_DEFAULT_SSID);
+    sprintf_P(wifi_pswd, "%s", WIFI_DEFAULT_PSWD);
+    http_port = WIFI_DEFAULT_PORT;
 }
 
 #endif

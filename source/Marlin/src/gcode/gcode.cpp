@@ -995,7 +995,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 7219: M7219(); break;                                // M7219: Set LEDs, columns, and rows
       #endif
 
-      #if ENABLED(ESP8266_WIFI)
+      #if ENABLED(HAS_WIFI)
         case 1501: M1501(); break;
         case 1502: M1502(); break;
         case 1503: M1503(); break;

@@ -33,8 +33,6 @@
 #define BOARD_INFO_NAME      "TENLOG v2.0.1"
 #define DEFAULT_MACHINE_NAME "TL 3D"
 
-
-
 #define BOARD_NO_NATIVE_USB
 /* LED0 Port/Pin definition */
 #define  LED0          PB7 // TEST
@@ -109,8 +107,8 @@
 #define Y_DIR_PIN          PB14
 
 #define Z_ENABLE_PIN       X_ENABLE_PIN
-#define Z_STEP_PIN         PD3        //PB1
-#define Z_DIR_PIN          PD4        //BP0
+#define Z_STEP_PIN         PE13        //原來PB1
+#define Z_DIR_PIN          PE12        //原來PB0
 
 #define Z2_ENABLE_PIN       X_ENABLE_PIN
 #define Z2_STEP_PIN         PB13
@@ -138,22 +136,22 @@
 //
 #define HEATER_0_PIN                        PA5   // HEATER0
 #define HEATER_1_PIN                        PA4   // HEATER1
-#define HEATER_BED_PIN                      PD0   // PA6 HOT BED
+#define HEATER_BED_PIN                      PE10  // PA6 HOT BED
 
 #define FAN_PIN                             PA1   // FAN  FC1
-#define FAN2_PIN                            PA0    //FAN1 FZ1
+#define FAN2_PIN                            PA0    //FAN2 FZ1
 
-#define FAN1_PIN                            PE8   // FAN  FC2
-#define FAN3_PIN                            PE7    //FAN1 FZ2
+#define FAN1_PIN                            PE8   // FAN1  FC2
+#define FAN3_PIN                            PE7    //FAN3 FZ2
+
+#define CHAMEBER_PIN                        PE2   //机箱风扇口
 
 #if PIN_EXISTS(FAN)
   #define FAN_SOFT_PWM
 #endif
 
-#define REPRINT_PIN         PD1             //PA7
-
+#define REPRINT_PIN         PE11             //PA7
 #define POWEROFF_PIN        PB10
-
 #define BREAK_PIN           PA15
 
 //
@@ -172,4 +170,12 @@
 #define BTN_EN1                           PE15
 #define BTN_EN2                           PE12
 #define BEEPER_PIN                        PE13
+#endif
+
+//Spi wifi
+#if ENABLED(ESP32_WIFI)  
+  #define SCK_PIN                       PA6
+  #define NSS_PIN                       PB1
+  #define MOSI_PIN                      PA7
+  #define MISO_PIN                      PB0
 #endif

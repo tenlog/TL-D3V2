@@ -25,6 +25,13 @@
 #pragma once
 
 #ifdef ESP32_WIFI
+
+extern char wifi_ssid[20];
+extern char wifi_pswd[20];
+extern char wifi_status[100];
+extern uint8_t wifi_ena;
+extern uint32_t http_port;
+
 /* SPI_SCK Port/Pin definition */
 #define SPI1_SCK_PORT                    (PortA)
 #define SPI1_SCK_PIN                     (Pin06)
@@ -76,4 +83,6 @@ void WIFI_WriteDAT(uint8_t Data);
 void WIFI_HardwareReset(void);
 void WIFI_AllInit(void);
 
+
+void wifiResetEEPROM();
 #endif

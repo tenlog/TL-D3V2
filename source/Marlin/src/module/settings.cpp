@@ -59,6 +59,8 @@
 
 #if ENABLED(ESP8266_WIFI)
   #include "../HAL/ESP8266_AT/esp8266_wifi.h"
+#elif ENABLED(ESP32_WIFI)
+  #include "../HAL/ESP32_SPI/esp32_wifi.h"
 #endif
 
 #if ENABLED(POWER_LOSS_RECOVERY_TL)
@@ -502,7 +504,7 @@ typedef struct SettingsDataStruct {
     uint8_t ui_tlF2v;
   #endif
 
-  #if ENABLED(ESP8266_WIFI)
+  #if ENABLED(HAS_WIFI)
     uint8_t w_wifi_ena;
     uint32_t w_http_port;
     char w_wifi_ssid[20];
@@ -1483,7 +1485,7 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(tl_FAN2_VALUE);
     #endif
 
-    #if ENABLED(ESP8266_WIFI)
+    #if ENABLED(HAS_WIFI)
       EEPROM_WRITE(wifi_ena);
       EEPROM_WRITE(wifi_ssid);
       EEPROM_WRITE(wifi_pswd);
@@ -2444,7 +2446,7 @@ void MarlinSettings::postprocess() {
         tlInitSetting();
       #endif
       
-      #if ENABLED(ESP8266_WIFI)
+      #if ENABLED(HAS_WIFI)
         uint8_t uwifiena;
         EEPROM_READ(uwifiena);
         if(uwifiena < 0 || uwifiena > 5) uwifiena = WIFI_DEFAULT_ENA;
@@ -3111,7 +3113,7 @@ void MarlinSettings::reset() {
   TERN_(DGUS_LCD_UI_MKS, MKS_reset_settings());
 
   TERN_(TENLOG_TOUCH_LCD, tlResetEEPROM());
-  TERN_(ESP8266_WIFI, wifiResetEEPROM());
+  TERN_(HAS_WIFI, wifiResetEEPROM());
   
   postprocess();
 
@@ -4048,7 +4050,7 @@ void MarlinSettings::reset() {
       TLDEBUG_LNPAIR("TL Frant Fan Value:", tl_FAN2_VALUE);
     #endif
 
-    #if ENABLED(ESP8266_WIFI)
+    #if ENABLED(HAS_WIFI)
       TLDEBUG_LNPAIR("WIFI ENA:", wifi_ena);
       TLDEBUG_LNPAIR("WIFI SSID:", wifi_ssid);
       TLDEBUG_LNPAIR("WIFI PSWD:", wifi_pswd);

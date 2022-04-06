@@ -1251,7 +1251,7 @@ void process_command_gcode(long _tl_command[]) {
                 }
                 #endif //PRINT_FROM_Z_HEIGHT
             }else if(lM > 1499 && lM < 1510){
-                #if ENABLED(ESP8266_WIFI)
+                #if ENABLED(HAS_WIFI)
                 if(lM == 1501){
                     int _wifi_ena = GCodelng('S', iFrom, _tl_command);
                     if(_wifi_ena != wifi_ena){
@@ -1283,7 +1283,9 @@ void process_command_gcode(long _tl_command[]) {
                     EXECUTE_GCODE(PSTR("M500"));
                 }else if(lM == 1505){
                     if(wifi_ena == 0){
+                        #if ENABLED(ESP8266_WIFI)
                         esp_wifi_init();
+                        #endif
                         TLSTJC_println("page wifisetting");
                     }else{
                         TLSTJC_println("page loading");
@@ -2175,7 +2177,7 @@ char * tenlog_status_update(bool isTJC)
     const long ln19 = thermalManager.isHeatingHotend(1);
     const long ln20 = thermalManager.isHeatingBed();
 
-    #if DISABLED(ESP8266_WIFI)
+    #if DISABLED(HAS_WIFI)
     char wifi_status[100] = "";
     #endif
     sprintf_P(wifi_status, PSTR("%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%s|%d|%d|%d|%d|"), 

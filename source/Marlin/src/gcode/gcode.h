@@ -1094,7 +1094,7 @@ private:
     static void M710();
   #endif
 
-  #if ENABLED(ESP8266_WIFI)
+  #if ENABLED(HAS_WIFI)
     static void M1501();
     static void M1502();
     static void M1503();
