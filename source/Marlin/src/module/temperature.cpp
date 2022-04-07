@@ -803,6 +803,9 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
       #if HAS_AUTO_CHAMBER_FAN
         #define _CFAN(B) _FANOVERLAP(CHAMBER,B) ? B :
         , REPEAT(HOTENDS,_CFAN) (HOTENDS)
+      #elif defined(TLCHAMBER_AUTO_FAN_PIN)
+        #define _CFAN(B) _FANOVERLAP(TLCHAMBER,B) ? B :
+        , REPEAT(HOTENDS,_CFAN) (HOTENDS)
       #endif
     };
 

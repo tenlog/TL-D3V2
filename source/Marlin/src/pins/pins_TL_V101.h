@@ -145,6 +145,7 @@
 #define FAN3_PIN                            PE7    //FAN3 FZ2
 
 #define CHAMEBER_PIN                        PE2   //机箱风扇口
+#define LED_PIN                             PE3   //LED 控制管脚
 
 #if PIN_EXISTS(FAN)
   #define FAN_SOFT_PWM
