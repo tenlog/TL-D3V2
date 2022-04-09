@@ -803,6 +803,9 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
       #if HAS_AUTO_CHAMBER_FAN
         #define _CFAN(B) _FANOVERLAP(CHAMBER,B) ? B :
         , REPEAT(HOTENDS,_CFAN) (HOTENDS)
+      #elif defined(TLCHAMBER_AUTO_FAN_PIN)
+        #define _CFAN(B) _FANOVERLAP(TLCHAMBER,B) ? B :
+      , REPEAT(HOTENDS,_CFAN) (HOTENDS)
       #endif
     };
 
@@ -819,6 +822,7 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
       if (temp_chamber.celsius >= CHAMBER_AUTO_FAN_TEMPERATURE)
         SBI(fanState, pgm_read_byte(&fanBit[CHAMBER_FAN_INDEX]));
     #elif defined(TLCHAMBER_AUTO_FAN_PIN)
+      
       bool isStepEna = (X_ENABLE_READ() == X_ENABLE_ON || Y_ENABLE_READ() == Y_ENABLE_ON || Z_ENABLE_READ() == Z_ENABLE_ON
       #if HAS_X2_ENABLE
         || X2_ENABLE_READ() == X_ENABLE_ON
@@ -839,8 +843,7 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
       if(isStepEna || isHeating)
         SBI(fanState, pgm_read_byte(&fanBit[CHAMBER_FAN_INDEX]));
       
-    #endif
-  
+    #endif  
 
     #if HAS_AUTO_COOLER_FAN
       if (temp_cooler.celsius >= COOLER_AUTO_FAN_TEMPERATURE)
@@ -2218,7 +2221,7 @@ void Temperature::init() {
     INIT_CHAMBER_AUTO_FAN_PIN(CHAMBER_AUTO_FAN_PIN);
   #endif
 
-  #if(TLCHAMBER_AUTO_FAN_PIN)
+  #ifdef TLCHAMBER_AUTO_FAN_PIN
     INIT_CHAMBER_AUTO_FAN_PIN(TLCHAMBER_AUTO_FAN_PIN);
   #endif
 
