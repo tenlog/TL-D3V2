@@ -138,14 +138,14 @@
 #define HEATER_1_PIN                        PA4   // HEATER1
 #define HEATER_BED_PIN                      PE10  // PA6 HOT BED
 
-#define FAN_PIN                             PA1   // FAN  FC1
-#define FAN2_PIN                            PA0    //FAN2 FZ1
+#define FAN_PIN                             PA1   // FAN  FC1 PA1
+#define FAN2_PIN                            PA0    //FAN2 FZ1 PA0
 
-#define FAN1_PIN                            PE8   // FAN1  FC2
-#define FAN3_PIN                            PE7    //FAN3 FZ2
+#define FAN1_PIN                            PE8   // FAN1 FC2 PE8
+#define FAN3_PIN                            PE7    //FAN3 FZ2 PE7
 
-#define CHAMEBER_PIN                        PE2   //机箱风扇口
-#define LED_PIN                             PE3   //LED 控制管脚
+#define CHAMEBER_PIN                        PE3   //机箱风扇口
+#define LED_PIN                             PE2   //LED 控制管脚
 
 #if PIN_EXISTS(FAN)
   #define FAN_SOFT_PWM

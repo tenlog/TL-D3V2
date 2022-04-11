@@ -886,6 +886,8 @@ void fast_line_to_current(const AxisEnum fr_axis) { _line_to_current(fr_axis, 0.
         break;
       case DXC_AUTO_PARK_MODE:
         idex_set_parked();
+        thermalManager.set_fan_speed(active_extruder, thermalManager.common_fan_speed); //by zyf switch fan speed.
+        thermalManager.set_fan_speed(1 - active_extruder, 0);                           //by zyf
         break;
       default:
         break;

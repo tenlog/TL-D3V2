@@ -286,6 +286,7 @@ const char str_t_thermal_runaway[] PROGMEM = STR_T_THERMAL_RUNAWAY,
 
 #if HAS_FAN
 
+  uint8_t Temperature::common_fan_speed = 0; // = { 0 }
   uint8_t Temperature::fan_speed[FAN_COUNT]; // = { 0 }
 
   #if ENABLED(EXTRA_FAN_SPEED)
@@ -840,7 +841,7 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
       
       bool isHeating =  isHeatingHotend(0) && degTargetHotend(0) > 20 || isHeatingHotend(1) && degTargetHotend(1) > 20 || isHeatingBed() && degTargetBed() > 5 ;
       static uint32_t LastChamberFanRun;
-      if(millis() - LastMotion > 180000 && LastChamberFanRun > 0)
+      if(millis() - LastChamberFanRun < 180000 && LastChamberFanRun > 0)
         SBI(fanState, pgm_read_byte(&fanBit[CHAMBER_FAN_INDEX]));
 
       if(isStepEna || isHeating)

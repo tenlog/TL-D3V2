@@ -82,8 +82,10 @@ void GcodeSuite::M106() {
       constexpr bool got_preset = false;
     #endif
 
-    if (!got_preset && parser.seenval('S'))
+    if (!got_preset && parser.seenval('S')){
       speed = parser.value_ushort();
+      thermalManager.common_fan_speed = speed;
+    }
 
     // Set speed, with constraint
     thermalManager.set_fan_speed(pfan, speed);

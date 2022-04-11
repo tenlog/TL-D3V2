@@ -2140,7 +2140,7 @@ char * tenlog_status_update(bool isTJC)
     const long ln7  = int(thermalManager.degHotend(1) + 0.5f);
     const long ln8  = int(thermalManager.degTargetBed() + 0.5f);
     const long ln9  = int(thermalManager.degBed() + 0.5f);
-    const long ln10 = (float)thermalManager.fan_speed[0] * 100.0f / 256.0f + 0.5f;
+    const long ln10 = (float)thermalManager.fan_speed[active_extruder] * 100.0f / 256.0f + 0.5f;
     const long ln11 = feedrate_percentage;
     
     long ln12 = card.flag.sdprinting;
