@@ -821,8 +821,7 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
     #if HAS_AUTO_CHAMBER_FAN
       if (temp_chamber.celsius >= CHAMBER_AUTO_FAN_TEMPERATURE)
         SBI(fanState, pgm_read_byte(&fanBit[CHAMBER_FAN_INDEX]));
-    #elif defined(TLCHAMBER_AUTO_FAN_PIN)
-      
+    #elif defined(TLCHAMBER_AUTO_FAN_PIN)     
       bool isStepEna = (X_ENABLE_READ() == X_ENABLE_ON || Y_ENABLE_READ() == Y_ENABLE_ON || Z_ENABLE_READ() == Z_ENABLE_ON
       #if HAS_X2_ENABLE
         || X2_ENABLE_READ() == X_ENABLE_ON
@@ -839,9 +838,13 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
       #endif
       ); //bool isStepEna
       
-      bool isHeating =  isHeatingHotend(0) && degTargetHotend(0) > 20 || isHeatingHotend(1) && degTargetHotend(1) > 20 || isHeatingBed() && degTargetBed() > 20 ;
-      if(isStepEna || isHeating)
+      bool isHeating =  isHeatingHotend(0) && degTargetHotend(0) > 20 || isHeatingHotend(1) && degTargetHotend(1) > 20 || isHeatingBed() && degTargetBed() > 5 ;
+      static uint32_t LastChamberFanRun;
+      if(millis() - LastMotion > 180000 && LastChamberFanRun > 0)
         SBI(fanState, pgm_read_byte(&fanBit[CHAMBER_FAN_INDEX]));
+
+      if(isStepEna || isHeating)
+        LastChamberFanRun = millis();
       
     #endif  
 
