@@ -359,7 +359,7 @@ void CardReader::tl_ls() {
       NULLZERO(cmd);
       sprintf_P(cmd, PSTR("select_file.vPageID.val=%d"), tl_print_page_id);
       TLSTJC_println(cmd);
-      TLDEBUG_LNPGM(cmd);
+      //TLDEBUG_LNPGM(cmd);
     }    
     delay(5);
     NULLZERO(file_name_list);

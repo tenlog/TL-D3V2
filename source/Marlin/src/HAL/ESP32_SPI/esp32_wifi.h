@@ -57,23 +57,6 @@ extern uint32_t http_port;
 #define SPI1_UNIT                        (M4_SPI1)
 #define SPI1_UNIT_CLOCK                  (PWC_FCG1_PERIPH_SPI1)
 
-//RES引脚
-#define WIFI_RES_PORT                    (PortE)
-#define WIFI_RES_PIN                     (Pin11)
-#define WIFI_RES_HIGH()                  (PORT_SetBits(WIFI_RES_PORT, WIFI_RES_PIN))
-#define WIFI_RES_LOW()                   (PORT_ResetBits(WIFI_RES_PORT, WIFI_RES_PIN))
-
-//DC引脚
-#define WIFI_DC_PORT                     (PortE)
-#define WIFI_DC_PIN                      (Pin12)
-#define WIFI_DC_HIGH()                   (PORT_SetBits(WIFI_DC_PORT, WIFI_DC_PIN))
-#define WIFI_DC_LOW()                    (PORT_ResetBits(WIFI_DC_PORT, WIFI_DC_PIN))
-
-//BLK引脚 背光
-#define WIFI_BL_PORT                     (PortE)
-#define WIFI_BL_PIN                      (Pin13)
-#define WIFI_BL_HIGH()                   (PORT_SetBits(WIFI_BL_PORT, WIFI_BL_PIN))
-#define WIFI_BL_LOW()                    (PORT_ResetBits(WIFI_BL_PORT, WIFI_BL_PIN))
 
 void WIFI_InitGPIO(void);
 void WIFI_InitSPI1(void);

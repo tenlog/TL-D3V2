@@ -56,11 +56,11 @@ void WIFI_InitGPIO(void)
     stcPortInit.enPinMode = Pin_Mode_Out;
 
     /* RES & DC & BL */
-    PORT_Init(WIFI_RES_PORT, WIFI_RES_PIN, &stcPortInit);
-    PORT_Init(WIFI_DC_PORT,  WIFI_DC_PIN, &stcPortInit);
-    PORT_Init(WIFI_BL_PORT,  WIFI_BL_PIN, &stcPortInit);
+    //PORT_Init(WIFI_RES_PORT, WIFI_RES_PIN, &stcPortInit);
+    //PORT_Init(WIFI_DC_PORT,  WIFI_DC_PIN, &stcPortInit);
+    //PORT_Init(WIFI_BL_PORT,  WIFI_BL_PIN, &stcPortInit);
 
-    WIFI_BL_HIGH();   /* 打开背光 */
+    //WIFI_BL_HIGH();   /* 打开背光 */
 
     /* SPI NSS */
     PORT_Init(SPI1_NSS_PORT, SPI1_NSS_PIN, &stcPortInit);
@@ -155,7 +155,7 @@ uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data)
 void WIFI_WriteCMD(uint8_t Command)
 {
     SPI1_NSS_LOW();
-    WIFI_DC_LOW();
+    //WIFI_DC_LOW();
     SPI_RW(SPI1_UNIT, Command);
     SPI1_NSS_HIGH();
 }
@@ -171,7 +171,7 @@ void WIFI_WriteCMD(uint8_t Command)
 void WIFI_WriteDAT(uint8_t Data)
 {
     SPI1_NSS_LOW();
-    WIFI_DC_HIGH();
+    //WIFI_DC_HIGH();
     SPI_RW(SPI1_UNIT, Data);
     SPI1_NSS_HIGH();
 }
@@ -188,9 +188,9 @@ void WIFI_WriteDAT(uint8_t Data)
 **************************************************************************/
 void WIFI_HardwareReset(void)
 {
-    WIFI_RES_HIGH();  Ddl_Delay1ms(1);
-    WIFI_RES_LOW();   Ddl_Delay1ms(80);
-    WIFI_RES_HIGH();  Ddl_Delay1ms(10);
+    //WIFI_RES_HIGH();  Ddl_Delay1ms(1);
+    //WIFI_RES_LOW();   Ddl_Delay1ms(80);
+    //WIFI_RES_HIGH();  Ddl_Delay1ms(10);
 }
 
 

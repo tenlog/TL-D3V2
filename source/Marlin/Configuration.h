@@ -165,7 +165,7 @@
 #define TENLOG_TOUCH_LCD
 #define PRINT_FROM_Z_HEIGHT
 //#define ESP8266_WIFI
-#define ESP32_WIFI
+//#define ESP32_WIFI
 
 #define TL_DEBUG
 #if EITHER(ESP8266_WIFI, ESP32_WIFI)
@@ -712,7 +712,7 @@
  * *** IT IS HIGHLY RECOMMENDED TO LEAVE THIS OPTION ENABLED! ***
  */
 #define PREVENT_COLD_EXTRUSION
-#define EXTRUDE_MINTEMP 5
+#define EXTRUDE_MINTEMP -15
 
 /**
  * Prevent a single extrusion longer than EXTRUDE_MAXLENGTH.

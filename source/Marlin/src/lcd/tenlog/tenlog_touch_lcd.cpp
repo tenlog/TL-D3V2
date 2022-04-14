@@ -184,9 +184,12 @@ int DETECT_TLS(){
 
             get_command(1);
 
-            char SerialNo[256];
+            char SerialNo[64];
+            char ModelNo[64];
             int SLoop = 0;
+            int MLoop = 0;
             NULLZERO(SerialNo);
+            NULLZERO(ModelNo);
             int iDHCount = 0;
             for(int i=0; i<100; i++){
                 if(tl_command[i] == '\0') break;
@@ -198,15 +201,30 @@ int DETECT_TLS(){
                         SLoop++;
                     }
                 }
+
+                if(iDHCount == 2){
+                    ModelNo[MLoop] = tl_command[i];
+                        
+                    if(ModelNo[MLoop] == '_')
+                        ModelNo[MLoop] = '\0';
+                    if(ModelNo[MLoop] != ',')
+                        MLoop++;
+                }
             }
             if(SerialNo[0] != '\0')
                 TLDEBUG_LNPAIR("Serial.. ", SerialNo);
+            if(ModelNo[0] != '\0')
+                TLDEBUG_LNPAIR("Model.. ", ModelNo);
 
             delay(50);
 
             if (strlen(SerialNo) == 16){
                 TLSTJC_print("loading.sDI.txt=\"");
                 TLSTJC_print(SerialNo);
+                TLSTJC_println("\"");
+
+                TLSTJC_print("loading.tUI.txt=\"UI ");
+                TLSTJC_print(ModelNo);
                 TLSTJC_println("\"");
                 delay(50);
                 TLSTJC_println("click btA,0");
@@ -2188,7 +2206,7 @@ char * tenlog_status_update(bool isTJC)
         TLSTJC_print(wifi_status);
         TLSTJC_println("\"");
         delay(5);
-        TLSTJC_println("click btReflush,0");
+        //TLSTJC_println("click btReflush,0");
         Setting_ECO_MODE();
     }
     return wifi_status;
