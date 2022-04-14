@@ -2796,6 +2796,27 @@ Removing Unused input sections from the image.
     Removing esp32_wifi.o(.ARM.exidx), (8 bytes).
     Removing esp32_wifi.o(.ARM.exidx), (8 bytes).
     Removing esp32_wifi.o(.ARM.exidx), (8 bytes).
+    Removing sdio_f1.o(.rev16_text), (4 bytes).
+    Removing sdio_f1.o(.revsh_text), (4 bytes).
+    Removing sdio_f1.o(.rrx_text), (6 bytes).
+    Removing sdio_f1.o(i.sdio_main), (372 bytes).
+    Removing sdio_f1.o(.ARM.exidx), (8 bytes).
+    Removing sdio_f1.o(.ARM.exidx), (8 bytes).
+    Removing sdio_f1.o(.ARM.exidx), (8 bytes).
+    Removing sdio_f1.o(.ARM.exidx), (8 bytes).
+    Removing sdio_f1.o(.bss), (4096 bytes).
+    Removing sdio_hal.o(.rev16_text), (4 bytes).
+    Removing sdio_hal.o(.revsh_text), (4 bytes).
+    Removing sdio_hal.o(.rrx_text), (6 bytes).
+    Removing sdio_hal.o(i._ZN11Sdioc_Class3endEP16M4_SDIOC_TypeDef), (2 bytes).
+    Removing sdio_hal.o(i._ZN11Sdioc_Class5eraseEjj), (24 bytes).
+    Removing sdio_hal.o(.ARM.exidx), (8 bytes).
+    Removing sdio_hal.o(.ARM.exidx), (8 bytes).
+    Removing sdio_hal.o(.ARM.exidx), (8 bytes).
+    Removing sdio_hal.o(.ARM.exidx), (8 bytes).
+    Removing sdio_hal.o(.ARM.exidx), (8 bytes).
+    Removing sdio_hal.o(.ARM.exidx), (8 bytes).
+    Removing sdio_hal.o(.ARM.exidx), (8 bytes).
     Removing basicmathfunctions.o(.rev16_text), (4 bytes).
     Removing basicmathfunctions.o(.revsh_text), (4 bytes).
     Removing basicmathfunctions.o(.rrx_text), (6 bytes).
@@ -3783,6 +3804,26 @@ Removing Unused input sections from the image.
     Removing transformfunctionsf16.o(.rev16_text), (4 bytes).
     Removing transformfunctionsf16.o(.revsh_text), (4 bytes).
     Removing transformfunctionsf16.o(.rrx_text), (6 bytes).
+    Removing sd_card.o(.rev16_text), (4 bytes).
+    Removing sd_card.o(.revsh_text), (4 bytes).
+    Removing sd_card.o(.rrx_text), (6 bytes).
+    Removing sd_card.o(i.SDCARD_Erase), (176 bytes).
+    Removing sd_card.o(i.SDCARD_SetDeviceMode), (12 bytes).
+    Removing sd_card.o(.ARM.exidx), (8 bytes).
+    Removing sd_card.o(.ARM.exidx), (8 bytes).
+    Removing sd_card.o(.ARM.exidx), (8 bytes).
+    Removing sd_card.o(.ARM.exidx), (8 bytes).
+    Removing sd_card.o(.ARM.exidx), (8 bytes).
+    Removing sd_card.o(.ARM.exidx), (8 bytes).
+    Removing sd_card.o(.ARM.exidx), (8 bytes).
+    Removing sd_card.o(.ARM.exidx), (8 bytes).
+    Removing sd_card.o(.ARM.exidx), (8 bytes).
+    Removing sd_card.o(.ARM.exidx), (8 bytes).
+    Removing sd_card.o(.ARM.exidx), (8 bytes).
+    Removing sd_card.o(.ARM.exidx), (8 bytes).
+    Removing sd_card.o(.ARM.exidx), (8 bytes).
+    Removing sd_card.o(.ARM.exidx), (8 bytes).
+    Removing sd_card.o(.ARM.exidx), (8 bytes).
     Removing adc.o(.rev16_text), (4 bytes).
     Removing adc.o(.revsh_text), (4 bytes).
     Removing adc.o(.rrx_text), (6 bytes).
@@ -3802,15 +3843,6 @@ Removing Unused input sections from the image.
     Removing adc.o(.ARM.exidx), (8 bytes).
     Removing adc.o(.ARM.exidx), (8 bytes).
     Removing adc.o(.ARM.exidx), (8 bytes).
-    Removing sdio_f1.o(.rev16_text), (4 bytes).
-    Removing sdio_f1.o(.revsh_text), (4 bytes).
-    Removing sdio_f1.o(.rrx_text), (6 bytes).
-    Removing sdio_f1.o(i.sdio_main), (372 bytes).
-    Removing sdio_f1.o(.ARM.exidx), (8 bytes).
-    Removing sdio_f1.o(.ARM.exidx), (8 bytes).
-    Removing sdio_f1.o(.ARM.exidx), (8 bytes).
-    Removing sdio_f1.o(.ARM.exidx), (8 bytes).
-    Removing sdio_f1.o(.bss), (4096 bytes).
     Removing board_tim0.o(.rev16_text), (4 bytes).
     Removing board_tim0.o(.revsh_text), (4 bytes).
     Removing board_tim0.o(.rrx_text), (6 bytes).
@@ -3954,18 +3986,55 @@ Removing Unused input sections from the image.
     Removing wirish_digital.o(.ARM.exidx), (8 bytes).
     Removing wirish_digital.o(.ARM.exidx), (8 bytes).
     Removing wirish_digital.o(.ARM.exidx), (8 bytes).
-    Removing sdio_hal.o(.rev16_text), (4 bytes).
-    Removing sdio_hal.o(.revsh_text), (4 bytes).
-    Removing sdio_hal.o(.rrx_text), (6 bytes).
-    Removing sdio_hal.o(i._ZN11Sdioc_Class3endEP16M4_SDIOC_TypeDef), (2 bytes).
-    Removing sdio_hal.o(i._ZN11Sdioc_Class5eraseEjj), (24 bytes).
-    Removing sdio_hal.o(.ARM.exidx), (8 bytes).
-    Removing sdio_hal.o(.ARM.exidx), (8 bytes).
-    Removing sdio_hal.o(.ARM.exidx), (8 bytes).
-    Removing sdio_hal.o(.ARM.exidx), (8 bytes).
-    Removing sdio_hal.o(.ARM.exidx), (8 bytes).
-    Removing sdio_hal.o(.ARM.exidx), (8 bytes).
-    Removing sdio_hal.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.rev16_text), (4 bytes).
+    Removing sdmmc_cmd.o(.revsh_text), (4 bytes).
+    Removing sdmmc_cmd.o(.rrx_text), (6 bytes).
+    Removing sdmmc_cmd.o(i.SDMMC_Acmd13_SdStatus), (104 bytes).
+    Removing sdmmc_cmd.o(i.SDMMC_Acmd51_SendSCR), (104 bytes).
+    Removing sdmmc_cmd.o(i.SDMMC_Cmd10_SendCID), (100 bytes).
+    Removing sdmmc_cmd.o(i.SDMMC_Cmd12_StopTransmission), (104 bytes).
+    Removing sdmmc_cmd.o(i.SDMMC_Cmd1_SendOpCond), (100 bytes).
+    Removing sdmmc_cmd.o(i.SDMMC_Cmd32_EraseWrBlkStart), (104 bytes).
+    Removing sdmmc_cmd.o(i.SDMMC_Cmd33_EraseWrBlkEnd), (104 bytes).
+    Removing sdmmc_cmd.o(i.SDMMC_Cmd35_SetEraseStartAddr), (104 bytes).
+    Removing sdmmc_cmd.o(i.SDMMC_Cmd36_SetEraseEndAddr), (104 bytes).
+    Removing sdmmc_cmd.o(i.SDMMC_Cmd38_Erase), (112 bytes).
+    Removing sdmmc_cmd.o(i._ZN33_INTERNAL_11_sdmmc_cmd_c_1dd5230f18SDMMC_GetCmdResp1bEP16M4_SDIOC_TypeDefPjj), (116 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
+    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
     Removing board_extint.o(.rev16_text), (4 bytes).
     Removing board_extint.o(.revsh_text), (4 bytes).
     Removing board_extint.o(.rrx_text), (6 bytes).
@@ -4035,75 +4104,6 @@ Removing Unused input sections from the image.
     Removing usart.o(.ARM.exidx), (8 bytes).
     Removing usart.o(.ARM.exidx), (8 bytes).
     Removing usart.o(.ARM.exidx), (8 bytes).
-    Removing sd_card.o(.rev16_text), (4 bytes).
-    Removing sd_card.o(.revsh_text), (4 bytes).
-    Removing sd_card.o(.rrx_text), (6 bytes).
-    Removing sd_card.o(i.SDCARD_Erase), (176 bytes).
-    Removing sd_card.o(i.SDCARD_SetDeviceMode), (12 bytes).
-    Removing sd_card.o(.ARM.exidx), (8 bytes).
-    Removing sd_card.o(.ARM.exidx), (8 bytes).
-    Removing sd_card.o(.ARM.exidx), (8 bytes).
-    Removing sd_card.o(.ARM.exidx), (8 bytes).
-    Removing sd_card.o(.ARM.exidx), (8 bytes).
-    Removing sd_card.o(.ARM.exidx), (8 bytes).
-    Removing sd_card.o(.ARM.exidx), (8 bytes).
-    Removing sd_card.o(.ARM.exidx), (8 bytes).
-    Removing sd_card.o(.ARM.exidx), (8 bytes).
-    Removing sd_card.o(.ARM.exidx), (8 bytes).
-    Removing sd_card.o(.ARM.exidx), (8 bytes).
-    Removing sd_card.o(.ARM.exidx), (8 bytes).
-    Removing sd_card.o(.ARM.exidx), (8 bytes).
-    Removing sd_card.o(.ARM.exidx), (8 bytes).
-    Removing sd_card.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.rev16_text), (4 bytes).
-    Removing sdmmc_cmd.o(.revsh_text), (4 bytes).
-    Removing sdmmc_cmd.o(.rrx_text), (6 bytes).
-    Removing sdmmc_cmd.o(i.SDMMC_Acmd13_SdStatus), (104 bytes).
-    Removing sdmmc_cmd.o(i.SDMMC_Acmd51_SendSCR), (104 bytes).
-    Removing sdmmc_cmd.o(i.SDMMC_Cmd10_SendCID), (100 bytes).
-    Removing sdmmc_cmd.o(i.SDMMC_Cmd12_StopTransmission), (104 bytes).
-    Removing sdmmc_cmd.o(i.SDMMC_Cmd1_SendOpCond), (100 bytes).
-    Removing sdmmc_cmd.o(i.SDMMC_Cmd32_EraseWrBlkStart), (104 bytes).
-    Removing sdmmc_cmd.o(i.SDMMC_Cmd33_EraseWrBlkEnd), (104 bytes).
-    Removing sdmmc_cmd.o(i.SDMMC_Cmd35_SetEraseStartAddr), (104 bytes).
-    Removing sdmmc_cmd.o(i.SDMMC_Cmd36_SetEraseEndAddr), (104 bytes).
-    Removing sdmmc_cmd.o(i.SDMMC_Cmd38_Erase), (112 bytes).
-    Removing sdmmc_cmd.o(i._ZN33_INTERNAL_11_sdmmc_cmd_c_1dd5230f18SDMMC_GetCmdResp1bEP16M4_SDIOC_TypeDefPjj), (116 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
-    Removing sdmmc_cmd.o(.ARM.exidx), (8 bytes).
     Removing dneg.o(.text), (6 bytes).
     Removing ffixl.o(.text), (66 bytes).
     Removing dsqrt.o(.text), (162 bytes).
@@ -4459,9 +4459,9 @@ Removing Unused input sections from the image.
     Removing ipaddress.o(.constdata__ZTI9Printable), (8 bytes).
     Removing ipaddress.o(.constdata__ZTS9IPAddress), (11 bytes).
     Removing ipaddress.o(.constdata__ZTS9Printable), (11 bytes).
+    Removing sdio_hal.o(.ARM.exidx), (8 bytes).
     Removing distancefunctions.o(i.fabsf), (10 bytes).
     Removing distancefunctions.o(.ARM.exidx), (8 bytes).
-    Removing hardwareserial.o(.ARM.exidx), (8 bytes).
     Removing hardwareserial.o(.constdata__ZTI14HardwareSerial), (12 bytes).
     Removing hardwareserial.o(.constdata__ZTI6Stream), (12 bytes).
     Removing hardwareserial.o(.constdata__ZTS14HardwareSerial), (17 bytes).
@@ -5366,7 +5366,7 @@ Image Symbol Table
     i.PORT_SetBits                           0x0000cbf4   Section        0  hc32f46x_gpio.o(i.PORT_SetBits)
     i.PORT_SetBitsMapp                       0x0000cc10   Section        0  marlincore.o(i.PORT_SetBitsMapp)
     i.PORT_SetFunc                           0x0000cc3c   Section        0  hc32f46x_gpio.o(i.PORT_SetFunc)
-    i.PORT_SetFuncMapp                       0x0000cc94   Section        0  hardwareserial.o(i.PORT_SetFuncMapp)
+    i.PORT_SetFuncMapp                       0x0000cc94   Section        0  sdio_hal.o(i.PORT_SetFuncMapp)
     i.PORT_Unlock                            0x0000ccd0   Section        0  hc32f46x_gpio.o(i.PORT_Unlock)
     i.PWC_Fcg0PeriphClockCmd                 0x0000cce0   Section        0  hc32f46x_pwc.o(i.PWC_Fcg0PeriphClockCmd)
     i.PWC_Fcg1PeriphClockCmd                 0x0000cd18   Section        0  hc32f46x_pwc.o(i.PWC_Fcg1PeriphClockCmd)
@@ -6486,13 +6486,13 @@ Image Symbol Table
     .data                                    0x200002c0   Section       16  sdvolume.o(.data)
     .data                                    0x200002d0   Section        8  ipaddress.o(.data)
     INADDR_NONE                              0x200002d0   Data           8  ipaddress.o(.data)
-    .data                                    0x200002d8   Section       70  adc.o(.data)
-    adc_read::adc_results                    0x2000031c   Data           2  adc.o(.data)
-    .data                                    0x20000320   Section        5  board_tim0.o(.data)
-    Z_limit_query()::pe11test                0x20000324   Data           1  board_tim0.o(.data)
-    .data                                    0x20000328   Section        4  startup.o(.data)
-    .data                                    0x2000032c   Section     1196  usart_f1.o(.data)
-    .data                                    0x200007d8   Section       24  sdio_hal.o(.data)
+    .data                                    0x200002d8   Section       24  sdio_hal.o(.data)
+    .data                                    0x200002f0   Section       70  adc.o(.data)
+    adc_read::adc_results                    0x20000334   Data           2  adc.o(.data)
+    .data                                    0x20000338   Section        5  board_tim0.o(.data)
+    Z_limit_query()::pe11test                0x2000033c   Data           1  board_tim0.o(.data)
+    .data                                    0x20000340   Section        4  startup.o(.data)
+    .data                                    0x20000344   Section     1196  usart_f1.o(.data)
     .data                                    0x200007f0   Section       16  usart.o(.data)
     .data                                    0x20000800   Section        4  stdout.o(.data)
     .data                                    0x20000804   Section        4  mvars.o(.data)
@@ -6524,9 +6524,9 @@ Image Symbol Table
     CardReader::diveToFile(bool, SdFile*&, const char*, bool)::newDir1 0x20001c6c   Data          32  cardreader.o(.bss)
     CardReader::diveToFile(bool, SdFile*&, const char*, bool)::newDir2 0x20001c8c   Data          32  cardreader.o(.bss)
     .bss                                     0x20001cac   Section      512  sdvolume.o(.bss)
-    .bss                                     0x20001eac   Section       96  usart_f1.o(.bss)
-    .bss                                     0x20001f0c   Section      116  sdio_hal.o(.bss)
-    stcSdhandle                              0x20001f0c   Data         116  sdio_hal.o(.bss)
+    .bss                                     0x20001eac   Section      116  sdio_hal.o(.bss)
+    stcSdhandle                              0x20001eac   Data         116  sdio_hal.o(.bss)
+    .bss                                     0x20001f20   Section       96  usart_f1.o(.bss)
     .bss__ZZN7Stepper19calc_timer_intervalEjPhE5limit 0x20001f80   Section       32  stepper.o(.bss__ZZN7Stepper19calc_timer_intervalEjPhE5limit)
     HEAP                                     0x20001fa0   Section     8192  startup_hc32f460petb.o(HEAP)
     STACK                                    0x20003fa0   Section     2048  startup_hc32f460petb.o(STACK)
@@ -7105,7 +7105,7 @@ Image Symbol Table
     PORT_SetBits                             0x0000cbf5   Thumb Code    22  hc32f46x_gpio.o(i.PORT_SetBits)
     PORT_SetBitsMapp                         0x0000cc11   Thumb Code    40  marlincore.o(i.PORT_SetBitsMapp)
     PORT_SetFunc                             0x0000cc3d   Thumb Code    84  hc32f46x_gpio.o(i.PORT_SetFunc)
-    PORT_SetFuncMapp                         0x0000cc95   Thumb Code    54  hardwareserial.o(i.PORT_SetFuncMapp)
+    PORT_SetFuncMapp                         0x0000cc95   Thumb Code    54  sdio_hal.o(i.PORT_SetFuncMapp)
     PORT_Unlock                              0x0000ccd1   Thumb Code    10  hc32f46x_gpio.o(i.PORT_Unlock)
     PWC_Fcg0PeriphClockCmd                   0x0000cce1   Thumb Code    46  hc32f46x_pwc.o(i.PWC_Fcg0PeriphClockCmd)
     PWC_Fcg1PeriphClockCmd                   0x0000cd19   Thumb Code    28  hc32f46x_pwc.o(i.PWC_Fcg1PeriphClockCmd)
@@ -8136,21 +8136,21 @@ Image Symbol Table
     SdVolume::sdCard_                        0x200002c4   Data           4  sdvolume.o(.data)
     SdVolume::cacheDirty_                    0x200002c8   Data           1  sdvolume.o(.data)
     SdVolume::cacheMirrorBlock_              0x200002cc   Data           4  sdvolume.o(.data)
-    adc1                                     0x200002d8   Data          64  adc.o(.data)
-    ADC1                                     0x20000318   Data           4  adc.o(.data)
-    systick_uptime_millis                    0x20000320   Data           4  board_tim0.o(.data)
-    F_CPU                                    0x20000328   Data           4  startup.o(.data)
-    stcInitCfg                               0x2000032c   Data           9  usart_f1.o(.data)
-    usart4                                   0x20000338   Data         292  usart_f1.o(.data)
-    usart3                                   0x2000045c   Data         292  usart_f1.o(.data)
-    usart2                                   0x20000580   Data         292  usart_f1.o(.data)
-    usart1                                   0x200006a4   Data         292  usart_f1.o(.data)
-    USART4                                   0x200007c8   Data           4  usart_f1.o(.data)
-    USART3                                   0x200007cc   Data           4  usart_f1.o(.data)
-    USART2                                   0x200007d0   Data           4  usart_f1.o(.data)
-    USART1                                   0x200007d4   Data           4  usart_f1.o(.data)
-    stcCardInitCfg                           0x200007d8   Data          16  sdio_hal.o(.data)
-    stcDmaInitCfg                            0x200007e8   Data           8  sdio_hal.o(.data)
+    stcCardInitCfg                           0x200002d8   Data          16  sdio_hal.o(.data)
+    stcDmaInitCfg                            0x200002e8   Data           8  sdio_hal.o(.data)
+    adc1                                     0x200002f0   Data          64  adc.o(.data)
+    ADC1                                     0x20000330   Data           4  adc.o(.data)
+    systick_uptime_millis                    0x20000338   Data           4  board_tim0.o(.data)
+    F_CPU                                    0x20000340   Data           4  startup.o(.data)
+    stcInitCfg                               0x20000344   Data           9  usart_f1.o(.data)
+    usart4                                   0x20000350   Data         292  usart_f1.o(.data)
+    usart3                                   0x20000474   Data         292  usart_f1.o(.data)
+    usart2                                   0x20000598   Data         292  usart_f1.o(.data)
+    usart1                                   0x200006bc   Data         292  usart_f1.o(.data)
+    USART4                                   0x200007e0   Data           4  usart_f1.o(.data)
+    USART3                                   0x200007e4   Data           4  usart_f1.o(.data)
+    USART2                                   0x200007e8   Data           4  usart_f1.o(.data)
+    USART1                                   0x200007ec   Data           4  usart_f1.o(.data)
     dev4                                     0x200007f0   Data           4  usart.o(.data)
     dev3                                     0x200007f4   Data           4  usart.o(.data)
     dev2                                     0x200007f8   Data           4  usart.o(.data)
@@ -8214,14 +8214,14 @@ Image Symbol Table
     CardReader::file                         0x20001be0   Data          32  cardreader.o(.bss)
     CardReader::proc_filenames               0x20001c00   Data         105  cardreader.o(.bss)
     SdVolume::cacheBuffer_                   0x20001cac   Data         512  sdvolume.o(.bss)
-    usart1_rb                                0x20001eac   Data          12  usart_f1.o(.bss)
-    usart1_wb                                0x20001eb8   Data          12  usart_f1.o(.bss)
-    usart2_rb                                0x20001ec4   Data          12  usart_f1.o(.bss)
-    usart2_wb                                0x20001ed0   Data          12  usart_f1.o(.bss)
-    usart3_rb                                0x20001edc   Data          12  usart_f1.o(.bss)
-    usart3_wb                                0x20001ee8   Data          12  usart_f1.o(.bss)
-    usart4_rb                                0x20001ef4   Data          12  usart_f1.o(.bss)
-    usart4_wb                                0x20001f00   Data          12  usart_f1.o(.bss)
+    usart1_rb                                0x20001f20   Data          12  usart_f1.o(.bss)
+    usart1_wb                                0x20001f2c   Data          12  usart_f1.o(.bss)
+    usart2_rb                                0x20001f38   Data          12  usart_f1.o(.bss)
+    usart2_wb                                0x20001f44   Data          12  usart_f1.o(.bss)
+    usart3_rb                                0x20001f50   Data          12  usart_f1.o(.bss)
+    usart3_wb                                0x20001f5c   Data          12  usart_f1.o(.bss)
+    usart4_rb                                0x20001f68   Data          12  usart_f1.o(.bss)
+    usart4_wb                                0x20001f74   Data          12  usart_f1.o(.bss)
     Stepper::calc_timer_interval(unsigned, unsigned char*)::limit 0x20001f80   Data          32  stepper.o(.bss__ZZN7Stepper19calc_timer_intervalEjPhE5limit)
     __heap_base                              0x20001fa0   Data           0  startup_hc32f460petb.o(HEAP)
     __heap_limit                             0x20003fa0   Data           0  startup_hc32f460petb.o(HEAP)
@@ -8235,7 +8235,7 @@ Memory Map of the image
 
   Image Entry point : 0x00008421
 
-  Load Region LR_IROM1 (Base: 0x00008000, Size: 0x00024c88, Max: 0x00040000, ABSOLUTE, COMPRESSED[0x0002459c])
+  Load Region LR_IROM1 (Base: 0x00008000, Size: 0x00024c88, Max: 0x00040000, ABSOLUTE, COMPRESSED[0x00024598])
 
     Execution Region ER_IROM1 (Exec base: 0x00008000, Load base: 0x00008000, Size: 0x00024468, Max: 0x00040000, ABSOLUTE)
 
@@ -8347,7 +8347,7 @@ Memory Map of the image
     0x0000a2e4   0x0000a2e4   0x00000088   Code   RO         1129    i.Ddl_UartInit      hc32f46x_utility.o
     0x0000a36c   0x0000a36c   0x00000008   Code   RO          411    i.DebugMon_Handler  hc32f46x_interrupts.o
     0x0000a374   0x0000a374   0x0000002c   Code   RO         1130    i.DebugOutput       hc32f46x_utility.o
-    0x0000a3a0   0x0000a3a0   0x00000018   Code   RO         4969    i.Dma1Btc3_IrqHandler  glib.lib(adc.o)
+    0x0000a3a0   0x0000a3a0   0x00000018   Code   RO         5035    i.Dma1Btc3_IrqHandler  glib.lib(adc.o)
     0x0000a3b8   0x0000a3b8   0x00000014   Code   RO          235    i.EFM_InstructionCacheCmd  hc32f46x_efm.o
     0x0000a3cc   0x0000a3cc   0x00000018   Code   RO          237    i.EFM_Lock          hc32f46x_efm.o
     0x0000a3e4   0x0000a3e4   0x00000028   Code   RO          240    i.EFM_ReadUID       hc32f46x_efm.o
@@ -8508,7 +8508,7 @@ Memory Map of the image
     0x0000cbf4   0x0000cbf4   0x0000001c   Code   RO          318    i.PORT_SetBits      hc32f46x_gpio.o
     0x0000cc10   0x0000cc10   0x0000002c   Code   RO         1248    i.PORT_SetBitsMapp  marlincore.o
     0x0000cc3c   0x0000cc3c   0x00000058   Code   RO          319    i.PORT_SetFunc      hc32f46x_gpio.o
-    0x0000cc94   0x0000cc94   0x0000003c   Code   RO         5103    i.PORT_SetFuncMapp  glib.lib(hardwareserial.o)
+    0x0000cc94   0x0000cc94   0x0000003c   Code   RO         4008    i.PORT_SetFuncMapp  sdio_hal.o
     0x0000ccd0   0x0000ccd0   0x00000010   Code   RO          323    i.PORT_Unlock       hc32f46x_gpio.o
     0x0000cce0   0x0000cce0   0x00000038   Code   RO          749    i.PWC_Fcg0PeriphClockCmd  hc32f46x_pwc.o
     0x0000cd18   0x0000cd18   0x00000020   Code   RO          750    i.PWC_Fcg1PeriphClockCmd  hc32f46x_pwc.o
@@ -8517,12 +8517,12 @@ Memory Map of the image
     0x0000cd78   0x0000cd78   0x00000008   Code   RO          556    i.PendSV_Handler    hc32f46x_interrupts.o
     0x0000cd80   0x0000cd80   0x00000050   Code   RO          831    i.RMU_ClrResetFlag  hc32f46x_rmu.o
     0x0000cdd0   0x0000cdd0   0x00000098   Code   RO          832    i.RMU_GetResetCause  hc32f46x_rmu.o
-    0x0000ce68   0x0000ce68   0x000000e4   Code   RO         5361    i.SDCARD_GetCardCSD  glib.lib(sd_card.o)
-    0x0000cf4c   0x0000cf4c   0x00000006   Code   RO         5362    i.SDCARD_GetDeviceMode  glib.lib(sd_card.o)
+    0x0000ce68   0x0000ce68   0x000000e4   Code   RO         5003    i.SDCARD_GetCardCSD  glib.lib(sd_card.o)
+    0x0000cf4c   0x0000cf4c   0x00000006   Code   RO         5004    i.SDCARD_GetDeviceMode  glib.lib(sd_card.o)
     0x0000cf52   0x0000cf52   0x00000002   PAD
-    0x0000cf54   0x0000cf54   0x00000118   Code   RO         5363    i.SDCARD_Init       glib.lib(sd_card.o)
-    0x0000d06c   0x0000d06c   0x0000026c   Code   RO         5364    i.SDCARD_ReadBlocks  glib.lib(sd_card.o)
-    0x0000d2d8   0x0000d2d8   0x000001ec   Code   RO         5366    i.SDCARD_WriteBlocks  glib.lib(sd_card.o)
+    0x0000cf54   0x0000cf54   0x00000118   Code   RO         5005    i.SDCARD_Init       glib.lib(sd_card.o)
+    0x0000d06c   0x0000d06c   0x0000026c   Code   RO         5006    i.SDCARD_ReadBlocks  glib.lib(sd_card.o)
+    0x0000d2d8   0x0000d2d8   0x000001ec   Code   RO         5008    i.SDCARD_WriteBlocks  glib.lib(sd_card.o)
     0x0000d4c4   0x0000d4c4   0x00000020   Code   RO          844    i.SDIOC_ClearNormalIrqFlag  hc32f46x_sdioc.o
     0x0000d4e4   0x0000d4e4   0x000000dc   Code   RO          845    i.SDIOC_ConfigData  hc32f46x_sdioc.o
     0x0000d5c0   0x0000d5c0   0x00000010   Code   RO          857    i.SDIOC_GetNormalIrqFlag  hc32f46x_sdioc.o
@@ -8538,26 +8538,26 @@ Memory Map of the image
     0x0000db0c   0x0000db0c   0x00000068   Code   RO          873    i.SDIOC_SetClk      hc32f46x_sdioc.o
     0x0000db74   0x0000db74   0x00000034   Code   RO          876    i.SDIOC_SetSpeedMode  hc32f46x_sdioc.o
     0x0000dba8   0x0000dba8   0x00000070   Code   RO          879    i.SDIOC_WriteBuffer  hc32f46x_sdioc.o
-    0x0000dc18   0x0000dc18   0x00000048   Code   RO         5003    i.SDIO_ReadBlock_DMA  glib.lib(sdio_f1.o)
-    0x0000dc60   0x0000dc60   0x00000048   Code   RO         5004    i.SDIO_WriteBlockDMA  glib.lib(sdio_f1.o)
-    0x0000dca8   0x0000dca8   0x00000074   Code   RO         5394    i.SDMMC_Acmd41_SdSendOpCond  glib.lib(sdmmc_cmd.o)
-    0x0000dd1c   0x0000dd1c   0x00000068   Code   RO         5396    i.SDMMC_Acmd6_SetBusWidth  glib.lib(sdmmc_cmd.o)
-    0x0000dd84   0x0000dd84   0x0000005c   Code   RO         5397    i.SDMMC_Cmd0_GoIdleState  glib.lib(sdmmc_cmd.o)
-    0x0000dde0   0x0000dde0   0x00000068   Code   RO         5400    i.SDMMC_Cmd13_SendStatus  glib.lib(sdmmc_cmd.o)
-    0x0000de48   0x0000de48   0x00000068   Code   RO         5401    i.SDMMC_Cmd16_SetBlockLength  glib.lib(sdmmc_cmd.o)
-    0x0000deb0   0x0000deb0   0x00000068   Code   RO         5402    i.SDMMC_Cmd17_ReadSingleBlock  glib.lib(sdmmc_cmd.o)
-    0x0000df18   0x0000df18   0x00000068   Code   RO         5403    i.SDMMC_Cmd18_ReadMultipleBlock  glib.lib(sdmmc_cmd.o)
-    0x0000df80   0x0000df80   0x00000068   Code   RO         5405    i.SDMMC_Cmd24_WriteSingleBlock  glib.lib(sdmmc_cmd.o)
-    0x0000dfe8   0x0000dfe8   0x00000068   Code   RO         5406    i.SDMMC_Cmd25_WriteMultipleBlock  glib.lib(sdmmc_cmd.o)
-    0x0000e050   0x0000e050   0x00000064   Code   RO         5407    i.SDMMC_Cmd2_AllSendCID  glib.lib(sdmmc_cmd.o)
-    0x0000e0b4   0x0000e0b4   0x00000064   Code   RO         5413    i.SDMMC_Cmd3_SendRelativeAddr  glib.lib(sdmmc_cmd.o)
-    0x0000e118   0x0000e118   0x00000068   Code   RO         5414    i.SDMMC_Cmd55_AppCmd  glib.lib(sdmmc_cmd.o)
-    0x0000e180   0x0000e180   0x00000068   Code   RO         5415    i.SDMMC_Cmd6_SwitchFunc  glib.lib(sdmmc_cmd.o)
-    0x0000e1e8   0x0000e1e8   0x00000068   Code   RO         5416    i.SDMMC_Cmd7_SelectDeselectCard  glib.lib(sdmmc_cmd.o)
-    0x0000e250   0x0000e250   0x00000070   Code   RO         5417    i.SDMMC_Cmd8_SendIfCond  glib.lib(sdmmc_cmd.o)
-    0x0000e2c0   0x0000e2c0   0x00000064   Code   RO         5418    i.SDMMC_Cmd9_SendCSD  glib.lib(sdmmc_cmd.o)
+    0x0000dc18   0x0000dc18   0x00000048   Code   RO         3980    i.SDIO_ReadBlock_DMA  sdio_f1.o
+    0x0000dc60   0x0000dc60   0x00000048   Code   RO         3981    i.SDIO_WriteBlockDMA  sdio_f1.o
+    0x0000dca8   0x0000dca8   0x00000074   Code   RO         5291    i.SDMMC_Acmd41_SdSendOpCond  glib.lib(sdmmc_cmd.o)
+    0x0000dd1c   0x0000dd1c   0x00000068   Code   RO         5293    i.SDMMC_Acmd6_SetBusWidth  glib.lib(sdmmc_cmd.o)
+    0x0000dd84   0x0000dd84   0x0000005c   Code   RO         5294    i.SDMMC_Cmd0_GoIdleState  glib.lib(sdmmc_cmd.o)
+    0x0000dde0   0x0000dde0   0x00000068   Code   RO         5297    i.SDMMC_Cmd13_SendStatus  glib.lib(sdmmc_cmd.o)
+    0x0000de48   0x0000de48   0x00000068   Code   RO         5298    i.SDMMC_Cmd16_SetBlockLength  glib.lib(sdmmc_cmd.o)
+    0x0000deb0   0x0000deb0   0x00000068   Code   RO         5299    i.SDMMC_Cmd17_ReadSingleBlock  glib.lib(sdmmc_cmd.o)
+    0x0000df18   0x0000df18   0x00000068   Code   RO         5300    i.SDMMC_Cmd18_ReadMultipleBlock  glib.lib(sdmmc_cmd.o)
+    0x0000df80   0x0000df80   0x00000068   Code   RO         5302    i.SDMMC_Cmd24_WriteSingleBlock  glib.lib(sdmmc_cmd.o)
+    0x0000dfe8   0x0000dfe8   0x00000068   Code   RO         5303    i.SDMMC_Cmd25_WriteMultipleBlock  glib.lib(sdmmc_cmd.o)
+    0x0000e050   0x0000e050   0x00000064   Code   RO         5304    i.SDMMC_Cmd2_AllSendCID  glib.lib(sdmmc_cmd.o)
+    0x0000e0b4   0x0000e0b4   0x00000064   Code   RO         5310    i.SDMMC_Cmd3_SendRelativeAddr  glib.lib(sdmmc_cmd.o)
+    0x0000e118   0x0000e118   0x00000068   Code   RO         5311    i.SDMMC_Cmd55_AppCmd  glib.lib(sdmmc_cmd.o)
+    0x0000e180   0x0000e180   0x00000068   Code   RO         5312    i.SDMMC_Cmd6_SwitchFunc  glib.lib(sdmmc_cmd.o)
+    0x0000e1e8   0x0000e1e8   0x00000068   Code   RO         5313    i.SDMMC_Cmd7_SelectDeselectCard  glib.lib(sdmmc_cmd.o)
+    0x0000e250   0x0000e250   0x00000070   Code   RO         5314    i.SDMMC_Cmd8_SendIfCond  glib.lib(sdmmc_cmd.o)
+    0x0000e2c0   0x0000e2c0   0x00000064   Code   RO         5315    i.SDMMC_Cmd9_SendCSD  glib.lib(sdmmc_cmd.o)
     0x0000e324   0x0000e324   0x00000008   Code   RO          557    i.SVC_Handler       hc32f46x_interrupts.o
-    0x0000e32c   0x0000e32c   0x00000010   Code   RO         5015    i.SysTickIrq_Handler  glib.lib(board_tim0.o)
+    0x0000e32c   0x0000e32c   0x00000010   Code   RO         5069    i.SysTickIrq_Handler  glib.lib(board_tim0.o)
     0x0000e33c   0x0000e33c   0x00000008   Code   RO          558    i.SysTick_Handler   hc32f46x_interrupts.o
     0x0000e344   0x0000e344   0x000000c4   Code   RO         1184    i.SystemCoreClockUpdate  system_hc32f460petb.o
     0x0000e408   0x0000e408   0x00000008   Code   RO         1185    i.SystemInit        system_hc32f460petb.o
@@ -8609,8 +8609,8 @@ Memory Map of the image
     0x000100cc   0x000100cc   0x00000022   Code   RO         3677    i._Z12lfn_checksumPKh  sdbasefile.o
     0x000100ee   0x000100ee   0x00000004   Code   RO         2566    i._Z13flashFirmwares  hal.o
     0x000100f2   0x000100f2   0x00000002   PAD
-    0x000100f4   0x000100f4   0x00000258   Code   RO         5061    i._Z13getResetCausev  glib.lib(startup.o)
-    0x0001034c   0x0001034c   0x00000094   Code   RO         5226    i._Z13gpio_set_modeh13WiringPinMode  glib.lib(wirish_digital.o)
+    0x000100f4   0x000100f4   0x00000258   Code   RO         5115    i._Z13getResetCausev  glib.lib(startup.o)
+    0x0001034c   0x0001034c   0x00000094   Code   RO         5278    i._Z13gpio_set_modeh13WiringPinMode  glib.lib(wirish_digital.o)
     0x000103e0   0x000103e0   0x0000014c   Code   RO         2667    i._Z13load_filamentii  tenlog_touch_lcd.o
     0x0001052c   0x0001052c   0x00000554   Code   RO         2668    i._Z13tlInitSettingv  tenlog_touch_lcd.o
     0x00010a80   0x00010a80   0x00000030   Code   RO         2669    i._Z13tlResetEEPROMv  tenlog_touch_lcd.o
@@ -8625,8 +8625,8 @@ Memory Map of the image
     0x00010db8   0x00010db8   0x00000030   Code   RO         1281    i._Z14serial_ternarybPKcS0_S0_S0_  serial.o
     0x00010de8   0x00010de8   0x0000001e   Code   RO         1282    i._Z14serialprintPGMPKc  serial.o
     0x00010e06   0x00010e06   0x00000002   PAD
-    0x00010e08   0x00010e08   0x00000014   Code   RO         5017    i._Z14stepTC_Handlerv  glib.lib(board_tim0.o)
-    0x00010e1c   0x00010e1c   0x00000014   Code   RO         5018    i._Z14tempTC_Handlerv  glib.lib(board_tim0.o)
+    0x00010e08   0x00010e08   0x00000014   Code   RO         5071    i._Z14stepTC_Handlerv  glib.lib(board_tim0.o)
+    0x00010e1c   0x00010e1c   0x00000014   Code   RO         5072    i._Z14tempTC_Handlerv  glib.lib(board_tim0.o)
     0x00010e30   0x00010e30   0x00000050   Code   RO         2673    i._Z15DWN_Change_Iconiii  tenlog_touch_lcd.o
     0x00010e80   0x00010e80   0x00000022   Code   RO         2610    i._Z15HAL_timer_starthj  timers.o
     0x00010ea2   0x00010ea2   0x00000010   Code   RO         2596    i._Z15SDIO_WriteBlockjPKh  sdio.o
@@ -8667,14 +8667,14 @@ Memory Map of the image
     0x00011afc   0x00011afc   0x00000010   Code   RO         1285    i._Z18serial_error_startv  serial.o
     0x00011b0c   0x00011b0c   0x00000038   Code   RO         3003    i._Z18sync_plan_positionv  motion.o
     0x00011b44   0x00011b44   0x00000018   Code   RO         2684    i._Z19MTLSERIAL_availablev  tenlog_touch_lcd.o
-    0x00011b5c   0x00011b5c   0x00000044   Code   RO         5292    i._Z19Usart1RxIrqCallbackv  glib.lib(usart.o)
-    0x00011ba0   0x00011ba0   0x00000044   Code   RO         5293    i._Z19Usart1TxIrqCallbackv  glib.lib(usart.o)
-    0x00011be4   0x00011be4   0x00000044   Code   RO         5294    i._Z19Usart2RxIrqCallbackv  glib.lib(usart.o)
-    0x00011c28   0x00011c28   0x00000044   Code   RO         5295    i._Z19Usart2TxIrqCallbackv  glib.lib(usart.o)
-    0x00011c6c   0x00011c6c   0x00000044   Code   RO         5296    i._Z19Usart3RxIrqCallbackv  glib.lib(usart.o)
-    0x00011cb0   0x00011cb0   0x00000044   Code   RO         5297    i._Z19Usart3TxIrqCallbackv  glib.lib(usart.o)
-    0x00011cf4   0x00011cf4   0x00000044   Code   RO         5298    i._Z19Usart4RxIrqCallbackv  glib.lib(usart.o)
-    0x00011d38   0x00011d38   0x00000044   Code   RO         5299    i._Z19Usart4TxIrqCallbackv  glib.lib(usart.o)
+    0x00011b5c   0x00011b5c   0x00000044   Code   RO         5398    i._Z19Usart1RxIrqCallbackv  glib.lib(usart.o)
+    0x00011ba0   0x00011ba0   0x00000044   Code   RO         5399    i._Z19Usart1TxIrqCallbackv  glib.lib(usart.o)
+    0x00011be4   0x00011be4   0x00000044   Code   RO         5400    i._Z19Usart2RxIrqCallbackv  glib.lib(usart.o)
+    0x00011c28   0x00011c28   0x00000044   Code   RO         5401    i._Z19Usart2TxIrqCallbackv  glib.lib(usart.o)
+    0x00011c6c   0x00011c6c   0x00000044   Code   RO         5402    i._Z19Usart3RxIrqCallbackv  glib.lib(usart.o)
+    0x00011cb0   0x00011cb0   0x00000044   Code   RO         5403    i._Z19Usart3TxIrqCallbackv  glib.lib(usart.o)
+    0x00011cf4   0x00011cf4   0x00000044   Code   RO         5404    i._Z19Usart4RxIrqCallbackv  glib.lib(usart.o)
+    0x00011d38   0x00011d38   0x00000044   Code   RO         5405    i._Z19Usart4TxIrqCallbackv  glib.lib(usart.o)
     0x00011d7c   0x00011d7c   0x000000c0   Code   RO         3004    i._Z19apply_motion_limitsR6XYZvalIfE  motion.o
     0x00011e3c   0x00011e3c   0x000000e4   Code   RO         3008    i._Z19do_blocking_move_toffff  motion.o
     0x00011f20   0x00011f20   0x00000026   Code   RO         1200    i._Z19enable_all_steppersv  marlincore.o
@@ -8695,10 +8695,10 @@ Memory Map of the image
     0x00013408   0x00013408   0x00000004   Code   RO         2568    i._Z20HAL_get_reset_sourcev  hal.o
     0x0001340c   0x0001340c   0x00000018   Code   RO         2632    i._Z20HAL_watchdog_refreshv  watchdog.o
     0x00013424   0x00013424   0x00000014   Code   RO         2686    i._Z20TLSTJC_printEmptyendv  tenlog_touch_lcd.o
-    0x00013438   0x00013438   0x0000005c   Code   RO         5300    i._Z20Usart1ErrIrqCallbackv  glib.lib(usart.o)
-    0x00013494   0x00013494   0x0000005c   Code   RO         5301    i._Z20Usart2ErrIrqCallbackv  glib.lib(usart.o)
-    0x000134f0   0x000134f0   0x0000005c   Code   RO         5302    i._Z20Usart3ErrIrqCallbackv  glib.lib(usart.o)
-    0x0001354c   0x0001354c   0x0000005c   Code   RO         5303    i._Z20Usart4ErrIrqCallbackv  glib.lib(usart.o)
+    0x00013438   0x00013438   0x0000005c   Code   RO         5406    i._Z20Usart1ErrIrqCallbackv  glib.lib(usart.o)
+    0x00013494   0x00013494   0x0000005c   Code   RO         5407    i._Z20Usart2ErrIrqCallbackv  glib.lib(usart.o)
+    0x000134f0   0x000134f0   0x0000005c   Code   RO         5408    i._Z20Usart3ErrIrqCallbackv  glib.lib(usart.o)
+    0x0001354c   0x0001354c   0x0000005c   Code   RO         5409    i._Z20Usart4ErrIrqCallbackv  glib.lib(usart.o)
     0x000135a8   0x000135a8   0x00000002   Code   RO         2452    i._Z20calibrate_delay_loopv  delay.o
     0x000135aa   0x000135aa   0x00000002   PAD
     0x000135ac   0x000135ac   0x00000060   Code   RO         1201    i._Z20disable_all_steppersv  marlincore.o
@@ -8726,10 +8726,10 @@ Memory Map of the image
     0x00015330   0x00015330   0x00000020   Code   RO         3022    i._Z23set_duplication_enabledba  motion.o
     0x00015350   0x00015350   0x00000038   Code   RO         3023    i._Z23update_workspace_offset8AxisEnum  motion.o
     0x00015388   0x00015388   0x00000034   Code   RO         2570    i._Z24HAL_adc_start_conversionh  hal.o
-    0x000153bc   0x000153bc   0x00000024   Code   RO         5304    i._Z24Usart1TxCmpltIrqCallbackv  glib.lib(usart.o)
-    0x000153e0   0x000153e0   0x00000024   Code   RO         5305    i._Z24Usart2TxCmpltIrqCallbackv  glib.lib(usart.o)
-    0x00015404   0x00015404   0x00000024   Code   RO         5306    i._Z24Usart3TxCmpltIrqCallbackv  glib.lib(usart.o)
-    0x00015428   0x00015428   0x00000024   Code   RO         5307    i._Z24Usart4TxCmpltIrqCallbackv  glib.lib(usart.o)
+    0x000153bc   0x000153bc   0x00000024   Code   RO         5410    i._Z24Usart1TxCmpltIrqCallbackv  glib.lib(usart.o)
+    0x000153e0   0x000153e0   0x00000024   Code   RO         5411    i._Z24Usart2TxCmpltIrqCallbackv  glib.lib(usart.o)
+    0x00015404   0x00015404   0x00000024   Code   RO         5412    i._Z24Usart3TxCmpltIrqCallbackv  glib.lib(usart.o)
+    0x00015428   0x00015428   0x00000024   Code   RO         5413    i._Z24Usart4TxCmpltIrqCallbackv  glib.lib(usart.o)
     0x0001544c   0x0001544c   0x00000032   Code   RO         3024    i._Z24do_blocking_move_to_xy_zRK5XYvalIfEff  motion.o
     0x0001547e   0x0001547e   0x00000002   PAD
     0x00015480   0x00015480   0x0000008c   Code   RO         3025    i._Z24get_homing_bump_feedrate8AxisEnum  motion.o
@@ -8747,13 +8747,13 @@ Memory Map of the image
     0x00016060   0x00016060   0x00000084   Code   RO         1202    i._Z4idlev          marlincore.o
     0x000160e4   0x000160e4   0x00000058   Code   RO         1203    i._Z4killPKcS0_b    marlincore.o
     0x0001613c   0x0001613c   0x00000044   Code   RO         2837    i._Z5crc16PtPKvt    crc16.o
-    0x00016180   0x00016180   0x00000038   Code   RO         5191    i._Z5delaym         glib.lib(wirish_time.o)
+    0x00016180   0x00016180   0x00000038   Code   RO         5243    i._Z5delaym         glib.lib(wirish_time.o)
     0x000161b8   0x000161b8   0x0000004c   Code   RO         2693    i._Z7DWN_LEDi       tenlog_touch_lcd.o
     0x00016204   0x00016204   0x0000000c   Code   RO         2694    i._Z7TL_idlev       tenlog_touch_lcd.o
     0x00016210   0x00016210   0x000001cc   Code   RO         2695    i._Z7TlIsPLRv       tenlog_touch_lcd.o
     0x000163dc   0x000163dc   0x000000b8   Code   RO         2696    i._Z7_outagev       tenlog_touch_lcd.o
     0x00016494   0x00016494   0x00000060   Code   RO         1205    i._Z7minkillb       marlincore.o
-    0x000164f4   0x000164f4   0x000000b0   Code   RO         5216    i._Z7pinModeh13WiringPinMode  glib.lib(wirish_digital_f1.o)
+    0x000164f4   0x000164f4   0x000000b0   Code   RO         5268    i._Z7pinModeh13WiringPinMode  glib.lib(wirish_digital_f1.o)
     0x000165a4   0x000165a4   0x00000008   Code   RO         1156    i._Z7premainv       main.o
     0x000165ac   0x000165ac   0x000000f8   Code   RO         2697    i._Z8DWN_Datalli    tenlog_touch_lcd.o
     0x000166a4   0x000166a4   0x00000064   Code   RO         2698    i._Z8DWN_Pagei      tenlog_touch_lcd.o
@@ -8963,11 +8963,11 @@ Memory Map of the image
     0x0001daa0   0x0001daa0   0x00000050   Code   RO         1703    i._ZN11GCodeParser9ushortvalEct  g27.o
     0x0001daf0   0x0001daf0   0x0000000a   Code   RO         2212    i._ZN11GCodeParser9value_intEv  m303.o
     0x0001dafa   0x0001dafa   0x00000002   PAD
-    0x0001dafc   0x0001dafc   0x0000003c   Code   RO         5239    i._ZN11Sdioc_Class4initEv  glib.lib(sdio_hal.o)
-    0x0001db38   0x0001db38   0x00000020   Code   RO         5240    i._ZN11Sdioc_Class4readEjtPh  glib.lib(sdio_hal.o)
-    0x0001db58   0x0001db58   0x00000020   Code   RO         5242    i._ZN11Sdioc_Class5writeEjtPKh  glib.lib(sdio_hal.o)
-    0x0001db78   0x0001db78   0x00000060   Code   RO         5243    i._ZN11Sdioc_ClassC1EP16M4_SDIOC_TypeDef  glib.lib(sdio_hal.o)
-    0x0001dbd8   0x0001dbd8   0x00000002   Code   RO         5244    i._ZN11Sdioc_ClassD1Ev  glib.lib(sdio_hal.o)
+    0x0001dafc   0x0001dafc   0x0000003c   Code   RO         3993    i._ZN11Sdioc_Class4initEv  sdio_hal.o
+    0x0001db38   0x0001db38   0x00000020   Code   RO         3994    i._ZN11Sdioc_Class4readEjtPh  sdio_hal.o
+    0x0001db58   0x0001db58   0x00000020   Code   RO         3996    i._ZN11Sdioc_Class5writeEjtPKh  sdio_hal.o
+    0x0001db78   0x0001db78   0x00000060   Code   RO         3997    i._ZN11Sdioc_ClassC1EP16M4_SDIOC_TypeDef  sdio_hal.o
+    0x0001dbd8   0x0001dbd8   0x00000002   Code   RO         3998    i._ZN11Sdioc_ClassD1Ev  sdio_hal.o
     0x0001dbda   0x0001dbda   0x00000002   PAD
     0x0001dbdc   0x0001dbdc   0x000000c4   Code   RO         3393    i._ZN11Temperature11_temp_errorE11heater_id_tPKcS2_  temperature.o
     0x0001dca0   0x0001dca0   0x0000066c   Code   RO         3394    i._ZN11Temperature12PID_autotuneEs11heater_id_tab  temperature.o
@@ -9007,18 +9007,18 @@ Memory Map of the image
     0x0001f894   0x0001f894   0x00000248   Code   RO         3419    i._ZN11Temperature4initEv  temperature.o
     0x0001fadc   0x0001fadc   0x0000000c   Code   RO         3484    i._ZN11Temperature6degBedEv  temperature.o
     0x0001fae8   0x0001fae8   0x00000014   Code   RO         2783    i._ZN11Temperature9degHotendEh  tenlog_touch_lcd.o
-    0x0001fafc   0x0001fafc   0x0000000c   Code   RO         5072    i._ZN14HardwareSerial3endEv  glib.lib(hardwareserial.o)
-    0x0001fb08   0x0001fb08   0x00000036   Code   RO         5074    i._ZN14HardwareSerial4readEv  glib.lib(hardwareserial.o)
-    0x0001fb3e   0x0001fb3e   0x00000012   Code   RO         5075    i._ZN14HardwareSerial5beginEj  glib.lib(hardwareserial.o)
-    0x0001fb50   0x0001fb50   0x0000003a   Code   RO         5076    i._ZN14HardwareSerial5beginEjh  glib.lib(hardwareserial.o)
-    0x0001fb8a   0x0001fb8a   0x0000001c   Code   RO         5077    i._ZN14HardwareSerial5flushEv  glib.lib(hardwareserial.o)
-    0x0001fba6   0x0001fba6   0x0000001a   Code   RO         5078    i._ZN14HardwareSerial5writeEh  glib.lib(hardwareserial.o)
+    0x0001fafc   0x0001fafc   0x0000000c   Code   RO         5126    i._ZN14HardwareSerial3endEv  glib.lib(hardwareserial.o)
+    0x0001fb08   0x0001fb08   0x00000036   Code   RO         5128    i._ZN14HardwareSerial4readEv  glib.lib(hardwareserial.o)
+    0x0001fb3e   0x0001fb3e   0x00000012   Code   RO         5129    i._ZN14HardwareSerial5beginEj  glib.lib(hardwareserial.o)
+    0x0001fb50   0x0001fb50   0x0000003a   Code   RO         5130    i._ZN14HardwareSerial5beginEjh  glib.lib(hardwareserial.o)
+    0x0001fb8a   0x0001fb8a   0x0000001c   Code   RO         5131    i._ZN14HardwareSerial5flushEv  glib.lib(hardwareserial.o)
+    0x0001fba6   0x0001fba6   0x0000001a   Code   RO         5132    i._ZN14HardwareSerial5writeEh  glib.lib(hardwareserial.o)
     0x0001fbc0   0x0001fbc0   0x00000012   Code   RO         1474    i._ZN14HardwareSerial5writeEi  m221.o
     0x0001fbd2   0x0001fbd2   0x00000012   Code   RO         2772    i._ZN14HardwareSerial5writeEl  tenlog_touch_lcd.o
-    0x0001fbe4   0x0001fbe4   0x00000002   Code   RO         5080    i._ZN14HardwareSerial7msgDoneEv  glib.lib(hardwareserial.o)
-    0x0001fbe6   0x0001fbe6   0x0000000c   Code   RO         5081    i._ZN14HardwareSerial9availableEv  glib.lib(hardwareserial.o)
-    0x0001fbf2   0x0001fbf2   0x00000006   Code   RO         5082    i._ZN14HardwareSerial9connectedEv  glib.lib(hardwareserial.o)
-    0x0001fbf8   0x0001fbf8   0x00000034   Code   RO         5083    i._ZN14HardwareSerialC1EP9usart_devhh  glib.lib(hardwareserial.o)
+    0x0001fbe4   0x0001fbe4   0x00000002   Code   RO         5134    i._ZN14HardwareSerial7msgDoneEv  glib.lib(hardwareserial.o)
+    0x0001fbe6   0x0001fbe6   0x0000000c   Code   RO         5135    i._ZN14HardwareSerial9availableEv  glib.lib(hardwareserial.o)
+    0x0001fbf2   0x0001fbf2   0x00000006   Code   RO         5136    i._ZN14HardwareSerial9connectedEv  glib.lib(hardwareserial.o)
+    0x0001fbf8   0x0001fbf8   0x00000034   Code   RO         5137    i._ZN14HardwareSerialC1EP9usart_devhh  glib.lib(hardwareserial.o)
     0x0001fc2c   0x0001fc2c   0x00000014   Code   RO         3222    i._ZN14MarlinSettings10size_errorEt  settings.o
     0x0001fc40   0x0001fc40   0x0000002c   Code   RO         3324    i._ZN14MarlinSettings11EEPROM_READEPhj  settings.o
     0x0001fc6c   0x0001fc6c   0x00000084   Code   RO         3223    i._ZN14MarlinSettings11plr_fn_saveEi  settings.o
@@ -9049,55 +9049,55 @@ Memory Map of the image
     0x00021c0e   0x00021c0e   0x00000002   PAD
     0x00021c10   0x00021c10   0x00000048   Code   RO         1271    i._ZN18FilamentSensorBase18poll_runout_statesEv  marlincore.o
     0x00021c58   0x00021c58   0x00000088   Code   RO         1269    i._ZN20FilamentSensorSwitch3runEv  marlincore.o
-    0x00021ce0   0x00021ce0   0x0000005a   Code   RO         4970    i._ZN22_INTERNAL_5_adc_c_adc110adc_setclkEv  glib.lib(adc.o)
+    0x00021ce0   0x00021ce0   0x0000005a   Code   RO         5036    i._ZN22_INTERNAL_5_adc_c_adc110adc_setclkEv  glib.lib(adc.o)
     0x00021d3a   0x00021d3a   0x00000002   PAD
-    0x00021d3c   0x00021d3c   0x00000010   Code   RO         4971    i._ZN22_INTERNAL_5_adc_c_adc111adc_foreachEPFvP7adc_devE  glib.lib(adc.o)
-    0x00021d4c   0x00021d4c   0x000000b0   Code   RO         4972    i._ZN22_INTERNAL_5_adc_c_adc114adc_SetPinModeEh11en_pin_mode  glib.lib(adc.o)
-    0x00021dfc   0x00021dfc   0x00000036   Code   RO         4973    i._ZN22_INTERNAL_5_adc_c_adc114adc_initconfigEP7adc_dev  glib.lib(adc.o)
+    0x00021d3c   0x00021d3c   0x00000010   Code   RO         5037    i._ZN22_INTERNAL_5_adc_c_adc111adc_foreachEPFvP7adc_devE  glib.lib(adc.o)
+    0x00021d4c   0x00021d4c   0x000000b0   Code   RO         5038    i._ZN22_INTERNAL_5_adc_c_adc114adc_SetPinModeEh11en_pin_mode  glib.lib(adc.o)
+    0x00021dfc   0x00021dfc   0x00000036   Code   RO         5039    i._ZN22_INTERNAL_5_adc_c_adc114adc_initconfigEP7adc_dev  glib.lib(adc.o)
     0x00021e32   0x00021e32   0x00000002   PAD
-    0x00021e34   0x00021e34   0x00000028   Code   RO         4974    i._ZN22_INTERNAL_5_adc_c_adc116adc_DMAIrqConfigEv  glib.lib(adc.o)
-    0x00021e5c   0x00021e5c   0x000000c0   Code   RO         4975    i._ZN22_INTERNAL_5_adc_c_adc117adc_DMAInitConfigEP7adc_dev  glib.lib(adc.o)
-    0x00021f1c   0x00021f1c   0x00000020   Code   RO         4976    i._ZN22_INTERNAL_5_adc_c_adc117adc_TriggerConfigEP7adc_devj  glib.lib(adc.o)
-    0x00021f3c   0x00021f3c   0x000000a4   Code   RO         4977    i._ZN22_INTERNAL_5_adc_c_adc118adc_DmaIrqRegisterEP17stc_irq_regi_confj  glib.lib(adc.o)
-    0x00021fe0   0x00021fe0   0x0000003c   Code   RO         4978    i._ZN22_INTERNAL_5_adc_c_adc118adc_channelchonfigEP7adc_dev11en_pin_mode  glib.lib(adc.o)
-    0x0002201c   0x0002201c   0x0000002e   Code   RO         4979    i._ZN22_INTERNAL_5_adc_c_adc118adc_default_configEP7adc_dev  glib.lib(adc.o)
+    0x00021e34   0x00021e34   0x00000028   Code   RO         5040    i._ZN22_INTERNAL_5_adc_c_adc116adc_DMAIrqConfigEv  glib.lib(adc.o)
+    0x00021e5c   0x00021e5c   0x000000c0   Code   RO         5041    i._ZN22_INTERNAL_5_adc_c_adc117adc_DMAInitConfigEP7adc_dev  glib.lib(adc.o)
+    0x00021f1c   0x00021f1c   0x00000020   Code   RO         5042    i._ZN22_INTERNAL_5_adc_c_adc117adc_TriggerConfigEP7adc_devj  glib.lib(adc.o)
+    0x00021f3c   0x00021f3c   0x000000a4   Code   RO         5043    i._ZN22_INTERNAL_5_adc_c_adc118adc_DmaIrqRegisterEP17stc_irq_regi_confj  glib.lib(adc.o)
+    0x00021fe0   0x00021fe0   0x0000003c   Code   RO         5044    i._ZN22_INTERNAL_5_adc_c_adc118adc_channelchonfigEP7adc_dev11en_pin_mode  glib.lib(adc.o)
+    0x0002201c   0x0002201c   0x0000002e   Code   RO         5045    i._ZN22_INTERNAL_5_adc_c_adc118adc_default_configEP7adc_dev  glib.lib(adc.o)
     0x0002204a   0x0002204a   0x00000002   PAD
-    0x0002204c   0x0002204c   0x00000048   Code   RO         4980    i._ZN22_INTERNAL_5_adc_c_adc121adc_SetChannelPinModeEPK14M4_ADC_TypeDefj11en_pin_mode  glib.lib(adc.o)
+    0x0002204c   0x0002204c   0x00000048   Code   RO         5046    i._ZN22_INTERNAL_5_adc_c_adc121adc_SetChannelPinModeEPK14M4_ADC_TypeDefj11en_pin_mode  glib.lib(adc.o)
     0x00022094   0x00022094   0x0000000c   Code   RO         1267    i._ZN23RunoutResponseDebounced16filament_presentEh  marlincore.o
-    0x000220a0   0x000220a0   0x00000020   Code   RO         5308    i._ZN24_INTERNAL_7_usart_c_dev410rb_is_fullEP11ring_buffer  glib.lib(usart.o)
-    0x000220c0   0x000220c0   0x00000012   Code   RO         5309    i._ZN24_INTERNAL_7_usart_c_dev411rb_is_emptyEP11ring_buffer  glib.lib(usart.o)
-    0x000220d2   0x000220d2   0x0000001a   Code   RO         5310    i._ZN24_INTERNAL_7_usart_c_dev416__NVIC_EnableIRQE4IRQn  glib.lib(usart.o)
-    0x000220ec   0x000220ec   0x00000028   Code   RO         5311    i._ZN24_INTERNAL_7_usart_c_dev418__NVIC_SetPriorityE4IRQnj  glib.lib(usart.o)
-    0x00022114   0x00022114   0x0000001c   Code   RO         5312    i._ZN24_INTERNAL_7_usart_c_dev422__NVIC_ClearPendingIRQE4IRQn  glib.lib(usart.o)
-    0x00022130   0x00022130   0x0000000e   Code   RO         5313    i._ZN24_INTERNAL_7_usart_c_dev47rb_initEP11ring_buffertPh  glib.lib(usart.o)
-    0x0002213e   0x0002213e   0x00000006   Code   RO         5314    i._ZN24_INTERNAL_7_usart_c_dev48rb_resetEP11ring_buffer  glib.lib(usart.o)
-    0x00022144   0x00022144   0x0000001a   Code   RO         5315    i._ZN24_INTERNAL_7_usart_c_dev49rb_insertEP11ring_bufferh  glib.lib(usart.o)
-    0x0002215e   0x0002215e   0x0000001c   Code   RO         5316    i._ZN24_INTERNAL_7_usart_c_dev49rb_removeEP11ring_buffer  glib.lib(usart.o)
+    0x000220a0   0x000220a0   0x00000020   Code   RO         5414    i._ZN24_INTERNAL_7_usart_c_dev410rb_is_fullEP11ring_buffer  glib.lib(usart.o)
+    0x000220c0   0x000220c0   0x00000012   Code   RO         5415    i._ZN24_INTERNAL_7_usart_c_dev411rb_is_emptyEP11ring_buffer  glib.lib(usart.o)
+    0x000220d2   0x000220d2   0x0000001a   Code   RO         5416    i._ZN24_INTERNAL_7_usart_c_dev416__NVIC_EnableIRQE4IRQn  glib.lib(usart.o)
+    0x000220ec   0x000220ec   0x00000028   Code   RO         5417    i._ZN24_INTERNAL_7_usart_c_dev418__NVIC_SetPriorityE4IRQnj  glib.lib(usart.o)
+    0x00022114   0x00022114   0x0000001c   Code   RO         5418    i._ZN24_INTERNAL_7_usart_c_dev422__NVIC_ClearPendingIRQE4IRQn  glib.lib(usart.o)
+    0x00022130   0x00022130   0x0000000e   Code   RO         5419    i._ZN24_INTERNAL_7_usart_c_dev47rb_initEP11ring_buffertPh  glib.lib(usart.o)
+    0x0002213e   0x0002213e   0x00000006   Code   RO         5420    i._ZN24_INTERNAL_7_usart_c_dev48rb_resetEP11ring_buffer  glib.lib(usart.o)
+    0x00022144   0x00022144   0x0000001a   Code   RO         5421    i._ZN24_INTERNAL_7_usart_c_dev49rb_insertEP11ring_bufferh  glib.lib(usart.o)
+    0x0002215e   0x0002215e   0x0000001c   Code   RO         5422    i._ZN24_INTERNAL_7_usart_c_dev49rb_removeEP11ring_buffer  glib.lib(usart.o)
     0x0002217a   0x0002217a   0x00000002   PAD
     0x0002217c   0x0002217c   0x0000002c   Code   RO         1796    i._ZN29_INTERNAL_8_M115_cpp_d86c21268cap_lineEPKcb  m115.o
     0x000221a8   0x000221a8   0x0000001c   Code   RO         2302    i._ZN29_INTERNAL_9_queue_cpp_G28_STR21serial_data_availableE14serial_index_t  queue.o
-    0x000221c4   0x000221c4   0x000000c4   Code   RO         5062    i._ZN30_INTERNAL_11_startup_cpp_F_CPU12setup_SysClkEv  glib.lib(startup.o)
-    0x00022288   0x00022288   0x0000006a   Code   RO         5367    i._ZN30_INTERNAL_9_sd_card_c_c2602c0a12SdCardInitSdEP13stc_sd_handle  glib.lib(sd_card.o)
-    0x000222f2   0x000222f2   0x0000011c   Code   RO         5368    i._ZN30_INTERNAL_9_sd_card_c_c2602c0a13SdCardPowerONEP13stc_sd_handle  glib.lib(sd_card.o)
+    0x000221c4   0x000221c4   0x000000c4   Code   RO         5116    i._ZN30_INTERNAL_11_startup_cpp_F_CPU12setup_SysClkEv  glib.lib(startup.o)
+    0x00022288   0x00022288   0x0000006a   Code   RO         5009    i._ZN30_INTERNAL_9_sd_card_c_c2602c0a12SdCardInitSdEP13stc_sd_handle  glib.lib(sd_card.o)
+    0x000222f2   0x000222f2   0x0000011c   Code   RO         5010    i._ZN30_INTERNAL_9_sd_card_c_c2602c0a13SdCardPowerONEP13stc_sd_handle  glib.lib(sd_card.o)
     0x0002240e   0x0002240e   0x00000002   PAD
-    0x00022410   0x00022410   0x00000050   Code   RO         5369    i._ZN30_INTERNAL_9_sd_card_c_c2602c0a14SdCardInitHostEPK13stc_sd_handle  glib.lib(sd_card.o)
-    0x00022460   0x00022460   0x00000150   Code   RO         5370    i._ZN30_INTERNAL_9_sd_card_c_c2602c0a14SdCardSetSpeedEP13stc_sd_handle  glib.lib(sd_card.o)
-    0x000225b0   0x000225b0   0x000000d8   Code   RO         5371    i._ZN30_INTERNAL_9_sd_card_c_c2602c0a16DmaSdiocRxConfigEP14M4_DMA_TypeDef14en_dma_channelP16M4_SDIOC_TypeDefPht  glib.lib(sd_card.o)
-    0x00022688   0x00022688   0x000000d8   Code   RO         5372    i._ZN30_INTERNAL_9_sd_card_c_c2602c0a16DmaSdiocTxConfigEP14M4_DMA_TypeDef14en_dma_channelP16M4_SDIOC_TypeDefPht  glib.lib(sd_card.o)
-    0x00022760   0x00022760   0x00000070   Code   RO         5373    i._ZN30_INTERNAL_9_sd_card_c_c2602c0a17SdCardSetBusWidthEP13stc_sd_handle  glib.lib(sd_card.o)
-    0x000227d0   0x000227d0   0x00000038   Code   RO         5374    i._ZN30_INTERNAL_9_sd_card_c_c2602c0a22SdCardCheckReayForDataEP13stc_sd_handlej  glib.lib(sd_card.o)
-    0x00022808   0x00022808   0x00000054   Code   RO         5419    i._ZN33_INTERNAL_11_sdmmc_cmd_c_1dd5230f17SDMMC_GetCmdResp1EP16M4_SDIOC_TypeDefPjj  glib.lib(sdmmc_cmd.o)
-    0x0002285c   0x0002285c   0x00000058   Code   RO         5420    i._ZN33_INTERNAL_11_sdmmc_cmd_c_1dd5230f17SDMMC_GetCmdResp2EP16M4_SDIOC_TypeDefPj  glib.lib(sdmmc_cmd.o)
-    0x000228b4   0x000228b4   0x0000003c   Code   RO         5421    i._ZN33_INTERNAL_11_sdmmc_cmd_c_1dd5230f17SDMMC_GetCmdResp3EP16M4_SDIOC_TypeDefPj  glib.lib(sdmmc_cmd.o)
-    0x000228f0   0x000228f0   0x00000050   Code   RO         5422    i._ZN33_INTERNAL_11_sdmmc_cmd_c_1dd5230f17SDMMC_GetCmdResp6EP16M4_SDIOC_TypeDefPj  glib.lib(sdmmc_cmd.o)
-    0x00022940   0x00022940   0x0000003c   Code   RO         5423    i._ZN33_INTERNAL_11_sdmmc_cmd_c_1dd5230f17SDMMC_GetCmdResp7EP16M4_SDIOC_TypeDefPj  glib.lib(sdmmc_cmd.o)
-    0x0002297c   0x0002297c   0x0000005c   Code   RO         5424    i._ZN33_INTERNAL_11_sdmmc_cmd_c_1dd5230f17SDMMC_WaitBusIdleEP16M4_SDIOC_TypeDef  glib.lib(sdmmc_cmd.o)
-    0x000229d8   0x000229d8   0x000000b8   Code   RO         5426    i._ZN33_INTERNAL_11_sdmmc_cmd_c_1dd5230f18SDMMC_WaitResponseEP16M4_SDIOC_TypeDefj  glib.lib(sdmmc_cmd.o)
-    0x00022a90   0x00022a90   0x0000005c   Code   RO         5427    i._ZN33_INTERNAL_11_sdmmc_cmd_c_1dd5230f22SDMMC_GetCardDetectionEP16M4_SDIOC_TypeDef  glib.lib(sdmmc_cmd.o)
-    0x00022aec   0x00022aec   0x0000001a   Code   RO         5019    i._ZN34_INTERNAL_12_board_tim0_c_e2b14bb216__NVIC_EnableIRQE4IRQn  glib.lib(board_tim0.o)
+    0x00022410   0x00022410   0x00000050   Code   RO         5011    i._ZN30_INTERNAL_9_sd_card_c_c2602c0a14SdCardInitHostEPK13stc_sd_handle  glib.lib(sd_card.o)
+    0x00022460   0x00022460   0x00000150   Code   RO         5012    i._ZN30_INTERNAL_9_sd_card_c_c2602c0a14SdCardSetSpeedEP13stc_sd_handle  glib.lib(sd_card.o)
+    0x000225b0   0x000225b0   0x000000d8   Code   RO         5013    i._ZN30_INTERNAL_9_sd_card_c_c2602c0a16DmaSdiocRxConfigEP14M4_DMA_TypeDef14en_dma_channelP16M4_SDIOC_TypeDefPht  glib.lib(sd_card.o)
+    0x00022688   0x00022688   0x000000d8   Code   RO         5014    i._ZN30_INTERNAL_9_sd_card_c_c2602c0a16DmaSdiocTxConfigEP14M4_DMA_TypeDef14en_dma_channelP16M4_SDIOC_TypeDefPht  glib.lib(sd_card.o)
+    0x00022760   0x00022760   0x00000070   Code   RO         5015    i._ZN30_INTERNAL_9_sd_card_c_c2602c0a17SdCardSetBusWidthEP13stc_sd_handle  glib.lib(sd_card.o)
+    0x000227d0   0x000227d0   0x00000038   Code   RO         5016    i._ZN30_INTERNAL_9_sd_card_c_c2602c0a22SdCardCheckReayForDataEP13stc_sd_handlej  glib.lib(sd_card.o)
+    0x00022808   0x00022808   0x00000054   Code   RO         5316    i._ZN33_INTERNAL_11_sdmmc_cmd_c_1dd5230f17SDMMC_GetCmdResp1EP16M4_SDIOC_TypeDefPjj  glib.lib(sdmmc_cmd.o)
+    0x0002285c   0x0002285c   0x00000058   Code   RO         5317    i._ZN33_INTERNAL_11_sdmmc_cmd_c_1dd5230f17SDMMC_GetCmdResp2EP16M4_SDIOC_TypeDefPj  glib.lib(sdmmc_cmd.o)
+    0x000228b4   0x000228b4   0x0000003c   Code   RO         5318    i._ZN33_INTERNAL_11_sdmmc_cmd_c_1dd5230f17SDMMC_GetCmdResp3EP16M4_SDIOC_TypeDefPj  glib.lib(sdmmc_cmd.o)
+    0x000228f0   0x000228f0   0x00000050   Code   RO         5319    i._ZN33_INTERNAL_11_sdmmc_cmd_c_1dd5230f17SDMMC_GetCmdResp6EP16M4_SDIOC_TypeDefPj  glib.lib(sdmmc_cmd.o)
+    0x00022940   0x00022940   0x0000003c   Code   RO         5320    i._ZN33_INTERNAL_11_sdmmc_cmd_c_1dd5230f17SDMMC_GetCmdResp7EP16M4_SDIOC_TypeDefPj  glib.lib(sdmmc_cmd.o)
+    0x0002297c   0x0002297c   0x0000005c   Code   RO         5321    i._ZN33_INTERNAL_11_sdmmc_cmd_c_1dd5230f17SDMMC_WaitBusIdleEP16M4_SDIOC_TypeDef  glib.lib(sdmmc_cmd.o)
+    0x000229d8   0x000229d8   0x000000b8   Code   RO         5323    i._ZN33_INTERNAL_11_sdmmc_cmd_c_1dd5230f18SDMMC_WaitResponseEP16M4_SDIOC_TypeDefj  glib.lib(sdmmc_cmd.o)
+    0x00022a90   0x00022a90   0x0000005c   Code   RO         5324    i._ZN33_INTERNAL_11_sdmmc_cmd_c_1dd5230f22SDMMC_GetCardDetectionEP16M4_SDIOC_TypeDef  glib.lib(sdmmc_cmd.o)
+    0x00022aec   0x00022aec   0x0000001a   Code   RO         5073    i._ZN34_INTERNAL_12_board_tim0_c_e2b14bb216__NVIC_EnableIRQE4IRQn  glib.lib(board_tim0.o)
     0x00022b06   0x00022b06   0x00000002   PAD
-    0x00022b08   0x00022b08   0x00000028   Code   RO         5020    i._ZN34_INTERNAL_12_board_tim0_c_e2b14bb218__NVIC_SetPriorityE4IRQnj  glib.lib(board_tim0.o)
-    0x00022b30   0x00022b30   0x0000001c   Code   RO         5021    i._ZN34_INTERNAL_12_board_tim0_c_e2b14bb222__NVIC_ClearPendingIRQE4IRQn  glib.lib(board_tim0.o)
+    0x00022b08   0x00022b08   0x00000028   Code   RO         5074    i._ZN34_INTERNAL_12_board_tim0_c_e2b14bb218__NVIC_SetPriorityE4IRQnj  glib.lib(board_tim0.o)
+    0x00022b30   0x00022b30   0x0000001c   Code   RO         5075    i._ZN34_INTERNAL_12_board_tim0_c_e2b14bb222__NVIC_ClearPendingIRQE4IRQn  glib.lib(board_tim0.o)
     0x00022b4c   0x00022b4c   0x00000048   Code   RO         2959    i._ZN34_INTERNAL_12_endstops_cpp_endstops14print_es_stateEbPKc  endstops.o
     0x00022b94   0x00022b94   0x00000028   Code   RO         3237    i._ZN34_INTERNAL_12_settings_cpp_7a1ff5ce14config_headingEbPKcb  settings.o
     0x00022bbc   0x00022bbc   0x00000014   Code   RO         3561    i._ZN35_INTERNAL_14_cardreader_cpp_M23_STR13DIR_IS_SUBDIREPK14directoryEntry  cardreader.o
@@ -9122,27 +9122,27 @@ Memory Map of the image
     0x0002335a   0x0002335a   0x00000054   Code   RO         2796    i._ZN3IIC8wait_ackEv  bl24cxx.o
     0x000233ae   0x000233ae   0x0000005a   Code   RO         2797    i._ZN3IIC9read_byteEh  bl24cxx.o
     0x00023408   0x00023408   0x00000060   Code   RO         2798    i._ZN3IIC9send_byteEh  bl24cxx.o
-    0x00023468   0x00023468   0x0000001e   Code   RO         5084    i._ZN40_INTERNAL_18_HardwareSerial_cpp_1ae1736c13rb_full_countEP11ring_buffer  glib.lib(hardwareserial.o)
-    0x00023486   0x00023486   0x0000000c   Code   RO         5085    i._ZN40_INTERNAL_18_HardwareSerial_cpp_1ae1736c20usart_data_availableEP9usart_dev  glib.lib(hardwareserial.o)
+    0x00023468   0x00023468   0x0000001e   Code   RO         5138    i._ZN40_INTERNAL_18_HardwareSerial_cpp_1ae1736c13rb_full_countEP11ring_buffer  glib.lib(hardwareserial.o)
+    0x00023486   0x00023486   0x0000000c   Code   RO         5139    i._ZN40_INTERNAL_18_HardwareSerial_cpp_1ae1736c20usart_data_availableEP9usart_dev  glib.lib(hardwareserial.o)
     0x00023492   0x00023492   0x00000002   PAD
     0x00023494   0x00023494   0x0000019c   Code   RO         1131    i._ZN40_INTERNAL_18_hc32f46x_utility_c_985ce00315SetUartBaudrateEj  hc32f46x_utility.o
-    0x00023630   0x00023630   0x000001a4   Code   RO         5111    i._ZN5Print10printFloatEdh  glib.lib(print.o)
-    0x000237d4   0x000237d4   0x00000090   Code   RO         5112    i._ZN5Print11printNumberEyh  glib.lib(print.o)
-    0x00023864   0x00023864   0x00000012   Code   RO         5114    i._ZN5Print5printEPKc  glib.lib(print.o)
-    0x00023876   0x00023876   0x00000012   Code   RO         5116    i._ZN5Print5printEc  glib.lib(print.o)
-    0x00023888   0x00023888   0x00000028   Code   RO         5117    i._ZN5Print5printEdi  glib.lib(print.o)
-    0x000238b0   0x000238b0   0x00000016   Code   RO         5118    i._ZN5Print5printEhi  glib.lib(print.o)
-    0x000238c6   0x000238c6   0x00000016   Code   RO         5119    i._ZN5Print5printEii  glib.lib(print.o)
-    0x000238dc   0x000238dc   0x00000016   Code   RO         5120    i._ZN5Print5printEji  glib.lib(print.o)
-    0x000238f2   0x000238f2   0x00000016   Code   RO         5121    i._ZN5Print5printEli  glib.lib(print.o)
-    0x00023908   0x00023908   0x00000036   Code   RO         5123    i._ZN5Print5printExi  glib.lib(print.o)
-    0x0002393e   0x0002393e   0x0000001a   Code   RO         5124    i._ZN5Print5printEyi  glib.lib(print.o)
-    0x00023958   0x00023958   0x00000022   Code   RO         5125    i._ZN5Print5writeEPKc  glib.lib(print.o)
-    0x0002397a   0x0002397a   0x00000030   Code   RO         5126    i._ZN5Print5writeEPKvj  glib.lib(print.o)
-    0x000239aa   0x000239aa   0x0000001c   Code   RO         5128    i._ZN5Print7printlnEPKc  glib.lib(print.o)
-    0x000239c6   0x000239c6   0x00000024   Code   RO         5134    i._ZN5Print7printlnEji  glib.lib(print.o)
-    0x000239ea   0x000239ea   0x00000022   Code   RO         5135    i._ZN5Print7printlnEli  glib.lib(print.o)
-    0x00023a0c   0x00023a0c   0x0000001c   Code   RO         5137    i._ZN5Print7printlnEv  glib.lib(print.o)
+    0x00023630   0x00023630   0x000001a4   Code   RO         5163    i._ZN5Print10printFloatEdh  glib.lib(print.o)
+    0x000237d4   0x000237d4   0x00000090   Code   RO         5164    i._ZN5Print11printNumberEyh  glib.lib(print.o)
+    0x00023864   0x00023864   0x00000012   Code   RO         5166    i._ZN5Print5printEPKc  glib.lib(print.o)
+    0x00023876   0x00023876   0x00000012   Code   RO         5168    i._ZN5Print5printEc  glib.lib(print.o)
+    0x00023888   0x00023888   0x00000028   Code   RO         5169    i._ZN5Print5printEdi  glib.lib(print.o)
+    0x000238b0   0x000238b0   0x00000016   Code   RO         5170    i._ZN5Print5printEhi  glib.lib(print.o)
+    0x000238c6   0x000238c6   0x00000016   Code   RO         5171    i._ZN5Print5printEii  glib.lib(print.o)
+    0x000238dc   0x000238dc   0x00000016   Code   RO         5172    i._ZN5Print5printEji  glib.lib(print.o)
+    0x000238f2   0x000238f2   0x00000016   Code   RO         5173    i._ZN5Print5printEli  glib.lib(print.o)
+    0x00023908   0x00023908   0x00000036   Code   RO         5175    i._ZN5Print5printExi  glib.lib(print.o)
+    0x0002393e   0x0002393e   0x0000001a   Code   RO         5176    i._ZN5Print5printEyi  glib.lib(print.o)
+    0x00023958   0x00023958   0x00000022   Code   RO         5177    i._ZN5Print5writeEPKc  glib.lib(print.o)
+    0x0002397a   0x0002397a   0x00000030   Code   RO         5178    i._ZN5Print5writeEPKvj  glib.lib(print.o)
+    0x000239aa   0x000239aa   0x0000001c   Code   RO         5180    i._ZN5Print7printlnEPKc  glib.lib(print.o)
+    0x000239c6   0x000239c6   0x00000024   Code   RO         5186    i._ZN5Print7printlnEji  glib.lib(print.o)
+    0x000239ea   0x000239ea   0x00000022   Code   RO         5187    i._ZN5Print7printlnEli  glib.lib(print.o)
+    0x00023a0c   0x00023a0c   0x0000001c   Code   RO         5189    i._ZN5Print7printlnEv  glib.lib(print.o)
     0x00023a28   0x00023a28   0x00000060   Code   RO         2845    i._ZN6Nozzle18park_mode_0_heightEf  nozzle.o
     0x00023a88   0x00023a88   0x000000c4   Code   RO         2846    i._ZN6Nozzle4parkEhRK6XYZvalIfE  nozzle.o
     0x00023b4c   0x00023b4c   0x0000001a   Code   RO         3829    i._ZN6SdFile5writeEPKc  sdfile.o
@@ -9279,7 +9279,7 @@ Memory Map of the image
     0x00028c88   0x00028c88   0x00000008   Code   RO         5894    i.__aeabi_errno_addr  mc_w.l(errno.o)
     0x00028c90   0x00028c90   0x00000024   Code   RO         5551    i.__aeabi_vec_ctor_nocookie_nodtor  cpprt_w.l(aeabi_vec_ctor_nocookie_nodtor.o)
     0x00028cb4   0x00028cb4   0x00000010   Code   RO         5463    i.__cxa_guard_acquire  cpprt_w.l(cxa_guard_acquire.o)
-    0x00028cc4   0x00028cc4   0x00000004   Code   RO         5196    i.__cxa_pure_virtual  glib.lib(cxxabi-compat.o)
+    0x00028cc4   0x00028cc4   0x00000004   Code   RO         5248    i.__cxa_pure_virtual  glib.lib(cxxabi-compat.o)
     0x00028cc8   0x00028cc8   0x000000f8   Code   RO         5922    i.__hardfp___mathlib_tofloat  m_wm.l(narrow.o)
     0x00028dc0   0x00028dc0   0x000002ac   Code   RO         5555    i.__hardfp_atan2f   m_wm.l(atan2f.o)
     0x0002906c   0x0002906c   0x0000006c   Code   RO         5561    i.__hardfp_ceilf    m_wm.l(ceilf.o)
@@ -9317,47 +9317,47 @@ Memory Map of the image
     0x0002a0c4   0x0002a0c4   0x00000024   Code   RO         5786    i._printf_post_padding  mc_w.l(printfa.o)
     0x0002a0e8   0x0002a0e8   0x0000002e   Code   RO         5787    i._printf_pre_padding  mc_w.l(printfa.o)
     0x0002a116   0x0002a116   0x0000000a   Code   RO         5789    i._sputc            mc_w.l(printfa.o)
-    0x0002a120   0x0002a120   0x00000058   Code   RO         4982    i.adc_read          glib.lib(adc.o)
-    0x0002a178   0x0002a178   0x00000044   Code   RO         5185    i.dtostrf           glib.lib(dtostrf.o)
+    0x0002a120   0x0002a120   0x00000058   Code   RO         5048    i.adc_read          glib.lib(adc.o)
+    0x0002a178   0x0002a178   0x00000044   Code   RO         5237    i.dtostrf           glib.lib(dtostrf.o)
     0x0002a1bc   0x0002a1bc   0x00000088   Code   RO          566    i.enIrqRegistration  hc32f46x_interrupts.o
     0x0002a244   0x0002a244   0x00000024   Code   RO          569    i.enShareIrqEnable  hc32f46x_interrupts.o
     0x0002a268   0x0002a268   0x00000010   Code   RO         1132    i.fputc             hc32f46x_utility.o
     0x0002a278   0x0002a278   0x00000050   Code   RO         5791    i.free              mc_w.l(malloc.o)
     0x0002a2c8   0x0002a2c8   0x0000008c   Code   RO         6112    i.frexp             m_wm.l(frexp.o)
-    0x0002a354   0x0002a354   0x00000040   Code   RO         5063    i.init              glib.lib(startup.o)
+    0x0002a354   0x0002a354   0x00000040   Code   RO         5117    i.init              glib.lib(startup.o)
     0x0002a394   0x0002a394   0x00000012   Code   RO         6096    i.isspace           glib.lib(wstring.o)
-    0x0002a3a6   0x0002a3a6   0x00000008   Code   RO         5201    i.iwdg_feed         glib.lib(iwdg.o)
-    0x0002a3ae   0x0002a3ae   0x0000003c   Code   RO         5202    i.iwdg_init         glib.lib(iwdg.o)
+    0x0002a3a6   0x0002a3a6   0x00000008   Code   RO         5253    i.iwdg_feed         glib.lib(iwdg.o)
+    0x0002a3ae   0x0002a3ae   0x0000003c   Code   RO         5254    i.iwdg_init         glib.lib(iwdg.o)
     0x0002a3ea   0x0002a3ea   0x00000002   PAD
     0x0002a3ec   0x0002a3ec   0x00000050   Code   RO         1210    i.loop              marlincore.o
     0x0002a43c   0x0002a43c   0x0000000c   Code   RO         1160    i.main              main.o
     0x0002a448   0x0002a448   0x0000006c   Code   RO         5792    i.malloc            mc_w.l(malloc.o)
-    0x0002a4b4   0x0002a4b4   0x0000000c   Code   RO         5025    i.millis            glib.lib(board_tim0.o)
+    0x0002a4b4   0x0002a4b4   0x0000000c   Code   RO         5079    i.millis            glib.lib(board_tim0.o)
     0x0002a4c0   0x0002a4c0   0x000004d0   Code   RO         1211    i.setup             marlincore.o
-    0x0002a990   0x0002a990   0x00000002   Code   RO         5271    i.setup_Extinterrupt  glib.lib(board_extint.o)
+    0x0002a990   0x0002a990   0x00000002   Code   RO         5377    i.setup_Extinterrupt  glib.lib(board_extint.o)
     0x0002a992   0x0002a992   0x00000002   PAD
-    0x0002a994   0x0002a994   0x00000014   Code   RO         4983    i.setup_adcs        glib.lib(adc.o)
+    0x0002a994   0x0002a994   0x00000014   Code   RO         5049    i.setup_adcs        glib.lib(adc.o)
     0x0002a9a8   0x0002a9a8   0x00000022   Code   RO         1171    i.setup_gpio        board_gpio.o
-    0x0002a9ca   0x0002a9ca   0x0000004a   Code   RO         5026    i.setup_systick     glib.lib(board_tim0.o)
-    0x0002aa14   0x0002aa14   0x00000002   Code   RO         5027    i.setup_time        glib.lib(board_tim0.o)
+    0x0002a9ca   0x0002a9ca   0x0000004a   Code   RO         5080    i.setup_systick     glib.lib(board_tim0.o)
+    0x0002aa14   0x0002aa14   0x00000002   Code   RO         5081    i.setup_time        glib.lib(board_tim0.o)
     0x0002aa16   0x0002aa16   0x00000002   PAD
-    0x0002aa18   0x0002aa18   0x00000090   Code   RO         5028    i.setup_time2A      glib.lib(board_tim0.o)
-    0x0002aaa8   0x0002aaa8   0x0000008c   Code   RO         5029    i.setup_time2B      glib.lib(board_tim0.o)
-    0x0002ab34   0x0002ab34   0x0000002c   Code   RO         5006    i.steup_sdio        glib.lib(sdio_f1.o)
-    0x0002ab60   0x0002ab60   0x00000020   Code   RO         5030    i.timer_disable_irq  glib.lib(board_tim0.o)
-    0x0002ab80   0x0002ab80   0x00000020   Code   RO         5031    i.timer_enable_irq  glib.lib(board_tim0.o)
-    0x0002aba0   0x0002aba0   0x00000020   Code   RO         5032    i.timer_get_count   glib.lib(board_tim0.o)
-    0x0002abc0   0x0002abc0   0x0000001e   Code   RO         5033    i.timer_irq_enabled  glib.lib(board_tim0.o)
-    0x0002abde   0x0002abde   0x0000001c   Code   RO         5034    i.timer_preset_compare  glib.lib(board_tim0.o)
+    0x0002aa18   0x0002aa18   0x00000090   Code   RO         5082    i.setup_time2A      glib.lib(board_tim0.o)
+    0x0002aaa8   0x0002aaa8   0x0000008c   Code   RO         5083    i.setup_time2B      glib.lib(board_tim0.o)
+    0x0002ab34   0x0002ab34   0x0000002c   Code   RO         3983    i.steup_sdio        sdio_f1.o
+    0x0002ab60   0x0002ab60   0x00000020   Code   RO         5084    i.timer_disable_irq  glib.lib(board_tim0.o)
+    0x0002ab80   0x0002ab80   0x00000020   Code   RO         5085    i.timer_enable_irq  glib.lib(board_tim0.o)
+    0x0002aba0   0x0002aba0   0x00000020   Code   RO         5086    i.timer_get_count   glib.lib(board_tim0.o)
+    0x0002abc0   0x0002abc0   0x0000001e   Code   RO         5087    i.timer_irq_enabled  glib.lib(board_tim0.o)
+    0x0002abde   0x0002abde   0x0000001c   Code   RO         5088    i.timer_preset_compare  glib.lib(board_tim0.o)
     0x0002abfa   0x0002abfa   0x00000002   PAD
-    0x0002abfc   0x0002abfc   0x0000002c   Code   RO         5035    i.timer_set_compare  glib.lib(board_tim0.o)
-    0x0002ac28   0x0002ac28   0x0000002c   Code   RO         5317    i.usart_disable     glib.lib(usart.o)
-    0x0002ac54   0x0002ac54   0x000002ac   Code   RO         5318    i.usart_enable      glib.lib(usart.o)
-    0x0002af00   0x0002af00   0x00000032   Code   RO         5319    i.usart_init        glib.lib(usart.o)
-    0x0002af32   0x0002af32   0x00000010   Code   RO         5322    i.usart_set_baud_rate  glib.lib(usart.o)
+    0x0002abfc   0x0002abfc   0x0000002c   Code   RO         5089    i.timer_set_compare  glib.lib(board_tim0.o)
+    0x0002ac28   0x0002ac28   0x0000002c   Code   RO         5423    i.usart_disable     glib.lib(usart.o)
+    0x0002ac54   0x0002ac54   0x000002ac   Code   RO         5424    i.usart_enable      glib.lib(usart.o)
+    0x0002af00   0x0002af00   0x00000032   Code   RO         5425    i.usart_init        glib.lib(usart.o)
+    0x0002af32   0x0002af32   0x00000010   Code   RO         5428    i.usart_set_baud_rate  glib.lib(usart.o)
     0x0002af42   0x0002af42   0x00000002   PAD
-    0x0002af44   0x0002af44   0x0000008c   Code   RO         5323    i.usart_tx          glib.lib(usart.o)
-    0x0002afd0   0x0002afd0   0x00000002   Code   RO         5192    i.yield             glib.lib(wirish_time.o)
+    0x0002af44   0x0002af44   0x0000008c   Code   RO         5429    i.usart_tx          glib.lib(usart.o)
+    0x0002afd0   0x0002afd0   0x00000002   Code   RO         5244    i.yield             glib.lib(wirish_time.o)
     0x0002afd2   0x0002afd2   0x00000002   PAD
     0x0002afd4   0x0002afd4   0x0000001c   Code   RO         3478    t._Z11SERIAL_CHARIJcEEvcDpT_  temperature.o
     0x0002aff0   0x0002aff0   0x0000001c   Code   RO         1472    t._Z11SERIAL_CHARIJiEEvcDpT_  m221.o
@@ -9448,10 +9448,10 @@ Memory Map of the image
     0x0002bf81   0x0002bf81   0x00000003   PAD
     0x0002bf84   0x0002bf84   0x00000004   Data   RO         5879    .constdata          mc_w.l(ctype_o.o)
     0x0002bf88   0x0002bf88   0x0000003c   Data   RO         3632    .constdata__ZTV12DiskIODriver  cardreader.o
-    0x0002bfc4   0x0002bfc4   0x00000024   Data   RO         5102    .constdata__ZTV14HardwareSerial  glib.lib(hardwareserial.o)
+    0x0002bfc4   0x0002bfc4   0x00000024   Data   RO         5156    .constdata__ZTV14HardwareSerial  glib.lib(hardwareserial.o)
     0x0002bfe8   0x0002bfe8   0x0000003c   Data   RO         3634    .constdata__ZTV17DiskIODriver_SDIO  cardreader.o
-    0x0002c024   0x0002c024   0x00000014   Data   RO         5175    .constdata__ZTV5Print  glib.lib(print.o)
-    0x0002c038   0x0002c038   0x00000024   Data   RO         5106    .constdata__ZTV6Stream  glib.lib(hardwareserial.o)
+    0x0002c024   0x0002c024   0x00000014   Data   RO         5227    .constdata__ZTV5Print  glib.lib(print.o)
+    0x0002c038   0x0002c038   0x00000024   Data   RO         5158    .constdata__ZTV6Stream  glib.lib(hardwareserial.o)
     0x0002c05c   0x0002c05c   0x0000000c   Data   RO         3959    .constdata__ZTV9IPAddress  ipaddress.o
     0x0002c068   0x0002c068   0x0000000c   Data   RO         3963    .constdata__ZTV9Printable  ipaddress.o
     0x0002c074   0x0002c074   0x0000000c   Data   RO         3100    .constdata__ZZ10max_length8AxisEnumE12max_length_P  motion.o
@@ -9508,7 +9508,7 @@ Memory Map of the image
     **** No section assigned to this execution region ****
 
 
-    Execution Region RW_IRAM2 (Exec base: 0x20000000, Load base: 0x0002c468, Size: 0x000047a0, Max: 0x00010000, ABSOLUTE, COMPRESSED[0x00000134])
+    Execution Region RW_IRAM2 (Exec base: 0x20000000, Load base: 0x0002c468, Size: 0x000047a0, Max: 0x00010000, ABSOLUTE, COMPRESSED[0x00000130])
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -9548,14 +9548,14 @@ Memory Map of the image
     0x200002b8   COMPRESSED   0x00000008   Data   RW         3783    .data               sdbasefile.o
     0x200002c0   COMPRESSED   0x00000010   Data   RW         3872    .data               sdvolume.o
     0x200002d0   COMPRESSED   0x00000008   Data   RW         3956    .data               ipaddress.o
-    0x200002d8   COMPRESSED   0x00000046   Data   RW         4999    .data               glib.lib(adc.o)
-    0x2000031e   COMPRESSED   0x00000002   PAD
-    0x20000320   COMPRESSED   0x00000005   Data   RW         5057    .data               glib.lib(board_tim0.o)
-    0x20000325   COMPRESSED   0x00000003   PAD
-    0x20000328   COMPRESSED   0x00000004   Data   RW         5067    .data               glib.lib(startup.o)
-    0x2000032c   COMPRESSED   0x000004ac   Data   RW         5184    .data               glib.lib(usart_f1.o)
-    0x200007d8   COMPRESSED   0x00000018   Data   RW         5253    .data               glib.lib(sdio_hal.o)
-    0x200007f0   COMPRESSED   0x00000010   Data   RW         5356    .data               glib.lib(usart.o)
+    0x200002d8   COMPRESSED   0x00000018   Data   RW         4007    .data               sdio_hal.o
+    0x200002f0   COMPRESSED   0x00000046   Data   RW         5065    .data               glib.lib(adc.o)
+    0x20000336   COMPRESSED   0x00000002   PAD
+    0x20000338   COMPRESSED   0x00000005   Data   RW         5111    .data               glib.lib(board_tim0.o)
+    0x2000033d   COMPRESSED   0x00000003   PAD
+    0x20000340   COMPRESSED   0x00000004   Data   RW         5121    .data               glib.lib(startup.o)
+    0x20000344   COMPRESSED   0x000004ac   Data   RW         5236    .data               glib.lib(usart_f1.o)
+    0x200007f0   COMPRESSED   0x00000010   Data   RW         5462    .data               glib.lib(usart.o)
     0x20000800   COMPRESSED   0x00000004   Data   RW         5874    .data               mc_w.l(stdout.o)
     0x20000804   COMPRESSED   0x00000004   Data   RW         5892    .data               mc_w.l(mvars.o)
     0x20000808   COMPRESSED   0x00000004   Data   RW         5893    .data               mc_w.l(mvars.o)
@@ -9582,8 +9582,8 @@ Memory Map of the image
     0x20001978        -       0x00000098   Zero   RW         3464    .bss                temperature.o
     0x20001a10        -       0x0000029c   Zero   RW         3612    .bss                cardreader.o
     0x20001cac        -       0x00000200   Zero   RW         3871    .bss                sdvolume.o
-    0x20001eac        -       0x00000060   Zero   RW         5183    .bss                glib.lib(usart_f1.o)
-    0x20001f0c        -       0x00000074   Zero   RW         5252    .bss                glib.lib(sdio_hal.o)
+    0x20001eac        -       0x00000074   Zero   RW         4006    .bss                sdio_hal.o
+    0x20001f20        -       0x00000060   Zero   RW         5235    .bss                glib.lib(usart_f1.o)
     0x20001f80        -       0x00000020   Zero   RW         3388    .bss__ZZN7Stepper19calc_timer_intervalEjPhE5limit  stepper.o
     0x20001fa0        -       0x00002000   Zero   RW         1178    HEAP                startup_hc32f460petb.o
     0x20003fa0        -       0x00000800   Zero   RW         1177    STACK               startup_hc32f460petb.o
@@ -9693,6 +9693,8 @@ Image component sizes
       3380         92          0          8          0          0   sdbasefile.o
         26          0          0          0          0          0   sdfile.o
         60          0          0          0          0          0   sdio.o
+       188         78          0          0          0          0   sdio_f1.o
+       282         58          0         24        116          0   sdio_hal.o
       1126         80          0         16        512          0   sdvolume.o
        540         56         77          1          0          0   serial.o
       8772       1600        422         17          0          0   settings.o
@@ -9709,9 +9711,9 @@ Image component sizes
         44         12          0          1          0          0   watchdog.o
 
     ----------------------------------------------------------------------
-    121922      15118       4148        740      16044          0   Object Totals
+    122394      15254       4148        764      16160          0   Object Totals
          0          0         32          0          0          0   (incl. Generated)
-        88          0         13         21          4          0   (incl. Padding)
+        90          0         13         21          4          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
@@ -9725,12 +9727,10 @@ Image component sizes
        720         70          0          5          0          0   board_tim0.o
          4          0          0          0          0          0   cxxabi-compat.o
         68         12          0          0          0          0   dtostrf.o
-       370         20         72          0          0          0   hardwareserial.o
+       310         14         72          0          0          0   hardwareserial.o
         68          0          0          0          0          0   iwdg.o
       1016         54         20          0          0          0   print.o
       3032        342          0          0          0          0   sd_card.o
-       188         78          0          0          0          0   sdio_f1.o
-       222         52          0         24        116          0   sdio_hal.o
       2400        232          0          0          0          0   sdmmc_cmd.o
        860        390          0          4          0          0   startup.o
       2208        174          0         16          0          0   usart.o
@@ -9826,21 +9826,21 @@ Image component sizes
         60          0          0          0          0          0   frnd.o
 
     ----------------------------------------------------------------------
-     22254       2016        260       1340        212          0   Library Totals
-        50          0          3          5          0          0   (incl. Padding)
+     21782       1880        260       1316         96          0   Library Totals
+        48          0          3          5          0          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Library Name
 
         86          0          0          0          0          0   cpprt_w.l
-     12632       1526         92       1315        212          0   glib.lib
+     12162       1390         92       1291         96          0   glib.lib
       2752        306         32          0          0          0   m_wm.l
       4966        184        133         20          0          0   mc_w.l
       1768          0          0          0          0          0   mf_w.l
 
     ----------------------------------------------------------------------
-     22254       2016        260       1340        212          0   Library Totals
+     21782       1880        260       1316         96          0   Library Totals
 
     ----------------------------------------------------------------------
 
@@ -9850,14 +9850,14 @@ Image component sizes
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
     144176      17134       4408       2080      16256          0   Grand Totals
-    144176      17134       4408        308      16256          0   ELF Image Totals (compressed)
-    144176      17134       4408        308          0          0   ROM Totals
+    144176      17134       4408        304      16256          0   ELF Image Totals (compressed)
+    144176      17134       4408        304          0          0   ROM Totals
 
 ==============================================================================
 
     Total RO  Size (Code + RO Data)               148584 ( 145.10kB)
     Total RW  Size (RW Data + ZI Data)             18336 (  17.91kB)
-    Total ROM Size (Code + RO Data + RW Data)     148892 ( 145.40kB)
+    Total ROM Size (Code + RO Data + RW Data)     148888 ( 145.40kB)
 
 ==============================================================================
 

@@ -1851,7 +1851,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>ESP8266_AT</GroupName>
+          <GroupName>esp8266_at</GroupName>
           <Files>
             <File>
               <FileName>esp8266_wifi.cpp</FileName>
@@ -2021,7 +2021,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>ESP32_SPI</GroupName>
+          <GroupName>esp32_spi</GroupName>
           <Files>
             <File>
               <FileName>esp32_wifi.h</FileName>
@@ -2032,6 +2032,41 @@
               <FileName>esp32_wifi.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\HAL\ESP32_SPI\esp32_wifi.cpp</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>sdio</GroupName>
+          <Files>
+            <File>
+              <FileName>sdio_f1.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\compoment\sdio\sdio_f1.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>sdio_f1.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\source\compoment\sdio\sdio_f1.h</FilePath>
+            </File>
+            <File>
+              <FileName>sdio_hal.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\compoment\sdio\sdio_hal.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>sdio_hal.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\source\compoment\sdio\sdio_hal.h</FilePath>
+            </File>
+            <File>
+              <FileName>sd_card.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\source\compoment\sdio\sd_card\inc\sd_card.h</FilePath>
+            </File>
+            <File>
+              <FileName>sdmmc_cmd.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\source\compoment\sdio\sd_card\inc\sdmmc_cmd.h</FilePath>
             </File>
           </Files>
         </Group>

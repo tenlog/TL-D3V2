@@ -330,11 +330,15 @@ typedef enum en_sdioc_response_reg
  ******************************************************************************/
 typedef enum en_sdioc_clk_freq
 {
-    SdiocClk400K = 400000u,                 ///< SDIOC clock: 40KHz
-    SdiocClk20M  = 20000000u,               ///< SDIOC clock: 20MHz
-    SdiocClk25M  = 25000000u,               ///< SDIOC clock: 25MHz
-    SdiocClk40M  = 40000000u,               ///< SDIOC clock: 40MHz
-    SdiocClk50M  = 50000000u,               ///< SDIOC clock: 50MHz
+    SdiocClk400K = 400000u,                ///< SDIOC clock: 40KHz
+    SdiocClk1M  =  1000000u,               ///< SDIOC clock: 1MHz OK
+    SdiocClk2M  =  2000000u,               ///< SDIOC clock: 2MHz 
+    SdiocClk5M =   5000000u,               ///< SDIOC clock: 5MHz
+    SdiocClk10M =  10000000u,              ///< SDIOC clock: 10MHz
+    SdiocClk20M  = 20000000u,              ///< SDIOC clock: 20MHz
+    SdiocClk25M  = 25000000u,              ///< SDIOC clock: 25MHz
+    SdiocClk40M  = 40000000u,              ///< SDIOC clock: 40MHz
+    SdiocClk50M  = 50000000u,              ///< SDIOC clock: 50MHz
 } en_sdioc_clk_freq_t;
 
 /**
