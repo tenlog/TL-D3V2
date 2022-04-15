@@ -471,24 +471,7 @@ void TlIsPLR(){
             if (card.isMounted()) {
                 if(card.fileExists(file_name_list[6])){
                     TLSTJC_println("page printing");
-                    delay(10);
-                    TLSTJC_println("msgbox.vaFromPageID.val=1");
-                    delay(10);
-                    TLSTJC_println("msgbox.vaToPageID.val=6");
-                    delay(10);
-                    TLSTJC_println("msgbox.vtOKValue.txt=\"M1003\"");
-                    delay(10);
-                    TLSTJC_println("msgbox.vtCancelValue.txt=\"M1004\"");
-                    delay(10);
-
-                    TLSTJC_print("msgbox.vtMS.txt=\"");
-                    TLSTJC_print(long_file_name_list[6]);
-                    TLSTJC_println("\"");
-                    delay(10);
-                    TLSTJC_println("msgbox.vaMID.val=3");
-                    delay(10);
-                    TLSTJC_println("page msgbox");
-                    delay(10);
+                    TJCMessage(1, 6, 3, "M1003", "M1004", long_file_name_list[6]);
                 }
             }
         }
@@ -503,6 +486,32 @@ void TlIsPLR(){
             }
         }
     }
+}
+
+void TJCMessage(const int FromPageID, const int ToPageID, const int MessageID, const char OkValue[], const char CancleValue[], const char Message[]){
+    delay(10);
+    TLSTJC_println("sleep=0");
+    delay(10);
+    sprintf_P(cmd, PSTR("msgbox.vaFromPageID.val=%d"), FromPageID);
+    TLSTJC_println(cmd);
+    delay(10);
+    sprintf_P(cmd, PSTR("msgbox.vaToPageID.val=%d"), ToPageID);
+    TLSTJC_println(cmd);
+    delay(10);
+    sprintf_P(cmd, PSTR("msgbox.vaMID.val=%d"), MessageID);
+    TLSTJC_println(cmd);
+    delay(10);
+    sprintf_P(cmd, PSTR("msgbox.vtOKValue.txt=\"%s\""), OkValue);
+    TLSTJC_println(cmd);
+    delay(10);
+    sprintf_P(cmd, PSTR("msgbox.vtCancelValue.txt=\"%s\""), CancleValue);
+    TLSTJC_println(cmd);
+    delay(10);
+    sprintf_P(cmd, PSTR("msgbox.vtMS.txt=\"%s\""), Message);
+    TLSTJC_println(cmd);
+    delay(10);
+    TLSTJC_println("page msgbox");
+    delay(10);
 }
 
 void initTLScreen(){    
@@ -660,23 +669,9 @@ void TLFilamentRunout(){
     //}
     if(tl_TouchScreenType == 1){
         iBeepCount = 10;
-        TLSTJC_println("sleep=0");
-        delay(50);
         TLSTJC_println("main.vCC.val=1");
-        delay(50);
-        TLSTJC_println("msgbox.vaMID.val=6");
-        delay(50);
-        TLSTJC_println("msgbox.vaFromPageID.val=15");
-        delay(50);
-        TLSTJC_println("msgbox.vaToPageID.val=15");
-        delay(50);
-        TLSTJC_println("msgbox.vtOKValue.txt=\"M1034\"");
-        delay(50);
-        TLSTJC_println("msgbox.vtCancelValue.txt=\"M1034\"");
-        delay(50);
-        TLSTJC_println("msgbox.vtStartValue.txt=\"M1031 O1\"");        
-        TLSTJC_println("page msgbox");
-        delay(50);
+        delay(10);
+        TJCMessage(15, 15, 6, "M1034", "M1034 01", "");
     }
 }
 
@@ -856,15 +851,9 @@ void TLSDPrintFinished(){
     TLPrintingStatus = 0;
 
     if(tl_TouchScreenType == 1){
-        TLSTJC_println("sleep=0");
-        TLSTJC_println("msgbox.vaFromPageID.val=1");
-        TLSTJC_println("msgbox.vaToPageID.val=1");
-        TLSTJC_println("msgbox.vtOKValue.txt=\"\"");
-        TLSTJC_println("msgbox.vaMID.val=1");
-
-        sprintf_P(cmd, "msgbox.vtMS.txt=\"%02d:%02d\"", hours, minutes);
-        TLSTJC_println(cmd);
-        TLSTJC_println("page msgbox");
+        char time[10];
+        sprintf_P(time, "%02d:%02d", hours, minutes);
+        TJCMessage(1, 1, 1, "", "", time);
     }else if(tl_TouchScreenType == 0){
 
     }
@@ -891,7 +880,7 @@ void load_filament(int LoadUnload, int TValue)
         //unload
         float fEPos = current_position[E_AXIS];
         fEPos += 30;
-        sprintf_P(cmd, PSTR("G1 E%f F500"), fEPos);
+        sprintf_P(cmd, PSTR("G1 E%f F400"), fEPos);
         EXECUTE_GCODE(cmd);
         fEPos -= 120;
         sprintf_P(cmd, PSTR("G1 E%f F3000"), fEPos);
@@ -1113,36 +1102,45 @@ void process_command_gcode(long _tl_command[]) {
                     EXECUTE_GCODE(cmd);
                 }
             }else if(lM == 19){
+                //M19
                 tl_print_page_id = GCodelng('S', iFrom, _tl_command);
                 TLDEBUG_LNPGM("M19");
                 card.tl_ls();
             }else if(lM == 1001){
+                //M1001
                 tl_languageID = GCodelng('S', iFrom, _tl_command);
                 EXECUTE_GCODE(PSTR("M500"));
             }else if(lM == 1017){
+                //M1017
                 tl_Sleep = GCodelng('S', iFrom, _tl_command);
                 EXECUTE_GCODE(PSTR("M500"));
             }else if(lM == 1024){
+                //M1024
                 tl_ECO_MODE = GCodelng('S', iFrom, _tl_command);
                 EXECUTE_GCODE(PSTR("M500"));
             }else if(lM == 1015){
+                //M1015
                 tl_FAN2_START_TEMP = GCodelng('S', iFrom, _tl_command);
                 EXECUTE_GCODE(PSTR("M500"));
             }else if(lM == 1023){
+                //M1023
                 #ifdef FILAMENT_RUNOUT_SENSOR
                 runout.enabled = GCodelng('S', iFrom, _tl_command);
                 EXECUTE_GCODE(PSTR("M500"));
                 #endif
             }else if(lM == 1014){
+                //M1014
                 tl_FAN2_VALUE = GCodelng('S', iFrom, _tl_command);
                 EXECUTE_GCODE(PSTR("M500"));
             }else if(lM == 502){
+                //M502
                 EXECUTE_GCODE(PSTR("M502"));
                 delay(5);
                 EXECUTE_GCODE(PSTR("M500"));
                 delay(5);
                 EXECUTE_GCODE(PSTR("M501"));
             }else if(lM == 92){
+                //M92
                 long lRate = 1; //M92
                 long lR = GCodelng('R', iFrom, _tl_command);
                 if(lR > -999) lRate = lR;
@@ -1182,6 +1180,7 @@ void process_command_gcode(long _tl_command[]) {
                 EXECUTE_GCODE(PSTR("M500"));
                 
             }else if(lM == 605){
+                //M605
                 char sX[10],sR[10],sS[10];
                 
                 long lX = GCodelng('X', iFrom, _tl_command);
@@ -1203,11 +1202,11 @@ void process_command_gcode(long _tl_command[]) {
                 sprintf_P(cmd, PSTR("M%d %s%s%s"), lM, sS, sX, sR);
                 TLDEBUG_LNPGM(cmd);
                 EXECUTE_GCODE(cmd);
-            }else if(lM == 1031){
+            }else if(lM == 1031){                
                 //pause from lcd or runout //M1031
                 TJCPauseResumePrinting(true, 0);
             }else if(lM == 1032){
-                //Resume from lcd
+                //Resume from lcd M1032
                 TJCPauseResumePrinting(false, iFrom);
             }else if(lM == 1033){
                 //M1033
@@ -1253,6 +1252,7 @@ void process_command_gcode(long _tl_command[]) {
                     EXECUTE_GCODE(PSTR("M500"));
                 }
             }else if(lM == 1004){
+                //M1004
                 settings.plr_reset();//cancel power loss resume.
             }else if(lM == 1003){
                 //M1003
@@ -1268,7 +1268,12 @@ void process_command_gcode(long _tl_command[]) {
                     PrintFromZHeightFound = false;
                 }
                 #endif //PRINT_FROM_Z_HEIGHT
+            }else if (lM == 1050){
+                //M1050
+                int8_t KillFlag = GCodelng('S',iFrom, _tl_command);
+                settings.killFlagSet(KillFlag);            
             }else if(lM > 1499 && lM < 1510){
+                //1500-1510
                 #if ENABLED(HAS_WIFI)
                 if(lM == 1501){
                     int _wifi_ena = GCodelng('S', iFrom, _tl_command);
@@ -1310,8 +1315,9 @@ void process_command_gcode(long _tl_command[]) {
                         kill("Restart to apply wifi! ");                
                     }
                 }
-                #endif
+                #endif //Has wifi
             }
+
             delay(100);
         }//iLoop
     }

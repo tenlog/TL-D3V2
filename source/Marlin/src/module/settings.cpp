@@ -642,6 +642,10 @@ void MarlinSettings::postprocess() {
   int MarlinSettings::plr_eeprom_index;
 #endif 
 
+#if ENABLED(TENLOG_TOUCH_LCD)
+  int MarlinSettings::kill_eeprom_index;
+#endif 
+
   bool MarlinSettings::size_error(const uint16_t size) {
     if (size != datasize()) {
       DEBUG_ERROR_MSG("EEPROM datasize error.");
@@ -4060,6 +4064,21 @@ void MarlinSettings::reset() {
   }
 
 #endif // !DISABLE_M503
+
+  #if ENABLED(TENLOG_TOUCH_LCD)
+
+    void MarlinSettings::killFlagSet(uint8_t Flag){
+      KILL_EEPROM_START(KILL_EEPROM_OFFSET);
+      KILL_EEPROM_WRITE(Flag);      
+    }
+
+    uint8_t MarlinSettings::killFlagGet(){
+      KILL_EEPROM_START(KILL_EEPROM_OFFSET);
+      uint8_t Flag;
+      KILL_EEPROM_READ(Flag);
+      return Flag;
+    }   
+  #endif
 
   #if ENABLED(POWER_LOSS_RECOVERY_TL)
 

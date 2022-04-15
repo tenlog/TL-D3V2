@@ -848,6 +848,15 @@ void idle(TERN_(ADVANCED_PAUSE_FEATURE, bool no_stepper_sleep/*=false*/)) {
  * After this the machine will need to be reset.
  */
 void kill(PGM_P const lcd_error/*=nullptr*/, PGM_P const lcd_component/*=nullptr*/, const bool steppers_off/*=false*/) {
+  #if ENABLED(TENLOG_TOUCH_LCD)
+    if(tl_TouchScreenType == 1){
+      TLSTJC_println("main.vCC.val=0");
+      settings.killFlagSet(1);
+      char ErrorMessage[64];
+      sprintf_P(ErrorMessage, PSTR("%s"), lcd_error);
+      TJCMessage(1, 1, 24, "M1050 S0", "M1050 S0", ErrorMessage);
+    }
+  #endif
   thermalManager.disable_all_heaters();
 
   TERN_(HAS_CUTTER, cutter.kill()); // Full cutter shutdown including ISR control
@@ -1624,7 +1633,14 @@ void setup() {
     TLDEBUG_LNPAIR("Power loss found! Point=", isplr);
     TlIsPLR();
   }else{
-    TlPageMain();
+    uint8_t killFlag = settings.killFlagGet();
+      if(killFlag != 1)
+        TlPageMain();
+      else{
+        TLDEBUG_LNPAIR("kill() was called ", killFlag);
+        settings.killFlagSet(0);
+        TJCMessage(1, 1, 24, "M1050 S0", "M1050 S0", "");
+      }
   }
   #endif
 

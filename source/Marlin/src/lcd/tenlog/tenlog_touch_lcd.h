@@ -90,6 +90,8 @@
 //void tenlog_status_screen();
 void TenlogScreen_begin(long boud);
 void TenlogScreen_end();
+void TJCMessage(const int FromPageID, const int ToPageID, const int MessageID, const char OkValue[], const char CancleValue[], const char Message[]);
+
 
 void DWN_MessageHandler(bool ISOK);
 void DWN_Message(int MsgID, const char sMsg[], bool PowerOff);

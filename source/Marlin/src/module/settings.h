@@ -58,7 +58,11 @@ class MarlinSettings {
       static void plr_recovery();
     #endif
 
-   
+    #if ENABLED(TENLOG_TOUCH_LCD)
+      static void killFlagSet(uint8_t Flag);
+      static uint8_t killFlagGet();
+    #endif
+
     #if ENABLED(SD_FIRMWARE_UPDATE)
       static bool sd_update_status();                       // True if the SD-Firmware-Update EEPROM flag is set
       static bool set_sd_update_status(const bool enable);  // Return 'true' after EEPROM is set (-> always true)
@@ -121,6 +125,26 @@ class MarlinSettings {
 
       static int eeprom_index;
       static uint16_t working_crc;
+
+      #if ENABLED(TENLOG_TOUCH_LCD)
+
+        #define KILL_EEPROM_OFFSET 1300
+        static int kill_eeprom_index;
+        static bool KILL_EEPROM_START(int eeprom_offset){
+          kill_eeprom_index = eeprom_offset;
+          working_crc = 0;
+          return true;
+        }
+        template<typename T>
+        static void KILL_EEPROM_WRITE(const T &VAR) {
+          persistentStore.write_data(kill_eeprom_index, (const uint8_t *) &VAR, sizeof(VAR), &working_crc);
+        }
+        
+        template<typename T>
+        static void KILL_EEPROM_READ(T &VAR) {
+          persistentStore.read_data(kill_eeprom_index, (uint8_t *) &VAR, sizeof(VAR), &working_crc, !validating);
+        }      
+      #endif
 
       #if ENABLED(POWER_LOSS_RECOVERY_TL)
       
