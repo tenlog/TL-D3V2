@@ -137,7 +137,7 @@
 //#define TENLOG_D5P
 //#define TENLOG_D6P
 
-#define TL_SUBVERSION "003"
+#define TL_SUBVERSION "004"
 
 // The size of the printable area
 #if defined(TENLOG_D3P) 

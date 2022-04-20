@@ -128,7 +128,7 @@ class MarlinSettings {
 
       #if ENABLED(TENLOG_TOUCH_LCD)
 
-        #define KILL_EEPROM_OFFSET 1300
+        #define KILL_EEPROM_OFFSET 1320
         static int kill_eeprom_index;
         static bool KILL_EEPROM_START(int eeprom_offset){
           kill_eeprom_index = eeprom_offset;

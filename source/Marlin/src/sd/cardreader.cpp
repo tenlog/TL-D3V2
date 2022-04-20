@@ -331,13 +331,19 @@ void CardReader::tl_ls() {
 
     delay(5);
     if (tl_print_page_id == 0){
-      if(tl_TouchScreenType == 1)
+      if(tl_TouchScreenType == 1){
         TLSTJC_println("vis btUp,0");
+        delay(10);
+        TLSTJC_println("vis picUp,0");
+      }
       else
         DWN_Data(0x8810, 1, 2);
     }else{
-      if(tl_TouchScreenType == 1)
+      if(tl_TouchScreenType == 1){
         TLSTJC_println("vis btUp,1");
+        delay(10);
+        TLSTJC_println("vis picUp,1");
+      }
       else if(tl_TouchScreenType == 0)
         DWN_Data(0x8810, 0, 2);
     }
@@ -401,14 +407,20 @@ void CardReader::tl_ls() {
     }
 
     if ((tl_print_page_id + 1) * 6 >= iFileID) {
-      if(tl_TouchScreenType == 1)
+      if(tl_TouchScreenType == 1){
         TLSTJC_println("vis btDown,0");
+        delay(10);
+        TLSTJC_println("vis picDown,0");      
+      }
       else if(tl_TouchScreenType == 0)
         DWN_Data(0x8811, 1, 2);
       dwn_is_last_page = true;
     }else{
-      if(tl_TouchScreenType == 1)
+      if(tl_TouchScreenType == 1){
         TLSTJC_println("vis btDown,1");
+        delay(10);
+        TLSTJC_println("vis picDown,1");
+      }
       else if(tl_TouchScreenType == 0)
         DWN_Data(0x8811, 0, 2);
       dwn_is_last_page = false;

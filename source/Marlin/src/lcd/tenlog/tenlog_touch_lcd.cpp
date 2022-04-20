@@ -317,7 +317,7 @@ void readWriteDWNLogo(int NewID)
 void tlResetEEPROM(){
     tl_languageID = 0;
     tl_Sleep = 0;
-     tl_FAN2_VALUE = 80;
+    tl_FAN2_VALUE = 80;
     tl_FAN2_START_TEMP = 80;
     tl_ECO_MODE = 0;
 }
