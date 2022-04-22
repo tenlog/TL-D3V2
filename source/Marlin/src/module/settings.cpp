@@ -1485,8 +1485,9 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(tl_languageID);
       EEPROM_WRITE(tl_Sleep);
       EEPROM_WRITE(tl_ECO_MODE);
-      EEPROM_WRITE(tl_FAN2_START_TEMP);
-      EEPROM_WRITE(tl_FAN2_VALUE);
+      EEPROM_WRITE(tl_THEME_ID);
+      EEPROM_WRITE(tl_E1_FAN_START_TEMP);
+      EEPROM_WRITE(tl_E2_FAN_START_TEMP);
     #endif
 
     #if ENABLED(HAS_WIFI)
@@ -2435,17 +2436,22 @@ void MarlinSettings::postprocess() {
         if(ui_tlECO != 1) ui_tlECO = 0;
         tl_ECO_MODE = ui_tlECO;
 
-        uint8_t ui_tlStartTemp;
-        EEPROM_READ(ui_tlStartTemp);
-        if(ui_tlStartTemp < 0) ui_tlStartTemp = 80;
-        if(ui_tlStartTemp > 100) ui_tlStartTemp = 80;
-        tl_FAN2_START_TEMP = ui_tlStartTemp;
+        uint8_t ui_tlTheme;
+        EEPROM_READ(ui_tlTheme);
+        if(ui_tlTheme > 2 || ui_tlTheme < 0) ui_tlTheme = 0;
+        tl_THEME_ID = ui_tlTheme;
 
-        uint8_t ui_tlF2v;
-        EEPROM_READ(ui_tlF2v);
-        if(ui_tlF2v < 0) ui_tlF2v = 80;
-        if(ui_tlF2v > 100) ui_tlF2v = 80;
-        tl_FAN2_VALUE = ui_tlF2v;     
+        uint8_t ui_tlStartTemp1;
+        EEPROM_READ(ui_tlStartTemp1);
+        if(ui_tlStartTemp1 < 0) ui_tlStartTemp1 = 80;
+        if(ui_tlStartTemp1 > 100) ui_tlStartTemp1 = 80;
+        tl_E1_FAN_START_TEMP = ui_tlStartTemp1;
+
+        uint8_t ui_tlStartTemp2;
+        EEPROM_READ(ui_tlStartTemp2);
+        if(ui_tlStartTemp2 < 0) ui_tlStartTemp2 = 80;
+        if(ui_tlStartTemp2 > 100) ui_tlStartTemp2 = 80;
+        tl_E2_FAN_START_TEMP = ui_tlStartTemp2;
 
         tlInitSetting();
       #endif
@@ -4050,8 +4056,9 @@ void MarlinSettings::reset() {
       TLDEBUG_LNPAIR("TL UI Language:", tl_languageID);
       TLDEBUG_LNPAIR("TL UI Sleep:", tl_Sleep);
       TLDEBUG_LNPAIR("TL ECO Mode:", tl_ECO_MODE);
-      TLDEBUG_LNPAIR("TL Frant Fan Temp:", tl_FAN2_START_TEMP);
-      TLDEBUG_LNPAIR("TL Frant Fan Value:", tl_FAN2_VALUE);
+      TLDEBUG_LNPAIR("TL Theme ID:", tl_THEME_ID);
+      TLDEBUG_LNPAIR("TL E1 Fan Temp:", tl_E1_FAN_START_TEMP);
+      TLDEBUG_LNPAIR("TL E2 Fan Temp:", tl_E2_FAN_START_TEMP);
     #endif
 
     #if ENABLED(HAS_WIFI)

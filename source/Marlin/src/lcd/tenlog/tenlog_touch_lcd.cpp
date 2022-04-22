@@ -55,9 +55,10 @@ unsigned long startPrintTime = 0;
 //for eeprom setting...
 int8_t tl_languageID = 0;
 int8_t tl_Sleep = 0;
-int8_t tl_FAN2_VALUE = 80;
-int8_t tl_FAN2_START_TEMP = 80;
+int8_t tl_E2_FAN_START_TEMP = 80;
+int8_t tl_E1_FAN_START_TEMP = 80;
 int8_t tl_ECO_MODE = 0;
+int8_t tl_THEME_ID = 0;
 
 int dwnMessageID = -1;
 long lLEDTimeoutCount = 0;
@@ -317,9 +318,12 @@ void readWriteDWNLogo(int NewID)
 void tlResetEEPROM(){
     tl_languageID = 0;
     tl_Sleep = 0;
-    tl_FAN2_VALUE = 80;
-    tl_FAN2_START_TEMP = 80;
+    //tl_FAN2_VALUE = 80;
+    //tl_FAN2_START_TEMP = 80;
+    tl_E2_FAN_START_TEMP = 80;
+    tl_E1_FAN_START_TEMP = 80;
     tl_ECO_MODE = 0;
+    tl_THEME_ID = 0;
 }
 
 void TLVersion(){
@@ -346,10 +350,13 @@ void tlInitSetting(){
         sprintf_P(cmd, PSTR("setting.cECOMode.val=%d"), tl_ECO_MODE);
         TLSTJC_println(cmd);
         delay(20);
-        sprintf_P(cmd, PSTR("setting.nF2t.val=%d"), tl_FAN2_START_TEMP);
+        sprintf_P(cmd, PSTR("main.vThemeID.val=%d"), tl_THEME_ID);
         TLSTJC_println(cmd);
         delay(20);
-        sprintf_P(cmd, PSTR("setting.nF2s.val=%d"), tl_FAN2_VALUE);
+        sprintf_P(cmd, PSTR("setting.nE1FT.val=%d"), tl_E1_FAN_START_TEMP);
+        TLSTJC_println(cmd);
+        delay(20);
+        sprintf_P(cmd, PSTR("setting.nE2FT.val=%d"), tl_E2_FAN_START_TEMP);
         TLSTJC_println(cmd);
         delay(20);
 
@@ -426,10 +433,12 @@ void tlInitSetting(){
         DWN_Data(0x6021, lOffsetZ, 2);
         delay(10);
 
+        /*
         DWN_Data(0x6023, tl_FAN2_VALUE, 2);
         delay(10);
         DWN_Data(0x6022, tl_FAN2_START_TEMP, 2);
         delay(10);
+        */ //to be done
 
         DWN_Data(0x8015, 1, 2); //replace auto power off
 
@@ -1118,9 +1127,13 @@ void process_command_gcode(long _tl_command[]) {
                 //M1024
                 tl_ECO_MODE = GCodelng('S', iFrom, _tl_command);
                 EXECUTE_GCODE(PSTR("M500"));
+            }else if(lM == 1520){
+                //M1520
+                tl_THEME_ID = GCodelng('S', iFrom, _tl_command);
+                EXECUTE_GCODE(PSTR("M500"));
             }else if(lM == 1015){
                 //M1015
-                tl_FAN2_START_TEMP = GCodelng('S', iFrom, _tl_command);
+                tl_E1_FAN_START_TEMP = GCodelng('S', iFrom, _tl_command);
                 EXECUTE_GCODE(PSTR("M500"));
             }else if(lM == 1023){
                 //M1023
@@ -1130,7 +1143,7 @@ void process_command_gcode(long _tl_command[]) {
                 #endif
             }else if(lM == 1014){
                 //M1014
-                tl_FAN2_VALUE = GCodelng('S', iFrom, _tl_command);
+                tl_E2_FAN_START_TEMP = GCodelng('S', iFrom, _tl_command);
                 EXECUTE_GCODE(PSTR("M500"));
             }else if(lM == 502){
                 //M502
@@ -1415,17 +1428,20 @@ void process_command_dwn()
                     tlInitSetting();
                     break;
                 case 0x23:
-                    
+                    /*
                     tl_FAN2_VALUE = lData;
                     if (tl_FAN2_VALUE > 100)
                         tl_FAN2_VALUE = 80;
                     EXECUTE_GCODE("M500");
                     tlInitSetting();
+                    */
                     break;
                 case 0x22:
+                    /*
                     tl_FAN2_START_TEMP = lData;
                     EXECUTE_GCODE("M500");
                     tlInitSetting();
+                    */
                     break;
                 case 0x52:
                     {

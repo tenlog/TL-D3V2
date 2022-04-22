@@ -813,7 +813,7 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
     uint8_t fanState = 0;
     HOTEND_LOOP()
       #ifdef TENLOG_TOUCH_LCD
-      if (temp_hotend[e].celsius >= tl_FAN2_START_TEMP)
+      if (temp_hotend[e].celsius >= tl_E1_FAN_START_TEMP && e==0 || temp_hotend[e].celsius >= tl_E2_FAN_START_TEMP && e==1)
       #else
       if (temp_hotend[e].celsius >= EXTRUDER_AUTO_FAN_TEMPERATURE)
       #endif
