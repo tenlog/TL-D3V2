@@ -6217,221 +6217,221 @@ Image Symbol Table
     i.malloc                                 0x0002a510   Section        0  malloc.o(i.malloc)
     i.millis                                 0x0002a57c   Section        0  board_tim0.o(i.millis)
     i.setup                                  0x0002a588   Section        0  marlincore.o(i.setup)
-    i.setup_Extinterrupt                     0x0002aab0   Section        0  board_extint.o(i.setup_Extinterrupt)
-    i.setup_adcs                             0x0002aab4   Section        0  adc.o(i.setup_adcs)
-    i.setup_gpio                             0x0002aac8   Section        0  board_gpio.o(i.setup_gpio)
-    i.setup_systick                          0x0002aaea   Section        0  board_tim0.o(i.setup_systick)
-    i.setup_time                             0x0002ab34   Section        0  board_tim0.o(i.setup_time)
-    i.setup_time2A                           0x0002ab38   Section        0  board_tim0.o(i.setup_time2A)
-    i.setup_time2B                           0x0002abc8   Section        0  board_tim0.o(i.setup_time2B)
-    i.steup_sdio                             0x0002ac54   Section        0  sdio_f1.o(i.steup_sdio)
-    i.timer_disable_irq                      0x0002ac80   Section        0  board_tim0.o(i.timer_disable_irq)
-    i.timer_enable_irq                       0x0002aca0   Section        0  board_tim0.o(i.timer_enable_irq)
-    i.timer_get_count                        0x0002acc0   Section        0  board_tim0.o(i.timer_get_count)
-    i.timer_irq_enabled                      0x0002ace0   Section        0  board_tim0.o(i.timer_irq_enabled)
-    i.timer_preset_compare                   0x0002acfe   Section        0  board_tim0.o(i.timer_preset_compare)
-    i.timer_set_compare                      0x0002ad1c   Section        0  board_tim0.o(i.timer_set_compare)
-    i.usart_disable                          0x0002ad48   Section        0  usart.o(i.usart_disable)
-    i.usart_enable                           0x0002ad74   Section        0  usart.o(i.usart_enable)
-    i.usart_init                             0x0002b020   Section        0  usart.o(i.usart_init)
-    i.usart_set_baud_rate                    0x0002b052   Section        0  usart.o(i.usart_set_baud_rate)
-    i.usart_tx                               0x0002b064   Section        0  usart.o(i.usart_tx)
-    i.yield                                  0x0002b0f0   Section        0  wirish_time.o(i.yield)
-    __empty()                                0x0002b0f1   Thumb Code     0  wirish_time.o(i.yield)
-    t._Z11SERIAL_CHARIJcEEvcDpT_             0x0002b0f4   Section        0  temperature.o(t._Z11SERIAL_CHARIJcEEvcDpT_)
-    t._Z11SERIAL_CHARIJiEEvcDpT_             0x0002b110   Section        0  m221.o(t._Z11SERIAL_CHARIJiEEvcDpT_)
-    t._Z11SERIAL_ECHOI11heater_id_tEvT_      0x0002b12c   Section        0  temperature.o(t._Z11SERIAL_ECHOI11heater_id_tEvT_)
-    t._Z11SERIAL_ECHOIPKcEvT_                0x0002b140   Section        0  serial.o(t._Z11SERIAL_ECHOIPKcEvT_)
-    t._Z11SERIAL_ECHOIPcEvT_                 0x0002b154   Section        0  cardreader.o(t._Z11SERIAL_ECHOIPcEvT_)
-    t._Z11SERIAL_ECHOIfEvT_                  0x0002b168   Section        0  serial.o(t._Z11SERIAL_ECHOIfEvT_)
-    t._Z11SERIAL_ECHOIhEvT_                  0x0002b198   Section        0  serial.o(t._Z11SERIAL_ECHOIhEvT_)
-    t._Z11SERIAL_ECHOIiEvT_                  0x0002b1ac   Section        0  marlincore.o(t._Z11SERIAL_ECHOIiEvT_)
-    t._Z11SERIAL_ECHOIjEvT_                  0x0002b1c0   Section        0  serial.o(t._Z11SERIAL_ECHOIjEvT_)
-    t._Z11SERIAL_ECHOIlEvT_                  0x0002b1d4   Section        0  serial.o(t._Z11SERIAL_ECHOIlEvT_)
-    t._Z11SERIAL_ECHOIsEvT_                  0x0002b1e8   Section        0  temperature.o(t._Z11SERIAL_ECHOIsEvT_)
-    t._Z11SERIAL_ECHOItEvT_                  0x0002b1fc   Section        0  gcode.o(t._Z11SERIAL_ECHOItEvT_)
-    t._Z12SERIAL_PRINTIfiEvT_T0_             0x0002b210   Section        0  temperature.o(t._Z12SERIAL_PRINTIfiEvT_T0_)
-    t._Z13SERIAL_ECHOLNIPcEvT_               0x0002b244   Section        0  m118.o(t._Z13SERIAL_ECHOLNIPcEvT_)
-    t._Z13SERIAL_ECHOLNIjEvT_                0x0002b258   Section        0  cardreader.o(t._Z13SERIAL_ECHOLNIjEvT_)
-    t._Z13SERIAL_ECHOLNIlEvT_                0x0002b26c   Section        0  queue.o(t._Z13SERIAL_ECHOLNIlEvT_)
-    t._ZN14MarlinSettings11EEPROM_READI5PID_tEEvRT_ 0x0002b280   Section        0  settings.o(t._ZN14MarlinSettings11EEPROM_READI5PID_tEEvRT_)
-    t._ZN14MarlinSettings11EEPROM_READI5XYvalIfEEEvRT_ 0x0002b2a8   Section        0  settings.o(t._ZN14MarlinSettings11EEPROM_READI5XYvalIfEEEvRT_)
-    t._ZN14MarlinSettings11EEPROM_READI6XYZvalIfEEEvRT_ 0x0002b2d0   Section        0  settings.o(t._ZN14MarlinSettings11EEPROM_READI6XYZvalIfEEEvRT_)
-    t._ZN14MarlinSettings11EEPROM_READIaEEvRT_ 0x0002b2f8   Section        0  settings.o(t._ZN14MarlinSettings11EEPROM_READIaEEvRT_)
-    t._ZN14MarlinSettings11EEPROM_READIbEEvRT_ 0x0002b320   Section        0  settings.o(t._ZN14MarlinSettings11EEPROM_READIbEEvRT_)
-    t._ZN14MarlinSettings11EEPROM_READIfEEvRT_ 0x0002b348   Section        0  settings.o(t._ZN14MarlinSettings11EEPROM_READIfEEvRT_)
-    t._ZN14MarlinSettings11EEPROM_READIhEEvRT_ 0x0002b370   Section        0  settings.o(t._ZN14MarlinSettings11EEPROM_READIhEEvRT_)
-    t._ZN14MarlinSettings11EEPROM_READIsEEvRT_ 0x0002b398   Section        0  settings.o(t._ZN14MarlinSettings11EEPROM_READIsEEvRT_)
-    t._ZN14MarlinSettings12EEPROM_WRITEI5PID_tEEvRKT_ 0x0002b3c0   Section        0  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEI5PID_tEEvRKT_)
-    t._ZN14MarlinSettings12EEPROM_WRITEI5XYvalIfEEEvRKT_ 0x0002b3dc   Section        0  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEI5XYvalIfEEEvRKT_)
-    t._ZN14MarlinSettings12EEPROM_WRITEI6XYZvalIfEEEvRKT_ 0x0002b3f8   Section        0  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEI6XYZvalIfEEEvRKT_)
-    t._ZN14MarlinSettings12EEPROM_WRITEIA4_cEEvRKT_ 0x0002b414   Section        0  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIA4_cEEvRKT_)
-    t._ZN14MarlinSettings12EEPROM_WRITEIaEEvRKT_ 0x0002b430   Section        0  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIaEEvRKT_)
-    t._ZN14MarlinSettings12EEPROM_WRITEIbEEvRKT_ 0x0002b44c   Section        0  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIbEEvRKT_)
-    t._ZN14MarlinSettings12EEPROM_WRITEIfEEvRKT_ 0x0002b468   Section        0  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIfEEvRKT_)
-    t._ZN14MarlinSettings12EEPROM_WRITEIhEEvRKT_ 0x0002b484   Section        0  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIhEEvRKT_)
-    t._ZN14MarlinSettings12EEPROM_WRITEIsEEvRKT_ 0x0002b4a0   Section        0  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIsEEvRKT_)
-    t._ZN14MarlinSettings15PLR_EEPROM_READIfEEvRT_ 0x0002b4bc   Section        0  settings.o(t._ZN14MarlinSettings15PLR_EEPROM_READIfEEvRT_)
-    t._ZN14MarlinSettings15PLR_EEPROM_READIjEEvRT_ 0x0002b4e4   Section        0  settings.o(t._ZN14MarlinSettings15PLR_EEPROM_READIjEEvRT_)
-    t._ZN14MarlinSettings15PLR_EEPROM_READIsEEvRT_ 0x0002b50c   Section        0  settings.o(t._ZN14MarlinSettings15PLR_EEPROM_READIsEEvRT_)
-    t._ZN14MarlinSettings16PLR_EEPROM_WRITEIcEEvRKT_ 0x0002b534   Section        0  settings.o(t._ZN14MarlinSettings16PLR_EEPROM_WRITEIcEEvRKT_)
-    t._ZN14MarlinSettings16PLR_EEPROM_WRITEIfEEvRKT_ 0x0002b550   Section        0  settings.o(t._ZN14MarlinSettings16PLR_EEPROM_WRITEIfEEvRKT_)
-    t._ZN14MarlinSettings16PLR_EEPROM_WRITEIsEEvRKT_ 0x0002b56c   Section        0  settings.o(t._ZN14MarlinSettings16PLR_EEPROM_WRITEIsEEvRKT_)
-    t._ZN14MarlinSettings18EEPROM_READ_ALWAYSIhEEvRT_ 0x0002b588   Section        0  settings.o(t._ZN14MarlinSettings18EEPROM_READ_ALWAYSIhEEvRT_)
-    t._ZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEv 0x0002b5a8   Section        0  marlincore.o(t._ZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEv)
-    t._ZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE5resetEv 0x0002b690   Section        0  settings.o(t._ZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE5resetEv)
-    t._ZN30_INTERNAL_9_G2_G3_cpp_e4fdbed73ABSIfEEKT_S1_ 0x0002b6bc   Section        0  g2_g3.o(t._ZN30_INTERNAL_9_G2_G3_cpp_e4fdbed73ABSIfEEKT_S1_)
-    const T1 [local to G2_G3_cpp]::ABS<float>(T1) 0x0002b6bd   Thumb Code    26  g2_g3.o(t._ZN30_INTERNAL_9_G2_G3_cpp_e4fdbed73ABSIfEEKT_S1_)
-    t._ZN32_INTERNAL_10_motion_cpp_db549edf3ABSIfEEKT_S1_ 0x0002b6d6   Section        0  motion.o(t._ZN32_INTERNAL_10_motion_cpp_db549edf3ABSIfEEKT_S1_)
-    const T1 [local to motion_cpp]::ABS<float>(T1) 0x0002b6d7   Thumb Code    26  motion.o(t._ZN32_INTERNAL_10_motion_cpp_db549edf3ABSIfEEKT_S1_)
-    t._ZN32_INTERNAL_10_motion_cpp_db549edf6NOLESSIffEEvRT_T0_ 0x0002b6f0   Section        0  motion.o(t._ZN32_INTERNAL_10_motion_cpp_db549edf6NOLESSIffEEvRT_T0_)
-    void [local to motion_cpp]::NOLESS<float, float>(T1&, T2) 0x0002b6f1   Thumb Code    20  motion.o(t._ZN32_INTERNAL_10_motion_cpp_db549edf6NOLESSIffEEvRT_T0_)
-    t._ZN32_INTERNAL_10_motion_cpp_db549edf6NOMOREIffEEvRT_T0_ 0x0002b704   Section        0  motion.o(t._ZN32_INTERNAL_10_motion_cpp_db549edf6NOMOREIffEEvRT_T0_)
-    void [local to motion_cpp]::NOMORE<float, float>(T1&, T2) 0x0002b705   Thumb Code    20  motion.o(t._ZN32_INTERNAL_10_motion_cpp_db549edf6NOMOREIffEEvRT_T0_)
-    t._ZN32_INTERNAL_11_planner_cpp_planner3ABSIfEEKT_S1_ 0x0002b718   Section        0  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner3ABSIfEEKT_S1_)
-    const T1 [local to planner_cpp]::ABS<float>(T1) 0x0002b719   Thumb Code    26  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner3ABSIfEEKT_S1_)
-    t._ZN32_INTERNAL_11_planner_cpp_planner3ABSIiEEKT_S1_ 0x0002b732   Section        0  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner3ABSIiEEKT_S1_)
-    const T1 [local to planner_cpp]::ABS<int>(T1) 0x0002b733   Thumb Code    14  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner3ABSIiEEKT_S1_)
-    t._ZN32_INTERNAL_11_planner_cpp_planner4_MAXIffEEDTplfpK_fpK0_ET_T0_ 0x0002b740   Section        0  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner4_MAXIffEEDTplfpK_fpK0_ET_T0_)
-    decltype(((const param#1+const param#2))) [local to planner_cpp]::_MAX<float, float>(T1, T2) 0x0002b741   Thumb Code    26  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner4_MAXIffEEDTplfpK_fpK0_ET_T0_)
-    t._ZN32_INTERNAL_11_planner_cpp_planner4_MAXIjjEEDTplfpK_fpK0_ET_T0_ 0x0002b75a   Section        0  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner4_MAXIjjEEDTplfpK_fpK0_ET_T0_)
-    decltype(((const param#1+const param#2))) [local to planner_cpp]::_MAX<unsigned, unsigned>(T1, T2) 0x0002b75b   Thumb Code    14  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner4_MAXIjjEEDTplfpK_fpK0_ET_T0_)
-    t._ZN32_INTERNAL_11_planner_cpp_planner4_MINIffEEDTplfpK_fpK0_ET_T0_ 0x0002b768   Section        0  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner4_MINIffEEDTplfpK_fpK0_ET_T0_)
-    decltype(((const param#1+const param#2))) [local to planner_cpp]::_MIN<float, float>(T1, T2) 0x0002b769   Thumb Code    26  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner4_MINIffEEDTplfpK_fpK0_ET_T0_)
-    t._ZN32_INTERNAL_11_planner_cpp_planner6NOLESSIffEEvRT_T0_ 0x0002b782   Section        0  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner6NOLESSIffEEvRT_T0_)
-    void [local to planner_cpp]::NOLESS<float, float>(T1&, T2) 0x0002b783   Thumb Code    20  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner6NOLESSIffEEvRT_T0_)
-    t._ZN32_INTERNAL_11_planner_cpp_planner6NOLESSIjjEEvRT_T0_ 0x0002b796   Section        0  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner6NOLESSIjjEEvRT_T0_)
-    void [local to planner_cpp]::NOLESS<unsigned, unsigned>(T1&, T2) 0x0002b797   Thumb Code    10  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner6NOLESSIjjEEvRT_T0_)
-    t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIffEEvRT_T0_ 0x0002b7a0   Section        0  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIffEEvRT_T0_)
-    void [local to planner_cpp]::NOMORE<float, float>(T1&, T2) 0x0002b7a1   Thumb Code    20  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIffEEvRT_T0_)
-    t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIjfEEvRT_T0_ 0x0002b7b4   Section        0  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIjfEEvRT_T0_)
-    void [local to planner_cpp]::NOMORE<unsigned, float>(T1&, T2) 0x0002b7b5   Thumb Code    28  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIjfEEvRT_T0_)
-    t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIjjEEvRT_T0_ 0x0002b7d0   Section        0  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIjjEEvRT_T0_)
-    void [local to planner_cpp]::NOMORE<unsigned, unsigned>(T1&, T2) 0x0002b7d1   Thumb Code    10  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIjjEEvRT_T0_)
-    t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MAXIjmEEDTplfpK_fpK0_ET_T0_ 0x0002b7da   Section        0  stepper.o(t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MAXIjmEEDTplfpK_fpK0_ET_T0_)
-    decltype(((const param#1+const param#2))) [local to stepper_cpp]::_MAX<unsigned, unsigned long>(T1, T2) 0x0002b7db   Thumb Code    14  stepper.o(t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MAXIjmEEDTplfpK_fpK0_ET_T0_)
-    t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MAXImmEEDTplfpK_fpK0_ET_T0_ 0x0002b7e8   Section        0  stepper.o(t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MAXImmEEDTplfpK_fpK0_ET_T0_)
-    decltype(((const param#1+const param#2))) [local to stepper_cpp]::_MAX<unsigned long, unsigned long>(T1, T2) 0x0002b7e9   Thumb Code    14  stepper.o(t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MAXImmEEDTplfpK_fpK0_ET_T0_)
-    t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MINIjmEEDTplfpK_fpK0_ET_T0_ 0x0002b7f6   Section        0  stepper.o(t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MINIjmEEDTplfpK_fpK0_ET_T0_)
-    decltype(((const param#1+const param#2))) [local to stepper_cpp]::_MIN<unsigned, unsigned long>(T1, T2) 0x0002b7f7   Thumb Code    14  stepper.o(t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MINIjmEEDTplfpK_fpK0_ET_T0_)
-    t._ZN34_INTERNAL_12_settings_cpp_7a1ff5ce4_MINIhiEEDTplfpK_fpK0_ET_T0_ 0x0002b804   Section        0  settings.o(t._ZN34_INTERNAL_12_settings_cpp_7a1ff5ce4_MINIhiEEDTplfpK_fpK0_ET_T0_)
-    decltype(((const param#1+const param#2))) [local to settings_cpp]::_MIN<unsigned char, int>(T1, T2) 0x0002b805   Thumb Code    14  settings.o(t._ZN34_INTERNAL_12_settings_cpp_7a1ff5ce4_MINIhiEEDTplfpK_fpK0_ET_T0_)
-    t._ZN35_INTERNAL_13_M106_M107_cpp_6296f81a4_MINIhiEEDTplfpK_fpK0_ET_T0_ 0x0002b812   Section        0  m106_m107.o(t._ZN35_INTERNAL_13_M106_M107_cpp_6296f81a4_MINIhiEEDTplfpK_fpK0_ET_T0_)
-    decltype(((const param#1+const param#2))) [local to M106_M107_cpp]::_MIN<unsigned char, int>(T1, T2) 0x0002b813   Thumb Code    14  m106_m107.o(t._ZN35_INTERNAL_13_M106_M107_cpp_6296f81a4_MINIhiEEDTplfpK_fpK0_ET_T0_)
-    t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8243ABSIfEEKT_S1_ 0x0002b820   Section        0  temperature.o(t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8243ABSIfEEKT_S1_)
-    const T1 [local to temperature_cpp]::ABS<float>(T1) 0x0002b821   Thumb Code    26  temperature.o(t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8243ABSIfEEKT_S1_)
-    t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8244_MAXIiiEEDTplfpK_fpK0_ET_T0_ 0x0002b83a   Section        0  temperature.o(t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8244_MAXIiiEEDTplfpK_fpK0_ET_T0_)
-    decltype(((const param#1+const param#2))) [local to temperature_cpp]::_MAX<int, int>(T1, T2) 0x0002b83b   Thumb Code    14  temperature.o(t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8244_MAXIiiEEDTplfpK_fpK0_ET_T0_)
-    t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8244_MINIiiEEDTplfpK_fpK0_ET_T0_ 0x0002b848   Section        0  temperature.o(t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8244_MINIiiEEDTplfpK_fpK0_ET_T0_)
-    decltype(((const param#1+const param#2))) [local to temperature_cpp]::_MIN<int, int>(T1, T2) 0x0002b849   Thumb Code    14  temperature.o(t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8244_MINIiiEEDTplfpK_fpK0_ET_T0_)
-    t._ZN8restorerIN10GcodeSuite15MarlinBusyStateEED1Ev 0x0002b856   Section        0  gcode.o(t._ZN8restorerIN10GcodeSuite15MarlinBusyStateEED1Ev)
-    t._ZN8restorerIbED1Ev                    0x0002b862   Section        0  temperature.o(t._ZN8restorerIbED1Ev)
-    .constdata                               0x0002b870   Section       16  hc32f46x_usart.o(.constdata)
-    .constdata                               0x0002b880   Section     1012  board_gpio.o(.constdata)
-    .constdata                               0x0002bc74   Section       59  marlincore.o(.constdata)
-    [local to MarlinCore_cpp]::Language_en::MSG_MARLIN 0x0002bc82   Data           7  marlincore.o(.constdata)
-    pin_is_protected(signed char)::sensitive_pins 0x0002bc89   Data          38  marlincore.o(.constdata)
-    .constdata                               0x0002bcaf   Section       77  serial.o(.constdata)
-    serial_echo_start()::echomagic           0x0002bcef   Data           6  serial.o(.constdata)
-    serial_error_start()::errormagic         0x0002bcf5   Data           7  serial.o(.constdata)
-    .constdata                               0x0002bcfc   Section        4  m92.o(.constdata)
-    axis_codes                               0x0002bcfc   Data           4  m92.o(.constdata)
-    .constdata                               0x0002bd00   Section        4  m200-m205.o(.constdata)
-    axis_codes                               0x0002bd00   Data           4  m200-m205.o(.constdata)
-    .constdata                               0x0002bd04   Section       60  m111.o(.constdata)
-    GcodeSuite::M111()::str_debug_1          0x0002bd04   Data           5  m111.o(.constdata)
-    GcodeSuite::M111()::str_debug_2          0x0002bd09   Data           5  m111.o(.constdata)
-    GcodeSuite::M111()::str_debug_4          0x0002bd0e   Data           7  m111.o(.constdata)
-    GcodeSuite::M111()::str_debug_8          0x0002bd15   Data           7  m111.o(.constdata)
-    GcodeSuite::M111()::str_debug_16         0x0002bd1c   Data          14  m111.o(.constdata)
-    GcodeSuite::M111()::debug_strings        0x0002bd2c   Data          20  m111.o(.constdata)
-    .constdata                               0x0002bd40   Section       12  g27.o(.constdata)
-    .constdata                               0x0002bd4c   Section        4  g92.o(.constdata)
-    axis_codes                               0x0002bd4c   Data           4  g92.o(.constdata)
-    .constdata                               0x0002bd50   Section       20  queue.o(.constdata)
-    [local to queue_cpp]::Language_en::MSG_KILL_READCARD_FAILED 0x0002bd54   Data          16  queue.o(.constdata)
-    .constdata                               0x0002bd64   Section       26  tenlog_touch_lcd.o(.constdata)
-    [local to tenlog_touch_lcd_cpp]::Language_en::MSG_OUTAGE_RECOVERY 0x0002bd64   Data          13  tenlog_touch_lcd.o(.constdata)
-    .constdata                               0x0002bd7e   Section       14  endstops.o(.constdata)
-    [local to endstops_cpp]::Language_en::MSG_KILL_HOMING_FAILED 0x0002bd7e   Data          14  endstops.o(.constdata)
-    .constdata                               0x0002bd8c   Section       21  motion.o(.constdata)
-    [local to motion_cpp]::Language_en::MSG_HOME_FIRST 0x0002bd8c   Data          18  motion.o(.constdata)
-    get_homing_bump_feedrate(AxisEnum)::homing_bump_divisor 0x0002bd9e   Data           3  motion.o(.constdata)
-    .constdata                               0x0002bda4   Section      200  settings.o(.constdata)
-    _DMA                                     0x0002bda4   Data          16  settings.o(.constdata)
-    _DASU                                    0x0002bdb4   Data          16  settings.o(.constdata)
-    _DMF                                     0x0002bdc4   Data          16  settings.o(.constdata)
-    version                                  0x0002bdd4   Data           4  settings.o(.constdata)
-    .constdata                               0x0002be6c   Section      376  temperature.o(.constdata)
-    temptable_1                              0x0002be6c   Data         256  temperature.o(.constdata)
-    heater_ttbllen_map                       0x0002bf6c   Data           2  temperature.o(.constdata)
-    str_t_thermal_runaway                    0x0002bf6e   Data          16  temperature.o(.constdata)
-    str_t_heating_failed                     0x0002bf7e   Data          15  temperature.o(.constdata)
-    [local to temperature_cpp]::Language_en::MSG_BED 0x0002bf92   Data           4  temperature.o(.constdata)
-    [local to temperature_cpp]::Language_en::MSG_HEATING_FAILED_LCD 0x0002bf96   Data          15  temperature.o(.constdata)
-    [local to temperature_cpp]::Language_en::MSG_THERMAL_RUNAWAY 0x0002bfa5   Data          16  temperature.o(.constdata)
-    [local to temperature_cpp]::Language_en::MSG_ERR_MAXTEMP 0x0002bfb5   Data          13  temperature.o(.constdata)
-    [local to temperature_cpp]::Language_en::MSG_ERR_MINTEMP 0x0002bfc2   Data          13  temperature.o(.constdata)
-    Temperature::readings_ready()::temp_dir  0x0002bfcf   Data           2  temperature.o(.constdata)
-    Temperature::checkExtruderAutoFans()::fanBit 0x0002bfd1   Data           3  temperature.o(.constdata)
-    <Data33>                                 0x0002bfd4   Data           8  temperature.o(.constdata)
-    <Data34>                                 0x0002bfdc   Data           8  temperature.o(.constdata)
-    .constdata                               0x0002bfe4   Section       28  cardreader.o(.constdata)
-    [local to cardreader_cpp]::Language_en::MSG_KILL_SUBCALL_OVERFLOW 0x0002bfef   Data          17  cardreader.o(.constdata)
-    .constdata                               0x0002c000   Section       32  rredf.o(.constdata)
-    twooverpi                                0x0002c000   Data          32  rredf.o(.constdata)
-    .constdata                               0x0002c020   Section      129  ctype_o.o(.constdata)
-    .constdata                               0x0002c0a4   Section        4  ctype_o.o(.constdata)
-    table                                    0x0002c0a4   Data           4  ctype_o.o(.constdata)
-    .constdata__ZTV12DiskIODriver            0x0002c0a8   Section       60  cardreader.o(.constdata__ZTV12DiskIODriver)
-    .constdata__ZTV14HardwareSerial          0x0002c0e4   Section       36  hardwareserial.o(.constdata__ZTV14HardwareSerial)
-    .constdata__ZTV17DiskIODriver_SDIO       0x0002c108   Section       60  cardreader.o(.constdata__ZTV17DiskIODriver_SDIO)
-    .constdata__ZTV5Print                    0x0002c144   Section       20  print.o(.constdata__ZTV5Print)
-    .constdata__ZTV6Stream                   0x0002c158   Section       36  hardwareserial.o(.constdata__ZTV6Stream)
-    .constdata__ZTV9IPAddress                0x0002c17c   Section       12  ipaddress.o(.constdata__ZTV9IPAddress)
-    .constdata__ZTV9Printable                0x0002c188   Section       12  ipaddress.o(.constdata__ZTV9Printable)
-    .constdata__ZZ10max_length8AxisEnumE12max_length_P 0x0002c194   Section       12  motion.o(.constdata__ZZ10max_length8AxisEnumE12max_length_P)
-    .constdata__ZZ12home_bump_mm8AxisEnumE14home_bump_mm_P 0x0002c1a0   Section       12  motion.o(.constdata__ZZ12home_bump_mm8AxisEnumE14home_bump_mm_P)
-    .constdata__ZZ12say_default_vEs          0x0002c1ac   Section       17  temperature.o(.constdata__ZZ12say_default_vEs)
-    .constdata__ZZ13base_home_pos8AxisEnumE15base_home_pos_P 0x0002c1c0   Section       12  m206_m428.o(.constdata__ZZ13base_home_pos8AxisEnumE15base_home_pos_P)
-    .constdata__ZZ15abortSDPrintingvEs       0x0002c1cc   Section        6  marlincore.o(.constdata__ZZ15abortSDPrintingvEs)
-    .constdata__ZZ15abortSDPrintingvEs_0     0x0002c1d2   Section        7  marlincore.o(.constdata__ZZ15abortSDPrintingvEs_0)
-    .constdata__ZZ15abortSDPrintingvEs_1     0x0002c1d9   Section        4  marlincore.o(.constdata__ZZ15abortSDPrintingvEs_1)
-    .constdata__ZZ16finishSDPrintingvEs      0x0002c1dd   Section        6  marlincore.o(.constdata__ZZ16finishSDPrintingvEs)
-    .constdata__ZZ17manage_inactivitybEs     0x0002c1e3   Section       61  marlincore.o(.constdata__ZZ17manage_inactivitybEs)
-    .constdata__ZZ22invalid_extruder_errorhEs 0x0002c220   Section       18  tool_change.o(.constdata__ZZ22invalid_extruder_errorhEs)
-    .constdata__ZZ6is_M29PKcEs               0x0002c232   Section        4  queue.o(.constdata__ZZ6is_M29PKcEs)
-    .constdata__ZZ8home_dir8AxisEnumE10home_dir_P 0x0002c236   Section        3  m206_m428.o(.constdata__ZZ8home_dir8AxisEnumE10home_dir_P)
-    .constdata__ZZ9loud_killPKc11heater_id_tEs 0x0002c239   Section        3  temperature.o(.constdata__ZZ9loud_killPKc11heater_id_tEs)
-    .constdata__ZZ9loud_killPKc11heater_id_tEs_4 0x0002c23c   Section        3  temperature.o(.constdata__ZZ9loud_killPKc11heater_id_tEs_4)
-    .constdata__ZZ9say_unitsbEs              0x0002c23f   Section        6  settings.o(.constdata__ZZ9say_unitsbEs)
-    .constdata__ZZ9say_unitsbEs_0            0x0002c245   Section        3  settings.o(.constdata__ZZ9say_unitsbEs_0)
-    .constdata__ZZN10GCodeQueue19get_sdcard_commandsEvEs 0x0002c248   Section       15  queue.o(.constdata__ZZN10GCodeQueue19get_sdcard_commandsEvEs)
-    .constdata__ZZN14MarlinSettings12EEPROM_STARTEiEs 0x0002c257   Section       12  settings.o(.constdata__ZZN14MarlinSettings12EEPROM_STARTEiEs)
-    .constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs 0x0002c263   Section       17  marlincore.o(.constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs)
-    .constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs_0 0x0002c274   Section        5  marlincore.o(.constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs_0)
-    .constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs_1 0x0002c279   Section        9  marlincore.o(.constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs_1)
-    .constdata__ZZN20FilamentSensorSwitch3runEvEs 0x0002c282   Section       17  marlincore.o(.constdata__ZZN20FilamentSensorSwitch3runEvEs)
-    .constdata__ZZN20FilamentSensorSwitch3runEvEs_0 0x0002c293   Section        5  marlincore.o(.constdata__ZZN20FilamentSensorSwitch3runEvEs_0)
-    .constdata__ZZN20FilamentSensorSwitch3runEvEs_1 0x0002c298   Section        4  marlincore.o(.constdata__ZZN20FilamentSensorSwitch3runEvEs_1)
-    .constdata__ZZNK10duration_t8toStringEPcEs 0x0002c29c   Section       20  m31.o(.constdata__ZZNK10duration_t8toStringEPcEs)
-    .constdata__ZZNK10duration_t8toStringEPcEs_0 0x0002c2b0   Section       16  m31.o(.constdata__ZZNK10duration_t8toStringEPcEs_0)
-    .constdata__ZZNK10duration_t8toStringEPcEs_1 0x0002c2c0   Section       12  m31.o(.constdata__ZZNK10duration_t8toStringEPcEs_1)
-    .constdata__ZZNK10duration_t8toStringEPcEs_2 0x0002c2cc   Section        8  m31.o(.constdata__ZZNK10duration_t8toStringEPcEs_2)
-    .constdata__ZZNK10duration_t8toStringEPcEs_3 0x0002c2d4   Section        4  m31.o(.constdata__ZZNK10duration_t8toStringEPcEs_3)
-    .conststring                             0x0002c2d8   Section      204  m115.o(.conststring)
-    .conststring                             0x0002c3a4   Section      119  queue.o(.conststring)
-    .conststring                             0x0002c41c   Section      201  settings.o(.conststring)
-    .conststring                             0x0002c4e8   Section       93  temperature.o(.conststring)
-    .init_array.00101                        0x0002c568   Section        4  main.o(.init_array.00101)
-    .init_array                              0x0002c56c   Section        4  board_gpio.o(.init_array)
-    .init_array                              0x0002c570   Section        4  marlincore.o(.init_array)
-    .init_array                              0x0002c574   Section        4  endstops.o(.init_array)
-    .init_array                              0x0002c578   Section        4  planner.o(.init_array)
-    .init_array                              0x0002c57c   Section        4  temperature.o(.init_array)
-    .init_array                              0x0002c580   Section        4  cardreader.o(.init_array)
-    .init_array                              0x0002c584   Section        4  ipaddress.o(.init_array)
-    .init_array                              0x0002c588   Section        0  cpp_init.o(.init_array)
+    i.setup_Extinterrupt                     0x0002aa90   Section        0  board_extint.o(i.setup_Extinterrupt)
+    i.setup_adcs                             0x0002aa94   Section        0  adc.o(i.setup_adcs)
+    i.setup_gpio                             0x0002aaa8   Section        0  board_gpio.o(i.setup_gpio)
+    i.setup_systick                          0x0002aaca   Section        0  board_tim0.o(i.setup_systick)
+    i.setup_time                             0x0002ab14   Section        0  board_tim0.o(i.setup_time)
+    i.setup_time2A                           0x0002ab18   Section        0  board_tim0.o(i.setup_time2A)
+    i.setup_time2B                           0x0002aba8   Section        0  board_tim0.o(i.setup_time2B)
+    i.steup_sdio                             0x0002ac34   Section        0  sdio_f1.o(i.steup_sdio)
+    i.timer_disable_irq                      0x0002ac60   Section        0  board_tim0.o(i.timer_disable_irq)
+    i.timer_enable_irq                       0x0002ac80   Section        0  board_tim0.o(i.timer_enable_irq)
+    i.timer_get_count                        0x0002aca0   Section        0  board_tim0.o(i.timer_get_count)
+    i.timer_irq_enabled                      0x0002acc0   Section        0  board_tim0.o(i.timer_irq_enabled)
+    i.timer_preset_compare                   0x0002acde   Section        0  board_tim0.o(i.timer_preset_compare)
+    i.timer_set_compare                      0x0002acfc   Section        0  board_tim0.o(i.timer_set_compare)
+    i.usart_disable                          0x0002ad28   Section        0  usart.o(i.usart_disable)
+    i.usart_enable                           0x0002ad54   Section        0  usart.o(i.usart_enable)
+    i.usart_init                             0x0002b000   Section        0  usart.o(i.usart_init)
+    i.usart_set_baud_rate                    0x0002b032   Section        0  usart.o(i.usart_set_baud_rate)
+    i.usart_tx                               0x0002b044   Section        0  usart.o(i.usart_tx)
+    i.yield                                  0x0002b0d0   Section        0  wirish_time.o(i.yield)
+    __empty()                                0x0002b0d1   Thumb Code     0  wirish_time.o(i.yield)
+    t._Z11SERIAL_CHARIJcEEvcDpT_             0x0002b0d4   Section        0  temperature.o(t._Z11SERIAL_CHARIJcEEvcDpT_)
+    t._Z11SERIAL_CHARIJiEEvcDpT_             0x0002b0f0   Section        0  m221.o(t._Z11SERIAL_CHARIJiEEvcDpT_)
+    t._Z11SERIAL_ECHOI11heater_id_tEvT_      0x0002b10c   Section        0  temperature.o(t._Z11SERIAL_ECHOI11heater_id_tEvT_)
+    t._Z11SERIAL_ECHOIPKcEvT_                0x0002b120   Section        0  serial.o(t._Z11SERIAL_ECHOIPKcEvT_)
+    t._Z11SERIAL_ECHOIPcEvT_                 0x0002b134   Section        0  cardreader.o(t._Z11SERIAL_ECHOIPcEvT_)
+    t._Z11SERIAL_ECHOIfEvT_                  0x0002b148   Section        0  serial.o(t._Z11SERIAL_ECHOIfEvT_)
+    t._Z11SERIAL_ECHOIhEvT_                  0x0002b178   Section        0  serial.o(t._Z11SERIAL_ECHOIhEvT_)
+    t._Z11SERIAL_ECHOIiEvT_                  0x0002b18c   Section        0  marlincore.o(t._Z11SERIAL_ECHOIiEvT_)
+    t._Z11SERIAL_ECHOIjEvT_                  0x0002b1a0   Section        0  serial.o(t._Z11SERIAL_ECHOIjEvT_)
+    t._Z11SERIAL_ECHOIlEvT_                  0x0002b1b4   Section        0  serial.o(t._Z11SERIAL_ECHOIlEvT_)
+    t._Z11SERIAL_ECHOIsEvT_                  0x0002b1c8   Section        0  temperature.o(t._Z11SERIAL_ECHOIsEvT_)
+    t._Z11SERIAL_ECHOItEvT_                  0x0002b1dc   Section        0  gcode.o(t._Z11SERIAL_ECHOItEvT_)
+    t._Z12SERIAL_PRINTIfiEvT_T0_             0x0002b1f0   Section        0  temperature.o(t._Z12SERIAL_PRINTIfiEvT_T0_)
+    t._Z13SERIAL_ECHOLNIPcEvT_               0x0002b224   Section        0  m118.o(t._Z13SERIAL_ECHOLNIPcEvT_)
+    t._Z13SERIAL_ECHOLNIjEvT_                0x0002b238   Section        0  cardreader.o(t._Z13SERIAL_ECHOLNIjEvT_)
+    t._Z13SERIAL_ECHOLNIlEvT_                0x0002b24c   Section        0  queue.o(t._Z13SERIAL_ECHOLNIlEvT_)
+    t._ZN14MarlinSettings11EEPROM_READI5PID_tEEvRT_ 0x0002b260   Section        0  settings.o(t._ZN14MarlinSettings11EEPROM_READI5PID_tEEvRT_)
+    t._ZN14MarlinSettings11EEPROM_READI5XYvalIfEEEvRT_ 0x0002b288   Section        0  settings.o(t._ZN14MarlinSettings11EEPROM_READI5XYvalIfEEEvRT_)
+    t._ZN14MarlinSettings11EEPROM_READI6XYZvalIfEEEvRT_ 0x0002b2b0   Section        0  settings.o(t._ZN14MarlinSettings11EEPROM_READI6XYZvalIfEEEvRT_)
+    t._ZN14MarlinSettings11EEPROM_READIaEEvRT_ 0x0002b2d8   Section        0  settings.o(t._ZN14MarlinSettings11EEPROM_READIaEEvRT_)
+    t._ZN14MarlinSettings11EEPROM_READIbEEvRT_ 0x0002b300   Section        0  settings.o(t._ZN14MarlinSettings11EEPROM_READIbEEvRT_)
+    t._ZN14MarlinSettings11EEPROM_READIfEEvRT_ 0x0002b328   Section        0  settings.o(t._ZN14MarlinSettings11EEPROM_READIfEEvRT_)
+    t._ZN14MarlinSettings11EEPROM_READIhEEvRT_ 0x0002b350   Section        0  settings.o(t._ZN14MarlinSettings11EEPROM_READIhEEvRT_)
+    t._ZN14MarlinSettings11EEPROM_READIsEEvRT_ 0x0002b378   Section        0  settings.o(t._ZN14MarlinSettings11EEPROM_READIsEEvRT_)
+    t._ZN14MarlinSettings12EEPROM_WRITEI5PID_tEEvRKT_ 0x0002b3a0   Section        0  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEI5PID_tEEvRKT_)
+    t._ZN14MarlinSettings12EEPROM_WRITEI5XYvalIfEEEvRKT_ 0x0002b3bc   Section        0  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEI5XYvalIfEEEvRKT_)
+    t._ZN14MarlinSettings12EEPROM_WRITEI6XYZvalIfEEEvRKT_ 0x0002b3d8   Section        0  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEI6XYZvalIfEEEvRKT_)
+    t._ZN14MarlinSettings12EEPROM_WRITEIA4_cEEvRKT_ 0x0002b3f4   Section        0  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIA4_cEEvRKT_)
+    t._ZN14MarlinSettings12EEPROM_WRITEIaEEvRKT_ 0x0002b410   Section        0  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIaEEvRKT_)
+    t._ZN14MarlinSettings12EEPROM_WRITEIbEEvRKT_ 0x0002b42c   Section        0  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIbEEvRKT_)
+    t._ZN14MarlinSettings12EEPROM_WRITEIfEEvRKT_ 0x0002b448   Section        0  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIfEEvRKT_)
+    t._ZN14MarlinSettings12EEPROM_WRITEIhEEvRKT_ 0x0002b464   Section        0  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIhEEvRKT_)
+    t._ZN14MarlinSettings12EEPROM_WRITEIsEEvRKT_ 0x0002b480   Section        0  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIsEEvRKT_)
+    t._ZN14MarlinSettings15PLR_EEPROM_READIfEEvRT_ 0x0002b49c   Section        0  settings.o(t._ZN14MarlinSettings15PLR_EEPROM_READIfEEvRT_)
+    t._ZN14MarlinSettings15PLR_EEPROM_READIjEEvRT_ 0x0002b4c4   Section        0  settings.o(t._ZN14MarlinSettings15PLR_EEPROM_READIjEEvRT_)
+    t._ZN14MarlinSettings15PLR_EEPROM_READIsEEvRT_ 0x0002b4ec   Section        0  settings.o(t._ZN14MarlinSettings15PLR_EEPROM_READIsEEvRT_)
+    t._ZN14MarlinSettings16PLR_EEPROM_WRITEIcEEvRKT_ 0x0002b514   Section        0  settings.o(t._ZN14MarlinSettings16PLR_EEPROM_WRITEIcEEvRKT_)
+    t._ZN14MarlinSettings16PLR_EEPROM_WRITEIfEEvRKT_ 0x0002b530   Section        0  settings.o(t._ZN14MarlinSettings16PLR_EEPROM_WRITEIfEEvRKT_)
+    t._ZN14MarlinSettings16PLR_EEPROM_WRITEIsEEvRKT_ 0x0002b54c   Section        0  settings.o(t._ZN14MarlinSettings16PLR_EEPROM_WRITEIsEEvRKT_)
+    t._ZN14MarlinSettings18EEPROM_READ_ALWAYSIhEEvRT_ 0x0002b568   Section        0  settings.o(t._ZN14MarlinSettings18EEPROM_READ_ALWAYSIhEEvRT_)
+    t._ZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEv 0x0002b588   Section        0  marlincore.o(t._ZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEv)
+    t._ZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE5resetEv 0x0002b670   Section        0  settings.o(t._ZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE5resetEv)
+    t._ZN30_INTERNAL_9_G2_G3_cpp_e4fdbed73ABSIfEEKT_S1_ 0x0002b69c   Section        0  g2_g3.o(t._ZN30_INTERNAL_9_G2_G3_cpp_e4fdbed73ABSIfEEKT_S1_)
+    const T1 [local to G2_G3_cpp]::ABS<float>(T1) 0x0002b69d   Thumb Code    26  g2_g3.o(t._ZN30_INTERNAL_9_G2_G3_cpp_e4fdbed73ABSIfEEKT_S1_)
+    t._ZN32_INTERNAL_10_motion_cpp_db549edf3ABSIfEEKT_S1_ 0x0002b6b6   Section        0  motion.o(t._ZN32_INTERNAL_10_motion_cpp_db549edf3ABSIfEEKT_S1_)
+    const T1 [local to motion_cpp]::ABS<float>(T1) 0x0002b6b7   Thumb Code    26  motion.o(t._ZN32_INTERNAL_10_motion_cpp_db549edf3ABSIfEEKT_S1_)
+    t._ZN32_INTERNAL_10_motion_cpp_db549edf6NOLESSIffEEvRT_T0_ 0x0002b6d0   Section        0  motion.o(t._ZN32_INTERNAL_10_motion_cpp_db549edf6NOLESSIffEEvRT_T0_)
+    void [local to motion_cpp]::NOLESS<float, float>(T1&, T2) 0x0002b6d1   Thumb Code    20  motion.o(t._ZN32_INTERNAL_10_motion_cpp_db549edf6NOLESSIffEEvRT_T0_)
+    t._ZN32_INTERNAL_10_motion_cpp_db549edf6NOMOREIffEEvRT_T0_ 0x0002b6e4   Section        0  motion.o(t._ZN32_INTERNAL_10_motion_cpp_db549edf6NOMOREIffEEvRT_T0_)
+    void [local to motion_cpp]::NOMORE<float, float>(T1&, T2) 0x0002b6e5   Thumb Code    20  motion.o(t._ZN32_INTERNAL_10_motion_cpp_db549edf6NOMOREIffEEvRT_T0_)
+    t._ZN32_INTERNAL_11_planner_cpp_planner3ABSIfEEKT_S1_ 0x0002b6f8   Section        0  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner3ABSIfEEKT_S1_)
+    const T1 [local to planner_cpp]::ABS<float>(T1) 0x0002b6f9   Thumb Code    26  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner3ABSIfEEKT_S1_)
+    t._ZN32_INTERNAL_11_planner_cpp_planner3ABSIiEEKT_S1_ 0x0002b712   Section        0  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner3ABSIiEEKT_S1_)
+    const T1 [local to planner_cpp]::ABS<int>(T1) 0x0002b713   Thumb Code    14  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner3ABSIiEEKT_S1_)
+    t._ZN32_INTERNAL_11_planner_cpp_planner4_MAXIffEEDTplfpK_fpK0_ET_T0_ 0x0002b720   Section        0  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner4_MAXIffEEDTplfpK_fpK0_ET_T0_)
+    decltype(((const param#1+const param#2))) [local to planner_cpp]::_MAX<float, float>(T1, T2) 0x0002b721   Thumb Code    26  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner4_MAXIffEEDTplfpK_fpK0_ET_T0_)
+    t._ZN32_INTERNAL_11_planner_cpp_planner4_MAXIjjEEDTplfpK_fpK0_ET_T0_ 0x0002b73a   Section        0  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner4_MAXIjjEEDTplfpK_fpK0_ET_T0_)
+    decltype(((const param#1+const param#2))) [local to planner_cpp]::_MAX<unsigned, unsigned>(T1, T2) 0x0002b73b   Thumb Code    14  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner4_MAXIjjEEDTplfpK_fpK0_ET_T0_)
+    t._ZN32_INTERNAL_11_planner_cpp_planner4_MINIffEEDTplfpK_fpK0_ET_T0_ 0x0002b748   Section        0  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner4_MINIffEEDTplfpK_fpK0_ET_T0_)
+    decltype(((const param#1+const param#2))) [local to planner_cpp]::_MIN<float, float>(T1, T2) 0x0002b749   Thumb Code    26  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner4_MINIffEEDTplfpK_fpK0_ET_T0_)
+    t._ZN32_INTERNAL_11_planner_cpp_planner6NOLESSIffEEvRT_T0_ 0x0002b762   Section        0  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner6NOLESSIffEEvRT_T0_)
+    void [local to planner_cpp]::NOLESS<float, float>(T1&, T2) 0x0002b763   Thumb Code    20  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner6NOLESSIffEEvRT_T0_)
+    t._ZN32_INTERNAL_11_planner_cpp_planner6NOLESSIjjEEvRT_T0_ 0x0002b776   Section        0  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner6NOLESSIjjEEvRT_T0_)
+    void [local to planner_cpp]::NOLESS<unsigned, unsigned>(T1&, T2) 0x0002b777   Thumb Code    10  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner6NOLESSIjjEEvRT_T0_)
+    t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIffEEvRT_T0_ 0x0002b780   Section        0  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIffEEvRT_T0_)
+    void [local to planner_cpp]::NOMORE<float, float>(T1&, T2) 0x0002b781   Thumb Code    20  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIffEEvRT_T0_)
+    t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIjfEEvRT_T0_ 0x0002b794   Section        0  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIjfEEvRT_T0_)
+    void [local to planner_cpp]::NOMORE<unsigned, float>(T1&, T2) 0x0002b795   Thumb Code    28  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIjfEEvRT_T0_)
+    t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIjjEEvRT_T0_ 0x0002b7b0   Section        0  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIjjEEvRT_T0_)
+    void [local to planner_cpp]::NOMORE<unsigned, unsigned>(T1&, T2) 0x0002b7b1   Thumb Code    10  planner.o(t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIjjEEvRT_T0_)
+    t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MAXIjmEEDTplfpK_fpK0_ET_T0_ 0x0002b7ba   Section        0  stepper.o(t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MAXIjmEEDTplfpK_fpK0_ET_T0_)
+    decltype(((const param#1+const param#2))) [local to stepper_cpp]::_MAX<unsigned, unsigned long>(T1, T2) 0x0002b7bb   Thumb Code    14  stepper.o(t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MAXIjmEEDTplfpK_fpK0_ET_T0_)
+    t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MAXImmEEDTplfpK_fpK0_ET_T0_ 0x0002b7c8   Section        0  stepper.o(t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MAXImmEEDTplfpK_fpK0_ET_T0_)
+    decltype(((const param#1+const param#2))) [local to stepper_cpp]::_MAX<unsigned long, unsigned long>(T1, T2) 0x0002b7c9   Thumb Code    14  stepper.o(t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MAXImmEEDTplfpK_fpK0_ET_T0_)
+    t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MINIjmEEDTplfpK_fpK0_ET_T0_ 0x0002b7d6   Section        0  stepper.o(t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MINIjmEEDTplfpK_fpK0_ET_T0_)
+    decltype(((const param#1+const param#2))) [local to stepper_cpp]::_MIN<unsigned, unsigned long>(T1, T2) 0x0002b7d7   Thumb Code    14  stepper.o(t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MINIjmEEDTplfpK_fpK0_ET_T0_)
+    t._ZN34_INTERNAL_12_settings_cpp_7a1ff5ce4_MINIhiEEDTplfpK_fpK0_ET_T0_ 0x0002b7e4   Section        0  settings.o(t._ZN34_INTERNAL_12_settings_cpp_7a1ff5ce4_MINIhiEEDTplfpK_fpK0_ET_T0_)
+    decltype(((const param#1+const param#2))) [local to settings_cpp]::_MIN<unsigned char, int>(T1, T2) 0x0002b7e5   Thumb Code    14  settings.o(t._ZN34_INTERNAL_12_settings_cpp_7a1ff5ce4_MINIhiEEDTplfpK_fpK0_ET_T0_)
+    t._ZN35_INTERNAL_13_M106_M107_cpp_6296f81a4_MINIhiEEDTplfpK_fpK0_ET_T0_ 0x0002b7f2   Section        0  m106_m107.o(t._ZN35_INTERNAL_13_M106_M107_cpp_6296f81a4_MINIhiEEDTplfpK_fpK0_ET_T0_)
+    decltype(((const param#1+const param#2))) [local to M106_M107_cpp]::_MIN<unsigned char, int>(T1, T2) 0x0002b7f3   Thumb Code    14  m106_m107.o(t._ZN35_INTERNAL_13_M106_M107_cpp_6296f81a4_MINIhiEEDTplfpK_fpK0_ET_T0_)
+    t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8243ABSIfEEKT_S1_ 0x0002b800   Section        0  temperature.o(t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8243ABSIfEEKT_S1_)
+    const T1 [local to temperature_cpp]::ABS<float>(T1) 0x0002b801   Thumb Code    26  temperature.o(t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8243ABSIfEEKT_S1_)
+    t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8244_MAXIiiEEDTplfpK_fpK0_ET_T0_ 0x0002b81a   Section        0  temperature.o(t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8244_MAXIiiEEDTplfpK_fpK0_ET_T0_)
+    decltype(((const param#1+const param#2))) [local to temperature_cpp]::_MAX<int, int>(T1, T2) 0x0002b81b   Thumb Code    14  temperature.o(t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8244_MAXIiiEEDTplfpK_fpK0_ET_T0_)
+    t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8244_MINIiiEEDTplfpK_fpK0_ET_T0_ 0x0002b828   Section        0  temperature.o(t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8244_MINIiiEEDTplfpK_fpK0_ET_T0_)
+    decltype(((const param#1+const param#2))) [local to temperature_cpp]::_MIN<int, int>(T1, T2) 0x0002b829   Thumb Code    14  temperature.o(t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8244_MINIiiEEDTplfpK_fpK0_ET_T0_)
+    t._ZN8restorerIN10GcodeSuite15MarlinBusyStateEED1Ev 0x0002b836   Section        0  gcode.o(t._ZN8restorerIN10GcodeSuite15MarlinBusyStateEED1Ev)
+    t._ZN8restorerIbED1Ev                    0x0002b842   Section        0  temperature.o(t._ZN8restorerIbED1Ev)
+    .constdata                               0x0002b850   Section       16  hc32f46x_usart.o(.constdata)
+    .constdata                               0x0002b860   Section     1012  board_gpio.o(.constdata)
+    .constdata                               0x0002bc54   Section       59  marlincore.o(.constdata)
+    [local to MarlinCore_cpp]::Language_en::MSG_MARLIN 0x0002bc62   Data           7  marlincore.o(.constdata)
+    pin_is_protected(signed char)::sensitive_pins 0x0002bc69   Data          38  marlincore.o(.constdata)
+    .constdata                               0x0002bc8f   Section       77  serial.o(.constdata)
+    serial_echo_start()::echomagic           0x0002bccf   Data           6  serial.o(.constdata)
+    serial_error_start()::errormagic         0x0002bcd5   Data           7  serial.o(.constdata)
+    .constdata                               0x0002bcdc   Section        4  m92.o(.constdata)
+    axis_codes                               0x0002bcdc   Data           4  m92.o(.constdata)
+    .constdata                               0x0002bce0   Section        4  m200-m205.o(.constdata)
+    axis_codes                               0x0002bce0   Data           4  m200-m205.o(.constdata)
+    .constdata                               0x0002bce4   Section       60  m111.o(.constdata)
+    GcodeSuite::M111()::str_debug_1          0x0002bce4   Data           5  m111.o(.constdata)
+    GcodeSuite::M111()::str_debug_2          0x0002bce9   Data           5  m111.o(.constdata)
+    GcodeSuite::M111()::str_debug_4          0x0002bcee   Data           7  m111.o(.constdata)
+    GcodeSuite::M111()::str_debug_8          0x0002bcf5   Data           7  m111.o(.constdata)
+    GcodeSuite::M111()::str_debug_16         0x0002bcfc   Data          14  m111.o(.constdata)
+    GcodeSuite::M111()::debug_strings        0x0002bd0c   Data          20  m111.o(.constdata)
+    .constdata                               0x0002bd20   Section       12  g27.o(.constdata)
+    .constdata                               0x0002bd2c   Section        4  g92.o(.constdata)
+    axis_codes                               0x0002bd2c   Data           4  g92.o(.constdata)
+    .constdata                               0x0002bd30   Section       20  queue.o(.constdata)
+    [local to queue_cpp]::Language_en::MSG_KILL_READCARD_FAILED 0x0002bd34   Data          16  queue.o(.constdata)
+    .constdata                               0x0002bd44   Section       26  tenlog_touch_lcd.o(.constdata)
+    [local to tenlog_touch_lcd_cpp]::Language_en::MSG_OUTAGE_RECOVERY 0x0002bd44   Data          13  tenlog_touch_lcd.o(.constdata)
+    .constdata                               0x0002bd5e   Section       14  endstops.o(.constdata)
+    [local to endstops_cpp]::Language_en::MSG_KILL_HOMING_FAILED 0x0002bd5e   Data          14  endstops.o(.constdata)
+    .constdata                               0x0002bd6c   Section       21  motion.o(.constdata)
+    [local to motion_cpp]::Language_en::MSG_HOME_FIRST 0x0002bd6c   Data          18  motion.o(.constdata)
+    get_homing_bump_feedrate(AxisEnum)::homing_bump_divisor 0x0002bd7e   Data           3  motion.o(.constdata)
+    .constdata                               0x0002bd84   Section      200  settings.o(.constdata)
+    _DMA                                     0x0002bd84   Data          16  settings.o(.constdata)
+    _DASU                                    0x0002bd94   Data          16  settings.o(.constdata)
+    _DMF                                     0x0002bda4   Data          16  settings.o(.constdata)
+    version                                  0x0002bdb4   Data           4  settings.o(.constdata)
+    .constdata                               0x0002be4c   Section      376  temperature.o(.constdata)
+    temptable_1                              0x0002be4c   Data         256  temperature.o(.constdata)
+    heater_ttbllen_map                       0x0002bf4c   Data           2  temperature.o(.constdata)
+    str_t_thermal_runaway                    0x0002bf4e   Data          16  temperature.o(.constdata)
+    str_t_heating_failed                     0x0002bf5e   Data          15  temperature.o(.constdata)
+    [local to temperature_cpp]::Language_en::MSG_BED 0x0002bf72   Data           4  temperature.o(.constdata)
+    [local to temperature_cpp]::Language_en::MSG_HEATING_FAILED_LCD 0x0002bf76   Data          15  temperature.o(.constdata)
+    [local to temperature_cpp]::Language_en::MSG_THERMAL_RUNAWAY 0x0002bf85   Data          16  temperature.o(.constdata)
+    [local to temperature_cpp]::Language_en::MSG_ERR_MAXTEMP 0x0002bf95   Data          13  temperature.o(.constdata)
+    [local to temperature_cpp]::Language_en::MSG_ERR_MINTEMP 0x0002bfa2   Data          13  temperature.o(.constdata)
+    Temperature::readings_ready()::temp_dir  0x0002bfaf   Data           2  temperature.o(.constdata)
+    Temperature::checkExtruderAutoFans()::fanBit 0x0002bfb1   Data           3  temperature.o(.constdata)
+    <Data33>                                 0x0002bfb4   Data           8  temperature.o(.constdata)
+    <Data34>                                 0x0002bfbc   Data           8  temperature.o(.constdata)
+    .constdata                               0x0002bfc4   Section       28  cardreader.o(.constdata)
+    [local to cardreader_cpp]::Language_en::MSG_KILL_SUBCALL_OVERFLOW 0x0002bfcf   Data          17  cardreader.o(.constdata)
+    .constdata                               0x0002bfe0   Section       32  rredf.o(.constdata)
+    twooverpi                                0x0002bfe0   Data          32  rredf.o(.constdata)
+    .constdata                               0x0002c000   Section      129  ctype_o.o(.constdata)
+    .constdata                               0x0002c084   Section        4  ctype_o.o(.constdata)
+    table                                    0x0002c084   Data           4  ctype_o.o(.constdata)
+    .constdata__ZTV12DiskIODriver            0x0002c088   Section       60  cardreader.o(.constdata__ZTV12DiskIODriver)
+    .constdata__ZTV14HardwareSerial          0x0002c0c4   Section       36  hardwareserial.o(.constdata__ZTV14HardwareSerial)
+    .constdata__ZTV17DiskIODriver_SDIO       0x0002c0e8   Section       60  cardreader.o(.constdata__ZTV17DiskIODriver_SDIO)
+    .constdata__ZTV5Print                    0x0002c124   Section       20  print.o(.constdata__ZTV5Print)
+    .constdata__ZTV6Stream                   0x0002c138   Section       36  hardwareserial.o(.constdata__ZTV6Stream)
+    .constdata__ZTV9IPAddress                0x0002c15c   Section       12  ipaddress.o(.constdata__ZTV9IPAddress)
+    .constdata__ZTV9Printable                0x0002c168   Section       12  ipaddress.o(.constdata__ZTV9Printable)
+    .constdata__ZZ10max_length8AxisEnumE12max_length_P 0x0002c174   Section       12  motion.o(.constdata__ZZ10max_length8AxisEnumE12max_length_P)
+    .constdata__ZZ12home_bump_mm8AxisEnumE14home_bump_mm_P 0x0002c180   Section       12  motion.o(.constdata__ZZ12home_bump_mm8AxisEnumE14home_bump_mm_P)
+    .constdata__ZZ12say_default_vEs          0x0002c18c   Section       17  temperature.o(.constdata__ZZ12say_default_vEs)
+    .constdata__ZZ13base_home_pos8AxisEnumE15base_home_pos_P 0x0002c1a0   Section       12  m206_m428.o(.constdata__ZZ13base_home_pos8AxisEnumE15base_home_pos_P)
+    .constdata__ZZ15abortSDPrintingvEs       0x0002c1ac   Section        6  marlincore.o(.constdata__ZZ15abortSDPrintingvEs)
+    .constdata__ZZ15abortSDPrintingvEs_0     0x0002c1b2   Section        7  marlincore.o(.constdata__ZZ15abortSDPrintingvEs_0)
+    .constdata__ZZ15abortSDPrintingvEs_1     0x0002c1b9   Section        4  marlincore.o(.constdata__ZZ15abortSDPrintingvEs_1)
+    .constdata__ZZ16finishSDPrintingvEs      0x0002c1bd   Section        6  marlincore.o(.constdata__ZZ16finishSDPrintingvEs)
+    .constdata__ZZ17manage_inactivitybEs     0x0002c1c3   Section       61  marlincore.o(.constdata__ZZ17manage_inactivitybEs)
+    .constdata__ZZ22invalid_extruder_errorhEs 0x0002c200   Section       18  tool_change.o(.constdata__ZZ22invalid_extruder_errorhEs)
+    .constdata__ZZ6is_M29PKcEs               0x0002c212   Section        4  queue.o(.constdata__ZZ6is_M29PKcEs)
+    .constdata__ZZ8home_dir8AxisEnumE10home_dir_P 0x0002c216   Section        3  m206_m428.o(.constdata__ZZ8home_dir8AxisEnumE10home_dir_P)
+    .constdata__ZZ9loud_killPKc11heater_id_tEs 0x0002c219   Section        3  temperature.o(.constdata__ZZ9loud_killPKc11heater_id_tEs)
+    .constdata__ZZ9loud_killPKc11heater_id_tEs_4 0x0002c21c   Section        3  temperature.o(.constdata__ZZ9loud_killPKc11heater_id_tEs_4)
+    .constdata__ZZ9say_unitsbEs              0x0002c21f   Section        6  settings.o(.constdata__ZZ9say_unitsbEs)
+    .constdata__ZZ9say_unitsbEs_0            0x0002c225   Section        3  settings.o(.constdata__ZZ9say_unitsbEs_0)
+    .constdata__ZZN10GCodeQueue19get_sdcard_commandsEvEs 0x0002c228   Section       15  queue.o(.constdata__ZZN10GCodeQueue19get_sdcard_commandsEvEs)
+    .constdata__ZZN14MarlinSettings12EEPROM_STARTEiEs 0x0002c237   Section       12  settings.o(.constdata__ZZN14MarlinSettings12EEPROM_STARTEiEs)
+    .constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs 0x0002c243   Section       17  marlincore.o(.constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs)
+    .constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs_0 0x0002c254   Section        5  marlincore.o(.constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs_0)
+    .constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs_1 0x0002c259   Section        9  marlincore.o(.constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs_1)
+    .constdata__ZZN20FilamentSensorSwitch3runEvEs 0x0002c262   Section       17  marlincore.o(.constdata__ZZN20FilamentSensorSwitch3runEvEs)
+    .constdata__ZZN20FilamentSensorSwitch3runEvEs_0 0x0002c273   Section        5  marlincore.o(.constdata__ZZN20FilamentSensorSwitch3runEvEs_0)
+    .constdata__ZZN20FilamentSensorSwitch3runEvEs_1 0x0002c278   Section        4  marlincore.o(.constdata__ZZN20FilamentSensorSwitch3runEvEs_1)
+    .constdata__ZZNK10duration_t8toStringEPcEs 0x0002c27c   Section       20  m31.o(.constdata__ZZNK10duration_t8toStringEPcEs)
+    .constdata__ZZNK10duration_t8toStringEPcEs_0 0x0002c290   Section       16  m31.o(.constdata__ZZNK10duration_t8toStringEPcEs_0)
+    .constdata__ZZNK10duration_t8toStringEPcEs_1 0x0002c2a0   Section       12  m31.o(.constdata__ZZNK10duration_t8toStringEPcEs_1)
+    .constdata__ZZNK10duration_t8toStringEPcEs_2 0x0002c2ac   Section        8  m31.o(.constdata__ZZNK10duration_t8toStringEPcEs_2)
+    .constdata__ZZNK10duration_t8toStringEPcEs_3 0x0002c2b4   Section        4  m31.o(.constdata__ZZNK10duration_t8toStringEPcEs_3)
+    .conststring                             0x0002c2b8   Section      204  m115.o(.conststring)
+    .conststring                             0x0002c384   Section      119  queue.o(.conststring)
+    .conststring                             0x0002c3fc   Section      201  settings.o(.conststring)
+    .conststring                             0x0002c4c8   Section       93  temperature.o(.conststring)
+    .init_array.00101                        0x0002c548   Section        4  main.o(.init_array.00101)
+    .init_array                              0x0002c54c   Section        4  board_gpio.o(.init_array)
+    .init_array                              0x0002c550   Section        4  marlincore.o(.init_array)
+    .init_array                              0x0002c554   Section        4  endstops.o(.init_array)
+    .init_array                              0x0002c558   Section        4  planner.o(.init_array)
+    .init_array                              0x0002c55c   Section        4  temperature.o(.init_array)
+    .init_array                              0x0002c560   Section        4  cardreader.o(.init_array)
+    .init_array                              0x0002c564   Section        4  ipaddress.o(.init_array)
+    .init_array                              0x0002c568   Section        0  cpp_init.o(.init_array)
     .data                                    0x20000000   Section        1  hc32f46x_dmac.o(.data)
     DmaChEnState                             0x20000000   Data           1  hc32f46x_dmac.o(.data)
     .data                                    0x20000001   Section        9  hc32f46x_utility.o(.data)
@@ -7835,143 +7835,143 @@ Image Symbol Table
     main                                     0x0002a505   Thumb Code    12  main.o(i.main)
     malloc                                   0x0002a511   Thumb Code    92  malloc.o(i.malloc)
     millis                                   0x0002a57d   Thumb Code     6  board_tim0.o(i.millis)
-    setup                                    0x0002a589   Thumb Code   696  marlincore.o(i.setup)
-    setup_Extinterrupt                       0x0002aab1   Thumb Code     2  board_extint.o(i.setup_Extinterrupt)
-    setup_adcs                               0x0002aab5   Thumb Code    14  adc.o(i.setup_adcs)
-    setup_gpio                               0x0002aac9   Thumb Code    34  board_gpio.o(i.setup_gpio)
-    setup_systick                            0x0002aaeb   Thumb Code    74  board_tim0.o(i.setup_systick)
-    setup_time                               0x0002ab35   Thumb Code     2  board_tim0.o(i.setup_time)
-    setup_time2A                             0x0002ab39   Thumb Code   134  board_tim0.o(i.setup_time2A)
-    setup_time2B                             0x0002abc9   Thumb Code   132  board_tim0.o(i.setup_time2B)
-    steup_sdio                               0x0002ac55   Thumb Code    38  sdio_f1.o(i.steup_sdio)
-    timer_disable_irq                        0x0002ac81   Thumb Code    28  board_tim0.o(i.timer_disable_irq)
-    timer_enable_irq                         0x0002aca1   Thumb Code    28  board_tim0.o(i.timer_enable_irq)
-    timer_get_count                          0x0002acc1   Thumb Code    26  board_tim0.o(i.timer_get_count)
-    timer_irq_enabled                        0x0002ace1   Thumb Code    30  board_tim0.o(i.timer_irq_enabled)
-    timer_preset_compare                     0x0002acff   Thumb Code    28  board_tim0.o(i.timer_preset_compare)
-    timer_set_compare                        0x0002ad1d   Thumb Code    38  board_tim0.o(i.timer_set_compare)
-    usart_disable                            0x0002ad49   Thumb Code    44  usart.o(i.usart_disable)
-    usart_enable                             0x0002ad75   Thumb Code   602  usart.o(i.usart_enable)
-    usart_init                               0x0002b021   Thumb Code    50  usart.o(i.usart_init)
-    usart_set_baud_rate                      0x0002b053   Thumb Code    16  usart.o(i.usart_set_baud_rate)
-    usart_tx                                 0x0002b065   Thumb Code   134  usart.o(i.usart_tx)
-    yield                                    0x0002b0f1   Thumb Code     2  wirish_time.o(i.yield)
-    void SERIAL_CHAR<<char>>(char, T1...)    0x0002b0f5   Thumb Code    22  temperature.o(t._Z11SERIAL_CHARIJcEEvcDpT_)
-    void SERIAL_CHAR<<int>>(char, T1...)     0x0002b111   Thumb Code    22  m221.o(t._Z11SERIAL_CHARIJiEEvcDpT_)
-    void SERIAL_ECHO<heater_id_t>(T1)        0x0002b12d   Thumb Code    16  temperature.o(t._Z11SERIAL_ECHOI11heater_id_tEvT_)
-    void SERIAL_ECHO<const char*>(T1)        0x0002b141   Thumb Code    14  serial.o(t._Z11SERIAL_ECHOIPKcEvT_)
-    void SERIAL_ECHO<char*>(T1)              0x0002b155   Thumb Code    14  cardreader.o(t._Z11SERIAL_ECHOIPcEvT_)
-    void SERIAL_ECHO<float>(T1)              0x0002b169   Thumb Code    44  serial.o(t._Z11SERIAL_ECHOIfEvT_)
-    void SERIAL_ECHO<unsigned char>(T1)      0x0002b199   Thumb Code    16  serial.o(t._Z11SERIAL_ECHOIhEvT_)
-    void SERIAL_ECHO<int>(T1)                0x0002b1ad   Thumb Code    16  marlincore.o(t._Z11SERIAL_ECHOIiEvT_)
-    void SERIAL_ECHO<unsigned>(T1)           0x0002b1c1   Thumb Code    16  serial.o(t._Z11SERIAL_ECHOIjEvT_)
-    void SERIAL_ECHO<long>(T1)               0x0002b1d5   Thumb Code    16  serial.o(t._Z11SERIAL_ECHOIlEvT_)
-    void SERIAL_ECHO<short>(T1)              0x0002b1e9   Thumb Code    16  temperature.o(t._Z11SERIAL_ECHOIsEvT_)
-    void SERIAL_ECHO<unsigned short>(T1)     0x0002b1fd   Thumb Code    16  gcode.o(t._Z11SERIAL_ECHOItEvT_)
-    void SERIAL_PRINT<float, int>(T1, T2)    0x0002b211   Thumb Code    46  temperature.o(t._Z12SERIAL_PRINTIfiEvT_T0_)
-    void SERIAL_ECHOLN<char*>(T1)            0x0002b245   Thumb Code    14  m118.o(t._Z13SERIAL_ECHOLNIPcEvT_)
-    void SERIAL_ECHOLN<unsigned>(T1)         0x0002b259   Thumb Code    16  cardreader.o(t._Z13SERIAL_ECHOLNIjEvT_)
-    void SERIAL_ECHOLN<long>(T1)             0x0002b26d   Thumb Code    16  queue.o(t._Z13SERIAL_ECHOLNIlEvT_)
-    void MarlinSettings::EEPROM_READ<PID_t>(T1&) 0x0002b281   Thumb Code    28  settings.o(t._ZN14MarlinSettings11EEPROM_READI5PID_tEEvRT_)
-    void MarlinSettings::EEPROM_READ<XYval<float>>(T1&) 0x0002b2a9   Thumb Code    28  settings.o(t._ZN14MarlinSettings11EEPROM_READI5XYvalIfEEEvRT_)
-    void MarlinSettings::EEPROM_READ<XYZval<float>>(T1&) 0x0002b2d1   Thumb Code    28  settings.o(t._ZN14MarlinSettings11EEPROM_READI6XYZvalIfEEEvRT_)
-    void MarlinSettings::EEPROM_READ<signed char>(T1&) 0x0002b2f9   Thumb Code    28  settings.o(t._ZN14MarlinSettings11EEPROM_READIaEEvRT_)
-    void MarlinSettings::EEPROM_READ<bool>(T1&) 0x0002b321   Thumb Code    28  settings.o(t._ZN14MarlinSettings11EEPROM_READIbEEvRT_)
-    void MarlinSettings::EEPROM_READ<float>(T1&) 0x0002b349   Thumb Code    28  settings.o(t._ZN14MarlinSettings11EEPROM_READIfEEvRT_)
-    void MarlinSettings::EEPROM_READ<unsigned char>(T1&) 0x0002b371   Thumb Code    28  settings.o(t._ZN14MarlinSettings11EEPROM_READIhEEvRT_)
-    void MarlinSettings::EEPROM_READ<short>(T1&) 0x0002b399   Thumb Code    28  settings.o(t._ZN14MarlinSettings11EEPROM_READIsEEvRT_)
-    void MarlinSettings::EEPROM_WRITE<PID_t>(const T1&) 0x0002b3c1   Thumb Code    18  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEI5PID_tEEvRKT_)
-    void MarlinSettings::EEPROM_WRITE<XYval<float>>(const T1&) 0x0002b3dd   Thumb Code    18  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEI5XYvalIfEEEvRKT_)
-    void MarlinSettings::EEPROM_WRITE<XYZval<float>>(const T1&) 0x0002b3f9   Thumb Code    18  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEI6XYZvalIfEEEvRKT_)
-    void MarlinSettings::EEPROM_WRITE<char[4]>(const T1&) 0x0002b415   Thumb Code    18  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIA4_cEEvRKT_)
-    void MarlinSettings::EEPROM_WRITE<signed char>(const T1&) 0x0002b431   Thumb Code    18  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIaEEvRKT_)
-    void MarlinSettings::EEPROM_WRITE<bool>(const T1&) 0x0002b44d   Thumb Code    18  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIbEEvRKT_)
-    void MarlinSettings::EEPROM_WRITE<float>(const T1&) 0x0002b469   Thumb Code    18  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIfEEvRKT_)
-    void MarlinSettings::EEPROM_WRITE<unsigned char>(const T1&) 0x0002b485   Thumb Code    18  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIhEEvRKT_)
-    void MarlinSettings::EEPROM_WRITE<short>(const T1&) 0x0002b4a1   Thumb Code    18  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIsEEvRKT_)
-    void MarlinSettings::PLR_EEPROM_READ<float>(T1&) 0x0002b4bd   Thumb Code    28  settings.o(t._ZN14MarlinSettings15PLR_EEPROM_READIfEEvRT_)
-    void MarlinSettings::PLR_EEPROM_READ<unsigned>(T1&) 0x0002b4e5   Thumb Code    28  settings.o(t._ZN14MarlinSettings15PLR_EEPROM_READIjEEvRT_)
-    void MarlinSettings::PLR_EEPROM_READ<short>(T1&) 0x0002b50d   Thumb Code    28  settings.o(t._ZN14MarlinSettings15PLR_EEPROM_READIsEEvRT_)
-    void MarlinSettings::PLR_EEPROM_WRITE<char>(const T1&) 0x0002b535   Thumb Code    18  settings.o(t._ZN14MarlinSettings16PLR_EEPROM_WRITEIcEEvRKT_)
-    void MarlinSettings::PLR_EEPROM_WRITE<float>(const T1&) 0x0002b551   Thumb Code    18  settings.o(t._ZN14MarlinSettings16PLR_EEPROM_WRITEIfEEvRKT_)
-    void MarlinSettings::PLR_EEPROM_WRITE<short>(const T1&) 0x0002b56d   Thumb Code    18  settings.o(t._ZN14MarlinSettings16PLR_EEPROM_WRITEIsEEvRKT_)
-    void MarlinSettings::EEPROM_READ_ALWAYS<unsigned char>(T1&) 0x0002b589   Thumb Code    22  settings.o(t._ZN14MarlinSettings18EEPROM_READ_ALWAYSIhEEvRT_)
-    TFilamentMonitor<RunoutResponseDebounced, FilamentSensorSwitch>::run() 0x0002b5a9   Thumb Code   204  marlincore.o(t._ZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEv)
-    TFilamentMonitor<RunoutResponseDebounced, FilamentSensorSwitch>::reset() 0x0002b691   Thumb Code    34  settings.o(t._ZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE5resetEv)
-    restorer<GcodeSuite::MarlinBusyState>::~restorer() 0x0002b857   Thumb Code    12  gcode.o(t._ZN8restorerIN10GcodeSuite15MarlinBusyStateEED1Ev)
-    restorer<GcodeSuite::MarlinBusyState>::~restorer__sub_object() 0x0002b857   Thumb Code     0  gcode.o(t._ZN8restorerIN10GcodeSuite15MarlinBusyStateEED1Ev)
-    restorer<bool>::~restorer()              0x0002b863   Thumb Code    12  temperature.o(t._ZN8restorerIbED1Ev)
-    restorer<bool>::~restorer__sub_object()  0x0002b863   Thumb Code     0  temperature.o(t._ZN8restorerIbED1Ev)
-    PIN_MAP                                  0x0002b880   Data         996  board_gpio.o(.constdata)
-    boardADCPins                             0x0002bc64   Data          16  board_gpio.o(.constdata)
-    M112_KILL_STR                            0x0002bc74   Data          14  marlincore.o(.constdata)
-    NUL_STR                                  0x0002bcaf   Data           1  serial.o(.constdata)
-    SP_P_STR                                 0x0002bcb0   Data           3  serial.o(.constdata)
-    SP_T_STR                                 0x0002bcb3   Data           3  serial.o(.constdata)
-    X_STR                                    0x0002bcb6   Data           2  serial.o(.constdata)
-    Y_STR                                    0x0002bcb8   Data           2  serial.o(.constdata)
-    Z_STR                                    0x0002bcba   Data           2  serial.o(.constdata)
-    E_STR                                    0x0002bcbc   Data           2  serial.o(.constdata)
-    X_LBL                                    0x0002bcbe   Data           3  serial.o(.constdata)
-    Y_LBL                                    0x0002bcc1   Data           3  serial.o(.constdata)
-    Z_LBL                                    0x0002bcc4   Data           3  serial.o(.constdata)
-    E_LBL                                    0x0002bcc7   Data           3  serial.o(.constdata)
-    SP_A_STR                                 0x0002bcca   Data           3  serial.o(.constdata)
-    SP_B_STR                                 0x0002bccd   Data           3  serial.o(.constdata)
-    SP_C_STR                                 0x0002bcd0   Data           3  serial.o(.constdata)
-    SP_X_STR                                 0x0002bcd3   Data           3  serial.o(.constdata)
-    SP_Y_STR                                 0x0002bcd6   Data           3  serial.o(.constdata)
-    SP_Z_STR                                 0x0002bcd9   Data           3  serial.o(.constdata)
-    SP_E_STR                                 0x0002bcdc   Data           3  serial.o(.constdata)
-    SP_X_LBL                                 0x0002bcdf   Data           4  serial.o(.constdata)
-    SP_Y_LBL                                 0x0002bce3   Data           4  serial.o(.constdata)
-    SP_Z_LBL                                 0x0002bce7   Data           4  serial.o(.constdata)
-    SP_E_LBL                                 0x0002bceb   Data           4  serial.o(.constdata)
-    G28_STR                                  0x0002bd50   Data           4  queue.o(.constdata)
-    Temperature::hotend_maxtemp              0x0002bf8e   Data           4  temperature.o(.constdata)
-    M23_STR                                  0x0002bfe4   Data           7  cardreader.o(.constdata)
-    M24_STR                                  0x0002bfeb   Data           4  cardreader.o(.constdata)
-    __ctype_table                            0x0002c020   Data         129  ctype_o.o(.constdata)
-    vtable for DiskIODriver                  0x0002c0a8   Data          60  cardreader.o(.constdata__ZTV12DiskIODriver)
-    vtable for HardwareSerial                0x0002c0e4   Data          36  hardwareserial.o(.constdata__ZTV14HardwareSerial)
-    vtable for DiskIODriver_SDIO             0x0002c108   Data          60  cardreader.o(.constdata__ZTV17DiskIODriver_SDIO)
-    vtable for Print                         0x0002c144   Data          20  print.o(.constdata__ZTV5Print)
-    vtable for Stream                        0x0002c158   Data          36  hardwareserial.o(.constdata__ZTV6Stream)
-    vtable for IPAddress                     0x0002c17c   Data          12  ipaddress.o(.constdata__ZTV9IPAddress)
-    vtable for Printable                     0x0002c188   Data          12  ipaddress.o(.constdata__ZTV9Printable)
-    max_length(AxisEnum)::max_length_P       0x0002c194   Data          12  motion.o(.constdata__ZZ10max_length8AxisEnumE12max_length_P)
-    home_bump_mm(AxisEnum)::home_bump_mm_P   0x0002c1a0   Data          12  motion.o(.constdata__ZZ12home_bump_mm8AxisEnumE14home_bump_mm_P)
-    say_default_()::string                   0x0002c1ac   Data          17  temperature.o(.constdata__ZZ12say_default_vEs)
-    base_home_pos(AxisEnum)::base_home_pos_P 0x0002c1c0   Data          12  m206_m428.o(.constdata__ZZ13base_home_pos8AxisEnumE15base_home_pos_P)
-    abortSDPrinting()::string                0x0002c1cc   Data           6  marlincore.o(.constdata__ZZ15abortSDPrintingvEs)
-    abortSDPrinting()::string (instance 2)   0x0002c1d2   Data           7  marlincore.o(.constdata__ZZ15abortSDPrintingvEs_0)
-    abortSDPrinting()::string (instance 3)   0x0002c1d9   Data           4  marlincore.o(.constdata__ZZ15abortSDPrintingvEs_1)
-    finishSDPrinting()::string               0x0002c1dd   Data           6  marlincore.o(.constdata__ZZ16finishSDPrintingvEs)
-    manage_inactivity(bool)::string          0x0002c1e3   Data          61  marlincore.o(.constdata__ZZ17manage_inactivitybEs)
-    invalid_extruder_error(unsigned char)::string 0x0002c220   Data          18  tool_change.o(.constdata__ZZ22invalid_extruder_errorhEs)
-    is_M29(const char*)::string              0x0002c232   Data           4  queue.o(.constdata__ZZ6is_M29PKcEs)
-    home_dir(AxisEnum)::home_dir_P           0x0002c236   Data           3  m206_m428.o(.constdata__ZZ8home_dir8AxisEnumE10home_dir_P)
-    loud_kill(const char*, heater_id_t)::string 0x0002c239   Data           3  temperature.o(.constdata__ZZ9loud_killPKc11heater_id_tEs)
-    loud_kill(const char*, heater_id_t)::string (instance 6) 0x0002c23c   Data           3  temperature.o(.constdata__ZZ9loud_killPKc11heater_id_tEs_4)
-    say_units(bool)::string                  0x0002c23f   Data           6  settings.o(.constdata__ZZ9say_unitsbEs)
-    say_units(bool)::string (instance 2)     0x0002c245   Data           3  settings.o(.constdata__ZZ9say_unitsbEs_0)
-    GCodeQueue::get_sdcard_commands()::string 0x0002c248   Data          15  queue.o(.constdata__ZZN10GCodeQueue19get_sdcard_commandsEvEs)
-    MarlinSettings::EEPROM_START(int)::string 0x0002c257   Data          12  settings.o(.constdata__ZZN14MarlinSettings12EEPROM_STARTEiEs)
-    TFilamentMonitor<RunoutResponseDebounced, FilamentSensorSwitch>::run()::string 0x0002c263   Data          17  marlincore.o(.constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs)
-    TFilamentMonitor<RunoutResponseDebounced, FilamentSensorSwitch>::run()::string (instance 2) 0x0002c274   Data           5  marlincore.o(.constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs_0)
-    TFilamentMonitor<RunoutResponseDebounced, FilamentSensorSwitch>::run()::string (instance 3) 0x0002c279   Data           9  marlincore.o(.constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs_1)
-    FilamentSensorSwitch::run()::string      0x0002c282   Data          17  marlincore.o(.constdata__ZZN20FilamentSensorSwitch3runEvEs)
-    FilamentSensorSwitch::run()::string (instance 2) 0x0002c293   Data           5  marlincore.o(.constdata__ZZN20FilamentSensorSwitch3runEvEs_0)
-    FilamentSensorSwitch::run()::string (instance 3) 0x0002c298   Data           4  marlincore.o(.constdata__ZZN20FilamentSensorSwitch3runEvEs_1)
-    duration_t::toString(char*) const::string 0x0002c29c   Data          20  m31.o(.constdata__ZZNK10duration_t8toStringEPcEs)
-    duration_t::toString(char*) const::string (instance 2) 0x0002c2b0   Data          16  m31.o(.constdata__ZZNK10duration_t8toStringEPcEs_0)
-    duration_t::toString(char*) const::string (instance 3) 0x0002c2c0   Data          12  m31.o(.constdata__ZZNK10duration_t8toStringEPcEs_1)
-    duration_t::toString(char*) const::string (instance 4) 0x0002c2cc   Data           8  m31.o(.constdata__ZZNK10duration_t8toStringEPcEs_2)
-    duration_t::toString(char*) const::string (instance 5) 0x0002c2d4   Data           4  m31.o(.constdata__ZZNK10duration_t8toStringEPcEs_3)
-    Region$$Table$$Base                      0x0002c548   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x0002c568   Number         0  anon$$obj.o(Region$$Table)
-    SHT$$INIT_ARRAY$$Base                    0x0002c568   Number         0  main.o(.init_array.00101)
-    SHT$$INIT_ARRAY$$Limit                   0x0002c588   Number         0  cpp_init.o(.init_array)
+    setup                                    0x0002a589   Thumb Code   676  marlincore.o(i.setup)
+    setup_Extinterrupt                       0x0002aa91   Thumb Code     2  board_extint.o(i.setup_Extinterrupt)
+    setup_adcs                               0x0002aa95   Thumb Code    14  adc.o(i.setup_adcs)
+    setup_gpio                               0x0002aaa9   Thumb Code    34  board_gpio.o(i.setup_gpio)
+    setup_systick                            0x0002aacb   Thumb Code    74  board_tim0.o(i.setup_systick)
+    setup_time                               0x0002ab15   Thumb Code     2  board_tim0.o(i.setup_time)
+    setup_time2A                             0x0002ab19   Thumb Code   134  board_tim0.o(i.setup_time2A)
+    setup_time2B                             0x0002aba9   Thumb Code   132  board_tim0.o(i.setup_time2B)
+    steup_sdio                               0x0002ac35   Thumb Code    38  sdio_f1.o(i.steup_sdio)
+    timer_disable_irq                        0x0002ac61   Thumb Code    28  board_tim0.o(i.timer_disable_irq)
+    timer_enable_irq                         0x0002ac81   Thumb Code    28  board_tim0.o(i.timer_enable_irq)
+    timer_get_count                          0x0002aca1   Thumb Code    26  board_tim0.o(i.timer_get_count)
+    timer_irq_enabled                        0x0002acc1   Thumb Code    30  board_tim0.o(i.timer_irq_enabled)
+    timer_preset_compare                     0x0002acdf   Thumb Code    28  board_tim0.o(i.timer_preset_compare)
+    timer_set_compare                        0x0002acfd   Thumb Code    38  board_tim0.o(i.timer_set_compare)
+    usart_disable                            0x0002ad29   Thumb Code    44  usart.o(i.usart_disable)
+    usart_enable                             0x0002ad55   Thumb Code   602  usart.o(i.usart_enable)
+    usart_init                               0x0002b001   Thumb Code    50  usart.o(i.usart_init)
+    usart_set_baud_rate                      0x0002b033   Thumb Code    16  usart.o(i.usart_set_baud_rate)
+    usart_tx                                 0x0002b045   Thumb Code   134  usart.o(i.usart_tx)
+    yield                                    0x0002b0d1   Thumb Code     2  wirish_time.o(i.yield)
+    void SERIAL_CHAR<<char>>(char, T1...)    0x0002b0d5   Thumb Code    22  temperature.o(t._Z11SERIAL_CHARIJcEEvcDpT_)
+    void SERIAL_CHAR<<int>>(char, T1...)     0x0002b0f1   Thumb Code    22  m221.o(t._Z11SERIAL_CHARIJiEEvcDpT_)
+    void SERIAL_ECHO<heater_id_t>(T1)        0x0002b10d   Thumb Code    16  temperature.o(t._Z11SERIAL_ECHOI11heater_id_tEvT_)
+    void SERIAL_ECHO<const char*>(T1)        0x0002b121   Thumb Code    14  serial.o(t._Z11SERIAL_ECHOIPKcEvT_)
+    void SERIAL_ECHO<char*>(T1)              0x0002b135   Thumb Code    14  cardreader.o(t._Z11SERIAL_ECHOIPcEvT_)
+    void SERIAL_ECHO<float>(T1)              0x0002b149   Thumb Code    44  serial.o(t._Z11SERIAL_ECHOIfEvT_)
+    void SERIAL_ECHO<unsigned char>(T1)      0x0002b179   Thumb Code    16  serial.o(t._Z11SERIAL_ECHOIhEvT_)
+    void SERIAL_ECHO<int>(T1)                0x0002b18d   Thumb Code    16  marlincore.o(t._Z11SERIAL_ECHOIiEvT_)
+    void SERIAL_ECHO<unsigned>(T1)           0x0002b1a1   Thumb Code    16  serial.o(t._Z11SERIAL_ECHOIjEvT_)
+    void SERIAL_ECHO<long>(T1)               0x0002b1b5   Thumb Code    16  serial.o(t._Z11SERIAL_ECHOIlEvT_)
+    void SERIAL_ECHO<short>(T1)              0x0002b1c9   Thumb Code    16  temperature.o(t._Z11SERIAL_ECHOIsEvT_)
+    void SERIAL_ECHO<unsigned short>(T1)     0x0002b1dd   Thumb Code    16  gcode.o(t._Z11SERIAL_ECHOItEvT_)
+    void SERIAL_PRINT<float, int>(T1, T2)    0x0002b1f1   Thumb Code    46  temperature.o(t._Z12SERIAL_PRINTIfiEvT_T0_)
+    void SERIAL_ECHOLN<char*>(T1)            0x0002b225   Thumb Code    14  m118.o(t._Z13SERIAL_ECHOLNIPcEvT_)
+    void SERIAL_ECHOLN<unsigned>(T1)         0x0002b239   Thumb Code    16  cardreader.o(t._Z13SERIAL_ECHOLNIjEvT_)
+    void SERIAL_ECHOLN<long>(T1)             0x0002b24d   Thumb Code    16  queue.o(t._Z13SERIAL_ECHOLNIlEvT_)
+    void MarlinSettings::EEPROM_READ<PID_t>(T1&) 0x0002b261   Thumb Code    28  settings.o(t._ZN14MarlinSettings11EEPROM_READI5PID_tEEvRT_)
+    void MarlinSettings::EEPROM_READ<XYval<float>>(T1&) 0x0002b289   Thumb Code    28  settings.o(t._ZN14MarlinSettings11EEPROM_READI5XYvalIfEEEvRT_)
+    void MarlinSettings::EEPROM_READ<XYZval<float>>(T1&) 0x0002b2b1   Thumb Code    28  settings.o(t._ZN14MarlinSettings11EEPROM_READI6XYZvalIfEEEvRT_)
+    void MarlinSettings::EEPROM_READ<signed char>(T1&) 0x0002b2d9   Thumb Code    28  settings.o(t._ZN14MarlinSettings11EEPROM_READIaEEvRT_)
+    void MarlinSettings::EEPROM_READ<bool>(T1&) 0x0002b301   Thumb Code    28  settings.o(t._ZN14MarlinSettings11EEPROM_READIbEEvRT_)
+    void MarlinSettings::EEPROM_READ<float>(T1&) 0x0002b329   Thumb Code    28  settings.o(t._ZN14MarlinSettings11EEPROM_READIfEEvRT_)
+    void MarlinSettings::EEPROM_READ<unsigned char>(T1&) 0x0002b351   Thumb Code    28  settings.o(t._ZN14MarlinSettings11EEPROM_READIhEEvRT_)
+    void MarlinSettings::EEPROM_READ<short>(T1&) 0x0002b379   Thumb Code    28  settings.o(t._ZN14MarlinSettings11EEPROM_READIsEEvRT_)
+    void MarlinSettings::EEPROM_WRITE<PID_t>(const T1&) 0x0002b3a1   Thumb Code    18  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEI5PID_tEEvRKT_)
+    void MarlinSettings::EEPROM_WRITE<XYval<float>>(const T1&) 0x0002b3bd   Thumb Code    18  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEI5XYvalIfEEEvRKT_)
+    void MarlinSettings::EEPROM_WRITE<XYZval<float>>(const T1&) 0x0002b3d9   Thumb Code    18  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEI6XYZvalIfEEEvRKT_)
+    void MarlinSettings::EEPROM_WRITE<char[4]>(const T1&) 0x0002b3f5   Thumb Code    18  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIA4_cEEvRKT_)
+    void MarlinSettings::EEPROM_WRITE<signed char>(const T1&) 0x0002b411   Thumb Code    18  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIaEEvRKT_)
+    void MarlinSettings::EEPROM_WRITE<bool>(const T1&) 0x0002b42d   Thumb Code    18  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIbEEvRKT_)
+    void MarlinSettings::EEPROM_WRITE<float>(const T1&) 0x0002b449   Thumb Code    18  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIfEEvRKT_)
+    void MarlinSettings::EEPROM_WRITE<unsigned char>(const T1&) 0x0002b465   Thumb Code    18  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIhEEvRKT_)
+    void MarlinSettings::EEPROM_WRITE<short>(const T1&) 0x0002b481   Thumb Code    18  settings.o(t._ZN14MarlinSettings12EEPROM_WRITEIsEEvRKT_)
+    void MarlinSettings::PLR_EEPROM_READ<float>(T1&) 0x0002b49d   Thumb Code    28  settings.o(t._ZN14MarlinSettings15PLR_EEPROM_READIfEEvRT_)
+    void MarlinSettings::PLR_EEPROM_READ<unsigned>(T1&) 0x0002b4c5   Thumb Code    28  settings.o(t._ZN14MarlinSettings15PLR_EEPROM_READIjEEvRT_)
+    void MarlinSettings::PLR_EEPROM_READ<short>(T1&) 0x0002b4ed   Thumb Code    28  settings.o(t._ZN14MarlinSettings15PLR_EEPROM_READIsEEvRT_)
+    void MarlinSettings::PLR_EEPROM_WRITE<char>(const T1&) 0x0002b515   Thumb Code    18  settings.o(t._ZN14MarlinSettings16PLR_EEPROM_WRITEIcEEvRKT_)
+    void MarlinSettings::PLR_EEPROM_WRITE<float>(const T1&) 0x0002b531   Thumb Code    18  settings.o(t._ZN14MarlinSettings16PLR_EEPROM_WRITEIfEEvRKT_)
+    void MarlinSettings::PLR_EEPROM_WRITE<short>(const T1&) 0x0002b54d   Thumb Code    18  settings.o(t._ZN14MarlinSettings16PLR_EEPROM_WRITEIsEEvRKT_)
+    void MarlinSettings::EEPROM_READ_ALWAYS<unsigned char>(T1&) 0x0002b569   Thumb Code    22  settings.o(t._ZN14MarlinSettings18EEPROM_READ_ALWAYSIhEEvRT_)
+    TFilamentMonitor<RunoutResponseDebounced, FilamentSensorSwitch>::run() 0x0002b589   Thumb Code   204  marlincore.o(t._ZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEv)
+    TFilamentMonitor<RunoutResponseDebounced, FilamentSensorSwitch>::reset() 0x0002b671   Thumb Code    34  settings.o(t._ZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE5resetEv)
+    restorer<GcodeSuite::MarlinBusyState>::~restorer() 0x0002b837   Thumb Code    12  gcode.o(t._ZN8restorerIN10GcodeSuite15MarlinBusyStateEED1Ev)
+    restorer<GcodeSuite::MarlinBusyState>::~restorer__sub_object() 0x0002b837   Thumb Code     0  gcode.o(t._ZN8restorerIN10GcodeSuite15MarlinBusyStateEED1Ev)
+    restorer<bool>::~restorer()              0x0002b843   Thumb Code    12  temperature.o(t._ZN8restorerIbED1Ev)
+    restorer<bool>::~restorer__sub_object()  0x0002b843   Thumb Code     0  temperature.o(t._ZN8restorerIbED1Ev)
+    PIN_MAP                                  0x0002b860   Data         996  board_gpio.o(.constdata)
+    boardADCPins                             0x0002bc44   Data          16  board_gpio.o(.constdata)
+    M112_KILL_STR                            0x0002bc54   Data          14  marlincore.o(.constdata)
+    NUL_STR                                  0x0002bc8f   Data           1  serial.o(.constdata)
+    SP_P_STR                                 0x0002bc90   Data           3  serial.o(.constdata)
+    SP_T_STR                                 0x0002bc93   Data           3  serial.o(.constdata)
+    X_STR                                    0x0002bc96   Data           2  serial.o(.constdata)
+    Y_STR                                    0x0002bc98   Data           2  serial.o(.constdata)
+    Z_STR                                    0x0002bc9a   Data           2  serial.o(.constdata)
+    E_STR                                    0x0002bc9c   Data           2  serial.o(.constdata)
+    X_LBL                                    0x0002bc9e   Data           3  serial.o(.constdata)
+    Y_LBL                                    0x0002bca1   Data           3  serial.o(.constdata)
+    Z_LBL                                    0x0002bca4   Data           3  serial.o(.constdata)
+    E_LBL                                    0x0002bca7   Data           3  serial.o(.constdata)
+    SP_A_STR                                 0x0002bcaa   Data           3  serial.o(.constdata)
+    SP_B_STR                                 0x0002bcad   Data           3  serial.o(.constdata)
+    SP_C_STR                                 0x0002bcb0   Data           3  serial.o(.constdata)
+    SP_X_STR                                 0x0002bcb3   Data           3  serial.o(.constdata)
+    SP_Y_STR                                 0x0002bcb6   Data           3  serial.o(.constdata)
+    SP_Z_STR                                 0x0002bcb9   Data           3  serial.o(.constdata)
+    SP_E_STR                                 0x0002bcbc   Data           3  serial.o(.constdata)
+    SP_X_LBL                                 0x0002bcbf   Data           4  serial.o(.constdata)
+    SP_Y_LBL                                 0x0002bcc3   Data           4  serial.o(.constdata)
+    SP_Z_LBL                                 0x0002bcc7   Data           4  serial.o(.constdata)
+    SP_E_LBL                                 0x0002bccb   Data           4  serial.o(.constdata)
+    G28_STR                                  0x0002bd30   Data           4  queue.o(.constdata)
+    Temperature::hotend_maxtemp              0x0002bf6e   Data           4  temperature.o(.constdata)
+    M23_STR                                  0x0002bfc4   Data           7  cardreader.o(.constdata)
+    M24_STR                                  0x0002bfcb   Data           4  cardreader.o(.constdata)
+    __ctype_table                            0x0002c000   Data         129  ctype_o.o(.constdata)
+    vtable for DiskIODriver                  0x0002c088   Data          60  cardreader.o(.constdata__ZTV12DiskIODriver)
+    vtable for HardwareSerial                0x0002c0c4   Data          36  hardwareserial.o(.constdata__ZTV14HardwareSerial)
+    vtable for DiskIODriver_SDIO             0x0002c0e8   Data          60  cardreader.o(.constdata__ZTV17DiskIODriver_SDIO)
+    vtable for Print                         0x0002c124   Data          20  print.o(.constdata__ZTV5Print)
+    vtable for Stream                        0x0002c138   Data          36  hardwareserial.o(.constdata__ZTV6Stream)
+    vtable for IPAddress                     0x0002c15c   Data          12  ipaddress.o(.constdata__ZTV9IPAddress)
+    vtable for Printable                     0x0002c168   Data          12  ipaddress.o(.constdata__ZTV9Printable)
+    max_length(AxisEnum)::max_length_P       0x0002c174   Data          12  motion.o(.constdata__ZZ10max_length8AxisEnumE12max_length_P)
+    home_bump_mm(AxisEnum)::home_bump_mm_P   0x0002c180   Data          12  motion.o(.constdata__ZZ12home_bump_mm8AxisEnumE14home_bump_mm_P)
+    say_default_()::string                   0x0002c18c   Data          17  temperature.o(.constdata__ZZ12say_default_vEs)
+    base_home_pos(AxisEnum)::base_home_pos_P 0x0002c1a0   Data          12  m206_m428.o(.constdata__ZZ13base_home_pos8AxisEnumE15base_home_pos_P)
+    abortSDPrinting()::string                0x0002c1ac   Data           6  marlincore.o(.constdata__ZZ15abortSDPrintingvEs)
+    abortSDPrinting()::string (instance 2)   0x0002c1b2   Data           7  marlincore.o(.constdata__ZZ15abortSDPrintingvEs_0)
+    abortSDPrinting()::string (instance 3)   0x0002c1b9   Data           4  marlincore.o(.constdata__ZZ15abortSDPrintingvEs_1)
+    finishSDPrinting()::string               0x0002c1bd   Data           6  marlincore.o(.constdata__ZZ16finishSDPrintingvEs)
+    manage_inactivity(bool)::string          0x0002c1c3   Data          61  marlincore.o(.constdata__ZZ17manage_inactivitybEs)
+    invalid_extruder_error(unsigned char)::string 0x0002c200   Data          18  tool_change.o(.constdata__ZZ22invalid_extruder_errorhEs)
+    is_M29(const char*)::string              0x0002c212   Data           4  queue.o(.constdata__ZZ6is_M29PKcEs)
+    home_dir(AxisEnum)::home_dir_P           0x0002c216   Data           3  m206_m428.o(.constdata__ZZ8home_dir8AxisEnumE10home_dir_P)
+    loud_kill(const char*, heater_id_t)::string 0x0002c219   Data           3  temperature.o(.constdata__ZZ9loud_killPKc11heater_id_tEs)
+    loud_kill(const char*, heater_id_t)::string (instance 6) 0x0002c21c   Data           3  temperature.o(.constdata__ZZ9loud_killPKc11heater_id_tEs_4)
+    say_units(bool)::string                  0x0002c21f   Data           6  settings.o(.constdata__ZZ9say_unitsbEs)
+    say_units(bool)::string (instance 2)     0x0002c225   Data           3  settings.o(.constdata__ZZ9say_unitsbEs_0)
+    GCodeQueue::get_sdcard_commands()::string 0x0002c228   Data          15  queue.o(.constdata__ZZN10GCodeQueue19get_sdcard_commandsEvEs)
+    MarlinSettings::EEPROM_START(int)::string 0x0002c237   Data          12  settings.o(.constdata__ZZN14MarlinSettings12EEPROM_STARTEiEs)
+    TFilamentMonitor<RunoutResponseDebounced, FilamentSensorSwitch>::run()::string 0x0002c243   Data          17  marlincore.o(.constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs)
+    TFilamentMonitor<RunoutResponseDebounced, FilamentSensorSwitch>::run()::string (instance 2) 0x0002c254   Data           5  marlincore.o(.constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs_0)
+    TFilamentMonitor<RunoutResponseDebounced, FilamentSensorSwitch>::run()::string (instance 3) 0x0002c259   Data           9  marlincore.o(.constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs_1)
+    FilamentSensorSwitch::run()::string      0x0002c262   Data          17  marlincore.o(.constdata__ZZN20FilamentSensorSwitch3runEvEs)
+    FilamentSensorSwitch::run()::string (instance 2) 0x0002c273   Data           5  marlincore.o(.constdata__ZZN20FilamentSensorSwitch3runEvEs_0)
+    FilamentSensorSwitch::run()::string (instance 3) 0x0002c278   Data           4  marlincore.o(.constdata__ZZN20FilamentSensorSwitch3runEvEs_1)
+    duration_t::toString(char*) const::string 0x0002c27c   Data          20  m31.o(.constdata__ZZNK10duration_t8toStringEPcEs)
+    duration_t::toString(char*) const::string (instance 2) 0x0002c290   Data          16  m31.o(.constdata__ZZNK10duration_t8toStringEPcEs_0)
+    duration_t::toString(char*) const::string (instance 3) 0x0002c2a0   Data          12  m31.o(.constdata__ZZNK10duration_t8toStringEPcEs_1)
+    duration_t::toString(char*) const::string (instance 4) 0x0002c2ac   Data           8  m31.o(.constdata__ZZNK10duration_t8toStringEPcEs_2)
+    duration_t::toString(char*) const::string (instance 5) 0x0002c2b4   Data           4  m31.o(.constdata__ZZNK10duration_t8toStringEPcEs_3)
+    Region$$Table$$Base                      0x0002c528   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x0002c548   Number         0  anon$$obj.o(Region$$Table)
+    SHT$$INIT_ARRAY$$Base                    0x0002c548   Number         0  main.o(.init_array.00101)
+    SHT$$INIT_ARRAY$$Limit                   0x0002c568   Number         0  cpp_init.o(.init_array)
     debug_stcInitCfg                         0x20000001   Data           9  hc32f46x_utility.o(.data)
     SystemCoreClock                          0x2000000c   Data           4  system_hc32f460petb.o(.data)
     card                                     0x20000010   Data           1  marlincore.o(.data)
@@ -8249,9 +8249,9 @@ Memory Map of the image
 
   Image Entry point : 0x00008421
 
-  Load Region LR_IROM1 (Base: 0x00008000, Size: 0x00024dac, Max: 0x00040000, ABSOLUTE, COMPRESSED[0x000246b8])
+  Load Region LR_IROM1 (Base: 0x00008000, Size: 0x00024d8c, Max: 0x00040000, ABSOLUTE, COMPRESSED[0x00024698])
 
-    Execution Region ER_IROM1 (Exec base: 0x00008000, Load base: 0x00008000, Size: 0x00024588, Max: 0x00040000, ABSOLUTE)
+    Execution Region ER_IROM1 (Exec base: 0x00008000, Load base: 0x00008000, Size: 0x00024568, Max: 0x00040000, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -9351,182 +9351,182 @@ Memory Map of the image
     0x0002a504   0x0002a504   0x0000000c   Code   RO         1160    i.main              main.o
     0x0002a510   0x0002a510   0x0000006c   Code   RO         5800    i.malloc            mc_w.l(malloc.o)
     0x0002a57c   0x0002a57c   0x0000000c   Code   RO         5087    i.millis            glib.lib(board_tim0.o)
-    0x0002a588   0x0002a588   0x00000528   Code   RO         1211    i.setup             marlincore.o
-    0x0002aab0   0x0002aab0   0x00000002   Code   RO         5385    i.setup_Extinterrupt  glib.lib(board_extint.o)
-    0x0002aab2   0x0002aab2   0x00000002   PAD
-    0x0002aab4   0x0002aab4   0x00000014   Code   RO         5057    i.setup_adcs        glib.lib(adc.o)
-    0x0002aac8   0x0002aac8   0x00000022   Code   RO         1171    i.setup_gpio        board_gpio.o
-    0x0002aaea   0x0002aaea   0x0000004a   Code   RO         5088    i.setup_systick     glib.lib(board_tim0.o)
-    0x0002ab34   0x0002ab34   0x00000002   Code   RO         5089    i.setup_time        glib.lib(board_tim0.o)
-    0x0002ab36   0x0002ab36   0x00000002   PAD
-    0x0002ab38   0x0002ab38   0x00000090   Code   RO         5090    i.setup_time2A      glib.lib(board_tim0.o)
-    0x0002abc8   0x0002abc8   0x0000008c   Code   RO         5091    i.setup_time2B      glib.lib(board_tim0.o)
-    0x0002ac54   0x0002ac54   0x0000002c   Code   RO         3991    i.steup_sdio        sdio_f1.o
-    0x0002ac80   0x0002ac80   0x00000020   Code   RO         5092    i.timer_disable_irq  glib.lib(board_tim0.o)
-    0x0002aca0   0x0002aca0   0x00000020   Code   RO         5093    i.timer_enable_irq  glib.lib(board_tim0.o)
-    0x0002acc0   0x0002acc0   0x00000020   Code   RO         5094    i.timer_get_count   glib.lib(board_tim0.o)
-    0x0002ace0   0x0002ace0   0x0000001e   Code   RO         5095    i.timer_irq_enabled  glib.lib(board_tim0.o)
-    0x0002acfe   0x0002acfe   0x0000001c   Code   RO         5096    i.timer_preset_compare  glib.lib(board_tim0.o)
-    0x0002ad1a   0x0002ad1a   0x00000002   PAD
-    0x0002ad1c   0x0002ad1c   0x0000002c   Code   RO         5097    i.timer_set_compare  glib.lib(board_tim0.o)
-    0x0002ad48   0x0002ad48   0x0000002c   Code   RO         5431    i.usart_disable     glib.lib(usart.o)
-    0x0002ad74   0x0002ad74   0x000002ac   Code   RO         5432    i.usart_enable      glib.lib(usart.o)
-    0x0002b020   0x0002b020   0x00000032   Code   RO         5433    i.usart_init        glib.lib(usart.o)
-    0x0002b052   0x0002b052   0x00000010   Code   RO         5436    i.usart_set_baud_rate  glib.lib(usart.o)
-    0x0002b062   0x0002b062   0x00000002   PAD
-    0x0002b064   0x0002b064   0x0000008c   Code   RO         5437    i.usart_tx          glib.lib(usart.o)
-    0x0002b0f0   0x0002b0f0   0x00000002   Code   RO         5252    i.yield             glib.lib(wirish_time.o)
-    0x0002b0f2   0x0002b0f2   0x00000002   PAD
-    0x0002b0f4   0x0002b0f4   0x0000001c   Code   RO         3486    t._Z11SERIAL_CHARIJcEEvcDpT_  temperature.o
-    0x0002b110   0x0002b110   0x0000001c   Code   RO         1472    t._Z11SERIAL_CHARIJiEEvcDpT_  m221.o
-    0x0002b12c   0x0002b12c   0x00000014   Code   RO         3480    t._Z11SERIAL_ECHOI11heater_id_tEvT_  temperature.o
-    0x0002b140   0x0002b140   0x00000014   Code   RO         1328    t._Z11SERIAL_ECHOIPKcEvT_  serial.o
-    0x0002b154   0x0002b154   0x00000014   Code   RO         3625    t._Z11SERIAL_ECHOIPcEvT_  cardreader.o
-    0x0002b168   0x0002b168   0x00000030   Code   RO         1334    t._Z11SERIAL_ECHOIfEvT_  serial.o
-    0x0002b198   0x0002b198   0x00000014   Code   RO         1338    t._Z11SERIAL_ECHOIhEvT_  serial.o
-    0x0002b1ac   0x0002b1ac   0x00000014   Code   RO         1259    t._Z11SERIAL_ECHOIiEvT_  marlincore.o
-    0x0002b1c0   0x0002b1c0   0x00000014   Code   RO         1340    t._Z11SERIAL_ECHOIjEvT_  serial.o
-    0x0002b1d4   0x0002b1d4   0x00000014   Code   RO         1332    t._Z11SERIAL_ECHOIlEvT_  serial.o
-    0x0002b1e8   0x0002b1e8   0x00000014   Code   RO         3488    t._Z11SERIAL_ECHOIsEvT_  temperature.o
-    0x0002b1fc   0x0002b1fc   0x00000014   Code   RO         2257    t._Z11SERIAL_ECHOItEvT_  gcode.o
-    0x0002b210   0x0002b210   0x00000034   Code   RO         3484    t._Z12SERIAL_PRINTIfiEvT_T0_  temperature.o
-    0x0002b244   0x0002b244   0x00000014   Code   RO         1814    t._Z13SERIAL_ECHOLNIPcEvT_  m118.o
-    0x0002b258   0x0002b258   0x00000014   Code   RO         3627    t._Z13SERIAL_ECHOLNIjEvT_  cardreader.o
-    0x0002b26c   0x0002b26c   0x00000014   Code   RO         2331    t._Z13SERIAL_ECHOLNIlEvT_  queue.o
-    0x0002b280   0x0002b280   0x00000028   Code   RO         3322    t._ZN14MarlinSettings11EEPROM_READI5PID_tEEvRT_  settings.o
-    0x0002b2a8   0x0002b2a8   0x00000028   Code   RO         3326    t._ZN14MarlinSettings11EEPROM_READI5XYvalIfEEEvRT_  settings.o
-    0x0002b2d0   0x0002b2d0   0x00000028   Code   RO         3330    t._ZN14MarlinSettings11EEPROM_READI6XYZvalIfEEEvRT_  settings.o
-    0x0002b2f8   0x0002b2f8   0x00000028   Code   RO         3324    t._ZN14MarlinSettings11EEPROM_READIaEEvRT_  settings.o
-    0x0002b320   0x0002b320   0x00000028   Code   RO         3318    t._ZN14MarlinSettings11EEPROM_READIbEEvRT_  settings.o
-    0x0002b348   0x0002b348   0x00000028   Code   RO         3316    t._ZN14MarlinSettings11EEPROM_READIfEEvRT_  settings.o
-    0x0002b370   0x0002b370   0x00000028   Code   RO         3314    t._ZN14MarlinSettings11EEPROM_READIhEEvRT_  settings.o
-    0x0002b398   0x0002b398   0x00000028   Code   RO         3320    t._ZN14MarlinSettings11EEPROM_READIsEEvRT_  settings.o
-    0x0002b3c0   0x0002b3c0   0x0000001c   Code   RO         3294    t._ZN14MarlinSettings12EEPROM_WRITEI5PID_tEEvRKT_  settings.o
-    0x0002b3dc   0x0002b3dc   0x0000001c   Code   RO         3296    t._ZN14MarlinSettings12EEPROM_WRITEI5XYvalIfEEEvRKT_  settings.o
-    0x0002b3f8   0x0002b3f8   0x0000001c   Code   RO         3288    t._ZN14MarlinSettings12EEPROM_WRITEI6XYZvalIfEEEvRKT_  settings.o
-    0x0002b414   0x0002b414   0x0000001c   Code   RO         3280    t._ZN14MarlinSettings12EEPROM_WRITEIA4_cEEvRKT_  settings.o
-    0x0002b430   0x0002b430   0x0000001c   Code   RO         3282    t._ZN14MarlinSettings12EEPROM_WRITEIaEEvRKT_  settings.o
-    0x0002b44c   0x0002b44c   0x0000001c   Code   RO         3290    t._ZN14MarlinSettings12EEPROM_WRITEIbEEvRKT_  settings.o
-    0x0002b468   0x0002b468   0x0000001c   Code   RO         3284    t._ZN14MarlinSettings12EEPROM_WRITEIfEEvRKT_  settings.o
-    0x0002b484   0x0002b484   0x0000001c   Code   RO         3286    t._ZN14MarlinSettings12EEPROM_WRITEIhEEvRKT_  settings.o
-    0x0002b4a0   0x0002b4a0   0x0000001c   Code   RO         3292    t._ZN14MarlinSettings12EEPROM_WRITEIsEEvRKT_  settings.o
-    0x0002b4bc   0x0002b4bc   0x00000028   Code   RO         3308    t._ZN14MarlinSettings15PLR_EEPROM_READIfEEvRT_  settings.o
-    0x0002b4e4   0x0002b4e4   0x00000028   Code   RO         3306    t._ZN14MarlinSettings15PLR_EEPROM_READIjEEvRT_  settings.o
-    0x0002b50c   0x0002b50c   0x00000028   Code   RO         3310    t._ZN14MarlinSettings15PLR_EEPROM_READIsEEvRT_  settings.o
-    0x0002b534   0x0002b534   0x0000001c   Code   RO         3304    t._ZN14MarlinSettings16PLR_EEPROM_WRITEIcEEvRKT_  settings.o
-    0x0002b550   0x0002b550   0x0000001c   Code   RO         3298    t._ZN14MarlinSettings16PLR_EEPROM_WRITEIfEEvRKT_  settings.o
-    0x0002b56c   0x0002b56c   0x0000001c   Code   RO         3300    t._ZN14MarlinSettings16PLR_EEPROM_WRITEIsEEvRKT_  settings.o
-    0x0002b588   0x0002b588   0x00000020   Code   RO         3328    t._ZN14MarlinSettings18EEPROM_READ_ALWAYSIhEEvRT_  settings.o
-    0x0002b5a8   0x0002b5a8   0x000000e8   Code   RO         1261    t._ZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEv  marlincore.o
-    0x0002b690   0x0002b690   0x0000002c   Code   RO         3274    t._ZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE5resetEv  settings.o
-    0x0002b6bc   0x0002b6bc   0x0000001a   Code   RO         1884    t._ZN30_INTERNAL_9_G2_G3_cpp_e4fdbed73ABSIfEEKT_S1_  g2_g3.o
-    0x0002b6d6   0x0002b6d6   0x0000001a   Code   RO         3042    t._ZN32_INTERNAL_10_motion_cpp_db549edf3ABSIfEEKT_S1_  motion.o
-    0x0002b6f0   0x0002b6f0   0x00000014   Code   RO         3043    t._ZN32_INTERNAL_10_motion_cpp_db549edf6NOLESSIffEEvRT_T0_  motion.o
-    0x0002b704   0x0002b704   0x00000014   Code   RO         3044    t._ZN32_INTERNAL_10_motion_cpp_db549edf6NOMOREIffEEvRT_T0_  motion.o
-    0x0002b718   0x0002b718   0x0000001a   Code   RO         3146    t._ZN32_INTERNAL_11_planner_cpp_planner3ABSIfEEKT_S1_  planner.o
-    0x0002b732   0x0002b732   0x0000000e   Code   RO         3147    t._ZN32_INTERNAL_11_planner_cpp_planner3ABSIiEEKT_S1_  planner.o
-    0x0002b740   0x0002b740   0x0000001a   Code   RO         3148    t._ZN32_INTERNAL_11_planner_cpp_planner4_MAXIffEEDTplfpK_fpK0_ET_T0_  planner.o
-    0x0002b75a   0x0002b75a   0x0000000e   Code   RO         3149    t._ZN32_INTERNAL_11_planner_cpp_planner4_MAXIjjEEDTplfpK_fpK0_ET_T0_  planner.o
-    0x0002b768   0x0002b768   0x0000001a   Code   RO         3150    t._ZN32_INTERNAL_11_planner_cpp_planner4_MINIffEEDTplfpK_fpK0_ET_T0_  planner.o
-    0x0002b782   0x0002b782   0x00000014   Code   RO         3151    t._ZN32_INTERNAL_11_planner_cpp_planner6NOLESSIffEEvRT_T0_  planner.o
-    0x0002b796   0x0002b796   0x0000000a   Code   RO         3152    t._ZN32_INTERNAL_11_planner_cpp_planner6NOLESSIjjEEvRT_T0_  planner.o
-    0x0002b7a0   0x0002b7a0   0x00000014   Code   RO         3153    t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIffEEvRT_T0_  planner.o
-    0x0002b7b4   0x0002b7b4   0x0000001c   Code   RO         3154    t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIjfEEvRT_T0_  planner.o
-    0x0002b7d0   0x0002b7d0   0x0000000a   Code   RO         3155    t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIjjEEvRT_T0_  planner.o
-    0x0002b7da   0x0002b7da   0x0000000e   Code   RO         3359    t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MAXIjmEEDTplfpK_fpK0_ET_T0_  stepper.o
-    0x0002b7e8   0x0002b7e8   0x0000000e   Code   RO         3360    t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MAXImmEEDTplfpK_fpK0_ET_T0_  stepper.o
-    0x0002b7f6   0x0002b7f6   0x0000000e   Code   RO         3361    t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MINIjmEEDTplfpK_fpK0_ET_T0_  stepper.o
-    0x0002b804   0x0002b804   0x0000000e   Code   RO         3245    t._ZN34_INTERNAL_12_settings_cpp_7a1ff5ce4_MINIhiEEDTplfpK_fpK0_ET_T0_  settings.o
-    0x0002b812   0x0002b812   0x0000000e   Code   RO         2147    t._ZN35_INTERNAL_13_M106_M107_cpp_6296f81a4_MINIhiEEDTplfpK_fpK0_ET_T0_  m106_m107.o
-    0x0002b820   0x0002b820   0x0000001a   Code   RO         3433    t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8243ABSIfEEKT_S1_  temperature.o
-    0x0002b83a   0x0002b83a   0x0000000e   Code   RO         3434    t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8244_MAXIiiEEDTplfpK_fpK0_ET_T0_  temperature.o
-    0x0002b848   0x0002b848   0x0000000e   Code   RO         3435    t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8244_MINIiiEEDTplfpK_fpK0_ET_T0_  temperature.o
-    0x0002b856   0x0002b856   0x0000000c   Code   RO         2263    t._ZN8restorerIN10GcodeSuite15MarlinBusyStateEED1Ev  gcode.o
-    0x0002b862   0x0002b862   0x0000000c   Code   RO         3500    t._ZN8restorerIbED1Ev  temperature.o
-    0x0002b86e   0x0002b86e   0x00000002   PAD
-    0x0002b870   0x0002b870   0x00000010   Data   RO         1123    .constdata          hc32f46x_usart.o
-    0x0002b880   0x0002b880   0x000003f4   Data   RO         1175    .constdata          board_gpio.o
-    0x0002bc74   0x0002bc74   0x0000003b   Data   RO         1232    .constdata          marlincore.o
-    0x0002bcaf   0x0002bcaf   0x0000004d   Data   RO         1326    .constdata          serial.o
-    0x0002bcfc   0x0002bcfc   0x00000004   Data   RO         1421    .constdata          m92.o
-    0x0002bd00   0x0002bd00   0x00000004   Data   RO         1443    .constdata          m200-m205.o
-    0x0002bd04   0x0002bd04   0x0000003c   Data   RO         1581    .constdata          m111.o
-    0x0002bd40   0x0002bd40   0x0000000c   Data   RO         1702    .constdata          g27.o
-    0x0002bd4c   0x0002bd4c   0x00000004   Data   RO         1736    .constdata          g92.o
-    0x0002bd50   0x0002bd50   0x00000014   Data   RO         2326    .constdata          queue.o
-    0x0002bd64   0x0002bd64   0x0000001a   Data   RO         2764    .constdata          tenlog_touch_lcd.o
-    0x0002bd7e   0x0002bd7e   0x0000000e   Data   RO         2991    .constdata          endstops.o
-    0x0002bd8c   0x0002bd8c   0x00000015   Data   RO         3094    .constdata          motion.o
-    0x0002bda1   0x0002bda1   0x00000003   PAD
-    0x0002bda4   0x0002bda4   0x000000c8   Data   RO         3268    .constdata          settings.o
-    0x0002be6c   0x0002be6c   0x00000178   Data   RO         3473    .constdata          temperature.o
-    0x0002bfe4   0x0002bfe4   0x0000001c   Data   RO         3621    .constdata          cardreader.o
-    0x0002c000   0x0002c000   0x00000020   Data   RO         5865    .constdata          m_wm.l(rredf.o)
-    0x0002c020   0x0002c020   0x00000081   Data   RO         5886    .constdata          mc_w.l(ctype_o.o)
-    0x0002c0a1   0x0002c0a1   0x00000003   PAD
-    0x0002c0a4   0x0002c0a4   0x00000004   Data   RO         5887    .constdata          mc_w.l(ctype_o.o)
-    0x0002c0a8   0x0002c0a8   0x0000003c   Data   RO         3640    .constdata__ZTV12DiskIODriver  cardreader.o
-    0x0002c0e4   0x0002c0e4   0x00000024   Data   RO         5164    .constdata__ZTV14HardwareSerial  glib.lib(hardwareserial.o)
-    0x0002c108   0x0002c108   0x0000003c   Data   RO         3642    .constdata__ZTV17DiskIODriver_SDIO  cardreader.o
-    0x0002c144   0x0002c144   0x00000014   Data   RO         5235    .constdata__ZTV5Print  glib.lib(print.o)
-    0x0002c158   0x0002c158   0x00000024   Data   RO         5166    .constdata__ZTV6Stream  glib.lib(hardwareserial.o)
-    0x0002c17c   0x0002c17c   0x0000000c   Data   RO         3967    .constdata__ZTV9IPAddress  ipaddress.o
-    0x0002c188   0x0002c188   0x0000000c   Data   RO         3971    .constdata__ZTV9Printable  ipaddress.o
-    0x0002c194   0x0002c194   0x0000000c   Data   RO         3102    .constdata__ZZ10max_length8AxisEnumE12max_length_P  motion.o
-    0x0002c1a0   0x0002c1a0   0x0000000c   Data   RO         3103    .constdata__ZZ12home_bump_mm8AxisEnumE14home_bump_mm_P  motion.o
-    0x0002c1ac   0x0002c1ac   0x00000011   Data   RO         3477    .constdata__ZZ12say_default_vEs  temperature.o
-    0x0002c1bd   0x0002c1bd   0x00000003   PAD
-    0x0002c1c0   0x0002c1c0   0x0000000c   Data   RO         1753    .constdata__ZZ13base_home_pos8AxisEnumE15base_home_pos_P  m206_m428.o
-    0x0002c1cc   0x0002c1cc   0x00000006   Data   RO         1240    .constdata__ZZ15abortSDPrintingvEs  marlincore.o
-    0x0002c1d2   0x0002c1d2   0x00000007   Data   RO         1241    .constdata__ZZ15abortSDPrintingvEs_0  marlincore.o
-    0x0002c1d9   0x0002c1d9   0x00000004   Data   RO         1242    .constdata__ZZ15abortSDPrintingvEs_1  marlincore.o
-    0x0002c1dd   0x0002c1dd   0x00000006   Data   RO         1243    .constdata__ZZ16finishSDPrintingvEs  marlincore.o
-    0x0002c1e3   0x0002c1e3   0x0000003d   Data   RO         1244    .constdata__ZZ17manage_inactivitybEs  marlincore.o
-    0x0002c220   0x0002c220   0x00000012   Data   RO         3522    .constdata__ZZ22invalid_extruder_errorhEs  tool_change.o
-    0x0002c232   0x0002c232   0x00000004   Data   RO         2329    .constdata__ZZ6is_M29PKcEs  queue.o
-    0x0002c236   0x0002c236   0x00000003   Data   RO         1754    .constdata__ZZ8home_dir8AxisEnumE10home_dir_P  m206_m428.o
-    0x0002c239   0x0002c239   0x00000003   Data   RO         3478    .constdata__ZZ9loud_killPKc11heater_id_tEs  temperature.o
-    0x0002c23c   0x0002c23c   0x00000003   Data   RO         3479    .constdata__ZZ9loud_killPKc11heater_id_tEs_4  temperature.o
-    0x0002c23f   0x0002c23f   0x00000006   Data   RO         3272    .constdata__ZZ9say_unitsbEs  settings.o
-    0x0002c245   0x0002c245   0x00000003   Data   RO         3273    .constdata__ZZ9say_unitsbEs_0  settings.o
-    0x0002c248   0x0002c248   0x0000000f   Data   RO         2330    .constdata__ZZN10GCodeQueue19get_sdcard_commandsEvEs  queue.o
-    0x0002c257   0x0002c257   0x0000000c   Data   RO         3271    .constdata__ZZN14MarlinSettings12EEPROM_STARTEiEs  settings.o
-    0x0002c263   0x0002c263   0x00000011   Data   RO         1245    .constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs  marlincore.o
-    0x0002c274   0x0002c274   0x00000005   Data   RO         1246    .constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs_0  marlincore.o
-    0x0002c279   0x0002c279   0x00000009   Data   RO         1247    .constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs_1  marlincore.o
-    0x0002c282   0x0002c282   0x00000011   Data   RO         1237    .constdata__ZZN20FilamentSensorSwitch3runEvEs  marlincore.o
-    0x0002c293   0x0002c293   0x00000005   Data   RO         1238    .constdata__ZZN20FilamentSensorSwitch3runEvEs_0  marlincore.o
-    0x0002c298   0x0002c298   0x00000004   Data   RO         1239    .constdata__ZZN20FilamentSensorSwitch3runEvEs_1  marlincore.o
-    0x0002c29c   0x0002c29c   0x00000014   Data   RO         2082    .constdata__ZZNK10duration_t8toStringEPcEs  m31.o
-    0x0002c2b0   0x0002c2b0   0x00000010   Data   RO         2083    .constdata__ZZNK10duration_t8toStringEPcEs_0  m31.o
-    0x0002c2c0   0x0002c2c0   0x0000000c   Data   RO         2084    .constdata__ZZNK10duration_t8toStringEPcEs_1  m31.o
-    0x0002c2cc   0x0002c2cc   0x00000008   Data   RO         2085    .constdata__ZZNK10duration_t8toStringEPcEs_2  m31.o
-    0x0002c2d4   0x0002c2d4   0x00000004   Data   RO         2086    .constdata__ZZNK10duration_t8toStringEPcEs_3  m31.o
-    0x0002c2d8   0x0002c2d8   0x000000cc   Data   RO         1802    .conststring        m115.o
-    0x0002c3a4   0x0002c3a4   0x00000077   Data   RO         2327    .conststring        queue.o
-    0x0002c41b   0x0002c41b   0x00000001   PAD
-    0x0002c41c   0x0002c41c   0x000000c9   Data   RO         3269    .conststring        settings.o
-    0x0002c4e5   0x0002c4e5   0x00000003   PAD
-    0x0002c4e8   0x0002c4e8   0x0000005d   Data   RO         3474    .conststring        temperature.o
-    0x0002c545   0x0002c545   0x00000003   PAD
-    0x0002c548   0x0002c548   0x00000020   Data   RO         6145    Region$$Table       anon$$obj.o
-    0x0002c568   0x0002c568   0x00000004   Data   RO         1166    .init_array.00101   main.o
-    0x0002c56c   0x0002c568   0x00000004   Data   RO         1176    .init_array         board_gpio.o
-    0x0002c570   0x0002c568   0x00000004   Data   RO         1235    .init_array         marlincore.o
-    0x0002c574   0x0002c568   0x00000004   Data   RO         2993    .init_array         endstops.o
-    0x0002c578   0x0002c568   0x00000004   Data   RO         3208    .init_array         planner.o
-    0x0002c57c   0x0002c568   0x00000004   Data   RO         3476    .init_array         temperature.o
-    0x0002c580   0x0002c568   0x00000004   Data   RO         3623    .init_array         cardreader.o
-    0x0002c584   0x0002c568   0x00000004   Data   RO         3965    .init_array         ipaddress.o
-    0x0002c588   0x0002c568   0x00000000   Data   RO         5816    .init_array         mc_w.l(cpp_init.o)
+    0x0002a588   0x0002a588   0x00000508   Code   RO         1211    i.setup             marlincore.o
+    0x0002aa90   0x0002aa90   0x00000002   Code   RO         5385    i.setup_Extinterrupt  glib.lib(board_extint.o)
+    0x0002aa92   0x0002aa92   0x00000002   PAD
+    0x0002aa94   0x0002aa94   0x00000014   Code   RO         5057    i.setup_adcs        glib.lib(adc.o)
+    0x0002aaa8   0x0002aaa8   0x00000022   Code   RO         1171    i.setup_gpio        board_gpio.o
+    0x0002aaca   0x0002aaca   0x0000004a   Code   RO         5088    i.setup_systick     glib.lib(board_tim0.o)
+    0x0002ab14   0x0002ab14   0x00000002   Code   RO         5089    i.setup_time        glib.lib(board_tim0.o)
+    0x0002ab16   0x0002ab16   0x00000002   PAD
+    0x0002ab18   0x0002ab18   0x00000090   Code   RO         5090    i.setup_time2A      glib.lib(board_tim0.o)
+    0x0002aba8   0x0002aba8   0x0000008c   Code   RO         5091    i.setup_time2B      glib.lib(board_tim0.o)
+    0x0002ac34   0x0002ac34   0x0000002c   Code   RO         3991    i.steup_sdio        sdio_f1.o
+    0x0002ac60   0x0002ac60   0x00000020   Code   RO         5092    i.timer_disable_irq  glib.lib(board_tim0.o)
+    0x0002ac80   0x0002ac80   0x00000020   Code   RO         5093    i.timer_enable_irq  glib.lib(board_tim0.o)
+    0x0002aca0   0x0002aca0   0x00000020   Code   RO         5094    i.timer_get_count   glib.lib(board_tim0.o)
+    0x0002acc0   0x0002acc0   0x0000001e   Code   RO         5095    i.timer_irq_enabled  glib.lib(board_tim0.o)
+    0x0002acde   0x0002acde   0x0000001c   Code   RO         5096    i.timer_preset_compare  glib.lib(board_tim0.o)
+    0x0002acfa   0x0002acfa   0x00000002   PAD
+    0x0002acfc   0x0002acfc   0x0000002c   Code   RO         5097    i.timer_set_compare  glib.lib(board_tim0.o)
+    0x0002ad28   0x0002ad28   0x0000002c   Code   RO         5431    i.usart_disable     glib.lib(usart.o)
+    0x0002ad54   0x0002ad54   0x000002ac   Code   RO         5432    i.usart_enable      glib.lib(usart.o)
+    0x0002b000   0x0002b000   0x00000032   Code   RO         5433    i.usart_init        glib.lib(usart.o)
+    0x0002b032   0x0002b032   0x00000010   Code   RO         5436    i.usart_set_baud_rate  glib.lib(usart.o)
+    0x0002b042   0x0002b042   0x00000002   PAD
+    0x0002b044   0x0002b044   0x0000008c   Code   RO         5437    i.usart_tx          glib.lib(usart.o)
+    0x0002b0d0   0x0002b0d0   0x00000002   Code   RO         5252    i.yield             glib.lib(wirish_time.o)
+    0x0002b0d2   0x0002b0d2   0x00000002   PAD
+    0x0002b0d4   0x0002b0d4   0x0000001c   Code   RO         3486    t._Z11SERIAL_CHARIJcEEvcDpT_  temperature.o
+    0x0002b0f0   0x0002b0f0   0x0000001c   Code   RO         1472    t._Z11SERIAL_CHARIJiEEvcDpT_  m221.o
+    0x0002b10c   0x0002b10c   0x00000014   Code   RO         3480    t._Z11SERIAL_ECHOI11heater_id_tEvT_  temperature.o
+    0x0002b120   0x0002b120   0x00000014   Code   RO         1328    t._Z11SERIAL_ECHOIPKcEvT_  serial.o
+    0x0002b134   0x0002b134   0x00000014   Code   RO         3625    t._Z11SERIAL_ECHOIPcEvT_  cardreader.o
+    0x0002b148   0x0002b148   0x00000030   Code   RO         1334    t._Z11SERIAL_ECHOIfEvT_  serial.o
+    0x0002b178   0x0002b178   0x00000014   Code   RO         1338    t._Z11SERIAL_ECHOIhEvT_  serial.o
+    0x0002b18c   0x0002b18c   0x00000014   Code   RO         1259    t._Z11SERIAL_ECHOIiEvT_  marlincore.o
+    0x0002b1a0   0x0002b1a0   0x00000014   Code   RO         1340    t._Z11SERIAL_ECHOIjEvT_  serial.o
+    0x0002b1b4   0x0002b1b4   0x00000014   Code   RO         1332    t._Z11SERIAL_ECHOIlEvT_  serial.o
+    0x0002b1c8   0x0002b1c8   0x00000014   Code   RO         3488    t._Z11SERIAL_ECHOIsEvT_  temperature.o
+    0x0002b1dc   0x0002b1dc   0x00000014   Code   RO         2257    t._Z11SERIAL_ECHOItEvT_  gcode.o
+    0x0002b1f0   0x0002b1f0   0x00000034   Code   RO         3484    t._Z12SERIAL_PRINTIfiEvT_T0_  temperature.o
+    0x0002b224   0x0002b224   0x00000014   Code   RO         1814    t._Z13SERIAL_ECHOLNIPcEvT_  m118.o
+    0x0002b238   0x0002b238   0x00000014   Code   RO         3627    t._Z13SERIAL_ECHOLNIjEvT_  cardreader.o
+    0x0002b24c   0x0002b24c   0x00000014   Code   RO         2331    t._Z13SERIAL_ECHOLNIlEvT_  queue.o
+    0x0002b260   0x0002b260   0x00000028   Code   RO         3322    t._ZN14MarlinSettings11EEPROM_READI5PID_tEEvRT_  settings.o
+    0x0002b288   0x0002b288   0x00000028   Code   RO         3326    t._ZN14MarlinSettings11EEPROM_READI5XYvalIfEEEvRT_  settings.o
+    0x0002b2b0   0x0002b2b0   0x00000028   Code   RO         3330    t._ZN14MarlinSettings11EEPROM_READI6XYZvalIfEEEvRT_  settings.o
+    0x0002b2d8   0x0002b2d8   0x00000028   Code   RO         3324    t._ZN14MarlinSettings11EEPROM_READIaEEvRT_  settings.o
+    0x0002b300   0x0002b300   0x00000028   Code   RO         3318    t._ZN14MarlinSettings11EEPROM_READIbEEvRT_  settings.o
+    0x0002b328   0x0002b328   0x00000028   Code   RO         3316    t._ZN14MarlinSettings11EEPROM_READIfEEvRT_  settings.o
+    0x0002b350   0x0002b350   0x00000028   Code   RO         3314    t._ZN14MarlinSettings11EEPROM_READIhEEvRT_  settings.o
+    0x0002b378   0x0002b378   0x00000028   Code   RO         3320    t._ZN14MarlinSettings11EEPROM_READIsEEvRT_  settings.o
+    0x0002b3a0   0x0002b3a0   0x0000001c   Code   RO         3294    t._ZN14MarlinSettings12EEPROM_WRITEI5PID_tEEvRKT_  settings.o
+    0x0002b3bc   0x0002b3bc   0x0000001c   Code   RO         3296    t._ZN14MarlinSettings12EEPROM_WRITEI5XYvalIfEEEvRKT_  settings.o
+    0x0002b3d8   0x0002b3d8   0x0000001c   Code   RO         3288    t._ZN14MarlinSettings12EEPROM_WRITEI6XYZvalIfEEEvRKT_  settings.o
+    0x0002b3f4   0x0002b3f4   0x0000001c   Code   RO         3280    t._ZN14MarlinSettings12EEPROM_WRITEIA4_cEEvRKT_  settings.o
+    0x0002b410   0x0002b410   0x0000001c   Code   RO         3282    t._ZN14MarlinSettings12EEPROM_WRITEIaEEvRKT_  settings.o
+    0x0002b42c   0x0002b42c   0x0000001c   Code   RO         3290    t._ZN14MarlinSettings12EEPROM_WRITEIbEEvRKT_  settings.o
+    0x0002b448   0x0002b448   0x0000001c   Code   RO         3284    t._ZN14MarlinSettings12EEPROM_WRITEIfEEvRKT_  settings.o
+    0x0002b464   0x0002b464   0x0000001c   Code   RO         3286    t._ZN14MarlinSettings12EEPROM_WRITEIhEEvRKT_  settings.o
+    0x0002b480   0x0002b480   0x0000001c   Code   RO         3292    t._ZN14MarlinSettings12EEPROM_WRITEIsEEvRKT_  settings.o
+    0x0002b49c   0x0002b49c   0x00000028   Code   RO         3308    t._ZN14MarlinSettings15PLR_EEPROM_READIfEEvRT_  settings.o
+    0x0002b4c4   0x0002b4c4   0x00000028   Code   RO         3306    t._ZN14MarlinSettings15PLR_EEPROM_READIjEEvRT_  settings.o
+    0x0002b4ec   0x0002b4ec   0x00000028   Code   RO         3310    t._ZN14MarlinSettings15PLR_EEPROM_READIsEEvRT_  settings.o
+    0x0002b514   0x0002b514   0x0000001c   Code   RO         3304    t._ZN14MarlinSettings16PLR_EEPROM_WRITEIcEEvRKT_  settings.o
+    0x0002b530   0x0002b530   0x0000001c   Code   RO         3298    t._ZN14MarlinSettings16PLR_EEPROM_WRITEIfEEvRKT_  settings.o
+    0x0002b54c   0x0002b54c   0x0000001c   Code   RO         3300    t._ZN14MarlinSettings16PLR_EEPROM_WRITEIsEEvRKT_  settings.o
+    0x0002b568   0x0002b568   0x00000020   Code   RO         3328    t._ZN14MarlinSettings18EEPROM_READ_ALWAYSIhEEvRT_  settings.o
+    0x0002b588   0x0002b588   0x000000e8   Code   RO         1261    t._ZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEv  marlincore.o
+    0x0002b670   0x0002b670   0x0000002c   Code   RO         3274    t._ZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE5resetEv  settings.o
+    0x0002b69c   0x0002b69c   0x0000001a   Code   RO         1884    t._ZN30_INTERNAL_9_G2_G3_cpp_e4fdbed73ABSIfEEKT_S1_  g2_g3.o
+    0x0002b6b6   0x0002b6b6   0x0000001a   Code   RO         3042    t._ZN32_INTERNAL_10_motion_cpp_db549edf3ABSIfEEKT_S1_  motion.o
+    0x0002b6d0   0x0002b6d0   0x00000014   Code   RO         3043    t._ZN32_INTERNAL_10_motion_cpp_db549edf6NOLESSIffEEvRT_T0_  motion.o
+    0x0002b6e4   0x0002b6e4   0x00000014   Code   RO         3044    t._ZN32_INTERNAL_10_motion_cpp_db549edf6NOMOREIffEEvRT_T0_  motion.o
+    0x0002b6f8   0x0002b6f8   0x0000001a   Code   RO         3146    t._ZN32_INTERNAL_11_planner_cpp_planner3ABSIfEEKT_S1_  planner.o
+    0x0002b712   0x0002b712   0x0000000e   Code   RO         3147    t._ZN32_INTERNAL_11_planner_cpp_planner3ABSIiEEKT_S1_  planner.o
+    0x0002b720   0x0002b720   0x0000001a   Code   RO         3148    t._ZN32_INTERNAL_11_planner_cpp_planner4_MAXIffEEDTplfpK_fpK0_ET_T0_  planner.o
+    0x0002b73a   0x0002b73a   0x0000000e   Code   RO         3149    t._ZN32_INTERNAL_11_planner_cpp_planner4_MAXIjjEEDTplfpK_fpK0_ET_T0_  planner.o
+    0x0002b748   0x0002b748   0x0000001a   Code   RO         3150    t._ZN32_INTERNAL_11_planner_cpp_planner4_MINIffEEDTplfpK_fpK0_ET_T0_  planner.o
+    0x0002b762   0x0002b762   0x00000014   Code   RO         3151    t._ZN32_INTERNAL_11_planner_cpp_planner6NOLESSIffEEvRT_T0_  planner.o
+    0x0002b776   0x0002b776   0x0000000a   Code   RO         3152    t._ZN32_INTERNAL_11_planner_cpp_planner6NOLESSIjjEEvRT_T0_  planner.o
+    0x0002b780   0x0002b780   0x00000014   Code   RO         3153    t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIffEEvRT_T0_  planner.o
+    0x0002b794   0x0002b794   0x0000001c   Code   RO         3154    t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIjfEEvRT_T0_  planner.o
+    0x0002b7b0   0x0002b7b0   0x0000000a   Code   RO         3155    t._ZN32_INTERNAL_11_planner_cpp_planner6NOMOREIjjEEvRT_T0_  planner.o
+    0x0002b7ba   0x0002b7ba   0x0000000e   Code   RO         3359    t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MAXIjmEEDTplfpK_fpK0_ET_T0_  stepper.o
+    0x0002b7c8   0x0002b7c8   0x0000000e   Code   RO         3360    t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MAXImmEEDTplfpK_fpK0_ET_T0_  stepper.o
+    0x0002b7d6   0x0002b7d6   0x0000000e   Code   RO         3361    t._ZN33_INTERNAL_11_stepper_cpp_209733ab4_MINIjmEEDTplfpK_fpK0_ET_T0_  stepper.o
+    0x0002b7e4   0x0002b7e4   0x0000000e   Code   RO         3245    t._ZN34_INTERNAL_12_settings_cpp_7a1ff5ce4_MINIhiEEDTplfpK_fpK0_ET_T0_  settings.o
+    0x0002b7f2   0x0002b7f2   0x0000000e   Code   RO         2147    t._ZN35_INTERNAL_13_M106_M107_cpp_6296f81a4_MINIhiEEDTplfpK_fpK0_ET_T0_  m106_m107.o
+    0x0002b800   0x0002b800   0x0000001a   Code   RO         3433    t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8243ABSIfEEKT_S1_  temperature.o
+    0x0002b81a   0x0002b81a   0x0000000e   Code   RO         3434    t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8244_MAXIiiEEDTplfpK_fpK0_ET_T0_  temperature.o
+    0x0002b828   0x0002b828   0x0000000e   Code   RO         3435    t._ZN37_INTERNAL_15_temperature_cpp_ca4fe8244_MINIiiEEDTplfpK_fpK0_ET_T0_  temperature.o
+    0x0002b836   0x0002b836   0x0000000c   Code   RO         2263    t._ZN8restorerIN10GcodeSuite15MarlinBusyStateEED1Ev  gcode.o
+    0x0002b842   0x0002b842   0x0000000c   Code   RO         3500    t._ZN8restorerIbED1Ev  temperature.o
+    0x0002b84e   0x0002b84e   0x00000002   PAD
+    0x0002b850   0x0002b850   0x00000010   Data   RO         1123    .constdata          hc32f46x_usart.o
+    0x0002b860   0x0002b860   0x000003f4   Data   RO         1175    .constdata          board_gpio.o
+    0x0002bc54   0x0002bc54   0x0000003b   Data   RO         1232    .constdata          marlincore.o
+    0x0002bc8f   0x0002bc8f   0x0000004d   Data   RO         1326    .constdata          serial.o
+    0x0002bcdc   0x0002bcdc   0x00000004   Data   RO         1421    .constdata          m92.o
+    0x0002bce0   0x0002bce0   0x00000004   Data   RO         1443    .constdata          m200-m205.o
+    0x0002bce4   0x0002bce4   0x0000003c   Data   RO         1581    .constdata          m111.o
+    0x0002bd20   0x0002bd20   0x0000000c   Data   RO         1702    .constdata          g27.o
+    0x0002bd2c   0x0002bd2c   0x00000004   Data   RO         1736    .constdata          g92.o
+    0x0002bd30   0x0002bd30   0x00000014   Data   RO         2326    .constdata          queue.o
+    0x0002bd44   0x0002bd44   0x0000001a   Data   RO         2764    .constdata          tenlog_touch_lcd.o
+    0x0002bd5e   0x0002bd5e   0x0000000e   Data   RO         2991    .constdata          endstops.o
+    0x0002bd6c   0x0002bd6c   0x00000015   Data   RO         3094    .constdata          motion.o
+    0x0002bd81   0x0002bd81   0x00000003   PAD
+    0x0002bd84   0x0002bd84   0x000000c8   Data   RO         3268    .constdata          settings.o
+    0x0002be4c   0x0002be4c   0x00000178   Data   RO         3473    .constdata          temperature.o
+    0x0002bfc4   0x0002bfc4   0x0000001c   Data   RO         3621    .constdata          cardreader.o
+    0x0002bfe0   0x0002bfe0   0x00000020   Data   RO         5865    .constdata          m_wm.l(rredf.o)
+    0x0002c000   0x0002c000   0x00000081   Data   RO         5886    .constdata          mc_w.l(ctype_o.o)
+    0x0002c081   0x0002c081   0x00000003   PAD
+    0x0002c084   0x0002c084   0x00000004   Data   RO         5887    .constdata          mc_w.l(ctype_o.o)
+    0x0002c088   0x0002c088   0x0000003c   Data   RO         3640    .constdata__ZTV12DiskIODriver  cardreader.o
+    0x0002c0c4   0x0002c0c4   0x00000024   Data   RO         5164    .constdata__ZTV14HardwareSerial  glib.lib(hardwareserial.o)
+    0x0002c0e8   0x0002c0e8   0x0000003c   Data   RO         3642    .constdata__ZTV17DiskIODriver_SDIO  cardreader.o
+    0x0002c124   0x0002c124   0x00000014   Data   RO         5235    .constdata__ZTV5Print  glib.lib(print.o)
+    0x0002c138   0x0002c138   0x00000024   Data   RO         5166    .constdata__ZTV6Stream  glib.lib(hardwareserial.o)
+    0x0002c15c   0x0002c15c   0x0000000c   Data   RO         3967    .constdata__ZTV9IPAddress  ipaddress.o
+    0x0002c168   0x0002c168   0x0000000c   Data   RO         3971    .constdata__ZTV9Printable  ipaddress.o
+    0x0002c174   0x0002c174   0x0000000c   Data   RO         3102    .constdata__ZZ10max_length8AxisEnumE12max_length_P  motion.o
+    0x0002c180   0x0002c180   0x0000000c   Data   RO         3103    .constdata__ZZ12home_bump_mm8AxisEnumE14home_bump_mm_P  motion.o
+    0x0002c18c   0x0002c18c   0x00000011   Data   RO         3477    .constdata__ZZ12say_default_vEs  temperature.o
+    0x0002c19d   0x0002c19d   0x00000003   PAD
+    0x0002c1a0   0x0002c1a0   0x0000000c   Data   RO         1753    .constdata__ZZ13base_home_pos8AxisEnumE15base_home_pos_P  m206_m428.o
+    0x0002c1ac   0x0002c1ac   0x00000006   Data   RO         1240    .constdata__ZZ15abortSDPrintingvEs  marlincore.o
+    0x0002c1b2   0x0002c1b2   0x00000007   Data   RO         1241    .constdata__ZZ15abortSDPrintingvEs_0  marlincore.o
+    0x0002c1b9   0x0002c1b9   0x00000004   Data   RO         1242    .constdata__ZZ15abortSDPrintingvEs_1  marlincore.o
+    0x0002c1bd   0x0002c1bd   0x00000006   Data   RO         1243    .constdata__ZZ16finishSDPrintingvEs  marlincore.o
+    0x0002c1c3   0x0002c1c3   0x0000003d   Data   RO         1244    .constdata__ZZ17manage_inactivitybEs  marlincore.o
+    0x0002c200   0x0002c200   0x00000012   Data   RO         3522    .constdata__ZZ22invalid_extruder_errorhEs  tool_change.o
+    0x0002c212   0x0002c212   0x00000004   Data   RO         2329    .constdata__ZZ6is_M29PKcEs  queue.o
+    0x0002c216   0x0002c216   0x00000003   Data   RO         1754    .constdata__ZZ8home_dir8AxisEnumE10home_dir_P  m206_m428.o
+    0x0002c219   0x0002c219   0x00000003   Data   RO         3478    .constdata__ZZ9loud_killPKc11heater_id_tEs  temperature.o
+    0x0002c21c   0x0002c21c   0x00000003   Data   RO         3479    .constdata__ZZ9loud_killPKc11heater_id_tEs_4  temperature.o
+    0x0002c21f   0x0002c21f   0x00000006   Data   RO         3272    .constdata__ZZ9say_unitsbEs  settings.o
+    0x0002c225   0x0002c225   0x00000003   Data   RO         3273    .constdata__ZZ9say_unitsbEs_0  settings.o
+    0x0002c228   0x0002c228   0x0000000f   Data   RO         2330    .constdata__ZZN10GCodeQueue19get_sdcard_commandsEvEs  queue.o
+    0x0002c237   0x0002c237   0x0000000c   Data   RO         3271    .constdata__ZZN14MarlinSettings12EEPROM_STARTEiEs  settings.o
+    0x0002c243   0x0002c243   0x00000011   Data   RO         1245    .constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs  marlincore.o
+    0x0002c254   0x0002c254   0x00000005   Data   RO         1246    .constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs_0  marlincore.o
+    0x0002c259   0x0002c259   0x00000009   Data   RO         1247    .constdata__ZZN16TFilamentMonitorI23RunoutResponseDebounced20FilamentSensorSwitchE3runEvEs_1  marlincore.o
+    0x0002c262   0x0002c262   0x00000011   Data   RO         1237    .constdata__ZZN20FilamentSensorSwitch3runEvEs  marlincore.o
+    0x0002c273   0x0002c273   0x00000005   Data   RO         1238    .constdata__ZZN20FilamentSensorSwitch3runEvEs_0  marlincore.o
+    0x0002c278   0x0002c278   0x00000004   Data   RO         1239    .constdata__ZZN20FilamentSensorSwitch3runEvEs_1  marlincore.o
+    0x0002c27c   0x0002c27c   0x00000014   Data   RO         2082    .constdata__ZZNK10duration_t8toStringEPcEs  m31.o
+    0x0002c290   0x0002c290   0x00000010   Data   RO         2083    .constdata__ZZNK10duration_t8toStringEPcEs_0  m31.o
+    0x0002c2a0   0x0002c2a0   0x0000000c   Data   RO         2084    .constdata__ZZNK10duration_t8toStringEPcEs_1  m31.o
+    0x0002c2ac   0x0002c2ac   0x00000008   Data   RO         2085    .constdata__ZZNK10duration_t8toStringEPcEs_2  m31.o
+    0x0002c2b4   0x0002c2b4   0x00000004   Data   RO         2086    .constdata__ZZNK10duration_t8toStringEPcEs_3  m31.o
+    0x0002c2b8   0x0002c2b8   0x000000cc   Data   RO         1802    .conststring        m115.o
+    0x0002c384   0x0002c384   0x00000077   Data   RO         2327    .conststring        queue.o
+    0x0002c3fb   0x0002c3fb   0x00000001   PAD
+    0x0002c3fc   0x0002c3fc   0x000000c9   Data   RO         3269    .conststring        settings.o
+    0x0002c4c5   0x0002c4c5   0x00000003   PAD
+    0x0002c4c8   0x0002c4c8   0x0000005d   Data   RO         3474    .conststring        temperature.o
+    0x0002c525   0x0002c525   0x00000003   PAD
+    0x0002c528   0x0002c528   0x00000020   Data   RO         6145    Region$$Table       anon$$obj.o
+    0x0002c548   0x0002c548   0x00000004   Data   RO         1166    .init_array.00101   main.o
+    0x0002c54c   0x0002c548   0x00000004   Data   RO         1176    .init_array         board_gpio.o
+    0x0002c550   0x0002c548   0x00000004   Data   RO         1235    .init_array         marlincore.o
+    0x0002c554   0x0002c548   0x00000004   Data   RO         2993    .init_array         endstops.o
+    0x0002c558   0x0002c548   0x00000004   Data   RO         3208    .init_array         planner.o
+    0x0002c55c   0x0002c548   0x00000004   Data   RO         3476    .init_array         temperature.o
+    0x0002c560   0x0002c548   0x00000004   Data   RO         3623    .init_array         cardreader.o
+    0x0002c564   0x0002c548   0x00000004   Data   RO         3965    .init_array         ipaddress.o
+    0x0002c568   0x0002c548   0x00000000   Data   RO         5816    .init_array         mc_w.l(cpp_init.o)
 
 
-    Execution Region RW_IRAM1 (Exec base: 0x1fff8000, Load base: 0x0002c588, Size: 0x00000000, Max: 0x00008000, ABSOLUTE)
+    Execution Region RW_IRAM1 (Exec base: 0x1fff8000, Load base: 0x0002c568, Size: 0x00000000, Max: 0x00008000, ABSOLUTE)
 
     **** No section assigned to this execution region ****
 
 
-    Execution Region RW_IRAM2 (Exec base: 0x20000000, Load base: 0x0002c588, Size: 0x000047a8, Max: 0x00010000, ABSOLUTE, COMPRESSED[0x00000130])
+    Execution Region RW_IRAM2 (Exec base: 0x20000000, Load base: 0x0002c568, Size: 0x000047a8, Max: 0x00010000, ABSOLUTE, COMPRESSED[0x00000130])
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -9702,7 +9702,7 @@ Image component sizes
         18          0          0          0          0          0   m997.o
         48          6          0          0          0          0   m999.o
         20          0          4          0          0          0   main.o
-      3266        918        204         10          0          0   marlincore.o
+      3234        906        204         10          0          0   marlincore.o
       4816        682         45         93        100          0   motion.o
        292         16          0          0          0          0   nozzle.o
        896         78          0         29         26          0   parser.o
@@ -9730,7 +9730,7 @@ Image component sizes
         44         12          0          1          0          0   watchdog.o
 
     ----------------------------------------------------------------------
-    122682      15164       4148        768      16164          0   Object Totals
+    122650      15152       4148        768      16164          0   Object Totals
          0          0         32          0          0          0   (incl. Generated)
         90          0         13         21          8          0   (incl. Padding)
 
@@ -9868,15 +9868,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-    144464      17044       4408       2084      16260          0   Grand Totals
-    144464      17044       4408        304      16260          0   ELF Image Totals (compressed)
-    144464      17044       4408        304          0          0   ROM Totals
+    144432      17032       4408       2084      16260          0   Grand Totals
+    144432      17032       4408        304      16260          0   ELF Image Totals (compressed)
+    144432      17032       4408        304          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)               148872 ( 145.38kB)
+    Total RO  Size (Code + RO Data)               148840 ( 145.35kB)
     Total RW  Size (RW Data + ZI Data)             18344 (  17.91kB)
-    Total ROM Size (Code + RO Data + RW Data)     149176 ( 145.68kB)
+    Total ROM Size (Code + RO Data + RW Data)     149144 ( 145.65kB)
 
 ==============================================================================
 

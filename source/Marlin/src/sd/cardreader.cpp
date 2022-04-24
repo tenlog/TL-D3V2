@@ -412,18 +412,20 @@ void CardReader::tl_ls() {
         delay(10);
         TLSTJC_println("vis picDown,0");      
       }
-      else if(tl_TouchScreenType == 0)
+      else if(tl_TouchScreenType == 0){
         DWN_Data(0x8811, 1, 2);
-      dwn_is_last_page = true;
+        dwn_is_last_page = true;
+      }
     }else{
       if(tl_TouchScreenType == 1){
         TLSTJC_println("vis btDown,1");
         delay(10);
         TLSTJC_println("vis picDown,1");
       }
-      else if(tl_TouchScreenType == 0)
+      else if(tl_TouchScreenType == 0){
         DWN_Data(0x8811, 0, 2);
-      dwn_is_last_page = false;
+        dwn_is_last_page = false;
+      }
     }
     delay(5);
   }else{

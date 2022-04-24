@@ -851,6 +851,7 @@ void kill(PGM_P const lcd_error/*=nullptr*/, PGM_P const lcd_component/*=nullptr
   #if ENABLED(TENLOG_TOUCH_LCD)
     if(tl_TouchScreenType == 1){
       TLSTJC_println("main.vCC.val=0");
+      delay(10);
       settings.killFlagSet(1);
       char ErrorMessage[64];
       sprintf_P(ErrorMessage, PSTR("%s"), lcd_error);
@@ -1634,12 +1635,14 @@ void setup() {
     TlIsPLR();
   }else{
     uint8_t killFlag = settings.killFlagGet();
-      if(killFlag != 1)
+      if(killFlag != 1){
         TlPageMain();
+      }
       else{
         TLDEBUG_LNPAIR("kill() was called ", killFlag);
+        delay(10);
         settings.killFlagSet(0);
-        TJCMessage(1, 1, 24, "M1050 S0", "M1050 S0", "");
+        //TJCMessage(1, 1, 24, "M1050 S0", "M1050 S0", "");
       }
   }
   #endif

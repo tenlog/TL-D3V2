@@ -500,8 +500,9 @@ typedef struct SettingsDataStruct {
     uint8_t ui_tllanguage;
     uint8_t ui_tlSleep;
     uint8_t ui_tlECO;
-    uint8_t ui_tlStartTemp;
-    uint8_t ui_tlF2v;
+    uint8_t ui_tlTheme;
+    uint8_t ui_tlStartTemp1;
+    uint8_t ui_tlStartTemp2;
   #endif
 
   #if ENABLED(HAS_WIFI)
