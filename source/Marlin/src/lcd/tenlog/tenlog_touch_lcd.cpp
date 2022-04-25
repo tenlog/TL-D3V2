@@ -132,7 +132,7 @@ void TenlogScreen_end()
     TL_LCD_SERIAL.end();
 }
 
-void get_command(int ScreenType=1)
+void get_command(int ScreenType)
 {
     if(ScreenType == 0)
         ZERO(tl_command);
@@ -1284,7 +1284,7 @@ void process_command_gcode(long _tl_command[]) {
             }else if (lM == 1050){
                 //M1050
                 int8_t KillFlag = GCodelng('S',iFrom, _tl_command);
-                settings.killFlagSet(KillFlag);            
+                //settings.killFlagSet(KillFlag);                            
             }else if(lM > 1499 && lM < 1510){
                 //1500-1510
                 #if ENABLED(HAS_WIFI)

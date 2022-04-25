@@ -852,7 +852,7 @@ void kill(PGM_P const lcd_error/*=nullptr*/, PGM_P const lcd_component/*=nullptr
     if(tl_TouchScreenType == 1){
       TLSTJC_println("main.vCC.val=0");
       delay(10);
-      settings.killFlagSet(1);
+      //settings.killFlagSet(1);
       char ErrorMessage[64];
       sprintf_P(ErrorMessage, PSTR("%s"), lcd_error);
       TJCMessage(1, 1, 24, "M1050 S0", "M1050 S0", ErrorMessage);
@@ -1634,16 +1634,19 @@ void setup() {
     TLDEBUG_LNPAIR("Power loss found! Point=", isplr);
     TlIsPLR();
   }else{
-    uint8_t killFlag = settings.killFlagGet();
-      if(killFlag != 1){
-        TlPageMain();
+    long lastPageID = 0;
+    if(tl_TouchScreenType == 1){
+      TLSTJC_println("sendme");
+      delay(200);
+      get_command(1);
+      if(tl_command[0]==0x66 && tl_command[2]==0xFF && tl_command[3]==0xFF && tl_command[4]==0xFF){
+        lastPageID = tl_command[1];
+        TLDEBUG_LNPAIR("Page=", lastPageID);
       }
-      else{
-        TLDEBUG_LNPAIR("kill() was called ", killFlag);
-        delay(10);
-        settings.killFlagSet(0);
-        //TJCMessage(1, 1, 24, "M1050 S0", "M1050 S0", "");
-      }
+    }
+
+    if(lastPageID != 8)
+      TlPageMain();
   }
   #endif
 
