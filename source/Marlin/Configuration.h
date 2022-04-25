@@ -137,7 +137,7 @@
 //#define TENLOG_D5P
 //#define TENLOG_D6P
 
-#define TL_SUBVERSION "004"
+#define TL_SUBVERSION "005"
 
 // The size of the printable area
 #if defined(TENLOG_D3P) 
@@ -165,7 +165,7 @@
 #define TENLOG_TOUCH_LCD
 #define PRINT_FROM_Z_HEIGHT
 //#define ESP8266_WIFI
-#define ESP32_WIFI
+//#define ESP32_WIFI
 
 #define TL_DEBUG
 #if EITHER(ESP8266_WIFI, ESP32_WIFI)

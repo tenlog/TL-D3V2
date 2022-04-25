@@ -500,8 +500,9 @@ typedef struct SettingsDataStruct {
     uint8_t ui_tllanguage;
     uint8_t ui_tlSleep;
     uint8_t ui_tlECO;
-    uint8_t ui_tlStartTemp;
-    uint8_t ui_tlF2v;
+    uint8_t ui_tlTheme;
+    uint8_t ui_tlStartTemp1;
+    uint8_t ui_tlStartTemp2;
   #endif
 
   #if ENABLED(HAS_WIFI)
@@ -642,9 +643,11 @@ void MarlinSettings::postprocess() {
   int MarlinSettings::plr_eeprom_index;
 #endif 
 
+/*
 #if ENABLED(TENLOG_TOUCH_LCD)
   int MarlinSettings::kill_eeprom_index;
 #endif 
+*/
 
   bool MarlinSettings::size_error(const uint16_t size) {
     if (size != datasize()) {
@@ -4072,6 +4075,7 @@ void MarlinSettings::reset() {
 
 #endif // !DISABLE_M503
 
+  /*
   #if ENABLED(TENLOG_TOUCH_LCD)
 
     void MarlinSettings::killFlagSet(uint8_t Flag){
@@ -4080,12 +4084,13 @@ void MarlinSettings::reset() {
     }
 
     uint8_t MarlinSettings::killFlagGet(){
-      KILL_EEPROM_START(KILL_EEPROM_OFFSET);
       uint8_t Flag;
+      KILL_EEPROM_START(KILL_EEPROM_OFFSET);
       KILL_EEPROM_READ(Flag);
       return Flag;
     }   
   #endif
+  */
 
   #if ENABLED(POWER_LOSS_RECOVERY_TL)
 
@@ -4095,19 +4100,22 @@ void MarlinSettings::reset() {
       plr_save();
     }
 
-    void MarlinSettings::plr_save(uint32_t lFPos, int16_t iTPos0, int16_t iTPos1, int16_t iT01, int16_t iFan, float fZPos, float fEPos){
+    void MarlinSettings::plr_save(uint32_t lFPos, int16_t iTPos0, int16_t iTPos1, int8_t iT01, int16_t iFan, float fZPos, float fEPos){
       char cmd[32];
       PLR_EEPROM_START(PLR_EEPROM_OFFSET);
-      PLR_EEPROM_WRITE(lFPos);
+      int32_t startSave = millis();
       if(lFPos > 2048){
+        PLR_EEPROM_WRITE(lFPos);
+        //PLR_EEPROM_WRITE(fZPos);
+        PLR_EEPROM_WRITE(fEPos);
         PLR_EEPROM_WRITE(iTPos0);
         PLR_EEPROM_WRITE(iTPos1);
         PLR_EEPROM_WRITE(iT01);
-        PLR_EEPROM_WRITE(iFan);
-        PLR_EEPROM_WRITE(fZPos);
-        PLR_EEPROM_WRITE(fEPos);
+        //PLR_EEPROM_WRITE(iFan);
 
-        sprintf_P(cmd, PSTR("ZPos:%f, EPos %f"), fZPos, fEPos);
+        int32_t saveTime = millis() - startSave;
+        TLDEBUG_LNPAIR("Save Use ", saveTime);
+        //sprintf_P(cmd, PSTR("ZPos:%f, EPos %f"), fZPos, fEPos);
       }
     }
 
@@ -4170,8 +4178,8 @@ void MarlinSettings::reset() {
       uint32_t lFPos = 0;
       int16_t iTPos0 = 0;
       int16_t iTPos1 = 0;
-      int16_t iT01 = 0;
-      int16_t iFan = 200;
+      int8_t iT01 = 0;
+      int16_t iFan = 255;
       float fZPos = 0;
       float fEPos = 0;
 
@@ -4185,12 +4193,12 @@ void MarlinSettings::reset() {
       PLR_EEPROM_START(PLR_EEPROM_OFFSET);
       
       PLR_EEPROM_READ(lFPos);
+      //PLR_EEPROM_READ(fZPos);
+      PLR_EEPROM_READ(fEPos);
       PLR_EEPROM_READ(iTPos0);
       PLR_EEPROM_READ(iTPos1);
       PLR_EEPROM_READ(iT01);
-      PLR_EEPROM_READ(iFan);
-      PLR_EEPROM_READ(fZPos);
-      PLR_EEPROM_READ(fEPos);
+      //PLR_EEPROM_READ(iFan);
 
       TLPrintingStatus = 2;
       
@@ -4235,23 +4243,7 @@ void MarlinSettings::reset() {
       TLDEBUG_LNPGM(cmd);
       
       //handling headers
-      if(iT01 == 0){
-          if(iTPos1 > 0){
-              NULLZERO(cmd);
-              sprintf_P(cmd, PSTR("M104 T1 S%i"), iTPos1);
-              gcode.process_subcommands_now(cmd);
-              TLDEBUG_LNPGM(cmd);
-          }
-          gcode.process_subcommands_now(PSTR("T0"));
-          TLDEBUG_LNPGM("T0");
-          
-          if(iTPos0 > 0){
-              NULLZERO(cmd);
-              sprintf_P(cmd, PSTR("M109 S%i"), iTPos0);
-              gcode.process_subcommands_now(cmd);
-              TLDEBUG_LNPGM(cmd);
-          }
-      }else if(iT01 == 1){
+      if(iT01 == 1){
           if(iTPos0 > 0){
               NULLZERO(cmd);
               sprintf_P(cmd, PSTR("M104 T0 S%i"), iTPos0);
@@ -4266,6 +4258,22 @@ void MarlinSettings::reset() {
               gcode.process_subcommands_now(cmd);
               TLDEBUG_LNPGM(cmd);
           }
+      }else{
+          if(iTPos1 > 0){
+              NULLZERO(cmd);
+              sprintf_P(cmd, PSTR("M104 T1 S%i"), iTPos1);
+              gcode.process_subcommands_now(cmd);
+              TLDEBUG_LNPGM(cmd);
+          }
+          TLDEBUG_LNPGM("T0");
+          gcode.process_subcommands_now(PSTR("T0"));
+          
+          if(iTPos0 > 0){
+              NULLZERO(cmd);
+              sprintf_P(cmd, PSTR("M109 S%i"), iTPos0);
+              TLDEBUG_LNPGM(cmd);
+              gcode.process_subcommands_now(cmd);
+          }
       }
       //homging XY
       TLDEBUG_LNPGM("G28 XY");
@@ -4276,7 +4284,7 @@ void MarlinSettings::reset() {
       feedrate_mm_s = i_feedrate / 60.0;
 
       NULLZERO(cmd);
-      sprintf_P(cmd, PSTR("G92.9 Z%s E%s"), dtostrf(fZPos, 1, 3, str_1), dtostrf(fEPos, 1, 3, str_2));
+      sprintf_P(cmd, PSTR("G92.9 Z%06.2f E%06.2f"), fZPos, fEPos);
       gcode.process_subcommands_now(cmd);
       TLDEBUG_LNPGM(cmd);
       

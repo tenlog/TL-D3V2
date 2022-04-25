@@ -51,17 +51,19 @@ class MarlinSettings {
 
     #if ENABLED(POWER_LOSS_RECOVERY_TL)
       static void plr_reset();
-      static void plr_save(uint32_t lFPos = 0, int16_t iTPos0 = 0, int16_t iTPos1 = 0, int16_t iT01 = 0, int16_t iFan = 0, float fZPos = 0.0, float fEPos = 0.0);
+      static void plr_save(uint32_t lFPos = 0, int16_t iTPos0 = 0, int16_t iTPos1 = 0, int8_t iT01 = 0, int16_t iFan = 0, float fZPos = 0.0, float fEPos = 0.0);
       static void plr_fn_save(int fileIndex);
       static void plr_pre_save(uint32_t lFPos = 0, int16_t iBPos = 0, int16_t i_dual_x_carriage_mode = 0, float f_duplicate_extruder_x_offset = 0.0, uint16_t f_feedrate = 0);
       static uint32_t plr_is_pl();
       static void plr_recovery();
     #endif
 
+    /*
     #if ENABLED(TENLOG_TOUCH_LCD)
       static void killFlagSet(uint8_t Flag);
       static uint8_t killFlagGet();
     #endif
+    */
 
     #if ENABLED(SD_FIRMWARE_UPDATE)
       static bool sd_update_status();                       // True if the SD-Firmware-Update EEPROM flag is set
@@ -126,12 +128,13 @@ class MarlinSettings {
       static int eeprom_index;
       static uint16_t working_crc;
 
+      /*
       #if ENABLED(TENLOG_TOUCH_LCD)
 
-        #define KILL_EEPROM_OFFSET 1320
+        #define KILL_EEPROM_OFFSET 1290
         static int kill_eeprom_index;
-        static bool KILL_EEPROM_START(int eeprom_offset){
-          kill_eeprom_index = eeprom_offset;
+        static bool KILL_EEPROM_START(int _eeprom_offset){
+          kill_eeprom_index = _eeprom_offset;
           working_crc = 0;
           return true;
         }
@@ -145,6 +148,7 @@ class MarlinSettings {
           persistentStore.read_data(kill_eeprom_index, (uint8_t *) &VAR, sizeof(VAR), &working_crc, !validating);
         }      
       #endif
+      */
 
       #if ENABLED(POWER_LOSS_RECOVERY_TL)
       
