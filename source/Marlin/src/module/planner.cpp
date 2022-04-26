@@ -2876,64 +2876,64 @@ bool Planner::buffer_line(const_float_t rx, const_float_t ry, const_float_t rz, 
   #endif
 ) {
   
-#if defined(PRINT_FROM_Z_HEIGHT) && defined(SDSUPPORT)
-  // filter out moves below a given floor height
-  //Searching the height point by "dichotomy" -- by zyf
-  bool bSetIndex = false;
-  //float_t zLast_O = 0.0;
+  #if defined(PRINT_FROM_Z_HEIGHT) && defined(SDSUPPORT)
+    // filter out moves below a given floor height
+    //Searching the height point by "dichotomy" -- by zyf
+    bool bSetIndex = false;
+    //float_t zLast_O = 0.0;
 
-  if (!PrintFromZHeightFound && card.flag.sdprinting){
+    if (!PrintFromZHeightFound && card.flag.sdprinting){
 
-    if (fabs(rz - print_from_z_target) > 0.20f && lPrintZEnd - lPrintZStart >1024 || lPrintZEnd == 0){
-      //Seaching ....
-      bSetIndex = true;
-      //zLast_O = zLast;
-      if (lPrintZEnd == 0){
-        lPrintZEnd = card.my_filesize() - 1;
-      }else if (fabs(rz - zLast) < 0.2f || rz < 0.2f || fabs(rz - 15.0f) < 0.2f){
-        bSetIndex = false;
-      }else if (rz > print_from_z_target){
-        lPrintZEnd = lPrintZMid - 1;
-      }else if (rz < print_from_z_target){
-        lPrintZStart = lPrintZMid + 1;
+      if (fabs(rz - print_from_z_target) > 0.20f && lPrintZEnd - lPrintZStart >1024 || lPrintZEnd == 0){
+        //Seaching ....
+        bSetIndex = true;
+        //zLast_O = zLast;
+        if (lPrintZEnd == 0){
+          lPrintZEnd = card.my_filesize() - 1;
+        }else if (fabs(rz - zLast) < 0.2f || rz < 0.2f || fabs(rz - 15.0f) < 0.2f){
+          bSetIndex = false;
+        }else if (rz > print_from_z_target){
+          lPrintZEnd = lPrintZMid - 1;
+        }else if (rz < print_from_z_target){
+          lPrintZStart = lPrintZMid + 1;
+        }
+        
+        if (bSetIndex){
+          lPrintZMid = lPrintZStart + (lPrintZEnd - lPrintZStart) / 2;
+          PrintFromZHeightFound = false;
+          //card.sdpos = lPrintZMid;
+          card.setIndex(lPrintZMid);
+        }
+        zLast = rz;
+      }else{
+        //found!      
+        PrintFromZHeightFound = true;
+        current_position.x = 0;
+        current_position.y = 0;
+        current_position.z = rz;
+        current_position.e = e;
+        set_position_mm(current_position);
+        thermalManager.fan_speed[0] = 255;
+        feedrate_mm_s = 80;
       }
-      
-      if (bSetIndex){
-        lPrintZMid = lPrintZStart + (lPrintZEnd - lPrintZStart) / 2;
-        PrintFromZHeightFound = false;
-        //card.sdpos = lPrintZMid;
-        card.setIndex(lPrintZMid);
-      }
-      zLast = rz;
-    }else{
-      //found!      
-      PrintFromZHeightFound = true;
-      current_position.x = 0;
-      current_position.y = 0;
-      current_position.z = rz;
-      current_position.e = e;
-      set_position_mm(current_position);
-      thermalManager.fan_speed[0] = 255;
-      feedrate_mm_s = 80;
-    }
-    return;
-  }else{
-    if(rz < zLast && zLast > 0){
       return;
-    }else if(rz > zLast && zLast > 0){
-      zLast = 0.0;
-    }else if(rz == zLast && zLast > 0){
-      thermalManager.fan_speed[0] = 255;
-      feedrate_mm_s = 80;
-    }
+    }else{
+      if(rz < zLast && zLast > 0){
+        return;
+      }else if(rz > zLast && zLast > 0){
+        zLast = 0.0;
+      }else if(rz == zLast && zLast > 0){
+        thermalManager.fan_speed[0] = 255;
+        feedrate_mm_s = 80;
+      }
 
-    if(lPrintZStart > 0 || lPrintZMid > 0 || lPrintZEnd > 0){
-      lPrintZStart = 0;
-      lPrintZMid = 0;
-      lPrintZEnd = 0;
+      if(lPrintZStart > 0 || lPrintZMid > 0 || lPrintZEnd > 0){
+        lPrintZStart = 0;
+        lPrintZMid = 0;
+        lPrintZEnd = 0;
+      }
     }
-  }
-#endif //PRINT_FROM_Z_HEIGHT
+  #endif //PRINT_FROM_Z_HEIGHT
 
   xyze_pos_t machine = { rx, ry, rz, e };
   TERN_(HAS_POSITION_MODIFIERS, apply_modifiers(machine));

@@ -4100,21 +4100,21 @@ void MarlinSettings::reset() {
       plr_save();
     }
 
-    void MarlinSettings::plr_save(uint32_t lFPos, int16_t iTPos0, int16_t iTPos1, int8_t iT01, int16_t iFan, float fZPos, float fEPos){
+    void MarlinSettings::plr_save(uint32_t lFPos, int8_t iT01){
       char cmd[32];
       PLR_EEPROM_START(PLR_EEPROM_OFFSET);
-      int32_t startSave = millis();
+      //int32_t startSave = millis();
       if(lFPos > 2048){
         PLR_EEPROM_WRITE(lFPos);
         //PLR_EEPROM_WRITE(fZPos);
-        PLR_EEPROM_WRITE(fEPos);
-        PLR_EEPROM_WRITE(iTPos0);
-        PLR_EEPROM_WRITE(iTPos1);
+        //PLR_EEPROM_WRITE(fEPos);
+        //PLR_EEPROM_WRITE(iTPos0);
+        //PLR_EEPROM_WRITE(iTPos1);
         PLR_EEPROM_WRITE(iT01);
         //PLR_EEPROM_WRITE(iFan);
 
-        int32_t saveTime = millis() - startSave;
-        TLDEBUG_LNPAIR("Save Use ", saveTime);
+        //int32_t saveTime = millis() - startSave;
+        //TLDEBUG_LNPAIR("Save Use ", saveTime);
         //sprintf_P(cmd, PSTR("ZPos:%f, EPos %f"), fZPos, fEPos);
       }
     }
@@ -4135,11 +4135,13 @@ void MarlinSettings::reset() {
       }
     }
 
-    void MarlinSettings::plr_pre_save(uint32_t lFPos, int16_t iBPos, int16_t i_dual_x_carriage_mode, float f_duplicate_extruder_x_offset, uint16_t i_feedrate){
+    void MarlinSettings::plr_pre_save(uint32_t lFPos, int16_t iBPos, int16_t iTPos0, int16_t iTPos1, int16_t i_dual_x_carriage_mode, float f_duplicate_extruder_x_offset, int16_t i_feedrate){
       static bool PRE_Write_PLR_Done;
       if(lFPos > 2048 && !PRE_Write_PLR_Done){
         PLR_EEPROM_START(PLR_PRE_EEPROM_OFFSET);
         PLR_EEPROM_WRITE(iBPos);
+        PLR_EEPROM_WRITE(iTPos0);
+        PLR_EEPROM_WRITE(iTPos1);
         PLR_EEPROM_WRITE(i_dual_x_carriage_mode);
         PLR_EEPROM_WRITE(f_duplicate_extruder_x_offset);
         PLR_EEPROM_WRITE(i_feedrate);
@@ -4186,6 +4188,8 @@ void MarlinSettings::reset() {
       PLR_EEPROM_START(PLR_PRE_EEPROM_OFFSET);
 
       PLR_EEPROM_READ(iBPos);
+      PLR_EEPROM_READ(iTPos0);
+      PLR_EEPROM_READ(iTPos1);
       PLR_EEPROM_READ(i_dual_x_carriage_mode);
       PLR_EEPROM_READ(f_duplicate_extruder_x_offset);
       PLR_EEPROM_READ(i_feedrate);
@@ -4193,19 +4197,13 @@ void MarlinSettings::reset() {
       PLR_EEPROM_START(PLR_EEPROM_OFFSET);
       
       PLR_EEPROM_READ(lFPos);
-      //PLR_EEPROM_READ(fZPos);
-      PLR_EEPROM_READ(fEPos);
-      PLR_EEPROM_READ(iTPos0);
-      PLR_EEPROM_READ(iTPos1);
       PLR_EEPROM_READ(iT01);
-      //PLR_EEPROM_READ(iFan);
 
       TLPrintingStatus = 2;
       
       //into printing page
       TLSTJC_println("sleep=0");
       delay(10);
-      NULLZERO(cmd);
       sprintf_P(cmd, PSTR("printing.tFileName.txt=\"%s\""), long_file_name_list[6]);
       TLSTJC_println(cmd);
       delay(10);
@@ -4213,14 +4211,11 @@ void MarlinSettings::reset() {
       delay(10);
       
       //Open file
-      NULLZERO(cmd);
       sprintf_P(cmd, PSTR("M23 %s"), file_name_list[6]);
       gcode.process_subcommands_now(cmd);
-      //queue.enqueue_one_now(cmd);
       TLDEBUG_LNPGM(cmd);
 
       //handling dual_x_carriage_mode
-      NULLZERO(cmd);
       if(i_dual_x_carriage_mode == 2 && f_duplicate_extruder_x_offset > 50.0f){
         sprintf_P(cmd, PSTR("M605 S2 X%f"), f_duplicate_extruder_x_offset);
         gcode.process_subcommands_now(cmd);
@@ -4231,33 +4226,33 @@ void MarlinSettings::reset() {
       TLDEBUG_LNPGM(cmd);
 
       //handling bed
-      NULLZERO(cmd);
       sprintf_P(cmd, PSTR("M190 S%i"), iBPos);
-      gcode.process_subcommands_now(cmd);
       TLDEBUG_LNPGM(cmd);
+      gcode.process_subcommands_now(cmd);
       
       //handling fan
-      NULLZERO(cmd);
       sprintf_P(cmd, PSTR("M106 S%i"), iFan);
-      gcode.process_subcommands_now(cmd);
       TLDEBUG_LNPGM(cmd);
+      gcode.process_subcommands_now(cmd);
       
       //handling headers
       if(iT01 == 1){
           if(iTPos0 > 0){
-              NULLZERO(cmd);
               sprintf_P(cmd, PSTR("M104 T0 S%i"), iTPos0);
               gcode.process_subcommands_now(cmd);
               TLDEBUG_LNPGM(cmd);
           }
-          gcode.process_subcommands_now(PSTR("T1"));
-          TLDEBUG_LNPGM("T1");
+          active_extruder = 1;
+          //gcode.process_subcommands_now(PSTR("T1"));
+          TLDEBUG_LNPGM("E2");
           if(iTPos1 > 0){
-              NULLZERO(cmd);
               sprintf_P(cmd, PSTR("M109 S%i"), iTPos1);
               gcode.process_subcommands_now(cmd);
               TLDEBUG_LNPGM(cmd);
           }
+          active_extruder = 0;
+          delay(100);
+          gcode.process_subcommands_now(PSTR("T1"));
       }else{
           if(iTPos1 > 0){
               NULLZERO(cmd);
@@ -4265,15 +4260,15 @@ void MarlinSettings::reset() {
               gcode.process_subcommands_now(cmd);
               TLDEBUG_LNPGM(cmd);
           }
-          TLDEBUG_LNPGM("T0");
-          gcode.process_subcommands_now(PSTR("T0"));
-          
+          active_extruder = 0;
+          TLDEBUG_LNPGM("E1");
+          //gcode.process_subcommands_now(PSTR("T0"));
           if(iTPos0 > 0){
-              NULLZERO(cmd);
               sprintf_P(cmd, PSTR("M109 S%i"), iTPos0);
               TLDEBUG_LNPGM(cmd);
               gcode.process_subcommands_now(cmd);
           }
+          gcode.process_subcommands_now(PSTR("T0"));
       }
       //homging XY
       TLDEBUG_LNPGM("G28 XY");
@@ -4283,12 +4278,16 @@ void MarlinSettings::reset() {
       
       feedrate_mm_s = i_feedrate / 60.0;
 
-      NULLZERO(cmd);
+      /*
       sprintf_P(cmd, PSTR("G92.9 Z%06.2f E%06.2f"), fZPos, fEPos);
       gcode.process_subcommands_now(cmd);
       TLDEBUG_LNPGM(cmd);
-      
-      NULLZERO(cmd);
+      */
+      current_position[Z_AXIS] = -66.66;
+      planner.set_position_mm(current_position);
+      current_position[E_AXIS] = -66.66;
+      planner.set_e_position_mm(current_position.e);
+
       sprintf_P(cmd, PSTR("M24 S%u"), lFPos);
       gcode.process_subcommands_now(cmd);
       TLDEBUG_LNPGM(cmd);

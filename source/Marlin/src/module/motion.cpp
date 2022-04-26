@@ -36,9 +36,7 @@
 
 #if IS_SCARA
   #include "../libs/buzzer.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
   #include "../lcd/marlinui.h"
-#endif
 #endif
 
 #if HAS_BED_PROBE
@@ -1166,13 +1164,36 @@ void prepare_line_to_destination() {
         }
       #endif
 
-      if (ignore_e) {
+      if (ignore_e || current_position.e < -66.00) { //by tenlog-zyf 
         current_position.e = destination.e;       // Behave as if the E move really took place
         planner.set_e_position_mm(destination.e); // Prevent the planner from complaining too
       }
     }
-
   #endif // PREVENT_COLD_EXTRUSION || PREVENT_LENGTHY_EXTRUDE
+
+  if(destination.z > current_position.z && current_position.z < -66.00 && TLPrintingStatus == 1) {  // by zyf
+    TLDEBUG_LNPAIR("X C Pos ", current_position.x);
+    TLDEBUG_LNPAIR("X D Pos ", destination.x);
+    TLDEBUG_LNPAIR("Y C Pos ", current_position.y);
+    TLDEBUG_LNPAIR("Y D Pos ", destination.y);
+    TLDEBUG_LNPAIR("Z C Pos ", current_position.z);
+    TLDEBUG_LNPAIR("Z D Pos ", destination.z);
+
+    current_position.z = destination.z - 0.2;
+    if(active_extruder == 1){
+       current_position.x = hotend_offset[1].x;
+      //distination.y = 0;    
+    }
+    planner.set_position_mm(current_position);
+
+    TLDEBUG_LNPAIR("AX C Pos ", current_position.x);
+    TLDEBUG_LNPAIR("AX D Pos ", destination.x);
+    TLDEBUG_LNPAIR("AY C Pos ", current_position.y);
+    TLDEBUG_LNPAIR("AY D Pos ", destination.y);
+    TLDEBUG_LNPAIR("AZ C Pos ", current_position.z);
+    TLDEBUG_LNPAIR("AZ D Pos ", destination.z);
+    return;
+  }
 
   if (TERN0(DUAL_X_CARRIAGE, dual_x_carriage_unpark())) return;
 
