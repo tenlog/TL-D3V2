@@ -2752,7 +2752,7 @@ void _outage() {
     // Save,
     if(IS_SD_PRINTING()){
         uint32_t sdPos = card.getIndex();
-        settings.plr_save(sdPos, thermalManager.degTargetHotend(0), thermalManager.degTargetHotend(1), active_extruder, thermalManager.fan_speed[0], current_position.z, current_position.e);
+        settings.plr_save(sdPos, active_extruder);
     }
 
     if(tl_TouchScreenType == 1){
@@ -2777,7 +2777,7 @@ void plr_outage() {
             uint32_t sdPos = card.getIndex();
             float _duplicate_extruder_x_offset = duplicate_extruder_x_offset;
             if(_duplicate_extruder_x_offset == DEFAULT_DUPLICATION_X_OFFSET) _duplicate_extruder_x_offset = 0.0;
-            settings.plr_pre_save(sdPos, thermalManager.degTargetBed(), dual_x_carriage_mode, _duplicate_extruder_x_offset, uint16_t(feedrate_mm_s * 60.0f));
+            settings.plr_pre_save(sdPos, thermalManager.degTargetBed(), thermalManager.degTargetHotend(0), thermalManager.degTargetHotend(1), dual_x_carriage_mode, _duplicate_extruder_x_offset, uint16_t(feedrate_mm_s * 60.0f));
         }
     }
 }
