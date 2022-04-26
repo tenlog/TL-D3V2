@@ -1184,7 +1184,7 @@ void prepare_line_to_destination() {
        current_position.x = hotend_offset[1].x;
       //distination.y = 0;    
     }
-    planner.set_position_mm(current_position);
+    planner.set_position_mm(destination);
 
     TLDEBUG_LNPAIR("AX C Pos ", current_position.x);
     TLDEBUG_LNPAIR("AX D Pos ", destination.x);
@@ -1192,7 +1192,7 @@ void prepare_line_to_destination() {
     TLDEBUG_LNPAIR("AY D Pos ", destination.y);
     TLDEBUG_LNPAIR("AZ C Pos ", current_position.z);
     TLDEBUG_LNPAIR("AZ D Pos ", destination.z);
-    return;
+    //return;
   }
 
   if (TERN0(DUAL_X_CARRIAGE, dual_x_carriage_unpark())) return;
