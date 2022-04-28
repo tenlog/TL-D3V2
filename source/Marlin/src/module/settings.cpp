@@ -4100,6 +4100,7 @@ void MarlinSettings::reset() {
       plr_save();
     }
 
+<<<<<<< HEAD
     void MarlinSettings::plr_save(uint32_t lFPos, int8_t iT01){
       char cmd[32];
       PLR_EEPROM_START(PLR_EEPROM_OFFSET);
@@ -4111,6 +4112,19 @@ void MarlinSettings::reset() {
         //PLR_EEPROM_WRITE(iTPos0);
         //PLR_EEPROM_WRITE(iTPos1);
         PLR_EEPROM_WRITE(iT01);
+=======
+    void MarlinSettings::plr_save(uint32_t FPos, int8_t T01, float ZPos){
+      char cmd[32];
+      PLR_EEPROM_START(PLR_EEPROM_OFFSET);
+      int32_t startSave = millis();
+      if(FPos > 2048){
+        PLR_EEPROM_WRITE(FPos);
+        //PLR_EEPROM_WRITE(fEPos);
+        //PLR_EEPROM_WRITE(iTPos0);
+        //PLR_EEPROM_WRITE(iTPos1);
+        PLR_EEPROM_WRITE(T01);
+        PLR_EEPROM_WRITE(ZPos);
+>>>>>>> a45ca6782bb81fcc390f3dabc9e87773e6737064
         //PLR_EEPROM_WRITE(iFan);
 
         //int32_t saveTime = millis() - startSave;
@@ -4198,6 +4212,10 @@ void MarlinSettings::reset() {
       
       PLR_EEPROM_READ(lFPos);
       PLR_EEPROM_READ(iT01);
+<<<<<<< HEAD
+=======
+      PLR_EEPROM_READ(fZPos);
+>>>>>>> a45ca6782bb81fcc390f3dabc9e87773e6737064
 
       TLPrintingStatus = 2;
       
@@ -4277,6 +4295,7 @@ void MarlinSettings::reset() {
       my_sleep(1.5);
       
       feedrate_mm_s = i_feedrate / 60.0;
+<<<<<<< HEAD
 
       /*
       sprintf_P(cmd, PSTR("G92.9 Z%06.2f E%06.2f"), fZPos, fEPos);
@@ -4285,6 +4304,15 @@ void MarlinSettings::reset() {
       */
       current_position[Z_AXIS] = -66.66;
       planner.set_position_mm(current_position);
+=======
+      
+      sprintf_P(cmd, PSTR("G92.9 Z%.2f "), fZPos);
+      gcode.process_subcommands_now(cmd);
+      TLDEBUG_LNPGM(cmd);      
+
+      //current_position[Z_AXIS] = -66.66;
+      //planner.set_position_mm(current_position);
+>>>>>>> a45ca6782bb81fcc390f3dabc9e87773e6737064
       current_position[E_AXIS] = -66.66;
       planner.set_e_position_mm(current_position.e);
 

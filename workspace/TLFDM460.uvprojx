@@ -48,7 +48,11 @@
             <NotGenerated>0</NotGenerated>
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
+<<<<<<< HEAD
           <OutputDirectory>.\obj\</OutputDirectory>
+=======
+          <OutputDirectory>C:\Keil\obj\</OutputDirectory>
+>>>>>>> a45ca6782bb81fcc390f3dabc9e87773e6737064
           <OutputName>firmware</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
@@ -82,7 +86,11 @@
           <AfterMake>
             <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
+<<<<<<< HEAD
             <UserProg1Name>D:\Keil_v5\ARM\ARMCC\bin\fromelf.exe --bin -o  .\bin\firmware.bin  E:\TL-D3V2\workspace\obj\firmware.axf</UserProg1Name>
+=======
+            <UserProg1Name>D:\Keil_v5\ARM\ARMCC\bin\fromelf.exe --bin -o  .\bin\firmware.bin  C:\Keil\obj\firmware.axf</UserProg1Name>
+>>>>>>> a45ca6782bb81fcc390f3dabc9e87773e6737064
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>1</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
@@ -305,7 +313,11 @@
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
+<<<<<<< HEAD
                 <StartAddress>0x200f0000</StartAddress>
+=======
+                <StartAddress>0x20000000</StartAddress>
+>>>>>>> a45ca6782bb81fcc390f3dabc9e87773e6737064
                 <Size>0x1000</Size>
               </OCR_RVCT10>
             </OnChipMemories>

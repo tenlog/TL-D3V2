@@ -1171,6 +1171,10 @@ void prepare_line_to_destination() {
     }
   #endif // PREVENT_COLD_EXTRUSION || PREVENT_LENGTHY_EXTRUDE
 
+<<<<<<< HEAD
+=======
+  /*
+>>>>>>> a45ca6782bb81fcc390f3dabc9e87773e6737064
   if(destination.z > current_position.z && current_position.z < -66.00 && TLPrintingStatus == 1) {  // by zyf
     TLDEBUG_LNPAIR("X C Pos ", current_position.x);
     TLDEBUG_LNPAIR("X D Pos ", destination.x);
@@ -1184,7 +1188,11 @@ void prepare_line_to_destination() {
        current_position.x = hotend_offset[1].x;
       //distination.y = 0;    
     }
+<<<<<<< HEAD
     planner.set_position_mm(current_position);
+=======
+    planner.set_position_mm(destination);
+>>>>>>> a45ca6782bb81fcc390f3dabc9e87773e6737064
 
     TLDEBUG_LNPAIR("AX C Pos ", current_position.x);
     TLDEBUG_LNPAIR("AX D Pos ", destination.x);
@@ -1192,8 +1200,14 @@ void prepare_line_to_destination() {
     TLDEBUG_LNPAIR("AY D Pos ", destination.y);
     TLDEBUG_LNPAIR("AZ C Pos ", current_position.z);
     TLDEBUG_LNPAIR("AZ D Pos ", destination.z);
+<<<<<<< HEAD
     return;
   }
+=======
+    //return;  
+  }
+  */
+>>>>>>> a45ca6782bb81fcc390f3dabc9e87773e6737064
 
   if (TERN0(DUAL_X_CARRIAGE, dual_x_carriage_unpark())) return;
 

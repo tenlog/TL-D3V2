@@ -56,6 +56,12 @@ void GcodeSuite::T(const int8_t tool_index) {
   DEBUG_SECTION(log_T, "T", DEBUGGING(LEVELING));
   if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("...(", tool_index, ")");
 
+  #if BOTH(TENLOG_TOUCH_LCD, DUAL_X_CARRIAGE)
+    if(!card.flag.sdprinting || hotendOffsetChanged){
+      EXECUTE_GCODE("G28 X");
+    }
+  #endif
+
   // Count this command as movement / activity
   reset_stepper_timeout();
 
@@ -66,16 +72,17 @@ void GcodeSuite::T(const int8_t tool_index) {
     }
   #endif
 
-  #if BOTH(TENLOG_TOUCH_LCD, DUAL_X_CARRIAGE)
-    if(!card.flag.sdprinting){
-      EXECUTE_GCODE("G28 X");
-    }
-  #endif
-
   tool_change(tool_index
     #if HAS_MULTI_EXTRUDER
       ,  TERN(PARKING_EXTRUDER, false, tool_index == active_extruder) // For PARKING_EXTRUDER motion is decided in tool_change()
       || parser.boolval('S')
     #endif
   );
+
+  #if BOTH(TENLOG_TOUCH_LCD, DUAL_X_CARRIAGE)
+    if(hotendOffsetChanged){
+      hotendOffsetChanged = false;
+    }
+  #endif
+
 }

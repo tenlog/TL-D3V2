@@ -1634,7 +1634,7 @@ void setup() {
     TLDEBUG_LNPAIR("Power loss found! Point=", isplr);
     TlIsPLR();
   }else{
-    long lastPageID = 0;
+    uint8_t lastPageID = 0;
     if(tl_TouchScreenType == 1){
       TLSTJC_println("sendme");
       delay(200);

@@ -137,7 +137,11 @@
 //#define TENLOG_D5P
 //#define TENLOG_D6P
 
-#define TL_SUBVERSION "005"
+/**
+ * Marlin release version identifier
+ */
+#define SHORT_BUILD_VERSION "2.0.8"
+#define TL_SUBVERSION "006"
 
 // The size of the printable area
 #if defined(TENLOG_D3P) 
@@ -167,7 +171,7 @@
 //#define ESP8266_WIFI
 //#define ESP32_WIFI
 
-#define TL_DEBUG
+//#define TL_DEBUG
 #if EITHER(ESP8266_WIFI, ESP32_WIFI)
   #define HAS_WIFI
 #endif
@@ -595,13 +599,18 @@
     #define DEFAULT_Ki_LIST {   1.08,   1.08 }
     #define DEFAULT_Kd_LIST { 114.00, 114.00 }
   #else
-    // #define DEFAULT_Kp  22.20
-    // #define DEFAULT_Ki   1.08
-    // #define DEFAULT_Kd 114.00
-      /*Ender-3 max*/
+    #define DEFAULT_Kp  30.42
+    #define DEFAULT_Ki   3.69
+    #define DEFAULT_Kd 62.67
+      /*
       #define DEFAULT_Kp 28.72
       #define DEFAULT_Ki 2.62
       #define DEFAULT_Kd 78.81
+
+      #define DEFAULT_Kp 22.23
+      #define DEFAULT_Ki 1.61
+      #define DEFAULT_Kd 76.95
+      */
   #endif
 #endif // PIDTEMP
 
@@ -1816,7 +1825,7 @@
   //#define DO_PARK_Y                     //by zyf
   //#define NOZZLE_PARK_X_ONLY          // X move only is required to park
   //#define NOZZLE_PARK_Y_ONLY          // Y move only is required to park
-  #define NOZZLE_PARK_Z_RAISE_MIN   2   // (mm) Always raise Z by at least this distance
+  #define NOZZLE_PARK_Z_RAISE_MIN   0   // (mm) Always raise Z by at least this distance
   #define NOZZLE_PARK_XY_FEEDRATE 100   // (mm/s) X and Y axes feedrate (also used for delta Z axis)
   #define NOZZLE_PARK_Z_FEEDRATE    5   // (mm/s) Z axis feedrate (not used for delta printers)
 #endif

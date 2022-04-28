@@ -391,7 +391,7 @@
 
 // Show Temperature ADC value
 // Enable for M105 to include ADC values read from temperature sensors.
-  #define SHOW_TEMP_ADC_VALUES
+  //#define SHOW_TEMP_ADC_VALUES
 
 /**
  * High Temperature Thermistor Support

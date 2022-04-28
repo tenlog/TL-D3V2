@@ -21,12 +21,6 @@
  */
 #pragma once
 
-/**
- * Release version. Leave the Marlin version or apply a custom scheme.
- */
-#ifndef SHORT_BUILD_VERSION
-  #define SHORT_BUILD_VERSION "2.0.8"                                     //2.0.8
-#endif
 
 /**
  * Verbose version identifier containing a unique identifier, such as the
