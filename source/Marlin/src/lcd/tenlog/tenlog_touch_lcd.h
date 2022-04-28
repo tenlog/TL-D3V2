@@ -163,6 +163,8 @@ extern char m117_str[15];
 extern char tl_sn[32];
 extern long tl_command[256];
 
+extern bool hotendOffsetChanged;
+
 //static float feedrate = 1500.0, next_feedrate, saved_feedrate;
 
 extern int iPrintID;

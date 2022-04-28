@@ -3430,13 +3430,18 @@ void Temperature::isr() {
     , const heater_id_t e=INDEX_NONE
   ) {
     char k;
+    char ck[1], ce[1], cmd[20];
     switch (e) {
       default:
         #if HAS_TEMP_HOTEND
-          k = 'T'; break;
+          k = 'T'; 
+          ck[0] = 'T';
+          break;
         #endif
       #if HAS_TEMP_BED
-        case H_BED: k = 'B'; break;
+        case H_BED: k = 'B'; 
+        ck[0] = 'B';
+        break;
       #endif
       #if HAS_TEMP_CHAMBER
         case H_CHAMBER: k = 'C'; break;
@@ -3451,24 +3456,35 @@ void Temperature::isr() {
         case H_REDUNDANT: k = 'R'; break;
       #endif
     }
-    SERIAL_CHAR(' ', k);
+    //SERIAL_CHAR(' ', k);
+
     #if HAS_MULTI_HOTEND
-      if (e >= 0) SERIAL_CHAR('0' + e);
+      if (e >= 0) {
+        //SERIAL_CHAR('0' + e);
+        if(e == 0) ce[0] = '0'; else if(e == 1) ce[0] = '1';
+      }else
+        ce[0] = '\0';
+
     #endif
     #ifdef SERIAL_FLOAT_PRECISION
       #define SFP _MIN(SERIAL_FLOAT_PRECISION, 2)
     #else
       #define SFP 2
     #endif
-    SERIAL_CHAR(':');
-    SERIAL_PRINT(c, SFP);
-    SERIAL_ECHOPGM(" /");
-    SERIAL_PRINT(t, SFP);
+    //SERIAL_CHAR(':');
+    //SERIAL_PRINT(c, SFP);
+    //SERIAL_ECHOPGM(" /");
+    //SERIAL_PRINT(t, SFP);
+    
     #if ENABLED(SHOW_TEMP_ADC_VALUES)
       // Temperature MAX SPI boards do not have an OVERSAMPLENR defined
-      SERIAL_ECHOPAIR(" (", TERN(NO_THERMO_TEMPS, false, k == 'T') ? r : r * RECIPROCAL(OVERSAMPLENR));
-      SERIAL_CHAR(')');
+      //SERIAL_ECHOPAIR(" (", TERN(NO_THERMO_TEMPS, false, k == 'T') ? r : r * RECIPROCAL(OVERSAMPLENR));
+      //SERIAL_CHAR(')');
     #endif
+    
+    sprintf_P(cmd, PSTR(" %s%s:%.2f /%.2f"), ck, ce, c, t);
+    SERIAL_ECHO(cmd);
+
     delay(2);
   }
 

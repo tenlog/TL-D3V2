@@ -32,7 +32,9 @@
 #include "../MarlinCore.h"
 #include "../sd/cardreader.h" //for move back by zyf in line 1265
 
-//#define DEBUG_TOOL_CHANGE
+#if ENABLED(TL_DEBUG)
+#define DEBUG_TOOL_CHANGE
+#endif
 
 #define DEBUG_OUT ENABLED(DEBUG_TOOL_CHANGE)
 #include "../core/debug_out.h"
@@ -1142,7 +1144,7 @@ void tool_change(const uint8_t new_tool, bool no_move/*=false*/) {
 
       #if HAS_HOTEND_OFFSET
         xyz_pos_t diff = hotend_offset[new_tool] - hotend_offset[old_tool];
-        TERN_(DUAL_X_CARRIAGE, diff.x = 0);
+        TERN_(DUAL_X_CARRIAGE, diff.x = 0);   //??why? by zyf
       #else
         constexpr xyz_pos_t diff{0};
       #endif
@@ -1264,7 +1266,7 @@ void tool_change(const uint8_t new_tool, bool no_move/*=false*/) {
             #if ENABLED(TOOLCHANGE_PARK)
               if (toolchange_settings.enable_park) do_blocking_move_to_xy_z(destination, destination.z, MMM_TO_MMS(TOOLCHANGE_PARK_XY_FEEDRATE));
             #else
-              if(card.flag.sdprinting){      //by zyf do not move back when is not printing.
+              if(card.flag.sdprinting && !hotendOffsetChanged){      //by zyf do not move back when is not printing.
                 do_blocking_move_to_xy(destination, planner.settings.max_feedrate_mm_s[X_AXIS] * 0.35f); //0.35 by zyf
               }
               do_blocking_move_to_z(destination.z, planner.settings.max_feedrate_mm_s[Z_AXIS]);
@@ -1330,6 +1332,7 @@ void tool_change(const uint8_t new_tool, bool no_move/*=false*/) {
 
   #endif // HAS_MULTI_EXTRUDER
 }
+//tool_change
 
 #if ENABLED(TOOLCHANGE_MIGRATION_FEATURE)
 

@@ -29,13 +29,14 @@
   #error "Define RET6_12864_LCD or VET6_12864_LCD to select pins for CR10_STOCKDISPLAY with the Creality V4 controller."
 #endif
 
-
-#define BOARD_INFO_NAME      "TENLOG v2.0.1"
-#define DEFAULT_MACHINE_NAME "TL 3D"
+#define BOARD_INFO_NAME      "TENLOG v3.1.1"
+#define DEFAULT_MACHINE_NAME "TENLOG 3D"
 
 #define BOARD_NO_NATIVE_USB
 /* LED0 Port/Pin definition */
 #define  LED0          PB7 // TEST
+
+//#define OLD_PIN
 
 /*
  * SDIO Pins
@@ -107,8 +108,20 @@
 #define Y_DIR_PIN          PB14
 
 #define Z_ENABLE_PIN       X_ENABLE_PIN
-#define Z_STEP_PIN         PE13        //原來PB1
-#define Z_DIR_PIN          PE12        //原來PB0
+
+#if ENABLED(OLD_PIN)
+  #define Z_STEP_PIN         PB1
+  #define Z_DIR_PIN          PB0
+  #define HEATER_BED_PIN     PA6  
+  #define FAN1_PIN           PA1 
+  #define FAN3_PIN           PA0 
+#else
+  #define Z_STEP_PIN         PE13
+  #define Z_DIR_PIN          PE12
+  #define HEATER_BED_PIN     PE10 
+  #define FAN1_PIN           PE8  
+  #define FAN3_PIN           PE7 
+#endif
 
 #define Z2_ENABLE_PIN       X_ENABLE_PIN
 #define Z2_STEP_PIN         PB13
@@ -134,18 +147,14 @@
 //
 // Heaters / Fans
 //
-#define HEATER_0_PIN                        PA5   // HEATER0
-#define HEATER_1_PIN                        PA4   // HEATER1
-#define HEATER_BED_PIN                      PE10  // PA6 HOT BED
+#define HEATER_0_PIN        PA5   // HEATER0
+#define HEATER_1_PIN        PA4   // HEATER1
 
-#define FAN_PIN                             PA1   // FAN  FC1 PA1
-#define FAN2_PIN                            PA0    //FAN2 FZ1 PA0
+#define FAN_PIN             PA1   // FAN  FC1 PA1
+#define FAN2_PIN            PA0    //FAN2 FZ1 PA0
 
-#define FAN1_PIN                            PE8   // FAN1 FC2 PE8
-#define FAN3_PIN                            PE7    //FAN3 FZ2 PE7
-
-#define CHAMEBER_PIN                        PE3   //机箱风扇口
-#define LED_PIN                             PE2   //LED 控制管脚
+#define CHAMEBER_PIN        PE3   //机箱风扇口
+#define LED_PIN             PE2   //LED 控制管脚
 
 #if PIN_EXISTS(FAN)
   #define FAN_SOFT_PWM
@@ -158,25 +167,17 @@
 //
 // SD Card
 //
-#define SD_DETECT_PIN                   BOARD_SDIO_DET
-#define SDCARD_CONNECTION               ONBOARD
-#define ONBOARD_SPI_DEVICE                     1
-#define ONBOARD_SD_CS_PIN               PE4   // SDSS
+#define SD_DETECT_PIN       BOARD_SDIO_DET
+#define SDCARD_CONNECTION   ONBOARD
+#define ONBOARD_SPI_DEVICE  1
+#define ONBOARD_SD_CS_PIN   PE4   // SDSS
 #define SDIO_SUPPORT
-#define NO_SD_HOST_DRIVE                          // This board's SD is only seen by the printer
-
-
-#if ENABLED(DWIN_CREALITY_LCD)
-#define BTN_ENC                           PE11
-#define BTN_EN1                           PE15
-#define BTN_EN2                           PE12
-#define BEEPER_PIN                        PE13
-#endif
+#define NO_SD_HOST_DRIVE    // This board's SD is only seen by the printer
 
 //Spi wifi
 #if ENABLED(ESP32_WIFI)  
-  #define SCK_PIN                       PA6
-  #define NSS_PIN                       PB1
-  #define MOSI_PIN                      PA7
-  #define MISO_PIN                      PB0
+  #define SCK_PIN           PA6
+  #define NSS_PIN           PB1
+  #define MOSI_PIN          PA7
+  #define MISO_PIN          PB0
 #endif

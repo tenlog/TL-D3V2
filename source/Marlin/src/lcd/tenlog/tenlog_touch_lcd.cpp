@@ -97,6 +97,7 @@ char m117_str[15] = {""};
 char tl_sn[32] = {""};
 
 bool dwn_is_last_page = false;
+bool hotendOffsetChanged = false;
 
 char cmd[32], str_1[16];
 
@@ -1010,6 +1011,7 @@ void process_command_gcode(long _tl_command[]) {
                 delay(50);
 
             }else if(lT == 0 || lT == 1){
+                //T0 , T1
                 sprintf_P(cmd, PSTR("T%d"), lT);
                 EXECUTE_GCODE(cmd);
             }else if(lM == 1022){
@@ -1246,8 +1248,8 @@ void process_command_gcode(long _tl_command[]) {
                 }            
             }else if(lM == 1011 || lM == 1012 || lM == 1013){
                 //hoten offset 1 M1011 M1012 M1013
-                long lR = GCodelng('R',iFrom, _tl_command);
-                long lS = GCodelng('S',iFrom, _tl_command);
+                uint32_t lR = GCodelng('R',iFrom, _tl_command);
+                uint32_t lS = GCodelng('S',iFrom, _tl_command);
                 if(lR == 100 && lS > 0 ){
                     
                     long lAxis = lM - 1011;
@@ -1263,6 +1265,7 @@ void process_command_gcode(long _tl_command[]) {
                         hotend_offset[1].z = fOffset;
                     }
                     EXECUTE_GCODE(PSTR("M500"));
+                    hotendOffsetChanged = true;                    
                 }
             }else if(lM == 1004){
                 //M1004
@@ -2752,7 +2755,7 @@ void _outage() {
     // Save,
     if(IS_SD_PRINTING()){
         uint32_t sdPos = card.getIndex();
-        settings.plr_save(sdPos, active_extruder);
+        settings.plr_save(sdPos, active_extruder, current_position.z);
     }
 
     if(tl_TouchScreenType == 1){

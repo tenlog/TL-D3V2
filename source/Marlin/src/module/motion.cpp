@@ -1171,6 +1171,7 @@ void prepare_line_to_destination() {
     }
   #endif // PREVENT_COLD_EXTRUSION || PREVENT_LENGTHY_EXTRUDE
 
+  /*
   if(destination.z > current_position.z && current_position.z < -66.00 && TLPrintingStatus == 1) {  // by zyf
     TLDEBUG_LNPAIR("X C Pos ", current_position.x);
     TLDEBUG_LNPAIR("X D Pos ", destination.x);
@@ -1192,8 +1193,9 @@ void prepare_line_to_destination() {
     TLDEBUG_LNPAIR("AY D Pos ", destination.y);
     TLDEBUG_LNPAIR("AZ C Pos ", current_position.z);
     TLDEBUG_LNPAIR("AZ D Pos ", destination.z);
-    //return;
+    //return;  
   }
+  */
 
   if (TERN0(DUAL_X_CARRIAGE, dual_x_carriage_unpark())) return;
 
