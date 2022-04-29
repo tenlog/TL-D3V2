@@ -2755,11 +2755,7 @@ void _outage() {
     // Save,
     if(IS_SD_PRINTING()){
         uint32_t sdPos = card.getIndex();
-<<<<<<< HEAD
-        settings.plr_save(sdPos, active_extruder);
-=======
         settings.plr_save(sdPos, active_extruder, current_position.z);
->>>>>>> a45ca6782bb81fcc390f3dabc9e87773e6737064
     }
 
     if(tl_TouchScreenType == 1){
