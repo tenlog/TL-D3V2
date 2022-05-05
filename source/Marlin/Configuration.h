@@ -141,7 +141,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "006"
+#define TL_SUBVERSION "007"
 
 // The size of the printable area
 #if defined(TENLOG_D3P) 

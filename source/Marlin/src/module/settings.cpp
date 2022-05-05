@@ -4113,8 +4113,8 @@ void MarlinSettings::reset() {
         PLR_EEPROM_WRITE(ZPos);
         //PLR_EEPROM_WRITE(iFan);
 
-        int32_t saveTime = millis() - startSave;
-        TLDEBUG_LNPAIR("Save Use ", saveTime);
+        //int32_t saveTime = millis() - startSave;
+        //TLDEBUG_LNPAIR("Save Use ", saveTime);
         //sprintf_P(cmd, PSTR("ZPos:%f, EPos %f"), fZPos, fEPos);
       }
     }

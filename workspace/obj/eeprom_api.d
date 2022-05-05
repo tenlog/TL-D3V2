@@ -1,0 +1,17 @@
+.\obj\eeprom_api.o: ..\source\Marlin\src\HAL\shared\eeprom_api.cpp
+.\obj\eeprom_api.o: ..\source\Marlin\src\HAL\shared\../../inc/MarlinConfigPre.h
+.\obj\eeprom_api.o: C:\Tenlog\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\eeprom_api.o: ..\source\Marlin\src\HAL\shared\../../inc/../HAL/platforms.h
+.\obj\eeprom_api.o: ..\source\Marlin\src\HAL\shared\../../inc/../core/boards.h
+.\obj\eeprom_api.o: ..\source\Marlin\src\HAL\shared\../../inc/../core/macros.h
+.\obj\eeprom_api.o: ..\source\Marlin\src\HAL\shared\../../inc/../../Configuration.h
+.\obj\eeprom_api.o: ..\source\Marlin\src\HAL\shared\../../inc/Version.h
+.\obj\eeprom_api.o: ..\source\Marlin\src\HAL\shared\../../inc/Conditionals_LCD.h
+.\obj\eeprom_api.o: ..\source\Marlin\src\HAL\shared\../../inc/../HAL/STM32F1/inc/Conditionals_LCD.h
+.\obj\eeprom_api.o: ..\source\Marlin\src\HAL\shared\../../inc/../core/drivers.h
+.\obj\eeprom_api.o: ..\source\Marlin\src\HAL\shared\../../inc/../../Configuration_adv.h
+.\obj\eeprom_api.o: ..\source\Marlin\src\HAL\shared\../../inc/Conditionals_adv.h
+.\obj\eeprom_api.o: ..\source\Marlin\src\HAL\shared\../../inc/../HAL/STM32F1/inc/Conditionals_adv.h
+.\obj\eeprom_api.o: ..\source\Marlin\src\HAL\shared\eeprom_api.h
+.\obj\eeprom_api.o: C:\Tenlog\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\obj\eeprom_api.o: ..\source\Marlin\src\HAL\shared\../../libs/crc16.h
