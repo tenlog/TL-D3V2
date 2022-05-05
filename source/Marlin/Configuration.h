@@ -169,9 +169,9 @@
 #define TENLOG_TOUCH_LCD
 #define PRINT_FROM_Z_HEIGHT
 //#define ESP8266_WIFI
-//#define ESP32_WIFI
+#define ESP32_WIFI
 
-//#define TL_DEBUG
+#define TL_DEBUG
 #if EITHER(ESP8266_WIFI, ESP32_WIFI)
   #define HAS_WIFI
 #endif
@@ -599,9 +599,9 @@
     #define DEFAULT_Ki_LIST {   1.08,   1.08 }
     #define DEFAULT_Kd_LIST { 114.00, 114.00 }
   #else
-    #define DEFAULT_Kp  30.42
-    #define DEFAULT_Ki   3.69
-    #define DEFAULT_Kd 62.67
+    #define DEFAULT_Kp  22.23
+    #define DEFAULT_Ki  1.61
+    #define DEFAULT_Kd  76.95
       /*
       #define DEFAULT_Kp 28.72
       #define DEFAULT_Ki 2.62

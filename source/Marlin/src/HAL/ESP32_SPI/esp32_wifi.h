@@ -64,6 +64,7 @@ uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data);
 void WIFI_WriteCMD(uint8_t Command);
 void WIFI_WriteDAT(uint8_t Data);
 void WIFI_HardwareReset(void);
+void Test_SPI(const char CString[]);
 void WIFI_AllInit(void);
 
 

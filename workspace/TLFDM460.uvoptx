@@ -120,7 +120,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>UL2CM3</Key>
-          <Name>UL2CM3(-S0 -C0 -P0 )  -FN2 -FC1000 -FD1FFF8000 -FF0HC32F460_512K -FF1HC32F460_otp -FL080000 -FL13FC -FS00 -FS13000C00 -FP0($$Device:HC32F460PETB$FlashARM\HC32F460_512K.FLM) -FP1($$Device:HC32F460PETB$FlashARM\HC32F460_otp.FLM)</Name>
+          <Name>UL2CM3(-S0 -C0 -P0 -FD1FFF8000 -FC1000 -FN2 -FF0HC32F460_512K -FS00 -FL080000 -FF1HC32F460_otp -FS13000C00 -FL13FC -FP0($$Device:HC32F460PETB$FlashARM\HC32F460_512K.FLM) -FP1($$Device:HC32F460PETB$FlashARM\HC32F460_otp.FLM))</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
       <Breakpoint/>
@@ -3694,7 +3694,7 @@
 
   <Group>
     <GroupName>::CMSIS</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>1</RteFlg>

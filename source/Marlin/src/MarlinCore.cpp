@@ -1133,6 +1133,16 @@ void setup() {
   SERIAL_ECHOLNPGM("\n==============MARLIN==============");
   SERIAL_ECHOLNPGM("start");
 
+  #if ENABLED(ESP8266_WIFI)
+    TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init Tenlog Wifi..."));
+    esp_wifi_init();
+  #endif
+
+  #if ENABLED(ESP32_WIFI)
+    TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init Tenlog Wifi..."));
+    WIFI_AllInit();
+  #endif
+
   //tenlog touch screen..
   TERN_(TENLOG_TOUCH_LCD, initTLScreen());
 
@@ -1337,16 +1347,6 @@ void setup() {
   TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init Stepper..."));
   SETUP_RUN(stepper.init());          // Init stepper. This enables interrupts!
 
-
-  #if ENABLED(ESP8266_WIFI)
-    TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init Tenlog Wifi..."));
-    esp_wifi_init();
-  #endif
-
-  #if ENABLED(ESP32_WIFI)
-    TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init Tenlog Wifi..."));
-    WIFI_AllInit();
-  #endif
 
   #if HAS_SERVOS
     SETUP_RUN(servo_init());

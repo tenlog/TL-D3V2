@@ -882,9 +882,10 @@ void load_filament(int LoadUnload, int TValue)
         fEPos += 90;
         sprintf_P(cmd, PSTR("G1 E%f F400"), fEPos);
         EXECUTE_GCODE(cmd);
+        delay(50);
         fEPos += 20;
         sprintf_P(cmd, PSTR("G1 E%f F200"), fEPos);
-        EXECUTE_GCODE(cmd);        
+        EXECUTE_GCODE(cmd);
     }
     else if (LoadUnload == 1){
         //unload
@@ -968,15 +969,18 @@ void process_command_gcode(long _tl_command[]) {
                 if(lE != -999)
                 {
                     fTemp = (float)lE / (float)lRate;
-                    sprintf_P(sE, PSTR("E%s "), dtostrf(fTemp, 1, 1, str_1));                
+                    float fEPos = current_position[E_AXIS] * lM;
+                    fEPos += fTemp;
+                    sprintf_P(sE, PSTR("E%f "), fEPos);
                 }
                 if(lF != -999)
                 {
-                    sprintf_P(sF, PSTR("F%d"), lF);                
+                    sprintf_P(sF, PSTR("F%d "), lF);                
                 }
                 feedrate_mm_s = lF / 60;
                 sprintf_P(cmd, PSTR("G%d %s%s%s%s%s"), lG, sF, sX, sY, sZ, sE);
                 EXECUTE_GCODE(cmd);
+                TLDEBUG_PGM(cmd);
                 TLSTJC_println("main.vCC.val=0");
                 delay(50);
             } else if(lG == 28){
@@ -1015,6 +1019,7 @@ void process_command_gcode(long _tl_command[]) {
                 sprintf_P(cmd, PSTR("T%d"), lT);
                 EXECUTE_GCODE(cmd);
             }else if(lM == 1022){
+                //M1022
                 TLSTJC_println("main.vCC.val=1");
                 delay(50);
                 long lS = GCodelng('S', iFrom, _tl_command);

@@ -24,6 +24,7 @@
 
 #include "../../MarlinCore.h"
 #include "../../inc/MarlinConfig.h"
+#include "../../lcd/tenlog/tenlog_touch_lcd.h"
 
 #ifdef ESP32_WIFI
 
@@ -54,13 +55,6 @@ void WIFI_InitGPIO(void)
     MEM_ZERO_STRUCT(stcPortInit);
 
     stcPortInit.enPinMode = Pin_Mode_Out;
-
-    /* RES & DC & BL */
-    //PORT_Init(WIFI_RES_PORT, WIFI_RES_PIN, &stcPortInit);
-    //PORT_Init(WIFI_DC_PORT,  WIFI_DC_PIN, &stcPortInit);
-    //PORT_Init(WIFI_BL_PORT,  WIFI_BL_PIN, &stcPortInit);
-
-    //WIFI_BL_HIGH();   /* 打开背光 */
 
     /* SPI NSS */
     PORT_Init(SPI1_NSS_PORT, SPI1_NSS_PIN, &stcPortInit);
@@ -186,11 +180,19 @@ void WIFI_WriteDAT(uint8_t Data)
 * 返 回 值： 
 * 其它说明： 
 **************************************************************************/
-void WIFI_HardwareReset(void)
+void Test_SPI(const char SString[])
 {
-    //WIFI_RES_HIGH();  Ddl_Delay1ms(1);
-    //WIFI_RES_LOW();   Ddl_Delay1ms(80);
-    //WIFI_RES_HIGH();  Ddl_Delay1ms(10);
+        TLDEBUG_LNPAIR("Send:", SString);
+        char RString[32];
+        NULLZERO(RString);
+        SPI1_NSS_LOW();
+        for(int i=0; i<32; i++){
+            const char SPIR = SPI_RW(SPI1_UNIT, SString[i]); 
+            RString[i]=SPIR;
+        }
+        SPI1_NSS_HIGH();
+        TLDEBUG_LNPAIR("Received:", RString);
+        delay(500);
 }
 
 
@@ -206,7 +208,8 @@ void WIFI_AllInit(void)
 {
     WIFI_InitGPIO();  //初始化几个GPIO口，包括BL、DC、RES以及SPI的CS
     WIFI_InitSPI1();  //初始化SPI的几个口，包括SCK、MOSI以及MISO
-    WIFI_HardwareReset();  //WIFI复位
+
+    Test_SPI("ABCDEFGHIJKLMNOPQRSTUVWXYZ012345");  //测试
 }
 
 ///////////zyf
