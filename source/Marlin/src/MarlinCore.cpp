@@ -1140,7 +1140,7 @@ void setup() {
 
   #if ENABLED(ESP32_WIFI)
     TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init Tenlog Wifi..."));
-    WIFI_AllInit();
+    WIFI_InitSPI();
   #endif
 
   //tenlog touch screen..
