@@ -137,6 +137,11 @@
 //#define TENLOG_D5P
 //#define TENLOG_D6P
 
+#define TENLOG_TOUCH_LCD
+#define PRINT_FROM_Z_HEIGHT
+//#define ESP8266_WIFI
+//#define ESP32_WIFI
+
 /**
  * Marlin release version identifier
  */
@@ -165,11 +170,6 @@
   #define Y_BED_SIZE 610
   #define Z_LENGTH   610
 #endif
-
-#define TENLOG_TOUCH_LCD
-#define PRINT_FROM_Z_HEIGHT
-//#define ESP8266_WIFI
-#define ESP32_WIFI
 
 #define TL_DEBUG
 #if EITHER(ESP8266_WIFI, ESP32_WIFI)
@@ -554,14 +554,14 @@
 // Above this temperature the heater will be switched off.
 // This can protect components from overheating, but NOT from shorts and failures.
 // (Use MINTEMP for thermistor short/failure protection.)
-#define HEATER_0_MAXTEMP 275
-#define HEATER_1_MAXTEMP 275
-#define HEATER_2_MAXTEMP 275
-#define HEATER_3_MAXTEMP 275
-#define HEATER_4_MAXTEMP 275
-#define HEATER_5_MAXTEMP 275
-#define HEATER_6_MAXTEMP 275
-#define HEATER_7_MAXTEMP 275
+#define HEATER_0_MAXTEMP 400
+#define HEATER_1_MAXTEMP HEATER_0_MAXTEMP
+#define HEATER_2_MAXTEMP HEATER_0_MAXTEMP
+#define HEATER_3_MAXTEMP HEATER_0_MAXTEMP
+#define HEATER_4_MAXTEMP HEATER_0_MAXTEMP
+#define HEATER_5_MAXTEMP HEATER_0_MAXTEMP
+#define HEATER_6_MAXTEMP HEATER_0_MAXTEMP
+#define HEATER_7_MAXTEMP HEATER_0_MAXTEMP
 #define BED_MAXTEMP      120
 #define CHAMBER_MAXTEMP  60
 

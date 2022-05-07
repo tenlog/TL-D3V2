@@ -853,8 +853,8 @@ void kill(PGM_P const lcd_error/*=nullptr*/, PGM_P const lcd_component/*=nullptr
       TLSTJC_println("main.vCC.val=0");
       delay(10);
       //settings.killFlagSet(1);
-      char ErrorMessage[64];
-      sprintf_P(ErrorMessage, PSTR("%s"), lcd_error);
+      char ErrorMessage[128];
+      sprintf_P(ErrorMessage, PSTR("%s %s"), lcd_error, lcd_component);
       TJCMessage(1, 1, 24, "M1050 S0", "M1050 S0", ErrorMessage);
     }
   #endif

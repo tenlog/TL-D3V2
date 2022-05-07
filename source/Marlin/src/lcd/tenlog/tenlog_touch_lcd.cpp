@@ -401,6 +401,14 @@ void tlInitSetting(){
         TLSTJC_println(cmd);
         delay(20);
         
+        sprintf_P(cmd, PSTR("main.vTempMax.val=%d"), HEATER_0_MAXTEMP - 1);
+        TLSTJC_println(cmd);
+        delay(20);
+        
+        sprintf_P(cmd, PSTR("main.vBedMax.val=%d"), BED_MAXTEMP - 1);
+        TLSTJC_println(cmd);
+        delay(20);
+        
         sprintf_P(cmd, PSTR("main.vXMax.val=%d"), lOffsetX / 10);
         TLSTJC_println(cmd);
         delay(20);
@@ -1060,6 +1068,7 @@ void process_command_gcode(long _tl_command[]) {
                 TLSTJC_println("main.vCC.val=0");
                 delay(50);
             }else if(lM == 104){
+                //M104
                 long lTT = GCodelng('T', iFrom, _tl_command);
                 long lS = GCodelng('S', iFrom, _tl_command);
                 char sT[10],sS[10];
@@ -1085,6 +1094,7 @@ void process_command_gcode(long _tl_command[]) {
                 sprintf_P(cmd, PSTR("M%d %s"), lM, sS);
                 EXECUTE_GCODE(cmd);
             }else if(lM == 106){
+                //M106
                 float fS = GCodelng('S', iFrom, _tl_command);
                 long lR = GCodelng('R', iFrom, _tl_command);
                 char sS[10], sR[10];
@@ -1101,6 +1111,7 @@ void process_command_gcode(long _tl_command[]) {
                 sprintf_P(cmd, PSTR("M%d %s"), lM, sS);                
                 EXECUTE_GCODE(cmd);
             }else if(lM == 107){
+                //M107
                 sprintf_P(cmd, PSTR("M%d"), lM);
                 EXECUTE_GCODE(cmd);
             }else if(lM == 21){

@@ -179,6 +179,7 @@ uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data)
 **************************************************************************/
 void Test_SPI(const char SString[])
 {
+    while(1){
         //TLDEBUG_LNPAIR("Send:", SString);
         char RString[32];
         NULLZERO(RString);
@@ -191,6 +192,7 @@ void Test_SPI(const char SString[])
         SPI1_NSS_HIGH();        
         //TLDEBUG_LNPAIR("Received:",RString);
         //delay(500);
+    }
 }
 
 
