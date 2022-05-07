@@ -4101,7 +4101,7 @@ void MarlinSettings::reset() {
     }
 
     void MarlinSettings::plr_save(uint32_t FPos, int8_t T01, float ZPos){
-      char cmd[32];
+      //char cmd[32];
       PLR_EEPROM_START(PLR_EEPROM_OFFSET);
       int32_t startSave = millis();
       if(FPos > 2048){
@@ -4169,8 +4169,8 @@ void MarlinSettings::reset() {
 
     void MarlinSettings::plr_recovery(){
       char cmd[32];
-      char str_1[16];
-      char str_2[16];
+      //char str_1[16];
+      //char str_2[16];
       TLPrintingStatus = 0;
       int16_t iBPos = 0;
       int16_t i_dual_x_carriage_mode = 0;
@@ -4183,7 +4183,7 @@ void MarlinSettings::reset() {
       int8_t iT01 = 0;
       int16_t iFan = 255;
       float fZPos = 0;
-      float fEPos = 0;
+      //float fEPos = 0;
 
       PLR_EEPROM_START(PLR_PRE_EEPROM_OFFSET);
 

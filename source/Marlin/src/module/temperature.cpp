@@ -960,6 +960,7 @@ void Temperature::_temp_error(const heater_id_t heater_id, PGM_P const serial_ms
     else
       SERIAL_ECHOPGM(STR_HEATER_BED);
     SERIAL_EOL();
+    
   }
 
   disable_all_heaters(); // always disable (even for bogus temp)
@@ -1616,18 +1617,22 @@ void Temperature::manage_heater() {
   uint8_t l = 0, r = LEN, m;                                              \
   for (;;) {                                                              \
     m = (l + r) >> 1;                                                     \
-    if (!m) return celsius_t(pgm_read_word(&TBL[0].celsius));             \
-    if (m == l || m == r) return celsius_t(pgm_read_word(&TBL[LEN-1].celsius)); \
+    if (!m) {                                                             \
+      return celsius_t(pgm_read_word(&TBL[0].celsius));                   \
+    }                                                                     \
+    if (m == l || m == r){                                                \
+      return celsius_t(pgm_read_word(&TBL[LEN-1].celsius));               \
+    }                                                                     \
     int16_t v00 = pgm_read_word(&TBL[m-1].value),                         \
             v10 = pgm_read_word(&TBL[m-0].value);                         \
-         if (raw < v00) r = m;                                            \
+    if (raw < v00) r = m;                                                 \
     else if (raw > v10) l = m;                                            \
     else {                                                                \
       const celsius_t v01 = celsius_t(pgm_read_word(&TBL[m-1].celsius)),  \
                       v11 = celsius_t(pgm_read_word(&TBL[m-0].celsius));  \
       return v01 + (raw - v00) * float(v11 - v01) / float(v10 - v00);     \
     }                                                                     \
-  }                                                                       \
+  }                                                                       \ 
 }while(0)
 
 #if HAS_USER_THERMISTORS

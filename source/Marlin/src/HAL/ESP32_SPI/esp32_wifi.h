@@ -57,16 +57,18 @@ extern uint32_t http_port;
 #define SPI1_UNIT                        (M4_SPI1)
 #define SPI1_UNIT_CLOCK                  (PWC_FCG1_PERIPH_SPI1)
 
+//spi DMA
+//#define SPI_DMA_UNIT                     (M4_DMA1)
+//#define SPI_DMA_CLOCK_UNIT               (PWC_FCG0_PERIPH_DMA1)
+//#define SPI_DMA_TX_CHANNEL               (DmaCh0)
+//#define SPI_DMA_TX_TRIG_SOURCE           (EVT_SPI1_SPII)//(EVT_SPI1_SPTI)     
 
 void WIFI_InitGPIO(void);
 void WIFI_InitSPI1(void);
 uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data);
-void WIFI_WriteCMD(uint8_t Command);
-void WIFI_WriteDAT(uint8_t Data);
-void WIFI_HardwareReset(void);
 void Test_SPI(const char CString[]);
-void WIFI_AllInit(void);
-
+void WIFI_InitSPI(void);
+//void WIFI_InitDMA(void);
 
 void wifiResetEEPROM();
 #endif

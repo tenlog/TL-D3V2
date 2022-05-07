@@ -36,6 +36,34 @@ uint32_t http_port = WIFI_DEFAULT_PORT;
 
 
 #include "esp32_wifi.h"
+/*
+void WIFI_InitDMA(void)
+{
+    stc_dma_config_t stcDmaCfg;
+    stc_irq_regi_conf_t stcIrqRegiCfg;
+       
+    // configuration structure initialization 
+    MEM_ZERO_STRUCT(stcDmaCfg);
+
+    // Configuration peripheral clock 
+    PWC_Fcg0PeriphClockCmd(SPI_DMA_CLOCK_UNIT, Enable);
+    //PWC_Fcg0PeriphClockCmd(PWC_FCG0_PERIPH_AOS, Enable);
+
+    // Configure TX DMA 
+    stcDmaCfg.u16BlockSize = 1u;
+    stcDmaCfg.u16TransferCnt = 128;
+    stcDmaCfg.u32SrcAddr = 0;
+    stcDmaCfg.u32DesAddr = (uint32_t)(&SPI1_UNIT->DR);
+    stcDmaCfg.stcDmaChCfg.enSrcInc = AddressIncrease;
+    stcDmaCfg.stcDmaChCfg.enDesInc = AddressFix;
+    stcDmaCfg.stcDmaChCfg.enTrnWidth = Dma8Bit;
+    stcDmaCfg.stcDmaChCfg.enIntEn = Disable;
+    DMA_InitChannel(SPI_DMA_UNIT, SPI_DMA_TX_CHANNEL, &stcDmaCfg);
+    DMA_SetTriggerSrc(SPI_DMA_UNIT, SPI_DMA_TX_CHANNEL, SPI_DMA_TX_TRIG_SOURCE);
+    // Enable DMA. 
+    DMA_Cmd(SPI_DMA_UNIT, Enable);
+}
+*/
 
 //【2】其次是GPIO口初始化（这边将SPI的CS脚当作GPIO进行初始化）：
 
@@ -138,37 +166,6 @@ uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data)
     return SPI_ReceiveData8(SPIx);
 }
 
-/**************************************************************************
-* 函数名称： WIFI_WriteCMD
-* 功能描述： WIFI写命令
-* 输入参数： 
-* 输出参数： 
-* 返 回 值： 
-* 其它说明： 
-**************************************************************************/
-void WIFI_WriteCMD(uint8_t Command)
-{
-    SPI1_NSS_LOW();
-    //WIFI_DC_LOW();
-    SPI_RW(SPI1_UNIT, Command);
-    SPI1_NSS_HIGH();
-}
-
-/**************************************************************************
-* 函数名称： WIFI_WriteDAT
-* 功能描述： WIFI写数据
-* 输入参数： 
-* 输出参数： 
-* 返 回 值： 
-* 其它说明： 
-**************************************************************************/
-void WIFI_WriteDAT(uint8_t Data)
-{
-    SPI1_NSS_LOW();
-    //WIFI_DC_HIGH();
-    SPI_RW(SPI1_UNIT, Data);
-    SPI1_NSS_HIGH();
-}
 
 //【5】封装WIFI的一些基本的接口，比如复位接口以及寄存器配置接口（其中寄存器的相关配置可以参考附录中提供的ILI9431数据手册）：
 
@@ -182,32 +179,36 @@ void WIFI_WriteDAT(uint8_t Data)
 **************************************************************************/
 void Test_SPI(const char SString[])
 {
-        TLDEBUG_LNPAIR("Send:", SString);
+    while(1){
+        //TLDEBUG_LNPAIR("Send:", SString);
         char RString[32];
         NULLZERO(RString);
-        SPI1_NSS_LOW();
+        SPI1_NSS_LOW();        
+        delay(100);
         for(int i=0; i<32; i++){
-            const char SPIR = SPI_RW(SPI1_UNIT, SString[i]); 
-            RString[i]=SPIR;
-        }
-        SPI1_NSS_HIGH();
-        TLDEBUG_LNPAIR("Received:", RString);
-        delay(500);
+            RString[i] = SPI_RW(SPI1_UNIT, SString[i]); 
+        }        
+        delay(100);
+        SPI1_NSS_HIGH();        
+        //TLDEBUG_LNPAIR("Received:",RString);
+        //delay(500);
+    }
 }
 
 
 /**************************************************************************
-* 函数名称： WIFI_AllInit
+* 函数名称： WIFI_InitSPI
 * 功能描述： WIFI初始化
 * 输入参数： 
 * 输出参数： 
 * 返 回 值： 
 * 其它说明： 
 **************************************************************************/
-void WIFI_AllInit(void)
+void WIFI_InitSPI(void)
 {
-    WIFI_InitGPIO();  //初始化几个GPIO口，包括BL、DC、RES以及SPI的CS
-    WIFI_InitSPI1();  //初始化SPI的几个口，包括SCK、MOSI以及MISO
+    WIFI_InitGPIO();    //初始化几个GPIO口，包括BL、DC、RES以及SPI的CS
+    WIFI_InitSPI1();    //初始化SPI的几个口，包括SCK、MOSI以及MISO
+    //WIFI_InitDMA();     //初始化SPI DMA
 
     Test_SPI("ABCDEFGHIJKLMNOPQRSTUVWXYZ012345");  //测试
 }

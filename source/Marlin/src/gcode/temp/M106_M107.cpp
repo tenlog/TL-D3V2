@@ -114,13 +114,25 @@ void GcodeSuite::M106() {
  * M107: Fan Off
  */
 void GcodeSuite::M107() {
+  #if ENABLED(TENLOG_TOUCH_LCD)
+  const uint8_t pfan = 0;
+  #else
   const uint8_t pfan = parser.byteval('P', _ALT_P);
+  #endif
+
   if (pfan >= _CNT_P) return;
 
-  thermalManager.set_fan_speed(pfan, 0);
-
-  if (TERN0(DUAL_X_CARRIAGE, idex_is_duplicating()))  // pfan == 0 when duplicating
-    thermalManager.set_fan_speed(1 - pfan, 0);
+  #if ENABLED(DUAL_X_CARRIAGE)      
+    if (idex_is_duplicating()){ 
+      thermalManager.set_fan_speed(0, 0);
+      thermalManager.set_fan_speed(1, 0);
+    }
+    else{
+      thermalManager.set_fan_speed(active_extruder, 0);      
+    }
+  #else
+      thermalManager.set_fan_speed(pfan, 0);
+  #endif
 
   TERN_(LASER_SYNCHRONOUS_M106_M107, planner.buffer_sync_block(BLOCK_FLAG_SYNC_FANS));
 }
