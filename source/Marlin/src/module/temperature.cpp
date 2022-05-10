@@ -944,9 +944,8 @@ inline void loud_kill(PGM_P const lcd_msg, const heater_id_t heater_id) {
 }
 
 void Temperature::_temp_error(const heater_id_t heater_id, PGM_P const serial_msg, PGM_P const lcd_msg) {
-
   static uint8_t killed = 0;
-
+  TLDEBUG_LNPGM("TL MAX TEMP Error!");
   if (IsRunning() && TERN1(BOGUS_TEMPERATURE_GRACE_PERIOD, killed == 2)) {
     SERIAL_ERROR_START();
     SERIAL_ECHOPGM_P(serial_msg);
@@ -959,8 +958,7 @@ void Temperature::_temp_error(const heater_id_t heater_id, PGM_P const serial_ms
       SERIAL_ECHOPGM(STR_COOLER);
     else
       SERIAL_ECHOPGM(STR_HEATER_BED);
-    SERIAL_EOL();
-    
+    SERIAL_EOL();    
   }
 
   disable_all_heaters(); // always disable (even for bogus temp)
@@ -985,21 +983,20 @@ void Temperature::_temp_error(const heater_id_t heater_id, PGM_P const serial_ms
   #elif defined(BOGUS_TEMPERATURE_GRACE_PERIOD)
     UNUSED(killed);
   #else
-    if (!killed) { killed = 1; loud_kill(lcd_msg, heater_id); }
+    if (!killed) { 
+      TLDEBUG_LNPGM(lcd_msg);
+      killed = 1; 
+      loud_kill(lcd_msg, heater_id); 
+    }
   #endif
 }
 
 void Temperature::max_temp_error(const heater_id_t heater_id) {
-  #if ENABLED(DWIN_CREALITY_LCD) && (HAS_HOTEND || HAS_HEATED_BED)
-    DWIN_Popup_Temperature(1);
-  #endif
+  TLDEBUG_LNPGM("TL MAX TEMP Error!");
   _temp_error(heater_id, PSTR(STR_T_MAXTEMP), GET_TEXT(MSG_ERR_MAXTEMP));
 }
 
 void Temperature::min_temp_error(const heater_id_t heater_id) {
-  #if ENABLED(DWIN_CREALITY_LCD) && (HAS_HOTEND || HAS_HEATED_BED)
-    DWIN_Popup_Temperature(0);
-  #endif
   _temp_error(heater_id, PSTR(STR_T_MINTEMP), GET_TEXT(MSG_ERR_MINTEMP));
 }
 
@@ -1613,7 +1610,7 @@ void Temperature::manage_heater() {
  * Bisect search for the range of the 'raw' value, then interpolate
  * proportionally between the under and over values.
  */
-#define SCAN_THERMISTOR_TABLE(TBL,LEN) do{                                \
+#define SCAN_THERMISTOR_TABLE(TBL,LEN,EE) do{                                \
   uint8_t l = 0, r = LEN, m;                                              \
   for (;;) {                                                              \
     m = (l + r) >> 1;                                                     \
@@ -1630,11 +1627,19 @@ void Temperature::manage_heater() {
     else {                                                                \
       const celsius_t v01 = celsius_t(pgm_read_word(&TBL[m-1].celsius)),  \
                       v11 = celsius_t(pgm_read_word(&TBL[m-0].celsius));  \
-      return v01 + (raw - v00) * float(v11 - v01) / float(v10 - v00);     \
+      float Cs=v01 + (raw - v00) * float(v11 - v01) / float(v10 - v00);   \
+      if(raw<20*OVERSAMPLENR){                                           \
+        char tx[50];                                                      \
+        sprintf_P(tx, "raw:%d, v:%d, C:%0.2f", raw/OVERSAMPLENR, v00/OVERSAMPLENR, Cs);             \
+        TLDEBUG_LNPGM(tx);                                                \
+      }                                                                   \
+      return Cs;                                                          \
     }                                                                     \
   }                                                                       \ 
 }while(0)
+/*
 
+*/
 #if HAS_USER_THERMISTORS
 
   user_thermistor_t Temperature::user_thermistor[USER_THERMISTORS]; // Initialized by settings.load()
@@ -1863,7 +1868,7 @@ void Temperature::manage_heater() {
     #if HAS_HOTEND_THERMISTOR
       // Thermistor with conversion table?
       const temp_entry_t(*tt)[] = (temp_entry_t(*)[])(heater_ttbl_map[e]);
-      SCAN_THERMISTOR_TABLE((*tt), heater_ttbllen_map[e]);
+      SCAN_THERMISTOR_TABLE((*tt), heater_ttbllen_map[e],e);
     #endif
 
     return 0;
@@ -1876,7 +1881,7 @@ void Temperature::manage_heater() {
     #if TEMP_SENSOR_BED_IS_CUSTOM
       return user_thermistor_to_deg_c(CTI_BED, raw);
     #elif TEMP_SENSOR_BED_IS_THERMISTOR
-      SCAN_THERMISTOR_TABLE(TEMPTABLE_BED, TEMPTABLE_BED_LEN);
+      SCAN_THERMISTOR_TABLE(TEMPTABLE_BED, TEMPTABLE_BED_LEN, 1);
     #elif TEMP_SENSOR_BED_IS_AD595
       return TEMP_AD595(raw);
     #elif TEMP_SENSOR_BED_IS_AD8495
@@ -3483,8 +3488,8 @@ void Temperature::isr() {
     
     #if ENABLED(SHOW_TEMP_ADC_VALUES)
       // Temperature MAX SPI boards do not have an OVERSAMPLENR defined
-      //SERIAL_ECHOPAIR(" (", TERN(NO_THERMO_TEMPS, false, k == 'T') ? r : r * RECIPROCAL(OVERSAMPLENR));
-      //SERIAL_CHAR(')');
+      SERIAL_ECHOPAIR(" (", TERN(NO_THERMO_TEMPS, false, k == 'T') ? r : r * RECIPROCAL(OVERSAMPLENR));
+      SERIAL_CHAR(')');
     #endif
     
     sprintf_P(cmd, PSTR(" %s%s:%.2f /%.2f"), ck, ce, c, t);

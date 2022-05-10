@@ -30,6 +30,10 @@
 #include "../../inc/MarlinConfig.h"
 #include "HAL.h"
 
+#if ENABLED(TL_DEBUG)
+  #include "../../lcd/tenlog/tenlog_touch_lcd.h"
+#endif
+
 #if defined(SERIAL_USB) && !HAS_SD_HOST_DRIVE
   //USBSerial SerialUSB;
 #endif
@@ -91,9 +95,9 @@ extern "C" {
 void HAL_adc_init() {}
 
 void HAL_adc_start_conversion(const uint8_t adc_pin) {
-        if(adc_pin>BOARD_NR_GPIO_PINS)return;
-        uint8_t channel = PIN_MAP[adc_pin].adc_channel;
-        DDL_ASSERT(channel!=ADC_PIN_INVALID);
+  if(adc_pin>BOARD_NR_GPIO_PINS)return;
+  uint8_t channel = PIN_MAP[adc_pin].adc_channel;
+  DDL_ASSERT(channel!=ADC_PIN_INVALID);
 	HAL_adc_result = adc_read(ADC1,channel);
 }
 

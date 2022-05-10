@@ -1836,7 +1836,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>sdio</GroupName>
+          <GroupName>HC32</GroupName>
           <Files>
             <File>
               <FileName>sdio_f1.cpp</FileName>
@@ -1867,6 +1867,16 @@
               <FileName>sdmmc_cmd.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\source\compoment\sdio\sd_card\inc\sdmmc_cmd.h</FilePath>
+            </File>
+            <File>
+              <FileName>adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\source\compoment\adc\adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>adc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\source\compoment\adc\adc.h</FilePath>
             </File>
           </Files>
         </Group>

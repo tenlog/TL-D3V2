@@ -401,11 +401,11 @@ void tlInitSetting(){
         TLSTJC_println(cmd);
         delay(20);
         
-        sprintf_P(cmd, PSTR("main.vTempMax.val=%d"), HEATER_0_MAXTEMP - 1);
+        sprintf_P(cmd, PSTR("main.vTempMax.val=%d"), HEATER_0_MAXTEMP - HOTEND_OVERSHOOT);
         TLSTJC_println(cmd);
         delay(20);
         
-        sprintf_P(cmd, PSTR("main.vBedMax.val=%d"), BED_MAXTEMP - 1);
+        sprintf_P(cmd, PSTR("main.vBedMax.val=%d"), BED_MAXTEMP - BED_OVERSHOOT);
         TLSTJC_println(cmd);
         delay(20);
         
