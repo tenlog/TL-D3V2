@@ -527,7 +527,7 @@
 #define MAX_REDUNDANT_TEMP_SENSOR_DIFF 10
 
 #define TEMP_RESIDENCY_TIME         5  // (seconds) Time to wait for hotend to "settle" in M109
-#define TEMP_WINDOW                  1  // (��C) Temperature proximity for the "temperature reached" timer
+#define TEMP_WINDOW                  1  // (��C) Temperature proximity for the ".temperature reached" timer
 #define TEMP_HYSTERESIS              3  // (��C) Temperature proximity considered "close enough" to the target
 
 #define TEMP_BED_RESIDENCY_TIME     5  // (seconds) Time to wait for bed to "settle" in M190
@@ -541,20 +541,20 @@
 // Below this temperature the heater will be switched off
 // because it probably indicates a broken thermistor wire.
 #define HEATER_0_MINTEMP   5
-#define HEATER_1_MINTEMP   5
-#define HEATER_2_MINTEMP   5
-#define HEATER_3_MINTEMP   5
-#define HEATER_4_MINTEMP   5
-#define HEATER_5_MINTEMP   5
-#define HEATER_6_MINTEMP   5
-#define HEATER_7_MINTEMP   5
-#define BED_MINTEMP        5
-#define CHAMBER_MINTEMP    5
+#define HEATER_1_MINTEMP   HEATER_0_MINTEMP
+#define HEATER_2_MINTEMP   HEATER_0_MINTEMP
+#define HEATER_3_MINTEMP   HEATER_0_MINTEMP
+#define HEATER_4_MINTEMP   HEATER_0_MINTEMP
+#define HEATER_5_MINTEMP   HEATER_0_MINTEMP
+#define HEATER_6_MINTEMP   HEATER_0_MINTEMP
+#define HEATER_7_MINTEMP   HEATER_0_MINTEMP
+#define BED_MINTEMP        HEATER_0_MINTEMP
+#define CHAMBER_MINTEMP    HEATER_0_MINTEMP
 
 // Above this temperature the heater will be switched off.
 // This can protect components from overheating, but NOT from shorts and failures.
 // (Use MINTEMP for thermistor short/failure protection.)
-#define HEATER_0_MAXTEMP 358
+#define HEATER_0_MAXTEMP 320
 #define HEATER_1_MAXTEMP HEATER_0_MAXTEMP
 #define HEATER_2_MAXTEMP HEATER_0_MAXTEMP
 #define HEATER_3_MAXTEMP HEATER_0_MAXTEMP
