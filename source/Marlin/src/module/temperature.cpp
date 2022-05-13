@@ -947,9 +947,9 @@ void Temperature::_temp_error(const heater_id_t heater_id, PGM_P const serial_ms
   static uint8_t killed = 0;
   //TLDEBUG_LNPGM("TL MAX TEMP Error!");
   if (IsRunning() && TERN1(BOGUS_TEMPERATURE_GRACE_PERIOD, killed == 2)) {
-    SERIAL_ERROR_START();
-    SERIAL_ECHOPGM_P(serial_msg);
-    SERIAL_ECHOPGM(STR_STOPPED_HEATER);
+    SERIAL_ERROR_START();watchdog_refresh();
+    SERIAL_ECHOPGM_P(serial_msg);watchdog_refresh();
+    SERIAL_ECHOPGM(STR_STOPPED_HEATER);watchdog_refresh();
     if (heater_id >= 0)
       SERIAL_ECHO(heater_id);
     else if (TERN0(HAS_HEATED_CHAMBER, heater_id == H_CHAMBER))
@@ -957,7 +957,7 @@ void Temperature::_temp_error(const heater_id_t heater_id, PGM_P const serial_ms
     else if (TERN0(HAS_COOLER, heater_id == H_COOLER))
       SERIAL_ECHOPGM(STR_COOLER);
     else
-      SERIAL_ECHOPGM(STR_HEATER_BED);
+      SERIAL_ECHOPGM(STR_HEATER_BED);watchdog_refresh();
     SERIAL_EOL();    
   }
 

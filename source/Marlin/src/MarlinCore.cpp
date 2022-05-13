@@ -850,21 +850,23 @@ void idle(TERN_(ADVANCED_PAUSE_FEATURE, bool no_stepper_sleep/*=false*/)) {
 void kill(PGM_P const lcd_error/*=nullptr*/, PGM_P const lcd_component/*=nullptr*/, const bool steppers_off/*=false*/) {
   #if ENABLED(TENLOG_TOUCH_LCD)
     if(tl_TouchScreenType == 1){
+      SERIAL_ECHO_START(); SERIAL_ECHOLNPGM_P("Kill-Kill");
+      watchdog_refresh();
       TLSTJC_println("main.vCC.val=0");
       delay(10);
       //settings.killFlagSet(1);
       char ErrorMessage[128];
       sprintf_P(ErrorMessage, PSTR("%s %s"), lcd_error, lcd_component);
-      TJCMessage(1, 1, 24, "M1050 S0", "M1050 S0", ErrorMessage);
+      //TJCMessage(1, 1, 24, "M1050 S0", "M1050 S0", ErrorMessage);
     }
   #endif
   thermalManager.disable_all_heaters();
-
+  watchdog_refresh();
   TERN_(HAS_CUTTER, cutter.kill()); // Full cutter shutdown including ISR control
-
+  watchdog_refresh();
   // Echo the LCD message to serial for extra context
   if (lcd_error) { SERIAL_ECHO_START(); SERIAL_ECHOLNPGM_P(lcd_error); }
-
+  watchdog_refresh();
   #if HAS_DISPLAY
     ui.kill_screen(lcd_error ?: GET_TEXT(MSG_KILLED), lcd_component ?: NUL_STR);
   #else
@@ -872,7 +874,7 @@ void kill(PGM_P const lcd_error/*=nullptr*/, PGM_P const lcd_component/*=nullptr
   #endif
 
   TERN_(HAS_TFT_LVGL_UI, lv_draw_error_message(lcd_error));
-
+  watchdog_refresh();
   // "Error:Printer halted. kill() called!"
   SERIAL_ERROR_MSG(STR_ERR_KILLED);
 
