@@ -53,7 +53,7 @@ uint16_t adc_read(adc_dev *dev, uint8_t channel) {
 
 static void adc_setclk(void)
 {
-        #ifdef use_default_clk
+    #ifdef use_default_clk
 	CLK_SetPeriClkSource(ClkPeriSrcPclk);
 	#else
         stc_clk_xtal_cfg_t stcXtalCfg;
