@@ -28,8 +28,9 @@
 
 extern char wifi_ssid[20];
 extern char wifi_pswd[20];
+extern char wifi_acce_code[20];
 extern char wifi_status[100];
-extern uint8_t wifi_ena;
+extern uint8_t wifi_mode;
 extern uint32_t http_port;
 
 /* SPI_SCK Port/Pin definition */
@@ -58,7 +59,7 @@ extern uint32_t http_port;
 #define SPI1_UNIT_CLOCK                  (PWC_FCG1_PERIPH_SPI1)
 
 //spi DMA
-//#define SPI_DMA_UNIT                     (M4_DMA1)
+//#define SPI_DMA_UNIT                     (M4_DMA2)
 //#define SPI_DMA_CLOCK_UNIT               (PWC_FCG0_PERIPH_DMA1)
 //#define SPI_DMA_TX_CHANNEL               (DmaCh0)
 //#define SPI_DMA_TX_TRIG_SOURCE           (EVT_SPI1_SPII)//(EVT_SPI1_SPTI)     

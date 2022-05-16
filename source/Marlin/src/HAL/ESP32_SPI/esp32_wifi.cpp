@@ -31,7 +31,8 @@
 char wifi_status[100] = "";
 char wifi_ssid[20] = WIFI_DEFAULT_SSID;
 char wifi_pswd[20] = WIFI_DEFAULT_PSWD;
-uint8_t wifi_ena = WIFI_DEFAULT_ENA;
+char wifi_acce_code[20] = WIFI_DEFAULT_ACCE_CODE;
+uint8_t wifi_Mode = WIFI_DEFAULT_MODE;
 uint32_t http_port = WIFI_DEFAULT_PORT;
 
 
@@ -184,11 +185,11 @@ void Test_SPI(const char SString[])
         char RString[32];
         NULLZERO(RString);
         SPI1_NSS_LOW();        
-        delay(100);
+        delay(10);
         for(int i=0; i<32; i++){
             RString[i] = SPI_RW(SPI1_UNIT, SString[i]); 
         }        
-        delay(100);
+        delay(10);
         SPI1_NSS_HIGH();        
         //TLDEBUG_LNPAIR("Received:",RString);
         //delay(500);
@@ -215,9 +216,10 @@ void WIFI_InitSPI(void)
 
 ///////////zyf
 void wifiResetEEPROM(){
-    wifi_ena = WIFI_DEFAULT_ENA;
+    wifi_mode = WIFI_DEFAULT_MODE;
     sprintf_P(wifi_ssid, "%s", WIFI_DEFAULT_SSID);
     sprintf_P(wifi_pswd, "%s", WIFI_DEFAULT_PSWD);
+    sprintf_P(wifi_acce_code, "%s", WIFI_DEFAULT_ACCE_CODE);
     http_port = WIFI_DEFAULT_PORT;
 }
 

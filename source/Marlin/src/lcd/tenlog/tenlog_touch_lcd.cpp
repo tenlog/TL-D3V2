@@ -1308,9 +1308,9 @@ void process_command_gcode(long _tl_command[]) {
                 //1500-1510
                 #if ENABLED(HAS_WIFI)
                 if(lM == 1501){
-                    int _wifi_ena = GCodelng('S', iFrom, _tl_command);
-                    if(_wifi_ena != wifi_ena){
-                        wifi_ena = GCodelng('S', iFrom, _tl_command);
+                    int _wifi_mode = GCodelng('S', iFrom, _tl_command);
+                    if(_wifi_mode != wifi_mode){
+                        wifi_mode = GCodelng('S', iFrom, _tl_command);
                         EXECUTE_GCODE(PSTR("M500"));
                     }
                 }else if(lM == 1504){                    
@@ -1337,7 +1337,17 @@ void process_command_gcode(long _tl_command[]) {
                     }
                     EXECUTE_GCODE(PSTR("M500"));
                 }else if(lM == 1505){
-                    if(wifi_ena == 0){
+                    NULLZERO(wifi_acce_code);
+                    for(int i=0; i<20; i++){
+                        wifi_acce_code[i] = _tl_command[iFrom + 6 + i]; 
+                        if(wifi_acce_code[i]==10){
+                            wifi_acce_code[i] = '\0';
+                            break;
+                        }
+                    }
+                    EXECUTE_GCODE(PSTR("M500"));
+                }else if(lM == 1510){
+                    if(wifi_mode == 0){
                         #if ENABLED(ESP8266_WIFI)
                         esp_wifi_init();
                         #endif

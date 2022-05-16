@@ -506,10 +506,11 @@ typedef struct SettingsDataStruct {
   #endif
 
   #if ENABLED(HAS_WIFI)
-    uint8_t w_wifi_ena;
+    uint8_t w_wifi_mode;
     uint32_t w_http_port;
     char w_wifi_ssid[20];
     char w_wifi_pswd[20];
+    char w_wifi_acce_code[20];
   #endif
 
 } SettingsData;
@@ -1494,9 +1495,10 @@ void MarlinSettings::postprocess() {
     #endif
 
     #if ENABLED(HAS_WIFI)
-      EEPROM_WRITE(wifi_ena);
+      EEPROM_WRITE(wifi_mode);
       EEPROM_WRITE(wifi_ssid);
       EEPROM_WRITE(wifi_pswd);
+      EEPROM_WRITE(wifi_acce_code);
       EEPROM_WRITE(http_port);
     #endif
 
@@ -2460,12 +2462,13 @@ void MarlinSettings::postprocess() {
       #endif
       
       #if ENABLED(HAS_WIFI)
-        uint8_t uwifiena;
-        EEPROM_READ(uwifiena);
-        if(uwifiena < 0 || uwifiena > 5) uwifiena = WIFI_DEFAULT_ENA;
-        wifi_ena = uwifiena;
+        uint8_t uwifimode;
+        EEPROM_READ(uwifimode);
+        if(uwifimode < 0 || uwifimode > 5) uwifimode = WIFI_DEFAULT_MODE;
+        wifi_mode = uwifimode;
         EEPROM_READ(wifi_ssid);
         EEPROM_READ(wifi_pswd);
+        EEPROM_READ(wifi_acce_code);
         uint32_t uwifiport;
         EEPROM_READ(uwifiport);
         if(uwifiport < 0 || uwifiport > 65535) uwifiport = WIFI_DEFAULT_PORT;
@@ -4065,12 +4068,12 @@ void MarlinSettings::reset() {
     #endif
 
     #if ENABLED(HAS_WIFI)
-      TLDEBUG_LNPAIR("WIFI ENA:", wifi_ena);
+      TLDEBUG_LNPAIR("WIFI Mode:", wifi_mode);
       TLDEBUG_LNPAIR("WIFI SSID:", wifi_ssid);
       TLDEBUG_LNPAIR("WIFI PSWD:", wifi_pswd);
+      TLDEBUG_LNPAIR("WIFI Access code:", wifi_acce_code);
       TLDEBUG_LNPAIR("HTTP PORT:", http_port);
     #endif
-
   }
 
 #endif // !DISABLE_M503

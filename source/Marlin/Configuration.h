@@ -140,7 +140,7 @@
 #define TENLOG_TOUCH_LCD
 #define PRINT_FROM_Z_HEIGHT
 //#define ESP8266_WIFI
-//#define ESP32_WIFI
+#define ESP32_WIFI
 
 /**
  * Marlin release version identifier
@@ -178,8 +178,8 @@
 
 #if ENABLED(HAS_WIFI)
   #define WIFI_DEFAULT_SSID "TENLOG"
-  #define WIFI_DEFAULT_PSWD "tenloG@8888"
-  #define WIFI_DEFAULT_ENA 1
+  #define WIFI_DEFAULT_PSWD "TENLOG"
+  #define WIFI_DEFAULT_MODE 1
   #define WIFI_DEFAULT_PORT 9080
 #endif
 
