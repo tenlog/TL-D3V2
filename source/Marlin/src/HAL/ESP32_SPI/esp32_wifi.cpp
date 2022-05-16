@@ -27,16 +27,15 @@
 #include "../../lcd/tenlog/tenlog_touch_lcd.h"
 
 #ifdef ESP32_WIFI
+#include "esp32_wifi.h"
 
 char wifi_status[100] = "";
 char wifi_ssid[20] = WIFI_DEFAULT_SSID;
 char wifi_pswd[20] = WIFI_DEFAULT_PSWD;
 char wifi_acce_code[20] = WIFI_DEFAULT_ACCE_CODE;
-uint8_t wifi_Mode = WIFI_DEFAULT_MODE;
+uint8_t wifi_mode = WIFI_DEFAULT_MODE;
 uint32_t http_port = WIFI_DEFAULT_PORT;
 
-
-#include "esp32_wifi.h"
 /*
 void WIFI_InitDMA(void)
 {
@@ -207,11 +206,10 @@ void Test_SPI(const char SString[])
 **************************************************************************/
 void WIFI_InitSPI(void)
 {
-    WIFI_InitGPIO();    //初始化几个GPIO口，包括BL、DC、RES以及SPI的CS
+    WIFI_InitGPIO();    //初始化几个GPIO口，
     WIFI_InitSPI1();    //初始化SPI的几个口，包括SCK、MOSI以及MISO
     //WIFI_InitDMA();     //初始化SPI DMA
-
-    Test_SPI("ABCDEFGHIJKLMNOPQRSTUVWXYZ012345");  //测试
+    //Test_SPI("ABCDEFGHIJKLMNOPQRSTUVWXYZ012345");  //测试
 }
 
 ///////////zyf

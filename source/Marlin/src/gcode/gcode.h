@@ -1100,6 +1100,7 @@ private:
     static void M1503();
     static void M1504();
     static void M1505();
+    static void M1510();
   #endif
 
   static void T(const int8_t tool_index);

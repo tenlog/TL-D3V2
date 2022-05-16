@@ -172,6 +172,7 @@
 #endif
 
 #define TL_DEBUG
+
 #if EITHER(ESP8266_WIFI, ESP32_WIFI)
   #define HAS_WIFI
 #endif
@@ -179,6 +180,7 @@
 #if ENABLED(HAS_WIFI)
   #define WIFI_DEFAULT_SSID "TENLOG"
   #define WIFI_DEFAULT_PSWD "TENLOG"
+  #define WIFI_DEFAULT_ACCE_CODE "TENLOG"
   #define WIFI_DEFAULT_MODE 1
   #define WIFI_DEFAULT_PORT 9080
 #endif
