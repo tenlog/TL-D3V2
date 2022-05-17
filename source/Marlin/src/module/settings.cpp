@@ -2458,7 +2458,6 @@ void MarlinSettings::postprocess() {
         if(ui_tlStartTemp2 > 100) ui_tlStartTemp2 = 80;
         tl_E2_FAN_START_TEMP = ui_tlStartTemp2;
 
-        tlInitSetting();
       #endif
       
       #if ENABLED(HAS_WIFI)
@@ -2474,7 +2473,9 @@ void MarlinSettings::postprocess() {
         if(uwifiport < 0 || uwifiport > 65535) uwifiport = WIFI_DEFAULT_PORT;
         http_port = uwifiport;
       #endif
-
+      #if ENABLED(TENLOG_TOUCH_LCD)
+        tlInitSetting();
+      #endif
       //
       // Validate Final Size and CRC
       //

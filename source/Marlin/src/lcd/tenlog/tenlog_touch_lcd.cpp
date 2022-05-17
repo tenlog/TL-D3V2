@@ -400,6 +400,26 @@ void tlInitSetting(){
         sprintf_P(cmd, PSTR("setting.xZ2.val=%d"), lOffsetZ);
         TLSTJC_println(cmd);
         delay(20);
+
+        sprintf_P(cmd, PSTR("wifisetting.vMode.val=%d"), wifi_mode);
+        TLSTJC_println(cmd);
+        delay(20);
+        
+        sprintf_P(cmd, PSTR("wifisetting.tSSID.txt=\"%s\""), wifi_ssid);
+        TLSTJC_println(cmd);
+        delay(20);
+        
+        sprintf_P(cmd, PSTR("wifisetting.tPwd.txt=\"%s\""), wifi_pswd);
+        TLSTJC_println(cmd);
+        delay(20);
+        
+        sprintf_P(cmd, PSTR("wifisetting.nPort.val=%d"), http_port);
+        TLSTJC_println(cmd);
+        delay(20);
+        
+        sprintf_P(cmd, PSTR("wifisetting.tAccessCode.txt=\"%s\""), wifi_acce_code);
+        TLSTJC_println(cmd);
+        delay(20);
         
         sprintf_P(cmd, PSTR("main.vTempMax.val=%d"), HEATER_0_MAXTEMP - HOTEND_OVERSHOOT);
         TLSTJC_println(cmd);
@@ -417,48 +437,51 @@ void tlInitSetting(){
         delay(20);
         sprintf_P(cmd, PSTR("main.vZMax.val=%d"), Z_MAX_POS * 10);
         TLSTJC_println(cmd);
+        delay(20);
+        sprintf_P(cmd, PSTR("main.vZMax.val=%d"), Z_MAX_POS * 10);
+        TLSTJC_println(cmd);
         delay(20);        
     }else if(tl_TouchScreenType == 0){
-        delay(10);
+        delay(20);
         DWN_Language(tl_languageID);
-        delay(10);
+        delay(20);
         long lOffsetX = hotend_offset[1].x * 100;
         DWN_Data(0x6018, lOffsetX, 4);
-        delay(10);
+        delay(20);
 
         long iSend = 0;
         for (int i = 0; i < 4; i++)
         {
             iSend = long(planner.settings.axis_steps_per_mm[i] * 100.0f);
             DWN_Data(0x6010 + i * 2, iSend, 4);
-            delay(10);
+            delay(20);
         }
 
         long lOffsetY = hotend_offset[1].y * 100 + 500;
         long lOffsetZ = hotend_offset[1].z * 100 + 200;
         DWN_Data(0x6020, lOffsetY, 2);
 
-        delay(10);
+        delay(20);
         DWN_Data(0x6021, lOffsetZ, 2);
-        delay(10);
+        delay(20);
 
         /*
         DWN_Data(0x6023, tl_FAN2_VALUE, 2);
-        delay(10);
+        delay(20);
         DWN_Data(0x6022, tl_FAN2_START_TEMP, 2);
-        delay(10);
+        delay(20);
         */ //to be done
 
         DWN_Data(0x8015, 1, 2); //replace auto power off
 
         DWN_Data(0x8013, tl_ECO_MODE, 2);
-        delay(10);
+        delay(20);
 
         #ifdef FILAMENT_RUNOUT_SENSOR
         DWN_Data(0x8014, runout.enabled, 2);
         #endif
 
-        delay(10);
+        delay(20);
         iSend = b_PLR_MODULE_Detected + tl_languageID * 2;
         DWN_Data(0x8803, iSend, 2);
         DWN_Data(0x8806, b_PLR_MODULE_Detected, 2);
@@ -507,29 +530,29 @@ void TlIsPLR(){
 }
 
 void TJCMessage(const int FromPageID, const int ToPageID, const int MessageID, const char OkValue[], const char CancleValue[], const char Message[]){
-    delay(10);
+    delay(20);
     TLSTJC_println("sleep=0");
-    delay(10);
+    delay(20);
     sprintf_P(cmd, PSTR("msgbox.vaFromPageID.val=%d"), FromPageID);
     TLSTJC_println(cmd);
-    delay(10);
+    delay(20);
     sprintf_P(cmd, PSTR("msgbox.vaToPageID.val=%d"), ToPageID);
     TLSTJC_println(cmd);
-    delay(10);
+    delay(20);
     sprintf_P(cmd, PSTR("msgbox.vaMID.val=%d"), MessageID);
     TLSTJC_println(cmd);
-    delay(10);
+    delay(20);
     sprintf_P(cmd, PSTR("msgbox.vtOKValue.txt=\"%s\""), OkValue);
     TLSTJC_println(cmd);
-    delay(10);
+    delay(20);
     sprintf_P(cmd, PSTR("msgbox.vtCancelValue.txt=\"%s\""), CancleValue);
     TLSTJC_println(cmd);
-    delay(10);
+    delay(20);
     sprintf_P(cmd, PSTR("msgbox.vtMS.txt=\"%s\""), Message);
     TLSTJC_println(cmd);
-    delay(10);
+    delay(20);
     TLSTJC_println("page msgbox");
-    delay(10);
+    delay(20);
 }
 
 void initTLScreen(){    
@@ -688,7 +711,7 @@ void TLFilamentRunout(){
     if(tl_TouchScreenType == 1){
         iBeepCount = 10;
         TLSTJC_println("main.vCC.val=1");
-        delay(10);
+        delay(20);
         TJCMessage(15, 15, 6, "M1034", "M1034 01", "");
     }
 }
@@ -1303,60 +1326,73 @@ void process_command_gcode(long _tl_command[]) {
             }else if (lM == 1050){
                 //M1050
                 int8_t KillFlag = GCodelng('S',iFrom, _tl_command);
-                //settings.killFlagSet(KillFlag);                            
-            }else if(lM > 1499 && lM < 1510){
+            }else if(lM > 1499 && lM < 1511){
                 //1500-1510
                 #if ENABLED(HAS_WIFI)
-                if(lM == 1501){
-                    int _wifi_mode = GCodelng('S', iFrom, _tl_command);
-                    if(_wifi_mode != wifi_mode){
-                        wifi_mode = GCodelng('S', iFrom, _tl_command);
+                    if(lM == 1501){
+                        //M1501
+                        int _wifi_mode = GCodelng('S', iFrom, _tl_command);
+                        if(_wifi_mode != wifi_mode){
+                            wifi_mode = GCodelng('S', iFrom, _tl_command);
+                            EXECUTE_GCODE(PSTR("M500"));
+                        }
+                    }else if(lM == 1504){
+                        //M1504
+                        http_port = GCodelng('S', iFrom, _tl_command);
+                        sprintf_P(cmd, PSTR("M%d S%d"), lM, http_port);                        
+                        TLDEBUG_LNPGM(cmd);
                         EXECUTE_GCODE(PSTR("M500"));
-                    }
-                }else if(lM == 1504){                    
-                    http_port = GCodelng('S', iFrom, _tl_command);
-                    EXECUTE_GCODE(PSTR("M500"));
-                }else if(lM == 1502){
-                    NULLZERO(wifi_ssid);
-                    for(int i=0; i<20; i++){
-                        wifi_ssid[i] = _tl_command[iFrom + 6 + i];
-                        if(wifi_ssid[i]==10){
-                            wifi_ssid[i] = '\0';
-                            break;
+                    }else if(lM == 1502){
+                        //M1502
+                        NULLZERO(wifi_ssid);
+                        for(int i=0; i<20; i++){
+                            wifi_ssid[i] = _tl_command[iFrom + 6 + i];
+                            if(wifi_ssid[i]==10){
+                                wifi_ssid[i] = '\0';
+                                break;
+                            }
+                        }
+                        sprintf_P(cmd, PSTR("M%d %s"), lM, wifi_ssid);
+                        TLDEBUG_LNPGM(cmd);
+                        EXECUTE_GCODE(PSTR("M500"));
+                    }else if(lM == 1503){
+                        //M1503
+                        NULLZERO(wifi_pswd);
+                        for(int i=0; i<20; i++){
+                            wifi_pswd[i] = _tl_command[iFrom + 6 + i]; 
+                            if(wifi_pswd[i]==10){
+                                wifi_pswd[i] = '\0';
+                                break;
+                            }
+                        }
+                        sprintf_P(cmd, PSTR("M%d %s"), lM, wifi_pswd);                        
+                        TLDEBUG_LNPGM(cmd);
+                        EXECUTE_GCODE(PSTR("M500"));
+                    }else if(lM == 1505){
+                        //M1505
+                        NULLZERO(wifi_acce_code);
+                        for(int i=0; i<20; i++){
+                            wifi_acce_code[i] = _tl_command[iFrom + 6 + i]; 
+                            if(wifi_acce_code[i]==10){
+                                wifi_acce_code[i] = '\0';
+                                break;
+                            }
+                        }
+                        sprintf_P(cmd, PSTR("M%d %s"), lM, wifi_acce_code);                        
+                        TLDEBUG_LNPGM(cmd);
+                        EXECUTE_GCODE(PSTR("M500"));
+                    }else if(lM == 1510){
+                        //M1510
+                        if(wifi_mode == 0){
+                            #if ENABLED(ESP8266_WIFI)
+                            esp_wifi_init();
+                            #endif
+                            TLSTJC_println("page wifisetting");
+                        }else{
+                            TLSTJC_println("page loading");
+                            kill("Restart to apply wifi! ");                
                         }
                     }
-                    EXECUTE_GCODE(PSTR("M500"));
-                }else if(lM == 1503){
-                    NULLZERO(wifi_pswd);
-                    for(int i=0; i<20; i++){
-                        wifi_pswd[i] = _tl_command[iFrom + 6 + i]; 
-                        if(wifi_pswd[i]==10){
-                            wifi_pswd[i] = '\0';
-                            break;
-                        }
-                    }
-                    EXECUTE_GCODE(PSTR("M500"));
-                }else if(lM == 1505){
-                    NULLZERO(wifi_acce_code);
-                    for(int i=0; i<20; i++){
-                        wifi_acce_code[i] = _tl_command[iFrom + 6 + i]; 
-                        if(wifi_acce_code[i]==10){
-                            wifi_acce_code[i] = '\0';
-                            break;
-                        }
-                    }
-                    EXECUTE_GCODE(PSTR("M500"));
-                }else if(lM == 1510){
-                    if(wifi_mode == 0){
-                        #if ENABLED(ESP8266_WIFI)
-                        esp_wifi_init();
-                        #endif
-                        TLSTJC_println("page wifisetting");
-                    }else{
-                        TLSTJC_println("page loading");
-                        kill("Restart to apply wifi! ");                
-                    }
-                }
                 #endif //Has wifi
             }
 
@@ -2008,9 +2044,9 @@ void DWN_Message(const int MsgID, const char sMsg[], const bool PowerOff){
 
     DWN_Data(0x9052, dwnMessageID, 2);
     DWN_Data(0x9050, iSend, 2);
-    delay(10);
+    delay(20);
     DWN_Text(0x7000, 32, sMsg);
-    delay(10);
+    delay(20);
 
     if (PowerOff == 0)
         iSend = 0;
@@ -2018,7 +2054,7 @@ void DWN_Message(const int MsgID, const char sMsg[], const bool PowerOff){
         iSend = PowerOff + tl_languageID;
 
     DWN_Data(0x8830, iSend, 2);
-    delay(10);
+    delay(20);
     DWN_Page(DWN_P_MSGBOX);
 }
 
@@ -2069,7 +2105,7 @@ void DWN_MessageHandler(const bool ISOK){
 
                 sprintf_P(cmd, PSTR("Printing %s"), long_file_name_list[iPrintID]);
                 DWN_Text(0x7500, 32, cmd, true);
-                delay(10);
+                delay(20);
                 DWN_Page(DWN_P_PRINTING);
             }
         }
@@ -2834,7 +2870,7 @@ void plr_setup() {
 void my_sleep(float time){
     unsigned long now_time = millis();
     while(millis() - now_time > time * 1000){
-        //delay(10);
+        //delay(20);
         idle();
     } 
     planner.synchronize();          // Wait for planner moves to finish!      

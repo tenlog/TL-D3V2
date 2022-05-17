@@ -145,7 +145,7 @@ void WIFI_InitSPI1(void)
     SPI_Cmd(SPI1_UNIT, Enable);
 }
 
-//        【4】结合SPI的读写功能，封装接口供WIFI进行写命令（WIFI_WriteCMD）和写数据（WIFI_WriteDAT）：
+//【4】结合SPI的读写功能，封装接口供WIFI进行写命令（WIFI_WriteCMD）和写数据（WIFI_WriteDAT）：
 /**************************************************************************
 * 函数名称： SPI_RW
 * 功能描述： SPI读写功能
@@ -181,7 +181,7 @@ void Test_SPI(const char SString[])
 {
     while(1){
         //TLDEBUG_LNPAIR("Send:", SString);
-        char RString[32];
+        uint8_t RString[32];
         NULLZERO(RString);
         SPI1_NSS_LOW();        
         delay(10);
