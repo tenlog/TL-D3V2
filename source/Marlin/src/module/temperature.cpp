@@ -1610,7 +1610,7 @@ void Temperature::manage_heater() {
  * Bisect search for the range of the 'raw' value, then interpolate
  * proportionally between the under and over values.
  */
-#define SCAN_THERMISTOR_TABLE(TBL,LEN,EE) do{                                \
+#define SCAN_THERMISTOR_TABLE(TBL,LEN,EE) do{                             \
   uint8_t l = 0, r = LEN, m;                                              \
   for (;;) {                                                              \
     m = (l + r) >> 1;                                                     \
