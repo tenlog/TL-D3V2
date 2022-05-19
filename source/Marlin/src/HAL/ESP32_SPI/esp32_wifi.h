@@ -22,19 +22,41 @@
 
 //By tenlog zyf
 
+/*
+tx contorl code
+from mcu to wifi:
+
+control_code 0x01: wifi mode
+control_code 0x02: http port
+control_code 0x03: wifi ssid
+control_code 0x04: wifi pswd
+control_code 0x05: acce code
+control_code 0x06: apply wifi
+
+congrol_code 0x07: temp info
+control_cpde 0x08: position info
+
+rx control code
+from wifi to mcu
+control_code 0x01: ip
+
+*/
+
 #pragma once
 
 #ifdef ESP32_WIFI
 
-#define WIFI_CFG_LENGTH 20
+#define WIFI_MSG_LENGTH 28
 #define BUFFER_SIZE 32
 
-extern char wifi_ssid[WIFI_CFG_LENGTH];
-extern char wifi_pswd[WIFI_CFG_LENGTH];
-extern char wifi_acce_code[WIFI_CFG_LENGTH];
+extern char wifi_ssid[WIFI_MSG_LENGTH];
+extern char wifi_pswd[WIFI_MSG_LENGTH];
+extern char wifi_acce_code[WIFI_MSG_LENGTH];
 extern char wifi_status[100];
 extern uint8_t wifi_mode;
-extern uint32_t http_port;
+extern uint16_t http_port;
+
+#define HEAD_OK(a)	(a[0]==0xFF && a[1]==0xFF && a[2]==0xFF)
 
 /* SPI_SCK Port/Pin definition */
 #define SPI1_SCK_PORT                    (PortA)
@@ -70,8 +92,12 @@ extern uint32_t http_port;
 void WIFI_InitGPIO(void);
 void WIFI_InitSPI1(void);
 uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data);
-void Test_SPI(const char CString[]);
+
 void WIFI_InitSPI(void);
+
+uint8_t get_control_code();
+void get_data_code(uint8_t control_code);
+
 //void WIFI_InitDMA(void);
 
 void wifiResetEEPROM();

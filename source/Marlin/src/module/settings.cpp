@@ -507,7 +507,7 @@ typedef struct SettingsDataStruct {
 
   #if ENABLED(HAS_WIFI)
     uint8_t w_wifi_mode;
-    uint32_t w_http_port;
+    uint16_t w_http_port;
     char w_wifi_ssid[20];
     char w_wifi_pswd[20];
     char w_wifi_acce_code[20];

@@ -30,11 +30,11 @@
 #include "esp32_wifi.h"
 
 char wifi_status[100] = "";
-char wifi_ssid[WIFI_CFG_LENGTH] = WIFI_DEFAULT_SSID;
-char wifi_pswd[WIFI_CFG_LENGTH] = WIFI_DEFAULT_PSWD;
-char wifi_acce_code[WIFI_CFG_LENGTH] = WIFI_DEFAULT_ACCE_CODE;
+char wifi_ssid[WIFI_MSG_LENGTH] = WIFI_DEFAULT_SSID;
+char wifi_pswd[WIFI_MSG_LENGTH] = WIFI_DEFAULT_PSWD;
+char wifi_acce_code[WIFI_MSG_LENGTH] = WIFI_DEFAULT_ACCE_CODE;
 uint8_t wifi_mode = WIFI_DEFAULT_MODE;
-uint32_t http_port = WIFI_DEFAULT_PORT;
+uint16_t http_port = WIFI_DEFAULT_PORT;
 
 uint8_t spi_tx[BUFFER_SIZE]="";
 uint8_t spi_rx[BUFFER_SIZE]="";
@@ -174,21 +174,21 @@ void build_spi_tx(int8_t control_code){
     for(int8_t i=0; i<3; i++){
         spi_tx[i]=0xFF;
     }
-    uint8_t send[WIFI_CFG_LENGTH];
+    uint8_t send[WIFI_MSG_LENGTH];
     ZERO(send);
     
     if(control_code == 0x03){
-        memcpy_P(send, wifi_ssid, WIFI_CFG_LENGTH);
+        memcpy_P(send, wifi_ssid, WIFI_MSG_LENGTH);
     }else if(control_code == 0x04){
-        memcpy_P(send, wifi_pswd, WIFI_CFG_LENGTH);
+        memcpy_P(send, wifi_pswd, WIFI_MSG_LENGTH);
     }else if(control_code == 0x05){
-        memcpy_P(send, wifi_acce_code, WIFI_CFG_LENGTH);
+        memcpy_P(send, wifi_acce_code, WIFI_MSG_LENGTH);
     }
 
     spi_tx[3] = control_code;
 
     if(control_code>2 && control_code<6){
-        for(int8_t i=0; i<WIFI_CFG_LENGTH; i++){
+        for(int8_t i=0; i<WIFI_MSG_LENGTH; i++){
             if(send[i]==10 || send[i]=='\0' || send[i]==0){
                 spi_tx[i+4]='\0';
                 break;
@@ -218,11 +218,48 @@ void build_spi_tx(int8_t control_code){
     }
     TLDEBUG_LNPGM(" ");
     */
+}
 
+uint8_t get_control_code(){
+	if(HEAD_OK(message_rx)){
+		int16_t verify=0;
+		for(int i=0; i<BUFFER_SIZE-1; i++){
+			//Serial.write(message_rx[i]);
+			verify += message_rx[i];
+		}
+		if(verify % 0xFF == message_rx[BUFFER_SIZE-1]){
+			//Serial.write(253);
+			return message_rx[3];
+		}
+	}
+	return 0;	
+}
+
+void get_data_code(uint8_t control_code){
+	char ret[WIFI_MSG_LENGTH];
+	NULLZERO(ret);
+
+	for(int i=0; i<WIFI_MSG_LENGTH-1; i++){
+		ret[i] = message_rx[i+4];
+		if(message_rx[i+4] == 10 || message_rx[i+4] == '\0' || message_rx[i+4] == 0){
+			ret[i] = '\0';
+			break;
+		}
+	}
+    
+}
+
+
+void SPI_RX_Handler(){
+
+}
+
+void SPI_RW_Message(){
+    ZERO(spi_rx);
     SPI1_NSS_LOW();        
-    delay(5);
+    delay(3);
     for(int i=0; i<BUFFER_SIZE; i++){
-        SPI_RW(SPI1_UNIT, spi_tx[i]); 
+        spi_rx[i] = SPI_RW(SPI1_UNIT, spi_tx[i]); 
     }
     SPI1_NSS_HIGH();
 }
@@ -232,8 +269,10 @@ void SPI_ConeectWIFI()
 {
     for(int8_t i=1; i<7; i++){
         build_spi_tx(i);
-    }   
+        SPI_RW_Message();
+    }
 }
+
 
 /**************************************************************************
 * 函数名称： WIFI_InitSPI
