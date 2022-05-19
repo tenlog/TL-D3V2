@@ -1135,16 +1135,6 @@ void setup() {
   SERIAL_ECHOLNPGM("\n==============MARLIN==============");
   SERIAL_ECHOLNPGM("start");
 
-  #if ENABLED(ESP8266_WIFI)
-    TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init Tenlog Wifi..."));
-    esp_wifi_init();
-  #endif
-
-  #if ENABLED(ESP32_WIFI)
-    TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init Tenlog Wifi..."));
-    WIFI_InitSPI();
-  #endif
-
   //tenlog touch screen..
   TERN_(TENLOG_TOUCH_LCD, initTLScreen());
 
@@ -1577,13 +1567,6 @@ void setup() {
     SERIAL_ECHO_TERNARY(err, "BL24CXX Check ", "failed", "succeeded", "!\n");
   #endif
 
-  #if ENABLED(DWIN_CREALITY_LCD)
-    Encoder_Configuration();
-    HMI_Init();
-    DWIN_JPG_CacheTo1(Language_English);
-    HMI_StartFrame(true);
-    DWIN_StatusChanged(GET_TEXT(WELCOME_MSG));
-  #endif
 
   #if HAS_SERVICE_INTERVALS && DISABLED(DWIN_CREALITY_LCD)
     ui.reset_status(true);  // Show service messages or keep current status
@@ -1626,7 +1609,12 @@ void setup() {
     PrintFromZHeightFound = true;
     print_from_z_target = 0.0;
   #endif
-
+  
+  #if ENABLED(ESP32_WIFI)
+    TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init Tenlog Wifi..."));
+    WIFI_InitSPI();
+  #endif
+  
   SETUP_LOG("setup() completed.");
 	SERIAL_ECHOLNPGM("=============SETUP FINISH=============\n");
 

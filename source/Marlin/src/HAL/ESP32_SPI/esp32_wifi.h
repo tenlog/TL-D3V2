@@ -26,9 +26,12 @@
 
 #ifdef ESP32_WIFI
 
-extern char wifi_ssid[20];
-extern char wifi_pswd[20];
-extern char wifi_acce_code[20];
+#define WIFI_CFG_LENGTH 20
+#define BUFFER_SIZE 32
+
+extern char wifi_ssid[WIFI_CFG_LENGTH];
+extern char wifi_pswd[WIFI_CFG_LENGTH];
+extern char wifi_acce_code[WIFI_CFG_LENGTH];
 extern char wifi_status[100];
 extern uint8_t wifi_mode;
 extern uint32_t http_port;

@@ -30,11 +30,14 @@
 #include "esp32_wifi.h"
 
 char wifi_status[100] = "";
-char wifi_ssid[20] = WIFI_DEFAULT_SSID;
-char wifi_pswd[20] = WIFI_DEFAULT_PSWD;
-char wifi_acce_code[20] = WIFI_DEFAULT_ACCE_CODE;
+char wifi_ssid[WIFI_CFG_LENGTH] = WIFI_DEFAULT_SSID;
+char wifi_pswd[WIFI_CFG_LENGTH] = WIFI_DEFAULT_PSWD;
+char wifi_acce_code[WIFI_CFG_LENGTH] = WIFI_DEFAULT_ACCE_CODE;
 uint8_t wifi_mode = WIFI_DEFAULT_MODE;
 uint32_t http_port = WIFI_DEFAULT_PORT;
+
+uint8_t spi_tx[BUFFER_SIZE]="";
+uint8_t spi_rx[BUFFER_SIZE]="";
 
 /*
 void WIFI_InitDMA(void)
@@ -90,7 +93,6 @@ void WIFI_InitGPIO(void)
 }
 
 //        【3】SPI初始化：
-
 /**************************************************************************
 * 函数名称： WIFI_InitSPI1
 * 功能描述： WIFI初始化SPI
@@ -166,35 +168,72 @@ uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data)
     return SPI_ReceiveData8(SPIx);
 }
 
-
-//【5】封装WIFI的一些基本的接口，比如复位接口以及寄存器配置接口（其中寄存器的相关配置可以参考附录中提供的ILI9431数据手册）：
-
-/**************************************************************************
-* 函数名称： WIFI_HardwareReset
-* 功能描述： WIFI复位
-* 输入参数： 
-* 输出参数： 
-* 返 回 值： 
-* 其它说明： 
-**************************************************************************/
-void Test_SPI(const char SString[])
-{
-    while(1){
-        //TLDEBUG_LNPAIR("Send:", SString);
-        uint8_t RString[32];
-        NULLZERO(RString);
-        SPI1_NSS_LOW();        
-        delay(10);
-        for(int i=0; i<32; i++){
-            RString[i] = SPI_RW(SPI1_UNIT, SString[i]); 
-        }        
-        delay(10);
-        SPI1_NSS_HIGH();        
-        //TLDEBUG_LNPAIR("Received:",RString);
-        //delay(500);
+void build_spi_tx(int8_t control_code){
+    ZERO(spi_tx);
+    int16_t verify = 0;
+    for(int8_t i=0; i<3; i++){
+        spi_tx[i]=0xFF;
     }
+    uint8_t send[WIFI_CFG_LENGTH];
+    ZERO(send);
+    
+    if(control_code == 0x03){
+        memcpy_P(send, wifi_ssid, WIFI_CFG_LENGTH);
+    }else if(control_code == 0x04){
+        memcpy_P(send, wifi_pswd, WIFI_CFG_LENGTH);
+    }else if(control_code == 0x05){
+        memcpy_P(send, wifi_acce_code, WIFI_CFG_LENGTH);
+    }
+
+    spi_tx[3] = control_code;
+
+    if(control_code>2 && control_code<6){
+        for(int8_t i=0; i<WIFI_CFG_LENGTH; i++){
+            if(send[i]==10 || send[i]=='\0' || send[i]==0){
+                spi_tx[i+4]='\0';
+                break;
+            }else{
+                spi_tx[i+4]=send[i];
+            }
+        }
+    }else if(control_code == 1){
+        spi_tx[4] = wifi_mode;
+    }else if(control_code == 2){
+        spi_tx[4] = http_port / 0xFF;
+        spi_tx[5] = http_port % 0xFF;
+    }
+
+    for(uint8_t i=0; i<BUFFER_SIZE-1; i++){
+        verify += spi_tx[i];
+    }
+
+    uint8_t verify8 = verify % 0xFF;
+    spi_tx[BUFFER_SIZE-1]=verify8;
+
+    /*
+    char cmd[BUFFER_SIZE];    
+    for(int i=0; i<BUFFER_SIZE; i++){
+        sprintf_P(cmd, "%d ", spi_tx[i]);
+        TLDEBUG_PGM(cmd);
+    }
+    TLDEBUG_LNPGM(" ");
+    */
+
+    SPI1_NSS_LOW();        
+    delay(5);
+    for(int i=0; i<BUFFER_SIZE; i++){
+        SPI_RW(SPI1_UNIT, spi_tx[i]); 
+    }
+    SPI1_NSS_HIGH();
 }
 
+/**************************************************************************/
+void SPI_ConeectWIFI()
+{
+    for(int8_t i=1; i<7; i++){
+        build_spi_tx(i);
+    }   
+}
 
 /**************************************************************************
 * 函数名称： WIFI_InitSPI
@@ -208,6 +247,7 @@ void WIFI_InitSPI(void)
 {
     WIFI_InitGPIO();    //初始化几个GPIO口，
     WIFI_InitSPI1();    //初始化SPI的几个口，包括SCK、MOSI以及MISO
+    SPI_ConeectWIFI();
     //WIFI_InitDMA();     //初始化SPI DMA
     //Test_SPI("ABCDEFGHIJKLMNOPQRSTUVWXYZ012345");  //测试
 }
