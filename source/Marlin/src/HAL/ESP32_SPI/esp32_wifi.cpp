@@ -29,12 +29,18 @@
 #ifdef ESP32_WIFI
 #include "esp32_wifi.h"
 
-char wifi_status[100] = "";
 char wifi_ssid[WIFI_MSG_LENGTH] = WIFI_DEFAULT_SSID;
 char wifi_pswd[WIFI_MSG_LENGTH] = WIFI_DEFAULT_PSWD;
 char wifi_acce_code[WIFI_MSG_LENGTH] = WIFI_DEFAULT_ACCE_CODE;
 uint8_t wifi_mode = WIFI_DEFAULT_MODE;
 uint16_t http_port = WIFI_DEFAULT_PORT;
+
+char tjc_cmd[64]="";
+
+char printer_status_0[WIFI_MSG_LENGTH]="";
+char printer_status_1[WIFI_MSG_LENGTH]="";
+char printer_status_2[WIFI_MSG_LENGTH]="";
+char printer_status_3[WIFI_MSG_LENGTH]="";
 
 uint8_t spi_tx[BUFFER_SIZE]="";
 uint8_t spi_rx[BUFFER_SIZE]="";
@@ -168,90 +174,41 @@ uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data)
     return SPI_ReceiveData8(SPIx);
 }
 
-void build_spi_tx(int8_t control_code){
-    ZERO(spi_tx);
-    int16_t verify = 0;
-    for(int8_t i=0; i<3; i++){
-        spi_tx[i]=0xFF;
-    }
-    uint8_t send[WIFI_MSG_LENGTH];
-    ZERO(send);
-    
-    if(control_code == 0x03){
-        memcpy_P(send, wifi_ssid, WIFI_MSG_LENGTH);
-    }else if(control_code == 0x04){
-        memcpy_P(send, wifi_pswd, WIFI_MSG_LENGTH);
-    }else if(control_code == 0x05){
-        memcpy_P(send, wifi_acce_code, WIFI_MSG_LENGTH);
-    }
-
-    spi_tx[3] = control_code;
-
-    if(control_code>2 && control_code<6){
-        for(int8_t i=0; i<WIFI_MSG_LENGTH; i++){
-            if(send[i]==10 || send[i]=='\0' || send[i]==0){
-                spi_tx[i+4]='\0';
-                break;
-            }else{
-                spi_tx[i+4]=send[i];
-            }
-        }
-    }else if(control_code == 1){
-        spi_tx[4] = wifi_mode;
-    }else if(control_code == 2){
-        spi_tx[4] = http_port / 0xFF;
-        spi_tx[5] = http_port % 0xFF;
-    }
-
-    for(uint8_t i=0; i<BUFFER_SIZE-1; i++){
-        verify += spi_tx[i];
-    }
-
-    uint8_t verify8 = verify % 0xFF;
-    spi_tx[BUFFER_SIZE-1]=verify8;
-
-    /*
-    char cmd[BUFFER_SIZE];    
-    for(int i=0; i<BUFFER_SIZE; i++){
-        sprintf_P(cmd, "%d ", spi_tx[i]);
-        TLDEBUG_PGM(cmd);
-    }
-    TLDEBUG_LNPGM(" ");
-    */
-}
-
 uint8_t get_control_code(){
-	if(HEAD_OK(message_rx)){
+	if(HEAD_OK(spi_rx)){
 		int16_t verify=0;
 		for(int i=0; i<BUFFER_SIZE-1; i++){
-			//Serial.write(message_rx[i]);
-			verify += message_rx[i];
+			verify += spi_rx[i];
 		}
-		if(verify % 0xFF == message_rx[BUFFER_SIZE-1]){
-			//Serial.write(253);
-			return message_rx[3];
+		if(verify % 0xFF == spi_rx[BUFFER_SIZE-1]){
+			return spi_rx[3];
 		}
 	}
 	return 0;	
 }
 
-void get_data_code(uint8_t control_code){
-	char ret[WIFI_MSG_LENGTH];
+void SPI_RX_Handler(){	
+    char ret[WIFI_MSG_LENGTH];
 	NULLZERO(ret);
+    uint8_t control_code = get_control_code();
 
-	for(int i=0; i<WIFI_MSG_LENGTH-1; i++){
-		ret[i] = message_rx[i+4];
-		if(message_rx[i+4] == 10 || message_rx[i+4] == '\0' || message_rx[i+4] == 0){
-			ret[i] = '\0';
-			break;
-		}
-	}
-    
-}
-
-
-void SPI_RX_Handler(){
-
+    if(control_code > 0){
+        for(int i=0; i<WIFI_MSG_LENGTH-1; i++){
+            ret[i] = spi_rx[i+4];
+            if(spi_rx[i+4] == 10 || spi_rx[i+4] == '\0' || spi_rx[i+4] == 0){
+                ret[i] = '\0';
+                break;
+            }
+        }
+        ZERO(spi_rx);
+    }
+    if(control_code== 0x01){
+        sprintf_P(tjc_cmd, PSTR("wifisetting.tIP.txt=\"%s\""), ret);
+        TLSTJC_println(tjc_cmd);
+        delay(10);
+        sprintf_P(tjc_cmd, PSTR("setting.tIP.txt=\"%s\""), ret);
+        TLSTJC_println(tjc_cmd);
+    }
 }
 
 void SPI_RW_Message(){
@@ -262,17 +219,95 @@ void SPI_RW_Message(){
         spi_rx[i] = SPI_RW(SPI1_UNIT, spi_tx[i]); 
     }
     SPI1_NSS_HIGH();
+    SPI_RX_Handler();
+}
+
+void WIFI_TX_Handler(int8_t control_code){
+    ZERO(spi_tx);
+    int16_t verify = 0;
+    for(int8_t i=0; i<3; i++){
+        spi_tx[i]=0xFF;
+    }
+    uint8_t send[WIFI_MSG_LENGTH];
+    ZERO(send);
+    
+    switch (control_code){
+        case 0x03:
+        memcpy_P(send, wifi_ssid, WIFI_MSG_LENGTH);
+        break;
+        case 0x04:
+        memcpy_P(send, wifi_pswd, WIFI_MSG_LENGTH);
+        break;
+        case 0x05:
+        memcpy_P(send, wifi_acce_code, WIFI_MSG_LENGTH);
+        break;
+        case 0x07:
+        memcpy_P(send, printer_status_0, WIFI_MSG_LENGTH);
+        break;
+        case 0x08:
+        memcpy_P(send, printer_status_1, WIFI_MSG_LENGTH);
+        break;
+        case 0x09:
+        memcpy_P(send, printer_status_2, WIFI_MSG_LENGTH);
+        break;
+        case 0x0A:
+        memcpy_P(send, printer_status_3, WIFI_MSG_LENGTH);
+        break;
+    }
+    spi_tx[3] = control_code;
+
+    switch (control_code){
+        case 0x01:
+        spi_tx[4] = wifi_mode;
+        break;
+        case 0x02:
+        spi_tx[4] = http_port / 0xFF;
+        spi_tx[5] = http_port % 0xFF;
+        break;
+        case 0x03:        
+        case 0x04:        
+        case 0x05:        
+        case 0x07:        
+        case 0x08:
+        case 0x09:
+        case 0x0A:
+        for(int8_t i=0; i<WIFI_MSG_LENGTH; i++){
+            if(send[i]==10 || send[i]=='\0' || send[i]==0){
+                spi_tx[i+4]='\0';
+                break;
+            }else{
+                spi_tx[i+4]=send[i];
+            }
+        }
+        break;
+
+    }
+
+    for(uint8_t i=0; i<BUFFER_SIZE-1; i++){
+        verify += spi_tx[i];
+    }
+
+    uint8_t verify8 = verify % 0xFF;
+    spi_tx[BUFFER_SIZE-1]=verify8;
+
+    SPI_RW_Message();
+    /*
+    char cmd[BUFFER_SIZE];    
+    for(int i=0; i<BUFFER_SIZE; i++){
+        sprintf_P(cmd, "%d ", spi_tx[i]);
+        TLDEBUG_PGM(cmd);
+    }
+    TLDEBUG_LNPGM(" ");
+    */
 }
 
 /**************************************************************************/
 void SPI_ConeectWIFI()
 {
     for(int8_t i=1; i<7; i++){
-        build_spi_tx(i);
-        SPI_RW_Message();
+        WIFI_TX_Handler(i);
     }
 }
-
 
 /**************************************************************************
 * 函数名称： WIFI_InitSPI

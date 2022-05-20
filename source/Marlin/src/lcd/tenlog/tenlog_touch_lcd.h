@@ -162,6 +162,7 @@ extern char long_file_name_list[7][27];
 extern char m117_str[15];
 extern char tl_sn[32];
 extern long tl_command[256];
+extern char printer_status[100];
 
 extern bool hotendOffsetChanged;
 

@@ -33,8 +33,10 @@ control_code 0x04: wifi pswd
 control_code 0x05: acce code
 control_code 0x06: apply wifi
 
-congrol_code 0x07: temp info
-control_cpde 0x08: position info
+congrol_code 0x07: printer_status_0
+congrol_code 0x08: printer_status_1
+congrol_code 0x09: printer_status_2
+congrol_code 0x0A: printer_status_3
 
 rx control code
 from wifi to mcu
@@ -46,15 +48,19 @@ control_code 0x01: ip
 
 #ifdef ESP32_WIFI
 
-#define WIFI_MSG_LENGTH 28
+#define WIFI_MSG_LENGTH 27
 #define BUFFER_SIZE 32
 
 extern char wifi_ssid[WIFI_MSG_LENGTH];
 extern char wifi_pswd[WIFI_MSG_LENGTH];
 extern char wifi_acce_code[WIFI_MSG_LENGTH];
-extern char wifi_status[100];
 extern uint8_t wifi_mode;
 extern uint16_t http_port;
+
+extern char printer_status_0[WIFI_MSG_LENGTH];
+extern char printer_status_1[WIFI_MSG_LENGTH];
+extern char printer_status_2[WIFI_MSG_LENGTH];
+extern char printer_status_3[WIFI_MSG_LENGTH];
 
 #define HEAD_OK(a)	(a[0]==0xFF && a[1]==0xFF && a[2]==0xFF)
 
@@ -95,8 +101,10 @@ uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data);
 
 void WIFI_InitSPI(void);
 
-uint8_t get_control_code();
-void get_data_code(uint8_t control_code);
+void WIFI_TX_Handler(int8_t control_code);
+
+//uint8_t get_control_code();
+//void get_data_code(uint8_t control_code);
 
 //void WIFI_InitDMA(void);
 
