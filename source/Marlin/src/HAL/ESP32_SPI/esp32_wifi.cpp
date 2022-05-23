@@ -130,7 +130,7 @@ void WIFI_InitSPI1(void)
     stcSpiInit.enSckPolarity            = SpiSckIdleLevelLow;
     stcSpiInit.enSckPhase               = SpiSckOddSampleEvenChange;
     stcSpiInit.enReadBufferObject       = SpiReadReceiverBuffer;
-    stcSpiInit.enWorkMode               = SpiWorkMode3Line;
+    stcSpiInit.enWorkMode               = SpiWorkMode4Line;
     stcSpiInit.enTransMode              = SpiTransFullDuplex;
     stcSpiInit.enCommAutoSuspendEn      = Disable;
     stcSpiInit.enModeFaultErrorDetectEn = Disable;
@@ -145,7 +145,7 @@ void WIFI_InitSPI1(void)
     stcSpiInit.stcDelayConfig.enSsHoldDelayOption    = SpiSsHoldDelayCustomValue;
     stcSpiInit.stcDelayConfig.enSsHoldDelayTime      = SpiSsHoldDelaySck1;
     stcSpiInit.stcDelayConfig.enSsIntervalTimeOption = SpiSsIntervalCustomValue;
-    stcSpiInit.stcDelayConfig.enSsIntervalTime       = SpiSsIntervalSck6PlusPck2;
+    stcSpiInit.stcDelayConfig.enSsIntervalTime       = SpiSsIntervalSck1PlusPck2;//SpiSsIntervalSck6PlusPck2;
     stcSpiInit.stcSsConfig.enSsValidBit              = SpiSsValidChannel0;
     stcSpiInit.stcSsConfig.enSs0Polarity             = SpiSsLowValid;
 
@@ -153,7 +153,7 @@ void WIFI_InitSPI1(void)
     SPI_Cmd(SPI1_UNIT, Enable);
 }
 
-//【4】结合SPI的读写功能，封装接口供WIFI进行写命令（WIFI_WriteCMD）和写数据（WIFI_WriteDAT）：
+//【4】SPI的读写功能：
 /**************************************************************************
 * 函数名称： SPI_RW
 * 功能描述： SPI读写功能
@@ -189,7 +189,7 @@ uint8_t get_control_code(){
 
 void SPI_RX_Handler(){
 
-    char ret[WIFI_MSG_LENGTH];
+    unsigned char ret[WIFI_MSG_LENGTH];
 	NULLZERO(ret);
     uint8_t control_code = get_control_code();
 
@@ -227,6 +227,7 @@ void SPI_RW_Message(){
     for(int i=0; i<BUFFER_SIZE; i++){
         spi_rx[i] = SPI_RW(SPI1_UNIT, spi_tx[i]); 
     }
+    delay(3);
     SPI1_NSS_HIGH();
     SPI_RX_Handler();
 }
