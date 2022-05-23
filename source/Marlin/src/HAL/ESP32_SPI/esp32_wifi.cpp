@@ -148,7 +148,7 @@ void WIFI_InitSPI1(void)
     stcSpiInit.stcDelayConfig.enSsIntervalTime       = SpiSsIntervalSck6PlusPck2;
     stcSpiInit.stcSsConfig.enSsValidBit              = SpiSsValidChannel0;
     stcSpiInit.stcSsConfig.enSs0Polarity             = SpiSsLowValid;
-    
+
     SPI_Init(SPI1_UNIT, &stcSpiInit);
     SPI_Cmd(SPI1_UNIT, Enable);
 }
@@ -187,28 +187,37 @@ uint8_t get_control_code(){
 	return 0;	
 }
 
-void SPI_RX_Handler(){	
+void SPI_RX_Handler(){
+
     char ret[WIFI_MSG_LENGTH];
 	NULLZERO(ret);
     uint8_t control_code = get_control_code();
 
     if(control_code > 0){
-        for(int i=0; i<WIFI_MSG_LENGTH-1; i++){
+        for(int i=0; i<WIFI_MSG_LENGTH; i++){
             ret[i] = spi_rx[i+4];
             if(spi_rx[i+4] == 10 || spi_rx[i+4] == '\0' || spi_rx[i+4] == 0){
                 ret[i] = '\0';
                 break;
             }
         }
-        ZERO(spi_rx);
     }
-    if(control_code== 0x01){
+    if(control_code== 0x06){
         sprintf_P(tjc_cmd, PSTR("wifisetting.tIP.txt=\"%s\""), ret);
         TLSTJC_println(tjc_cmd);
         delay(10);
         sprintf_P(tjc_cmd, PSTR("setting.tIP.txt=\"%s\""), ret);
         TLSTJC_println(tjc_cmd);
+        ZERO(spi_rx);
+    }else{
+        char cmd[BUFFER_SIZE];
+        for(int i=0; i<BUFFER_SIZE; i++){
+            sprintf_P(cmd, "%X", spi_rx[i]);
+            TLDEBUG_LNPGM(cmd);
+        }
+        TLDEBUG_LNPGM(" ");
     }
+
 }
 
 void SPI_RW_Message(){
@@ -280,7 +289,6 @@ void WIFI_TX_Handler(int8_t control_code){
             }
         }
         break;
-
     }
 
     for(uint8_t i=0; i<BUFFER_SIZE-1; i++){
@@ -291,14 +299,7 @@ void WIFI_TX_Handler(int8_t control_code){
     spi_tx[BUFFER_SIZE-1]=verify8;
 
     SPI_RW_Message();
-    /*
-    char cmd[BUFFER_SIZE];    
-    for(int i=0; i<BUFFER_SIZE; i++){
-        sprintf_P(cmd, "%d ", spi_tx[i]);
-        TLDEBUG_PGM(cmd);
-    }
-    TLDEBUG_LNPGM(" ");
-    */
+
 }
 
 /**************************************************************************/

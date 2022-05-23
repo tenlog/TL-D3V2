@@ -508,9 +508,9 @@ typedef struct SettingsDataStruct {
   #if ENABLED(HAS_WIFI)
     uint8_t w_wifi_mode;
     uint16_t w_http_port;
-    char w_wifi_ssid[20];
-    char w_wifi_pswd[20];
-    char w_wifi_acce_code[20];
+    char w_wifi_ssid[WIFI_MSG_LENGTH];
+    char w_wifi_pswd[WIFI_MSG_LENGTH];
+    char w_wifi_acce_code[WIFI_MSG_LENGTH];
   #endif
 
 } SettingsData;
@@ -2468,7 +2468,7 @@ void MarlinSettings::postprocess() {
         EEPROM_READ(wifi_ssid);
         EEPROM_READ(wifi_pswd);
         EEPROM_READ(wifi_acce_code);
-        uint32_t uwifiport;
+        uint16_t uwifiport;
         EEPROM_READ(uwifiport);
         if(uwifiport < 0 || uwifiport > 65535) uwifiport = WIFI_DEFAULT_PORT;
         http_port = uwifiport;
