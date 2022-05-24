@@ -1383,16 +1383,8 @@ void process_command_gcode(long _tl_command[]) {
                         TLDEBUG_LNPGM(cmd);
                         EXECUTE_GCODE(PSTR("M500"));
                     }else if(lM == 1510){
-                        //M1510
-                        if(wifi_mode == 0){
-                            #if ENABLED(ESP8266_WIFI)
-                            esp_wifi_init();
-                            #endif
-                            TLSTJC_println("page wifisetting");
-                        }else{
-                            TLSTJC_println("page loading");
-                            kill("Restart to apply wifi! ");                
-                        }
+                       //M1510
+                       SPI_ConnectWIFI();                       
                     }
                 #endif //Has wifi
             }

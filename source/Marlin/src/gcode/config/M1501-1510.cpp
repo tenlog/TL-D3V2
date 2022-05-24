@@ -60,9 +60,7 @@ void GcodeSuite::M1504() {
 }
 
 void GcodeSuite::M1510() {
-    //esp_wifi_init();
-    TLSTJC_println("page loading");
-    kill("Restart to apply wifi! ");
+    SPI_ConnectWIFI();
 }
 
 #endif

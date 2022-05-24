@@ -123,7 +123,7 @@ void WIFI_InitSPI1(void)
     PORT_SetFunc(SPI1_MISO_PORT, SPI1_MISO_PIN, SPI1_MISO_FUNC, Disable);
 
     /* Configuration SPI structure */
-    stcSpiInit.enClkDiv                 = SpiClkDiv2;
+    stcSpiInit.enClkDiv                 = SpiClkDiv8;
     stcSpiInit.enFrameNumber            = SpiFrameNumber1;
     stcSpiInit.enDataLength             = SpiDataLengthBit8;
     stcSpiInit.enFirstBitPosition       = SpiFirstBitPositionMSB;
@@ -141,11 +141,11 @@ void WIFI_InitSPI1(void)
     /* SPI master mode */
     stcSpiInit.enMasterSlaveMode                     = SpiModeMaster;
     stcSpiInit.stcDelayConfig.enSsSetupDelayOption   = SpiSsSetupDelayCustomValue;
-    stcSpiInit.stcDelayConfig.enSsSetupDelayTime     = SpiSsSetupDelaySck1;
+    stcSpiInit.stcDelayConfig.enSsSetupDelayTime     = SpiSsSetupDelaySck4;
     stcSpiInit.stcDelayConfig.enSsHoldDelayOption    = SpiSsHoldDelayCustomValue;
-    stcSpiInit.stcDelayConfig.enSsHoldDelayTime      = SpiSsHoldDelaySck1;
+    stcSpiInit.stcDelayConfig.enSsHoldDelayTime      = SpiSsHoldDelaySck3;
     stcSpiInit.stcDelayConfig.enSsIntervalTimeOption = SpiSsIntervalCustomValue;
-    stcSpiInit.stcDelayConfig.enSsIntervalTime       = SpiSsIntervalSck1PlusPck2;//SpiSsIntervalSck6PlusPck2;
+    stcSpiInit.stcDelayConfig.enSsIntervalTime       = SpiSsIntervalSck2PlusPck2;
     stcSpiInit.stcSsConfig.enSsValidBit              = SpiSsValidChannel0;
     stcSpiInit.stcSsConfig.enSs0Polarity             = SpiSsLowValid;
 
@@ -166,10 +166,12 @@ uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data)
 {
     while (Reset == SPI_GetFlag(SPIx, SpiFlagSendBufferEmpty))
     {
+        NOOP;
     }
     SPI_SendData8(SPIx, data);
     while (Reset == SPI_GetFlag(SPIx, SpiFlagReceiveBufferFull))
     {
+        NOOP;
     }
     return SPI_ReceiveData8(SPIx);
 }
@@ -222,12 +224,10 @@ void SPI_RX_Handler(){
 
 void SPI_RW_Message(){
     ZERO(spi_rx);
-    SPI1_NSS_LOW();        
-    delay(3);
+    SPI1_NSS_LOW();
     for(int i=0; i<BUFFER_SIZE; i++){
         spi_rx[i] = SPI_RW(SPI1_UNIT, spi_tx[i]); 
     }
-    delay(3);
     SPI1_NSS_HIGH();
     SPI_RX_Handler();
 }
@@ -306,7 +306,7 @@ void WIFI_TX_Handler(int8_t control_code){
 /**************************************************************************/
 void SPI_ConeectWIFI()
 {
-    for(int8_t i=1; i<7; i++){
+    for(int8_t i=0; i<7; i++){
         WIFI_TX_Handler(i);
     }
 }
@@ -338,3 +338,4 @@ void wifiResetEEPROM(){
 }
 
 #endif
+
