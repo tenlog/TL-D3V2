@@ -212,12 +212,14 @@ void SPI_RX_Handler(){
         TLSTJC_println(tjc_cmd);
         ZERO(spi_rx);
     }else{
+        /*
         char cmd[BUFFER_SIZE];
         for(int i=0; i<BUFFER_SIZE; i++){
             sprintf_P(cmd, "%X", spi_rx[i]);
             TLDEBUG_LNPGM(cmd);
         }
         TLDEBUG_LNPGM(" ");
+        */
     }
 
 }
