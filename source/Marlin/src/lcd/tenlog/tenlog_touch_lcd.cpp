@@ -1384,7 +1384,7 @@ void process_command_gcode(long _tl_command[]) {
                         EXECUTE_GCODE(PSTR("M500"));
                     }else if(lM == 1510){
                        //M1510
-                       SPI_ConnectWIFI();                       
+                       SPI_ConnectWIFI();
                     }
                 #endif //Has wifi
             }

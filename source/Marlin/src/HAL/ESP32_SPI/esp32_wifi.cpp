@@ -90,7 +90,6 @@ void WIFI_InitGPIO(void)
 
     /* configure structure initialization */
     MEM_ZERO_STRUCT(stcPortInit);
-
     stcPortInit.enPinMode = Pin_Mode_Out;
 
     /* SPI NSS */
@@ -186,7 +185,7 @@ uint8_t get_control_code(){
 			return spi_rx[3];
 		}
 	}
-	return 0;	
+	return 0;
 }
 
 void SPI_RX_Handler(){
@@ -204,6 +203,7 @@ void SPI_RX_Handler(){
             }
         }
     }
+
     if(control_code== 0x06){
         sprintf_P(tjc_cmd, PSTR("wifisetting.tIP.txt=\"%s\""), ret);
         TLSTJC_println(tjc_cmd);
@@ -306,7 +306,7 @@ void WIFI_TX_Handler(int8_t control_code){
 }
 
 /**************************************************************************/
-void SPI_ConeectWIFI()
+void SPI_ConnectWIFI()
 {
     for(int8_t i=0; i<7; i++){
         WIFI_TX_Handler(i);
@@ -325,7 +325,7 @@ void WIFI_InitSPI(void)
 {
     WIFI_InitGPIO();    //初始化几个GPIO口，
     WIFI_InitSPI1();    //初始化SPI的几个口，包括SCK、MOSI以及MISO
-    SPI_ConeectWIFI();
+    SPI_ConnectWIFI();
     //WIFI_InitDMA();     //初始化SPI DMA
     //Test_SPI("ABCDEFGHIJKLMNOPQRSTUVWXYZ012345");  //测试
 }
