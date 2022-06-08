@@ -141,12 +141,13 @@
 #define PRINT_FROM_Z_HEIGHT
 //#define ESP8266_WIFI
 #define ESP32_WIFI
+#define TL_LASER
 
 /**
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "007"
+#define TL_SUBVERSION "008"
 
 // The size of the printable area
 #if defined(TENLOG_D3P) 
@@ -178,11 +179,11 @@
 #endif
 
 #if ENABLED(HAS_WIFI)
-  #define WIFI_DEFAULT_SSID "TENLOG"
+  #define WIFI_DEFAULT_SSID "TENLOG-AP"
   #define WIFI_DEFAULT_PSWD "TENLOG"
   #define WIFI_DEFAULT_ACCE_CODE "TENLOG"
   #define WIFI_DEFAULT_MODE 1
-  #define WIFI_DEFAULT_PORT 9080
+  #define WIFI_DEFAULT_PORT 80
 #endif
 
 /**

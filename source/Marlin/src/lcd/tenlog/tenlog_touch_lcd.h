@@ -75,13 +75,13 @@
 #define NULLZERO(a) memset(a,'\0',sizeof(a))
 
 #ifdef TL_DEBUG
-#define TLDEBUG_LNPAIR      SERIAL_ECHOLNPAIR
-#define TLDEBUG_PGM         SERIAL_ECHOPGM_P
-#define TLDEBUG_LNPGM       SERIAL_ECHOLNPGM_P
+#define TLDEBUG_PRINTLNPAIR      SERIAL_ECHOLNPAIR
+#define TLDEBUG_PRINT         SERIAL_ECHOPGM_P
+#define TLDEBUG_PRINTLN       SERIAL_ECHOLNPGM_P
 #else
-#define TLDEBUG_LNPAIR(...)      NOOP
-#define TLDEBUG_PGM(...)         NOOP
-#define TLDEBUG_LNPGM(...)       NOOP
+#define TLDEBUG_PRINTLNPAIR(...)      NOOP
+#define TLDEBUG_PRINT(...)         NOOP
+#define TLDEBUG_PRINTLN(...)       NOOP
 #endif
 #define TL_ECHO SERIAL_CHAR
 

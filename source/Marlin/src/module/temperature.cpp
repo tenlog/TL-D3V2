@@ -945,7 +945,7 @@ inline void loud_kill(PGM_P const lcd_msg, const heater_id_t heater_id) {
 
 void Temperature::_temp_error(const heater_id_t heater_id, PGM_P const serial_msg, PGM_P const lcd_msg) {
   static uint8_t killed = 0;
-  //TLDEBUG_LNPGM("TL MAX TEMP Error!");
+  //TLDEBUG_PRINTLN("TL MAX TEMP Error!");
   if (IsRunning() && TERN1(BOGUS_TEMPERATURE_GRACE_PERIOD, killed == 2)) {
     SERIAL_ERROR_START();watchdog_refresh();
     SERIAL_ECHOPGM_P(serial_msg);watchdog_refresh();
@@ -984,7 +984,7 @@ void Temperature::_temp_error(const heater_id_t heater_id, PGM_P const serial_ms
     UNUSED(killed);
   #else
     if (!killed) { 
-      //TLDEBUG_LNPGM(lcd_msg);
+      //TLDEBUG_PRINTLN(lcd_msg);
       killed = 1; 
       loud_kill(lcd_msg, heater_id); 
     }
@@ -992,7 +992,7 @@ void Temperature::_temp_error(const heater_id_t heater_id, PGM_P const serial_ms
 }
 
 void Temperature::max_temp_error(const heater_id_t heater_id) {
-  //TLDEBUG_LNPGM("TL MAX TEMP Error!");
+  //TLDEBUG_PRINTLN("TL MAX TEMP Error!");
   _temp_error(heater_id, PSTR(STR_T_MAXTEMP), GET_TEXT(MSG_ERR_MAXTEMP));
 }
 
@@ -1631,7 +1631,7 @@ void Temperature::manage_heater() {
       if(raw<20*OVERSAMPLENR && 0){                                       \
         char tx[50];                                                      \
         sprintf_P(tx, "raw:%d, v:%d, C:%0.2f", raw/OVERSAMPLENR, v00/OVERSAMPLENR, Cs);             \
-        TLDEBUG_LNPGM(tx);                                                \
+        TLDEBUG_PRINTLN(tx);                                                \
       }                                                                   \
       return Cs;                                                          \
     }                                                                     \

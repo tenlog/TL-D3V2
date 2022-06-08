@@ -34,13 +34,16 @@ char wifi_pswd[WIFI_MSG_LENGTH] = WIFI_DEFAULT_PSWD;
 char wifi_acce_code[WIFI_MSG_LENGTH] = WIFI_DEFAULT_ACCE_CODE;
 uint8_t wifi_mode = WIFI_DEFAULT_MODE;
 uint16_t http_port = WIFI_DEFAULT_PORT;
+bool wifi_connected = false;
+int8_t wifiFirstSend = 0;
 
-char tjc_cmd[64]="";
+char wifi_tjc_cmd[64]="";
 
 char printer_status_0[WIFI_MSG_LENGTH]="";
 char printer_status_1[WIFI_MSG_LENGTH]="";
 char printer_status_2[WIFI_MSG_LENGTH]="";
 char printer_status_3[WIFI_MSG_LENGTH]="";
+char printer_status_4[WIFI_MSG_LENGTH]="";
 
 uint8_t spi_tx[BUFFER_SIZE]="";
 uint8_t spi_rx[BUFFER_SIZE]="";
@@ -140,11 +143,11 @@ void WIFI_InitSPI1(void)
     /* SPI master mode */
     stcSpiInit.enMasterSlaveMode                     = SpiModeMaster;
     stcSpiInit.stcDelayConfig.enSsSetupDelayOption   = SpiSsSetupDelayCustomValue;
-    stcSpiInit.stcDelayConfig.enSsSetupDelayTime     = SpiSsSetupDelaySck4;
+    stcSpiInit.stcDelayConfig.enSsSetupDelayTime     = SpiSsSetupDelaySck1;
     stcSpiInit.stcDelayConfig.enSsHoldDelayOption    = SpiSsHoldDelayCustomValue;
     stcSpiInit.stcDelayConfig.enSsHoldDelayTime      = SpiSsHoldDelaySck3;
     stcSpiInit.stcDelayConfig.enSsIntervalTimeOption = SpiSsIntervalCustomValue;
-    stcSpiInit.stcDelayConfig.enSsIntervalTime       = SpiSsIntervalSck2PlusPck2;
+    stcSpiInit.stcDelayConfig.enSsIntervalTime       = SpiSsIntervalSck1PlusPck2;
     stcSpiInit.stcSsConfig.enSsValidBit              = SpiSsValidChannel0;
     stcSpiInit.stcSsConfig.enSs0Polarity             = SpiSsLowValid;
 
@@ -205,20 +208,22 @@ void SPI_RX_Handler(){
     }
 
     if(control_code== 0x06){
-        sprintf_P(tjc_cmd, PSTR("wifisetting.tIP.txt=\"%s\""), ret);
-        TLSTJC_println(tjc_cmd);
+        if(ret[0] == '1' || ret[0] == '2' || ret[0] == '3' || ret[0] == '4' || ret[0] == '5' || ret[0] == '6' || ret[0] == '7' || ret[0] == '8' || ret[0] == '9' || ret[0] == '0') wifi_connected = true;
+        sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tIP.txt=\"%s\""), ret);
+        TLSTJC_println(wifi_tjc_cmd);
         delay(10);
-        sprintf_P(tjc_cmd, PSTR("setting.tIP.txt=\"%s\""), ret);
-        TLSTJC_println(tjc_cmd);
+        sprintf_P(wifi_tjc_cmd, PSTR("setting.tIP.txt=\"%s\""), ret);
+        TLSTJC_println(wifi_tjc_cmd);
         ZERO(spi_rx);
-    }else{
+    }else if(control_code == 0x01){
+        SPI_ConnectWIFI();
         /*
         char cmd[BUFFER_SIZE];
         for(int i=0; i<BUFFER_SIZE; i++){
             sprintf_P(cmd, "%X", spi_rx[i]);
-            TLDEBUG_LNPGM(cmd);
+            TLDEBUG_PRINTLN(cmd);
         }
-        TLDEBUG_LNPGM(" ");
+        TLDEBUG_PRINTLN(" ");
         */
     }
 
@@ -265,6 +270,9 @@ void WIFI_TX_Handler(int8_t control_code){
         case 0x0A:
         memcpy_P(send, printer_status_3, WIFI_MSG_LENGTH);
         break;
+        case 0x0B:
+        memcpy_P(send, printer_status_4, WIFI_MSG_LENGTH);
+        break;
     }
     spi_tx[3] = control_code;
 
@@ -283,6 +291,7 @@ void WIFI_TX_Handler(int8_t control_code){
         case 0x08:
         case 0x09:
         case 0x0A:
+        case 0x0B:
         for(int8_t i=0; i<WIFI_MSG_LENGTH; i++){
             if(send[i]==10 || send[i]=='\0' || send[i]==0){
                 spi_tx[i+4]='\0';
@@ -301,6 +310,14 @@ void WIFI_TX_Handler(int8_t control_code){
     uint8_t verify8 = verify % 0xFF;
     spi_tx[BUFFER_SIZE-1]=verify8;
 
+    delay(5);
+    char cmd[BUFFER_SIZE];
+    for(int i=0; i<BUFFER_SIZE; i++){
+        sprintf_P(cmd, "%X", spi_tx[i]);
+        TLDEBUG_PRINTLN(cmd);
+    }
+    TLDEBUG_PRINTLN(" ");
+    
     SPI_RW_Message();
 
 }
@@ -308,6 +325,8 @@ void WIFI_TX_Handler(int8_t control_code){
 /**************************************************************************/
 void SPI_ConnectWIFI()
 {
+    wifi_connected = false;
+    wifiFirstSend = 0;
     for(int8_t i=0; i<7; i++){
         WIFI_TX_Handler(i);
     }
@@ -325,7 +344,7 @@ void WIFI_InitSPI(void)
 {
     WIFI_InitGPIO();    //初始化几个GPIO口，
     WIFI_InitSPI1();    //初始化SPI的几个口，包括SCK、MOSI以及MISO
-    SPI_ConnectWIFI();
+    //SPI_ConnectWIFI();
     //WIFI_InitDMA();     //初始化SPI DMA
     //Test_SPI("ABCDEFGHIJKLMNOPQRSTUVWXYZ012345");  //测试
 }

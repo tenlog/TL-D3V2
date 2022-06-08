@@ -656,8 +656,8 @@ private:
   static void M105();
 
   #if HAS_FAN
-    static void M106();
-    static void M107();
+    static void M106(int8_t isLaser=0);
+    static void M107(int8_t isLaser=0);
   #endif
 
   #if DISABLED(EMERGENCY_PARSER)

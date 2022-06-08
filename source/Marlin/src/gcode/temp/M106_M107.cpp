@@ -32,12 +32,6 @@
   #include "../../module/planner.h"
 #endif
 
-#if PREHEAT_COUNT
-  #if DISABLED(TENLOG_TOUCH_LCD)
-    #include "../../lcd/marlinui.h"
-  #endif
-#endif
-
 #if ENABLED(SINGLENOZZLE)
   #define _ALT_P active_extruder
   #define _CNT_P EXTRUDERS
@@ -60,7 +54,7 @@
  *           2     = Use temporary speed set with T3-255
  *           3-255 = Set the speed for use with T2
  */
-void GcodeSuite::M106() {
+void GcodeSuite::M106(int8_t isLaser) {
   #if ENABLED(TENLOG_TOUCH_LCD)
   const uint8_t pfan = 0;
   #else
@@ -91,6 +85,7 @@ void GcodeSuite::M106() {
       thermalManager.common_fan_speed = speed;
     }
 
+    if(isLaser) speed=255-speed;
 
     #if ENABLED(DUAL_X_CARRIAGE)      
     if (idex_is_duplicating()){ 
@@ -105,15 +100,16 @@ void GcodeSuite::M106() {
       thermalManager.set_fan_speed(pfan, speed);
     #endif
 
-    TERN_(LASER_SYNCHRONOUS_M106_M107, planner.buffer_sync_block(BLOCK_FLAG_SYNC_FANS));
-
+    #if ENABLED(LASER_SYNCHRONOUS_M106_M107)
+     if(isLaser) planner.buffer_sync_block(BLOCK_FLAG_SYNC_FANS);
+    #endif
   }
 }
 
 /**
  * M107: Fan Off
  */
-void GcodeSuite::M107() {
+void GcodeSuite::M107(int8_t isLaser) {
   #if ENABLED(TENLOG_TOUCH_LCD)
   const uint8_t pfan = 0;
   #else
@@ -122,19 +118,24 @@ void GcodeSuite::M107() {
 
   if (pfan >= _CNT_P) return;
 
+  int8_t ZeroSpeed=0;
+  if(isLaser) ZeroSpeed=255;
+
   #if ENABLED(DUAL_X_CARRIAGE)      
     if (idex_is_duplicating()){ 
-      thermalManager.set_fan_speed(0, 0);
-      thermalManager.set_fan_speed(1, 0);
+      thermalManager.set_fan_speed(0, ZeroSpeed);
+      thermalManager.set_fan_speed(1, ZeroSpeed);
     }
     else{
-      thermalManager.set_fan_speed(active_extruder, 0);      
+      thermalManager.set_fan_speed(active_extruder, ZeroSpeed);      
     }
   #else
       thermalManager.set_fan_speed(pfan, 0);
   #endif
 
-  TERN_(LASER_SYNCHRONOUS_M106_M107, planner.buffer_sync_block(BLOCK_FLAG_SYNC_FANS));
+  #if ENABLED(LASER_SYNCHRONOUS_M106_M107)
+    if(isLaser) planner.buffer_sync_block(BLOCK_FLAG_SYNC_FANS);
+  #endif
 }
 
 #endif // HAS_FAN

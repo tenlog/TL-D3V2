@@ -644,7 +644,7 @@ void restore_feedrate_and_scaling() {
           soft_endstop.min.x = X1_MIN_POS;
           soft_endstop.max.x = X1_MAX_POS;
         }
-        TLDEBUG_LNPAIR("soft_endstop.max.x ", soft_endstop.max.x, " soft_endstop.min.x:", soft_endstop.min.x);
+        TLDEBUG_PRINTLNPAIR("soft_endstop.max.x ", soft_endstop.max.x, " soft_endstop.min.x:", soft_endstop.min.x);
       }
 
     #elif ENABLED(DELTA)
@@ -1173,12 +1173,12 @@ void prepare_line_to_destination() {
 
   /*
   if(destination.z > current_position.z && current_position.z < -66.00 && TLPrintingStatus == 1) {  // by zyf
-    TLDEBUG_LNPAIR("X C Pos ", current_position.x);
-    TLDEBUG_LNPAIR("X D Pos ", destination.x);
-    TLDEBUG_LNPAIR("Y C Pos ", current_position.y);
-    TLDEBUG_LNPAIR("Y D Pos ", destination.y);
-    TLDEBUG_LNPAIR("Z C Pos ", current_position.z);
-    TLDEBUG_LNPAIR("Z D Pos ", destination.z);
+    TLDEBUG_PRINTLNPAIR("X C Pos ", current_position.x);
+    TLDEBUG_PRINTLNPAIR("X D Pos ", destination.x);
+    TLDEBUG_PRINTLNPAIR("Y C Pos ", current_position.y);
+    TLDEBUG_PRINTLNPAIR("Y D Pos ", destination.y);
+    TLDEBUG_PRINTLNPAIR("Z C Pos ", current_position.z);
+    TLDEBUG_PRINTLNPAIR("Z D Pos ", destination.z);
 
     current_position.z = destination.z - 0.2;
     if(active_extruder == 1){
@@ -1187,12 +1187,12 @@ void prepare_line_to_destination() {
     }
     planner.set_position_mm(destination);
 
-    TLDEBUG_LNPAIR("AX C Pos ", current_position.x);
-    TLDEBUG_LNPAIR("AX D Pos ", destination.x);
-    TLDEBUG_LNPAIR("AY C Pos ", current_position.y);
-    TLDEBUG_LNPAIR("AY D Pos ", destination.y);
-    TLDEBUG_LNPAIR("AZ C Pos ", current_position.z);
-    TLDEBUG_LNPAIR("AZ D Pos ", destination.z);
+    TLDEBUG_PRINTLNPAIR("AX C Pos ", current_position.x);
+    TLDEBUG_PRINTLNPAIR("AX D Pos ", destination.x);
+    TLDEBUG_PRINTLNPAIR("AY C Pos ", current_position.y);
+    TLDEBUG_PRINTLNPAIR("AY D Pos ", destination.y);
+    TLDEBUG_PRINTLNPAIR("AZ C Pos ", current_position.z);
+    TLDEBUG_PRINTLNPAIR("AZ D Pos ", destination.z);
     //return;  
   }
   */

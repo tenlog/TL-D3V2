@@ -4060,20 +4060,20 @@ void MarlinSettings::reset() {
     #endif
 
     #if ENABLED(TENLOG_TOUCH_LCD)
-      TLDEBUG_LNPAIR("TL UI Language:", tl_languageID);
-      TLDEBUG_LNPAIR("TL UI Sleep:", tl_Sleep);
-      TLDEBUG_LNPAIR("TL ECO Mode:", tl_ECO_MODE);
-      TLDEBUG_LNPAIR("TL Theme ID:", tl_THEME_ID);
-      TLDEBUG_LNPAIR("TL E1 Fan Temp:", tl_E1_FAN_START_TEMP);
-      TLDEBUG_LNPAIR("TL E2 Fan Temp:", tl_E2_FAN_START_TEMP);
+      TLDEBUG_PRINTLNPAIR("TL UI Language:", tl_languageID);
+      TLDEBUG_PRINTLNPAIR("TL UI Sleep:", tl_Sleep);
+      TLDEBUG_PRINTLNPAIR("TL ECO Mode:", tl_ECO_MODE);
+      TLDEBUG_PRINTLNPAIR("TL Theme ID:", tl_THEME_ID);
+      TLDEBUG_PRINTLNPAIR("TL E1 Fan Temp:", tl_E1_FAN_START_TEMP);
+      TLDEBUG_PRINTLNPAIR("TL E2 Fan Temp:", tl_E2_FAN_START_TEMP);
     #endif
 
     #if ENABLED(HAS_WIFI)
-      TLDEBUG_LNPAIR("WIFI Mode:", wifi_mode);
-      TLDEBUG_LNPAIR("WIFI SSID:", wifi_ssid);
-      TLDEBUG_LNPAIR("WIFI PSWD:", wifi_pswd);
-      TLDEBUG_LNPAIR("WIFI Access code:", wifi_acce_code);
-      TLDEBUG_LNPAIR("HTTP PORT:", http_port);
+      TLDEBUG_PRINTLNPAIR("WIFI Mode:", wifi_mode);
+      TLDEBUG_PRINTLNPAIR("WIFI SSID:", wifi_ssid);
+      TLDEBUG_PRINTLNPAIR("WIFI PSWD:", wifi_pswd);
+      TLDEBUG_PRINTLNPAIR("WIFI Access code:", wifi_acce_code);
+      TLDEBUG_PRINTLNPAIR("HTTP PORT:", http_port);
     #endif
   }
 
@@ -4118,7 +4118,7 @@ void MarlinSettings::reset() {
         //PLR_EEPROM_WRITE(iFan);
 
         //int32_t saveTime = millis() - startSave;
-        //TLDEBUG_LNPAIR("Save Use ", saveTime);
+        //TLDEBUG_PRINTLNPAIR("Save Use ", saveTime);
         //sprintf_P(cmd, PSTR("ZPos:%f, EPos %f"), fZPos, fEPos);
       }
     }
@@ -4218,7 +4218,7 @@ void MarlinSettings::reset() {
       //Open file
       sprintf_P(cmd, PSTR("M23 %s"), file_name_list[6]);
       gcode.process_subcommands_now(cmd);
-      TLDEBUG_LNPGM(cmd);
+      TLDEBUG_PRINTLN(cmd);
 
       //handling dual_x_carriage_mode
       if(i_dual_x_carriage_mode == 2 && f_duplicate_extruder_x_offset > 50.0f){
@@ -4228,16 +4228,16 @@ void MarlinSettings::reset() {
         sprintf_P(cmd, PSTR("M605 S%d"), i_dual_x_carriage_mode);
         gcode.process_subcommands_now(cmd);
       }
-      TLDEBUG_LNPGM(cmd);
+      TLDEBUG_PRINTLN(cmd);
 
       //handling bed
       sprintf_P(cmd, PSTR("M190 S%i"), iBPos);
-      TLDEBUG_LNPGM(cmd);
+      TLDEBUG_PRINTLN(cmd);
       gcode.process_subcommands_now(cmd);
       
       //handling fan
       sprintf_P(cmd, PSTR("M106 S%i"), iFan);
-      TLDEBUG_LNPGM(cmd);
+      TLDEBUG_PRINTLN(cmd);
       gcode.process_subcommands_now(cmd);
       
       //handling headers
@@ -4245,15 +4245,15 @@ void MarlinSettings::reset() {
           if(iTPos0 > 0){
               sprintf_P(cmd, PSTR("M104 T0 S%i"), iTPos0);
               gcode.process_subcommands_now(cmd);
-              TLDEBUG_LNPGM(cmd);
+              TLDEBUG_PRINTLN(cmd);
           }
           active_extruder = 1;
           //gcode.process_subcommands_now(PSTR("T1"));
-          TLDEBUG_LNPGM("E2");
+          TLDEBUG_PRINTLN("E2");
           if(iTPos1 > 0){
               sprintf_P(cmd, PSTR("M109 S%i"), iTPos1);
               gcode.process_subcommands_now(cmd);
-              TLDEBUG_LNPGM(cmd);
+              TLDEBUG_PRINTLN(cmd);
           }
           active_extruder = 0;
           delay(100);
@@ -4263,20 +4263,20 @@ void MarlinSettings::reset() {
               NULLZERO(cmd);
               sprintf_P(cmd, PSTR("M104 T1 S%i"), iTPos1);
               gcode.process_subcommands_now(cmd);
-              TLDEBUG_LNPGM(cmd);
+              TLDEBUG_PRINTLN(cmd);
           }
           active_extruder = 0;
-          TLDEBUG_LNPGM("E1");
+          TLDEBUG_PRINTLN("E1");
           //gcode.process_subcommands_now(PSTR("T0"));
           if(iTPos0 > 0){
               sprintf_P(cmd, PSTR("M109 S%i"), iTPos0);
-              TLDEBUG_LNPGM(cmd);
+              TLDEBUG_PRINTLN(cmd);
               gcode.process_subcommands_now(cmd);
           }
           gcode.process_subcommands_now(PSTR("T0"));
       }
       //homging XY
-      TLDEBUG_LNPGM("G28 XY");
+      TLDEBUG_PRINTLN("G28 XY");
       gcode.process_subcommands_now(PSTR("G28 XY"));
 
       my_sleep(1.5);
@@ -4285,7 +4285,7 @@ void MarlinSettings::reset() {
       
       sprintf_P(cmd, PSTR("G92.9 Z%.2f "), fZPos);
       gcode.process_subcommands_now(cmd);
-      TLDEBUG_LNPGM(cmd);      
+      TLDEBUG_PRINTLN(cmd);      
 
       //current_position[Z_AXIS] = -66.66;
       //planner.set_position_mm(current_position);
@@ -4294,7 +4294,7 @@ void MarlinSettings::reset() {
 
       sprintf_P(cmd, PSTR("M24 S%u"), lFPos);
       gcode.process_subcommands_now(cmd);
-      TLDEBUG_LNPGM(cmd);
+      TLDEBUG_PRINTLN(cmd);
 
       TLPrintingStatus = 1;
     }

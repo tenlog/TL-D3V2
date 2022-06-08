@@ -365,7 +365,7 @@ void CardReader::tl_ls() {
       NULLZERO(cmd);
       sprintf_P(cmd, PSTR("select_file.vPageID.val=%d"), tl_print_page_id);
       TLSTJC_println(cmd);
-      //TLDEBUG_LNPGM(cmd);
+      //TLDEBUG_PRINTLN(cmd);
     }    
     delay(5);
     NULLZERO(file_name_list);
@@ -447,7 +447,7 @@ void CardReader::tl_ls() {
       long lAddress = 0x7300 + (i-1) * 0x30;
       DWN_Text(lAddress, 32, "  ");
       sprintf_P(cmd, PSTR("Address %04X"), lAddress);
-      TLDEBUG_LNPGM(cmd);
+      TLDEBUG_PRINTLN(cmd);
     }
     file_name_list[i-1][0] = '\0';
     long_file_name_list[i-1][0] = '\0';

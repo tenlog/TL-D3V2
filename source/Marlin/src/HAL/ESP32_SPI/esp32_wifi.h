@@ -23,7 +23,7 @@
 //By tenlog zyf
 
 /*
-tx contorl code
+MOSI (tx) contorl code
 from mcu to wifi:
 
 control_code 0x01: wifi mode
@@ -37,10 +37,12 @@ congrol_code 0x07: printer_status_0
 congrol_code 0x08: printer_status_1
 congrol_code 0x09: printer_status_2
 congrol_code 0x0A: printer_status_3
+congrol_code 0x0B: printer_status_4
 
-rx control code
+MISO (rx) control code
 from wifi to mcu
-control_code 0x01: ip
+control_code 0x06: ip
+control_code 0x01: request connect wifi
 
 */
 
@@ -56,11 +58,14 @@ extern char wifi_pswd[WIFI_MSG_LENGTH];
 extern char wifi_acce_code[WIFI_MSG_LENGTH];
 extern uint8_t wifi_mode;
 extern uint16_t http_port;
+extern bool wifi_connected;
+extern int8_t wifiFirstSend;
 
 extern char printer_status_0[WIFI_MSG_LENGTH];
 extern char printer_status_1[WIFI_MSG_LENGTH];
 extern char printer_status_2[WIFI_MSG_LENGTH];
 extern char printer_status_3[WIFI_MSG_LENGTH];
+extern char printer_status_4[WIFI_MSG_LENGTH];
 
 #define HEAD_OK(a)	(a[0]==0xFF && a[1]==0xFF && a[2]==0xFF)
 

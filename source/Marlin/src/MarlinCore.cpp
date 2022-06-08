@@ -1621,7 +1621,7 @@ void setup() {
   #if ENABLED(POWER_LOSS_RECOVERY_TL)
   uint32_t isplr = settings.plr_is_pl();
   if(isplr > 2048){
-    TLDEBUG_LNPAIR("Power loss found! Point=", isplr);
+    TLDEBUG_PRINTLNPAIR("Power loss found! Point=", isplr);
     TlIsPLR();
   }else{
     uint8_t lastPageID = 0;
@@ -1631,7 +1631,7 @@ void setup() {
       get_command(1);
       if(tl_command[0]==0x66 && tl_command[2]==0xFF && tl_command[3]==0xFF && tl_command[4]==0xFF){
         lastPageID = tl_command[1];
-        TLDEBUG_LNPAIR("Page=", lastPageID);
+        TLDEBUG_PRINTLNPAIR("Page=", lastPageID);
       }
     }
 

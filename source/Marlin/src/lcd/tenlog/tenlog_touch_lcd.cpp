@@ -167,7 +167,7 @@ int DETECT_TLS(){
         if(TryType == 1){
             
             if(CanTry){
-                TLDEBUG_LNPAIR("Trying TJC... ", iTryCount);
+                TLDEBUG_PRINTLNPAIR("Trying TJC... ", iTryCount);
                 delay(50);
                 TenlogScreen_end();
                 delay(50);
@@ -215,9 +215,9 @@ int DETECT_TLS(){
                 }
             }
             if(SerialNo[0] != '\0')
-                TLDEBUG_LNPAIR("Serial.. ", SerialNo);
+                TLDEBUG_PRINTLNPAIR("Serial.. ", SerialNo);
             if(ModelNo[0] != '\0')
-                TLDEBUG_LNPAIR("Model.. ", ModelNo);
+                TLDEBUG_PRINTLNPAIR("Model.. ", ModelNo);
 
             delay(50);
 
@@ -247,7 +247,7 @@ int DETECT_TLS(){
 
         }else if(TryType == 0){
             if(CanTry){
-                TLDEBUG_LNPAIR("Trying DWN... ", iTryCount);
+                TLDEBUG_PRINTLNPAIR("Trying DWN... ", iTryCount);
                 delay(50);
                 TenlogScreen_end();
                 delay(50);
@@ -560,7 +560,7 @@ void initTLScreen(){
     stc_efm_unique_id UID_data = EFM_ReadUID();
     //char cmd1[64];
     sprintf_P(tl_sn, "SN:%08X%08X%08X", UID_data.uniqueID1, UID_data.uniqueID2, UID_data.uniqueID3);
-    TLDEBUG_LNPGM(tl_sn);
+    TLDEBUG_PRINTLN(tl_sn);
 
     tl_TouchScreenType = DETECT_TLS(); // check if it is tjc screen
     if(tl_TouchScreenType == 1){
@@ -568,7 +568,7 @@ void initTLScreen(){
         delay(100);
         TLSTJC_println("sleep=0");
         delay(100);
-        TLDEBUG_LNPGM("TL TJC Touch Screen Detected!");
+        TLDEBUG_PRINTLN("TL TJC Touch Screen Detected!");
     }else if(tl_TouchScreenType == 0){
         DWN_Text(0x7280, 28, tl_sn);
         
@@ -595,14 +595,14 @@ void initTLScreen(){
 
         DWN_Page(DWN_P_LOADING);
         delay(100);        
-        TLDEBUG_LNPGM("TL DWN Touch Screen Detected!");
+        TLDEBUG_PRINTLN("TL DWN Touch Screen Detected!");
     }else if(tl_TouchScreenType == -1){
         //tl_TouchScreenType = 1;
         TLSTJC_printEmptyend();
         delay(100);
         TLSTJC_println("sleep=0");
         delay(100);
-        //TLDEBUG_LNPGM("Tenlog touch screen not detected! ");
+        //TLDEBUG_PRINTLN("Tenlog touch screen not detected! ");
         kill("Tenlog touch screen not detected! ");
     }
 }
@@ -749,37 +749,37 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
 
             sprintf_P(cmd, PSTR("reload.sT1T2.txt=\"%d\""), active_extruder + 1);
             TLSTJC_println(cmd);
-            //TLDEBUG_LNPGM(cmd);
+            //TLDEBUG_PRINTLN(cmd);
             delay(50);
 
             sprintf_P(cmd, PSTR("reload.vaTargetTemp0.val=%d"), int(thermalManager.degTargetHotend(0) + 0.5f));
             TLSTJC_println(cmd);
-            //TLDEBUG_LNPGM(cmd);
+            //TLDEBUG_PRINTLN(cmd);
             delay(50);
 
             sprintf_P(cmd, PSTR("reload.vaTargetTemp1.val=%d"), int(thermalManager.degTargetHotend(1) + 0.5f));
             TLSTJC_println(cmd);
-            //TLDEBUG_LNPGM(cmd);
+            //TLDEBUG_PRINTLN(cmd);
             delay(50);
 
             sprintf_P(cmd, PSTR("reload.vaTargetBed.val=%d"), int(thermalManager.degTargetBed() + 0.5f));
             TLSTJC_println(cmd);
-            //TLDEBUG_LNPGM(cmd);
+            //TLDEBUG_PRINTLN(cmd);
             delay(50);
             
             sprintf_P(cmd, PSTR("reload.vaMode.val=%d"), dual_x_carriage_mode);
             TLSTJC_println(cmd);
-            //TLDEBUG_LNPGM(cmd);
+            //TLDEBUG_PRINTLN(cmd);
             delay(50);
 
             if (duplicate_extruder_x_offset != DEFAULT_DUPLICATION_X_OFFSET) {
                 sprintf_P(cmd, PSTR("reload.vaMode2Offset.val=%d"), duplicate_extruder_x_offset);
                 TLSTJC_println(cmd);
-                //TLDEBUG_LNPGM(cmd);
+                //TLDEBUG_PRINTLN(cmd);
                 delay(50);
             } else{
                 TLSTJC_println("reload.vaMode2Offset.val=-1");
-                //TLDEBUG_LNPGM("reload.vaMode2Offset.val=-1");
+                //TLDEBUG_PRINTLN("reload.vaMode2Offset.val=-1");
             }
 
             if(FilaRunout){
@@ -789,7 +789,7 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
 
             //while (planner.has_blocks_queued() || planner.cleaning_buffer_counter) idle();
             queue.inject("G27");
-            TLDEBUG_LNPGM("inject G27");
+            TLDEBUG_PRINTLN("inject G27");
 
             my_sleep(3.0);
             TLSTJC_println("main.vCC.val=0");
@@ -807,10 +807,10 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
         long lH = GCodelng('H', FromPos, tl_command);  //Temp 0 
         long lI = GCodelng('I', FromPos, tl_command);  //Temp 1
         sprintf_P(cmd, PSTR("M1032 T%i H%i I%i"), lT, lH, lI);
-        //TLDEBUG_LNPGM(cmd);
+        //TLDEBUG_PRINTLN(cmd);
         
         if(dual_x_carriage_mode == DXC_DUPLICATION_MODE || DXC_MIRRORED_MODE == 3){
-            //TLDEBUG_LNPGM("G28 X");
+            //TLDEBUG_PRINTLN("G28 X");
             EXECUTE_GCODE("G28 X");
             delay(100);
             my_sleep(2.5);
@@ -820,7 +820,7 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
             if(lI > 0){
                 sprintf_P(cmd, PSTR("M104 T1 S%i"), lI);
                 EXECUTE_GCODE(cmd);
-                //TLDEBUG_LNPGM(cmd);
+                //TLDEBUG_PRINTLN(cmd);
                 delay(100);
             }
             EXECUTE_GCODE(PSTR("T0"));
@@ -828,7 +828,7 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
             if(lH > 0){
                 sprintf_P(cmd, PSTR("M109 S%i"), lH);
                 EXECUTE_GCODE(cmd);
-                //TLDEBUG_LNPGM(cmd);
+                //TLDEBUG_PRINTLN(cmd);
                 delay(100);
         }    
         }
@@ -836,7 +836,7 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
             if(lH > 0){
                 sprintf_P(cmd, PSTR("M104 T0 S%i"), lH);
                 EXECUTE_GCODE(cmd);
-                //TLDEBUG_LNPGM(cmd);
+                //TLDEBUG_PRINTLN(cmd);
                 delay(100);
             }
             delay(100);
@@ -845,7 +845,7 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
             if(lI > 0){
                 sprintf_P(cmd, PSTR("M109 S%i"), lI);
                 EXECUTE_GCODE(cmd);
-                //TLDEBUG_LNPGM(cmd);
+                //TLDEBUG_PRINTLN(cmd);
                 delay(100);
             }
         }
@@ -853,18 +853,18 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
         sprintf_P(cmd, PSTR("G1 Z%f F4500"), zPos_Pause);
         EXECUTE_GCODE(cmd);
         delay(100);
-        //TLDEBUG_LNPGM(cmd);
+        //TLDEBUG_PRINTLN(cmd);
 
         sprintf_P(cmd, PSTR("G92 E%f"), ePos_Pause);
         EXECUTE_GCODE(cmd);
-        //TLDEBUG_LNPGM(cmd);
+        //TLDEBUG_PRINTLN(cmd);
         feedrate_mm_s = feed_rate_Pause;
         delay(100);
 
         runout.reset();
 
         EXECUTE_GCODE(PSTR("M24"));
-        //TLDEBUG_LNPGM("M24");
+        //TLDEBUG_PRINTLN("M24");
         delay(100);
         
         TLSTJC_println("main.vCC.val=0");
@@ -1012,7 +1012,7 @@ void process_command_gcode(long _tl_command[]) {
                 feedrate_mm_s = lF / 60;
                 sprintf_P(cmd, PSTR("G%d %s%s%s%s%s"), lG, sF, sX, sY, sZ, sE);
                 EXECUTE_GCODE(cmd);
-                TLDEBUG_PGM(cmd);
+                TLDEBUG_PRINT(cmd);
                 TLSTJC_println("main.vCC.val=0");
                 delay(50);
             } else if(lG == 28){
@@ -1040,7 +1040,7 @@ void process_command_gcode(long _tl_command[]) {
                 }
 
                 sprintf_P(cmd, PSTR("G%d %s%s%s"), lG, sX, sY, sZ);
-                TLDEBUG_LNPGM(cmd);
+                TLDEBUG_PRINTLN(cmd);
                 EXECUTE_GCODE(cmd);                    
                 my_sleep(1.5);
                 TLSTJC_println("main.vCC.val=0");
@@ -1106,7 +1106,7 @@ void process_command_gcode(long _tl_command[]) {
                 }
                 sprintf_P(cmd, PSTR("M%d %s%s"), lM, sT, sS);
                 EXECUTE_GCODE(cmd);
-                TLDEBUG_LNPGM(cmd);
+                TLDEBUG_PRINTLN(cmd);
             }else if(lM == 140 || lM == 220){
                 //M220 //M140
                 long lS = GCodelng('S', iFrom, _tl_command);
@@ -1140,7 +1140,7 @@ void process_command_gcode(long _tl_command[]) {
                 EXECUTE_GCODE(cmd);
             }else if(lM == 21){
                 sprintf_P(cmd, PSTR("M%d"), lM);
-                TLDEBUG_LNPGM("M21");
+                TLDEBUG_PRINTLN("M21");
                 EXECUTE_GCODE(cmd);
             }else if(lM == 32){
                 //M32
@@ -1155,7 +1155,7 @@ void process_command_gcode(long _tl_command[]) {
             }else if(lM == 19){
                 //M19
                 tl_print_page_id = GCodelng('S', iFrom, _tl_command);
-                TLDEBUG_LNPGM("M19");
+                TLDEBUG_PRINTLN("M19");
                 card.tl_ls();
             }else if(lM == 1001){
                 //M1001
@@ -1255,7 +1255,7 @@ void process_command_gcode(long _tl_command[]) {
                     sprintf_P(sS, PSTR("S%d "), lS);
                 }
                 sprintf_P(cmd, PSTR("M%d %s%s%s"), lM, sS, sX, sR);
-                TLDEBUG_LNPGM(cmd);
+                TLDEBUG_PRINTLN(cmd);
                 EXECUTE_GCODE(cmd);
             }else if(lM == 1031){                
                 //pause from lcd or runout //M1031
@@ -1341,7 +1341,7 @@ void process_command_gcode(long _tl_command[]) {
                         //M1504
                         http_port = GCodelng('S', iFrom, _tl_command);
                         sprintf_P(cmd, PSTR("M%d S%d"), lM, http_port);                        
-                        TLDEBUG_LNPGM(cmd);
+                        TLDEBUG_PRINTLN(cmd);
                         EXECUTE_GCODE(PSTR("M500"));
                     }else if(lM == 1502){
                         //M1502
@@ -1354,7 +1354,7 @@ void process_command_gcode(long _tl_command[]) {
                             }
                         }
                         sprintf_P(cmd, PSTR("M%d %s"), lM, wifi_ssid);
-                        TLDEBUG_LNPGM(cmd);
+                        TLDEBUG_PRINTLN(cmd);
                         EXECUTE_GCODE(PSTR("M500"));
                     }else if(lM == 1503){
                         //M1503
@@ -1367,7 +1367,7 @@ void process_command_gcode(long _tl_command[]) {
                             }
                         }
                         sprintf_P(cmd, PSTR("M%d %s"), lM, wifi_pswd);                        
-                        TLDEBUG_LNPGM(cmd);
+                        TLDEBUG_PRINTLN(cmd);
                         EXECUTE_GCODE(PSTR("M500"));
                     }else if(lM == 1505){
                         //M1505
@@ -1380,7 +1380,7 @@ void process_command_gcode(long _tl_command[]) {
                             }
                         }
                         sprintf_P(cmd, PSTR("M%d %s"), lM, wifi_acce_code);                        
-                        TLDEBUG_LNPGM(cmd);
+                        TLDEBUG_PRINTLN(cmd);
                         EXECUTE_GCODE(PSTR("M500"));
                     }else if(lM == 1510){
                        //M1510
@@ -1908,7 +1908,7 @@ void process_command_dwn()
                     EXECUTE_GCODE("M21");
                     delay(100);                
                     card.tl_ls();
-                    //TLDEBUG_LNPGM("List files");
+                    //TLDEBUG_PRINTLN("List files");
                     break;
                 case 0x58:
                     if (tl_print_page_id > 0)
@@ -2231,7 +2231,7 @@ char * tenlog_status_update(bool isTJC)
     const int16_t ln0  = current_position[X_AXIS] * 10.0f; 
     const int16_t ln1  = current_position[Y_AXIS] * 10.0f;
     const int16_t ln2  = current_position[Z_AXIS] * 10.0f;
-    const int16_t ln3  = current_position[E_AXIS] * 10.0f;
+    const int16_t ln3  = 0;
     const int16_t ln4  = int(thermalManager.degTargetHotend(0) + 0.5f);
 
     const int16_t ln5  = int(thermalManager.degHotend(0) + 0.5f);
@@ -2280,22 +2280,29 @@ char * tenlog_status_update(bool isTJC)
     sprintf_P(printer_status, PSTR("%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%s|%d|%d|%d|%d|"), 
         ln0, ln1, ln2, ln3, ln4, ln5, ln6, ln7, ln8, ln9, ln10, ln11, ln12, ln13, ln14, ln15, cTime, ln17, ln18, ln19, ln20);
 
- 
-    sprintf_P(printer_status_0, PSTR("%d|%d|%d|%d|%d|"), 
-        ln0, ln1, ln2, ln3, ln4);
-    WIFI_TX_Handler(0x07);
+    
+    if(wifi_connected || wifiFirstSend < 10){
+        wifiFirstSend ++;
+        sprintf_P(printer_status_0, PSTR("%d|%d|%d|%d|"), 
+            ln0, ln1, ln2, ln3);
+        WIFI_TX_Handler(0x07);
 
-    sprintf_P(printer_status_1, PSTR("%d|%d|%d|%d|%d|%d|"), 
-        ln5, ln6, ln7, ln8, ln9, ln10);
-    WIFI_TX_Handler(0x08);
+        sprintf_P(printer_status_1, PSTR("%d|%d|%d|%d|%d|"), 
+            ln4, ln5, ln6, ln7, ln8);
+        WIFI_TX_Handler(0x08);
 
-    sprintf_P(printer_status_2, PSTR("%d|%d|%d|%d|%d|"), 
-        ln11, ln12, ln13, ln14, ln15);
-    WIFI_TX_Handler(0x09);
+        sprintf_P(printer_status_2, PSTR("%d|%d|%d|%d|"), 
+            ln9, ln10, ln11, ln12);
+        WIFI_TX_Handler(0x09);
 
-    sprintf_P(printer_status_3, PSTR("%s|%d|%d|%d|%d|"), 
-        cTime, ln17, ln18, ln19, ln20);
-    WIFI_TX_Handler(0x0A);    
+        sprintf_P(printer_status_3, PSTR("%d|%d|%d|%s|"), 
+            ln13, ln14, ln15, cTime);
+        WIFI_TX_Handler(0x0A);    
+
+        sprintf_P(printer_status_4, PSTR("%d|%d|%d|%d|"), 
+            ln17, ln18, ln19, ln20);
+        WIFI_TX_Handler(0x0B);    
+    }
 
     if(isTJC){
         TLSTJC_print("main.sStatus.txt=\"");
