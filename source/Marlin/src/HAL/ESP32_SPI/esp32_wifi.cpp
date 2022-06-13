@@ -29,9 +29,9 @@
 #ifdef ESP32_WIFI
 #include "esp32_wifi.h"
 
-char wifi_ssid[WIFI_MSG_LENGTH] = WIFI_DEFAULT_SSID;
-char wifi_pswd[WIFI_MSG_LENGTH] = WIFI_DEFAULT_PSWD;
-char wifi_acce_code[WIFI_MSG_LENGTH] = WIFI_DEFAULT_ACCE_CODE;
+char wifi_ssid[20] = WIFI_DEFAULT_SSID;
+char wifi_pswd[20] = WIFI_DEFAULT_PSWD;
+char wifi_acce_code[20] = WIFI_DEFAULT_ACCE_CODE;
 uint8_t wifi_mode = WIFI_DEFAULT_MODE;
 uint16_t http_port = WIFI_DEFAULT_PORT;
 bool wifi_connected = false;
@@ -185,7 +185,7 @@ uint8_t get_control_code(){
 			verify += spi_rx[i];
 		}
 		if(verify % 0xFF == spi_rx[BUFFER_SIZE-1]){
-			return spi_rx[3];
+			return spi_rx[2];
 		}
 	}
 	return 0;
@@ -199,8 +199,8 @@ void SPI_RX_Handler(){
 
     if(control_code > 0){
         for(int i=0; i<WIFI_MSG_LENGTH; i++){
-            ret[i] = spi_rx[i+4];
-            if(spi_rx[i+4] == 10 || spi_rx[i+4] == '\0' || spi_rx[i+4] == 0){
+            ret[i] = spi_rx[i+3];
+            if(spi_rx[i+3] == '\0' || spi_rx[i+3] == 0){
                 ret[i] = '\0';
                 break;
             }
@@ -217,14 +217,16 @@ void SPI_RX_Handler(){
         ZERO(spi_rx);
     }else if(control_code == 0x01){
         SPI_ConnectWIFI();
+        
         /*
         char cmd[BUFFER_SIZE];
         for(int i=0; i<BUFFER_SIZE; i++){
-            sprintf_P(cmd, "%X", spi_rx[i]);
-            TLDEBUG_PRINTLN(cmd);
+            sprintf_P(cmd, " 0x%X", spi_rx[i]);
+            TLDEBUG_PRINT(cmd);
         }
         TLDEBUG_PRINTLN(" ");
         */
+        
     }
 
 }
@@ -242,7 +244,7 @@ void SPI_RW_Message(){
 void WIFI_TX_Handler(int8_t control_code){
     ZERO(spi_tx);
     int16_t verify = 0;
-    for(int8_t i=0; i<3; i++){
+    for(int8_t i=0; i<2; i++){
         spi_tx[i]=0xFF;
     }
     uint8_t send[WIFI_MSG_LENGTH];
@@ -250,13 +252,13 @@ void WIFI_TX_Handler(int8_t control_code){
     
     switch (control_code){
         case 0x03:
-        memcpy_P(send, wifi_ssid, WIFI_MSG_LENGTH);
+        memcpy_P(send, wifi_ssid, 20);
         break;
         case 0x04:
-        memcpy_P(send, wifi_pswd, WIFI_MSG_LENGTH);
+        memcpy_P(send, wifi_pswd, 20);
         break;
         case 0x05:
-        memcpy_P(send, wifi_acce_code, WIFI_MSG_LENGTH);
+        memcpy_P(send, wifi_acce_code, 20);
         break;
         case 0x07:
         memcpy_P(send, printer_status_0, WIFI_MSG_LENGTH);
@@ -264,6 +266,7 @@ void WIFI_TX_Handler(int8_t control_code){
         case 0x08:
         memcpy_P(send, printer_status_1, WIFI_MSG_LENGTH);
         break;
+        /*
         case 0x09:
         memcpy_P(send, printer_status_2, WIFI_MSG_LENGTH);
         break;
@@ -273,31 +276,33 @@ void WIFI_TX_Handler(int8_t control_code){
         case 0x0B:
         memcpy_P(send, printer_status_4, WIFI_MSG_LENGTH);
         break;
+        */
+        
     }
-    spi_tx[3] = control_code;
+    spi_tx[2] = control_code;
 
     switch (control_code){
         case 0x01:
-        spi_tx[4] = wifi_mode;
+        spi_tx[3] = wifi_mode;
         break;
         case 0x02:
-        spi_tx[4] = http_port / 0xFF;
-        spi_tx[5] = http_port % 0xFF;
+        spi_tx[3] = http_port / 0xFF;
+        spi_tx[4] = http_port % 0xFF;
         break;
         case 0x03:        
         case 0x04:        
         case 0x05:        
         case 0x07:        
         case 0x08:
-        case 0x09:
-        case 0x0A:
-        case 0x0B:
+        //case 0x09:
+        //case 0x0A:
+        //case 0x0B:
         for(int8_t i=0; i<WIFI_MSG_LENGTH; i++){
-            if(send[i]==10 || send[i]=='\0' || send[i]==0){
-                spi_tx[i+4]='\0';
+            if(send[i]=='\0' || send[i]==0){
+                spi_tx[i+3]='\0';
                 break;
             }else{
-                spi_tx[i+4]=send[i];
+                spi_tx[i+3]=send[i];
             }
         }
         break;
@@ -309,15 +314,16 @@ void WIFI_TX_Handler(int8_t control_code){
 
     uint8_t verify8 = verify % 0xFF;
     spi_tx[BUFFER_SIZE-1]=verify8;
-
     delay(5);
+    /*
     char cmd[BUFFER_SIZE];
     for(int i=0; i<BUFFER_SIZE; i++){
-        sprintf_P(cmd, "%X", spi_tx[i]);
-        TLDEBUG_PRINTLN(cmd);
+        sprintf_P(cmd, " 0x%X", spi_tx[i]);
+        TLDEBUG_PRINT(cmd);
     }
     TLDEBUG_PRINTLN(" ");
-    
+    */
+
     SPI_RW_Message();
 
 }

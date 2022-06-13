@@ -59,6 +59,7 @@ int8_t tl_E2_FAN_START_TEMP = 80;
 int8_t tl_E1_FAN_START_TEMP = 80;
 int8_t tl_ECO_MODE = 0;
 int8_t tl_THEME_ID = 0;
+int8_t tl_Light = 0;
 
 int dwnMessageID = -1;
 long lLEDTimeoutCount = 0;
@@ -326,6 +327,7 @@ void tlResetEEPROM(){
     tl_E1_FAN_START_TEMP = 80;
     tl_ECO_MODE = 0;
     tl_THEME_ID = 0;
+    tl_Light = 0;
 }
 
 void TLVersion(){
@@ -354,6 +356,12 @@ void tlInitSetting(){
         delay(10);
         sprintf_P(cmd, PSTR("main.vThemeID.val=%d"), tl_THEME_ID);
         TLSTJC_println(cmd);
+        delay(10);        
+
+        sprintf_P(cmd, PSTR("setting.cLight.val=%d"), tl_Light);
+        TLSTJC_println(cmd);
+        if(tl_Light) WRITE(LED_PIN, 1); else WRITE(LED_PIN, 0);
+
         delay(10);
         sprintf_P(cmd, PSTR("setting.nE1FT.val=%d"), tl_E1_FAN_START_TEMP);
         TLSTJC_println(cmd);
@@ -390,7 +398,7 @@ void tlInitSetting(){
 
         long lOffsetX = hotend_offset[1].x * 100;
         long lOffsetY = hotend_offset[1].y * 100 + 500;
-        long lOffsetZ = hotend_offset[1].z * 100 + 200;
+        long lOffsetZ = hotend_offset[1].z * 1000;
 
         sprintf_P(cmd, PSTR("setting.xX2.val=%d"), lOffsetX);
         TLSTJC_println(cmd);
@@ -398,7 +406,7 @@ void tlInitSetting(){
         sprintf_P(cmd, PSTR("setting.xY2.val=%d"), lOffsetY);
         TLSTJC_println(cmd);
         delay(10);
-        sprintf_P(cmd, PSTR("setting.xZ2.val=%d"), lOffsetZ);
+        sprintf_P(cmd, PSTR("setting.xZOffset.val=%d"), lOffsetZ);
         TLSTJC_println(cmd);
         delay(10);
 
@@ -459,7 +467,7 @@ void tlInitSetting(){
         }
 
         long lOffsetY = hotend_offset[1].y * 100 + 500;
-        long lOffsetZ = hotend_offset[1].z * 100 + 200;
+        long lOffsetZ = hotend_offset[1].z * 100;
         DWN_Data(0x6020, lOffsetY, 2);
 
         delay(10);
@@ -1173,6 +1181,11 @@ void process_command_gcode(long _tl_command[]) {
                 //M1520
                 tl_THEME_ID = GCodelng('S', iFrom, _tl_command);
                 EXECUTE_GCODE(PSTR("M500"));
+            }else if(lM == 1521){
+                //M1521 Light On Off
+                tl_Light = GCodelng('S', iFrom, _tl_command);
+                if(tl_Light) WRITE(LED_PIN, 1); else WRITE(LED_PIN, 0);
+                EXECUTE_GCODE(PSTR("M500"));
             }else if(lM == 1015){
                 //M1015
                 tl_E1_FAN_START_TEMP = GCodelng('S', iFrom, _tl_command);
@@ -1301,7 +1314,7 @@ void process_command_gcode(long _tl_command[]) {
                         hotend_offset[1].y = fOffset;
                     }
                     else if(lAxis == Z_AXIS){
-                        fOffset = fOffset - 2.0f;
+                        fOffset = fOffset;
                         hotend_offset[1].z = fOffset;
                     }
                     EXECUTE_GCODE(PSTR("M500"));
@@ -1387,10 +1400,19 @@ void process_command_gcode(long _tl_command[]) {
                        SPI_ConnectWIFI();
                     }
                 #endif //Has wifi
+            }else if(lM == 290){
+                //M290 babysetp
+                float fZ = GCodelng('Z', iFrom, _tl_command);
+                if(fZ > -999.0)
+                {
+                    sprintf_P(cmd, PSTR("M%d Z%s"), lM, dtostrf(fZ, 1, 3, str_1));                
+                    TLDEBUG_PRINTLN(cmd);
+                    EXECUTE_GCODE(cmd);
+                }
             }
 
             delay(100);
-        }//iLoop
+        }//iLoop //lines in this command group
     }
 }
 
@@ -2283,25 +2305,13 @@ char * tenlog_status_update(bool isTJC)
     
     if(wifi_connected || wifiFirstSend < 10){
         wifiFirstSend ++;
-        sprintf_P(printer_status_0, PSTR("%d|%d|%d|%d|"), 
-            ln0, ln1, ln2, ln3);
+        sprintf_P(printer_status_0, PSTR("%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|"), 
+            ln0, ln1, ln2, ln3, ln4, ln5, ln6, ln7, ln8, ln9, ln10);
         WIFI_TX_Handler(0x07);
 
-        sprintf_P(printer_status_1, PSTR("%d|%d|%d|%d|%d|"), 
-            ln4, ln5, ln6, ln7, ln8);
+        sprintf_P(printer_status_1, PSTR("%d|%d|%d|%d|%d|%s|%d|%d|%d|%d|"), 
+            ln11, ln12, ln13, ln14, ln15, cTime, ln17, ln18, ln19, ln20);
         WIFI_TX_Handler(0x08);
-
-        sprintf_P(printer_status_2, PSTR("%d|%d|%d|%d|"), 
-            ln9, ln10, ln11, ln12);
-        WIFI_TX_Handler(0x09);
-
-        sprintf_P(printer_status_3, PSTR("%d|%d|%d|%s|"), 
-            ln13, ln14, ln15, cTime);
-        WIFI_TX_Handler(0x0A);    
-
-        sprintf_P(printer_status_4, PSTR("%d|%d|%d|%d|"), 
-            ln17, ln18, ln19, ln20);
-        WIFI_TX_Handler(0x0B);    
     }
 
     if(isTJC){

@@ -50,12 +50,12 @@ control_code 0x01: request connect wifi
 
 #ifdef ESP32_WIFI
 
-#define WIFI_MSG_LENGTH 27
-#define BUFFER_SIZE 32
+#define WIFI_MSG_LENGTH 60
+#define BUFFER_SIZE 64
 
-extern char wifi_ssid[WIFI_MSG_LENGTH];
-extern char wifi_pswd[WIFI_MSG_LENGTH];
-extern char wifi_acce_code[WIFI_MSG_LENGTH];
+extern char wifi_ssid[20];
+extern char wifi_pswd[20];
+extern char wifi_acce_code[20];
 extern uint8_t wifi_mode;
 extern uint16_t http_port;
 extern bool wifi_connected;
@@ -67,7 +67,7 @@ extern char printer_status_2[WIFI_MSG_LENGTH];
 extern char printer_status_3[WIFI_MSG_LENGTH];
 extern char printer_status_4[WIFI_MSG_LENGTH];
 
-#define HEAD_OK(a)	(a[0]==0xFF && a[1]==0xFF && a[2]==0xFF)
+#define HEAD_OK(a)	(a[0]==0xFF && a[1]==0xFF)
 
 /* SPI_SCK Port/Pin definition */
 #define SPI1_SCK_PORT                    (PortA)

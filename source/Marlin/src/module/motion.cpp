@@ -51,12 +51,6 @@
   #include "../feature/bltouch.h"
 #endif
 
-#if HAS_STATUS_MESSAGE
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../lcd/marlinui.h"
-#endif
-#endif
-
 #if HAS_FILAMENT_SENSOR
   #include "../feature/runout.h"
 #endif
@@ -1969,7 +1963,9 @@ void set_axis_is_at_home(const AxisEnum axis) {
 
   TERN_(I2C_POSITION_ENCODERS, I2CPEM.homed(axis));
 
-  TERN_(BABYSTEP_DISPLAY_TOTAL, babystep.reset_total(axis));
+  #if ENABLED(BABYSTEP_DISPLAY_TOTAL)
+    babystep.reset_total(axis);
+  #endif  
 
   #if HAS_POSITION_SHIFT
     position_shift[axis] = 0;

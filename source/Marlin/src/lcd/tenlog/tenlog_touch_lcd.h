@@ -178,6 +178,7 @@ extern int8_t tl_E2_FAN_START_TEMP;
 extern int8_t tl_E1_FAN_START_TEMP;
 extern int8_t tl_ECO_MODE;
 extern int8_t tl_THEME_ID;
+extern int8_t tl_Light;
 
 extern int dwnMessageID;
 extern long lLEDTimeoutCount;

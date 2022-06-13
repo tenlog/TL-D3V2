@@ -501,6 +501,7 @@ typedef struct SettingsDataStruct {
     uint8_t ui_tlSleep;
     uint8_t ui_tlECO;
     uint8_t ui_tlTheme;
+    uint8_t ui_tlLight;
     uint8_t ui_tlStartTemp1;
     uint8_t ui_tlStartTemp2;
   #endif
@@ -508,9 +509,9 @@ typedef struct SettingsDataStruct {
   #if ENABLED(HAS_WIFI)
     uint8_t w_wifi_mode;
     uint16_t w_http_port;
-    char w_wifi_ssid[WIFI_MSG_LENGTH];
-    char w_wifi_pswd[WIFI_MSG_LENGTH];
-    char w_wifi_acce_code[WIFI_MSG_LENGTH];
+    char w_wifi_ssid[20];
+    char w_wifi_pswd[20];
+    char w_wifi_acce_code[20];
   #endif
 
 } SettingsData;
@@ -1490,6 +1491,7 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(tl_Sleep);
       EEPROM_WRITE(tl_ECO_MODE);
       EEPROM_WRITE(tl_THEME_ID);
+      EEPROM_WRITE(tl_Light);
       EEPROM_WRITE(tl_E1_FAN_START_TEMP);
       EEPROM_WRITE(tl_E2_FAN_START_TEMP);
     #endif
@@ -2445,6 +2447,11 @@ void MarlinSettings::postprocess() {
         EEPROM_READ(ui_tlTheme);
         if(ui_tlTheme > 2 || ui_tlTheme < 0) ui_tlTheme = 0;
         tl_THEME_ID = ui_tlTheme;
+
+        uint8_t ui_tlLight;
+        EEPROM_READ(ui_tlLight);
+        if(ui_tlLight != 1) ui_tlLight = 0;
+        tl_Light = ui_tlLight;
 
         uint8_t ui_tlStartTemp1;
         EEPROM_READ(ui_tlStartTemp1);
@@ -4064,6 +4071,7 @@ void MarlinSettings::reset() {
       TLDEBUG_PRINTLNPAIR("TL UI Sleep:", tl_Sleep);
       TLDEBUG_PRINTLNPAIR("TL ECO Mode:", tl_ECO_MODE);
       TLDEBUG_PRINTLNPAIR("TL Theme ID:", tl_THEME_ID);
+      TLDEBUG_PRINTLNPAIR("TL Light:", tl_Light);
       TLDEBUG_PRINTLNPAIR("TL E1 Fan Temp:", tl_E1_FAN_START_TEMP);
       TLDEBUG_PRINTLNPAIR("TL E2 Fan Temp:", tl_E2_FAN_START_TEMP);
     #endif

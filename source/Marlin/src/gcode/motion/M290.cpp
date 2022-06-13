@@ -54,6 +54,8 @@
 
 #endif
 
+
+
 /**
  * M290: Babystepping
  *
@@ -80,9 +82,28 @@ void GcodeSuite::M290() {
   #else
     if (parser.seenval('Z') || parser.seenval('S')) {
       const float offs = constrain(parser.value_axis_units(Z_AXIS), -2, 2);
+      
+      /*
+      char cmd[16];
+      sprintf_P(cmd, PSTR("Babysetp Z=\"%f\""), offs);
+      TLDEBUG_PRINTLN(cmd);
+      */
+
       babystep.add_mm(Z_AXIS, offs);
       #if ENABLED(BABYSTEP_ZPROBE_OFFSET)
         if (!parser.seen('P') || parser.value_bool()) mod_probe_offset(offs);
+      #endif
+
+      #if ENABLED(TENLOG_TOUCH_LCD)
+        char cmd[32];
+        hotend_offset[0].z += offs;
+        hotend_offset[1].z += offs;
+        int16_t zoffset = hotend_offset[1].z * 1000;
+        sprintf_P(cmd, PSTR("setting.xZOffset.val=%d"), zoffset);
+        TLSTJC_println(cmd);
+        sprintf_P(cmd, PSTR("babystep.xBaby.val=%d"), zoffset);
+        TLSTJC_println(cmd);
+        EXECUTE_GCODE(PSTR("M500"));
       #endif
     }
   #endif
