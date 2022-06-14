@@ -30,10 +30,6 @@
 #include "../sd/cardreader.h"
 #include "temperature.h"
 
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../lcd/marlinui.h"
-#endif
-
 #if ENABLED(ENDSTOP_INTERRUPTS_FEATURE)
   #include HAL_PATH(../HAL, endstop_interrupts.h)
 #endif

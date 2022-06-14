@@ -29,9 +29,6 @@
 #include "../../../module/motion.h"
 #include "../../../module/temperature.h"
 #include "../../../feature/pause.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../../../lcd/marlinui.h"
-#endif
 
 #if HAS_MULTI_EXTRUDER
   #include "../../../module/tool_change.h"

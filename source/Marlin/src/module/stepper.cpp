@@ -92,9 +92,6 @@ Stepper stepper; // Singleton
 #include "planner.h"
 #include "motion.h"
 
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../lcd/marlinui.h"
-#endif
 #include "../gcode/queue.h"
 #include "../sd/cardreader.h"
 #include "../MarlinCore.h"

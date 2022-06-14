@@ -60,6 +60,7 @@ int8_t tl_E1_FAN_START_TEMP = 80;
 int8_t tl_ECO_MODE = 0;
 int8_t tl_THEME_ID = 0;
 int8_t tl_Light = 0;
+float tl_Z_HOME_POS = Z_HOME_POS;
 
 int dwnMessageID = -1;
 long lLEDTimeoutCount = 0;
@@ -328,6 +329,7 @@ void tlResetEEPROM(){
     tl_ECO_MODE = 0;
     tl_THEME_ID = 0;
     tl_Light = 0;
+    tl_Z_HOME_POS = Z_HOME_POS;
 }
 
 void TLVersion(){
@@ -398,7 +400,7 @@ void tlInitSetting(){
 
         long lOffsetX = hotend_offset[1].x * 100;
         long lOffsetY = hotend_offset[1].y * 100 + 500;
-        long lOffsetZ = hotend_offset[1].z * 1000;
+        long lOffsetZ = tl_Z_HOME_POS * 1000;
 
         sprintf_P(cmd, PSTR("setting.xX2.val=%d"), lOffsetX);
         TLSTJC_println(cmd);
@@ -700,16 +702,23 @@ void TLAbortPrinting(){
     wait_for_heatup = false;
     TERN_(POWER_LOSS_RECOVERY_TL, settings.plr_reset());
 
-    #ifdef EVENT_GCODE_SD_ABORT
-    
-    queue.inject_P(PSTR(EVENT_GCODE_SD_ABORT));
-    queue.enqueue_one_now(PSTR("G92 Y0"));
-    queue.enqueue_one_now(PSTR("M107"));
-    queue.enqueue_one_now(PSTR("M84"));
+    EXECUTE_GCODE("G28 XY");
+    //queue.inject_P(PSTR(EVENT_GCODE_SD_ABORT));
+    disable_all_steppers();
+    thermalManager.set_fan_speed(0, 0);
+    thermalManager.set_fan_speed(1, 0);
+    //queue.enqueue_one_now(PSTR("M107"));
     TLPrintingStatus = 0;
-    #endif
+
     if(tl_TouchScreenType == 0)
         DWN_Page(DWN_P_MAIN);
+
+    if(dual_x_carriage_mode == DXC_DUPLICATION_MODE){
+        for(int i=0; i<4; i++){
+            delay(100);
+        }
+        kill("ND ");
+    }
 }
 
 void TLFilamentRunout(){
@@ -907,6 +916,7 @@ void TLSDPrintFinished(){
     }else if(tl_TouchScreenType == 0){
 
     }
+    if(dual_x_carriage_mode == DXC_DUPLICATION_MODE) kill("ND ");
 }
 
 void load_filament(int LoadUnload, int TValue)

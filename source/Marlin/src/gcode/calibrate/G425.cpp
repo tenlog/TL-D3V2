@@ -30,9 +30,6 @@
   #include "../../feature/backlash.h"
 #endif
 
-#if DISABLED(TENLOG_TOUCH_LCD)
-#include "../../lcd/marlinui.h"
-#endif
 #include "../../module/motion.h"
 #include "../../module/planner.h"
 #include "../../module/tool_change.h"

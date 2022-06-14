@@ -28,9 +28,6 @@
 #include "../../../feature/pause.h"
 #include "../../../module/motion.h"
 #include "../../../module/printcounter.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../../../lcd/marlinui.h"
-#endif
 
 #if HAS_MULTI_EXTRUDER
   #include "../../../module/tool_change.h"

@@ -29,9 +29,6 @@ GCodeQueue queue;
 
 #include "gcode.h"
 
-#if DISABLED(TENLOG_TOUCH_LCD)
-#include "../lcd/marlinui.h"
-#endif
 #include "../sd/cardreader.h"
 #include "../module/motion.h"
 #include "../module/planner.h"

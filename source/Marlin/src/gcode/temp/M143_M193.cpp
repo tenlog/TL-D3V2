@@ -35,9 +35,6 @@ extern Cooler cooler;
 
 #include "../gcode.h"
 #include "../../module/temperature.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../../lcd/marlinui.h"
-#endif
 
 /**
  * M143: Set cooler temperature

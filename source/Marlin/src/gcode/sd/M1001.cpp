@@ -35,12 +35,6 @@
   #include "../queue.h"
 #endif
 
-#if EITHER(LCD_SET_PROGRESS_MANUALLY, SD_REPRINT_LAST_SELECTED_FILE)
-  #if DISABLED(TENLOG_TOUCH_LCD)
-    #include "../../lcd/marlinui.h"
-  #endif
-#endif
-
 #if ENABLED(POWER_LOSS_RECOVERY)
   #include "../../feature/powerloss.h"
 #endif

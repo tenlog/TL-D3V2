@@ -24,9 +24,6 @@
 #include "../../core/serial.h"
 #include "../../module/printcounter.h"
 #include "../../libs/duration_t.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../../lcd/marlinui.h"
-#endif
 
 /**
  * M31: Get the time since the start of SD Print (or last M109)

@@ -56,12 +56,6 @@
   #include "../gcode/gcode.h"
 #endif
 
-#if ENABLED(TOOL_SENSOR)
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../lcd/marlinui.h"
-#endif
-#endif
-
 #if ENABLED(DUAL_X_CARRIAGE)
   #include "stepper.h"
 #endif

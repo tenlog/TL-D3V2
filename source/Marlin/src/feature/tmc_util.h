@@ -22,9 +22,6 @@
 #pragma once
 
 #include "../inc/MarlinConfig.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-#include "../lcd/marlinui.h"
-#endif
 
 #if HAS_TRINAMIC_CONFIG
 

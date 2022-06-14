@@ -45,8 +45,10 @@ uint16_t adc_read(adc_dev *dev, uint8_t channel) {
         HAL_watchdog_refresh();
 	}
 	while(1);
+
 	dev->HAL_AdcDmaIrqFlag &= ~ADC1_SA_DMA_IRQ_BIT;
-	//if(dev->HAL_adc_results[channel]==0)return adc_results;
+	if(dev->HAL_adc_results[channel] == 0) return 15;
+
 	adc_results = (dev->HAL_adc_results[channel]);
 	return adc_results;
 }

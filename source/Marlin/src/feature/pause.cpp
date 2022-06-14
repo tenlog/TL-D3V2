@@ -55,10 +55,6 @@
   #include "../lcd/extui/ui_api.h"
 #endif
 
-#if DISABLED(TENLOG_TOUCH_LCD)
-#include "../lcd/marlinui.h"
-#endif
-
 #if HAS_BUZZER
   #include "../libs/buzzer.h"
 #endif

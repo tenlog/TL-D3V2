@@ -22,9 +22,6 @@
 
 #include "../gcode.h"
 #include "../../module/stepper.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-#include "../../lcd/marlinui.h"
-#endif
 
 /**
  * G4: Dwell S<seconds> or P<milliseconds>

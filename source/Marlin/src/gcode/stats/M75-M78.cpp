@@ -22,11 +22,6 @@
 
 #include "../gcode.h"
 #include "../../module/printcounter.h"
-
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../../lcd/marlinui.h"
-#endif
-
 #include "../../MarlinCore.h" // for startOrResumeJob
 
 /**

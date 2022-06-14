@@ -29,9 +29,6 @@
 #include "../../module/motion.h"
 #include "../../module/stepper.h"
 #include "../../module/endstops.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-#include "../../lcd/marlinui.h"
-#endif
 
 #if HAS_BED_PROBE
   #include "../../module/probe.h"

@@ -27,9 +27,6 @@
 #include "../../gcode.h"
 #include "../../../feature/powerloss.h"
 #include "../../../module/motion.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../../../lcd/marlinui.h"
-#endif
 
 /**
  * M413: Enable / Disable power-loss recovery

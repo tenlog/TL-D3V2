@@ -32,9 +32,6 @@
 
 #include "../gcode.h"
 #include "../../module/temperature.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../../lcd/marlinui.h"
-#endif
 
 /**
  * M140: Set bed temperature

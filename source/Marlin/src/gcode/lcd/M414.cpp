@@ -26,9 +26,6 @@
 
 #include "../gcode.h"
 #include "../../MarlinCore.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-#include "../../lcd/marlinui.h"
-#endif
 
 /**
  * M414: Set the language for the UI

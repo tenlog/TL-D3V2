@@ -36,9 +36,6 @@
 #include "../../module/temperature.h"
 #include "../../module/probe.h"
 #include "../../feature/probe_temp_comp.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-#include "../../lcd/marlinui.h"
-#endif
 
 /**
  * G76: calibrate probe and/or bed temperature offsets

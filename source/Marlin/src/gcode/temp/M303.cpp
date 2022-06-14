@@ -25,9 +25,6 @@
 #if HAS_PID_HEATING
 
 #include "../gcode.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../../lcd/marlinui.h"
-#endif
 #include "../../module/temperature.h"
 
 #if ENABLED(EXTENSIBLE_UI)

@@ -22,10 +22,6 @@
 
 #include "../gcode.h"
 
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../../lcd/marlinui.h"
-#endif
-
 #include "../../MarlinCore.h"   // for marlin_state
 #include "../queue.h"           // for flush_and_request_resend
 

@@ -50,10 +50,8 @@
 #include "stepper.h"
 #include "temperature.h"
 
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../lcd/marlinui.h"
-  #define DEBUG_OUT 1
-#else
+//  #define DEBUG_OUT 1
+#if ENABLED(TENLOG_TOUCH_LCD)
   #include "../lcd/tenlog/tenlog_touch_lcd.h"
 #endif
 
@@ -502,6 +500,7 @@ typedef struct SettingsDataStruct {
     uint8_t ui_tlECO;
     uint8_t ui_tlTheme;
     uint8_t ui_tlLight;
+    float ui_tlZHP;
     uint8_t ui_tlStartTemp1;
     uint8_t ui_tlStartTemp2;
   #endif
@@ -1492,6 +1491,7 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(tl_ECO_MODE);
       EEPROM_WRITE(tl_THEME_ID);
       EEPROM_WRITE(tl_Light);
+      EEPROM_WRITE(tl_Z_HOME_POS);
       EEPROM_WRITE(tl_E1_FAN_START_TEMP);
       EEPROM_WRITE(tl_E2_FAN_START_TEMP);
     #endif
@@ -2452,6 +2452,11 @@ void MarlinSettings::postprocess() {
         EEPROM_READ(ui_tlLight);
         if(ui_tlLight != 1) ui_tlLight = 0;
         tl_Light = ui_tlLight;
+
+        float ui_tlZHP;
+        EEPROM_READ(ui_tlZHP);
+        if(ui_tlZHP < -2 || ui_tlZHP > 2) ui_tlZHP = 0;
+        tl_Z_HOME_POS = ui_tlZHP;
 
         uint8_t ui_tlStartTemp1;
         EEPROM_READ(ui_tlStartTemp1);
@@ -4072,6 +4077,7 @@ void MarlinSettings::reset() {
       TLDEBUG_PRINTLNPAIR("TL ECO Mode:", tl_ECO_MODE);
       TLDEBUG_PRINTLNPAIR("TL Theme ID:", tl_THEME_ID);
       TLDEBUG_PRINTLNPAIR("TL Light:", tl_Light);
+      TLDEBUG_PRINTLNPAIR("TL Z Home Pos:", tl_Z_HOME_POS);
       TLDEBUG_PRINTLNPAIR("TL E1 Fan Temp:", tl_E1_FAN_START_TEMP);
       TLDEBUG_PRINTLNPAIR("TL E2 Fan Temp:", tl_E2_FAN_START_TEMP);
     #endif

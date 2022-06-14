@@ -118,9 +118,6 @@
 #elif HAS_BUZZER
 
   // Buzz indirectly via the MarlinUI instance
-  #if DISABLED(TENLOG_TOUCH_LCD)
-    #include "../lcd/marlinui.h"
-  #endif
   #define BUZZ(d,f) ui.buzz(d,f)
 
 #else

@@ -36,10 +36,6 @@
 #include "../module/motion.h"
 #include "../module/planner.h"
 
-#if DISABLED(TENLOG_TOUCH_LCD)
-#include "../lcd/marlinui.h"
-#endif
-
 extern HotendIdleProtection hotend_idle;
 
 millis_t HotendIdleProtection::next_protect_ms = 0;

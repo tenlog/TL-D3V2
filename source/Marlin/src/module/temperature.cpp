@@ -29,9 +29,7 @@
 
 #include "../MarlinCore.h"
 #include "../HAL/shared/Delay.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../lcd/marlinui.h"
-#else
+#if ENABLED(TENLOG_TOUCH_LCD)
   #include "../lcd/tenlog/tenlog_touch_lcd.h"
 #endif
 
@@ -50,10 +48,6 @@
 
 #if ENABLED(EMERGENCY_PARSER)
   #include "motion.h"
-#endif
-
-#if ENABLED(DWIN_CREALITY_LCD)
-  #include "../lcd/dwin/e3v2/dwin.h"
 #endif
 
 #if ENABLED(EXTENSIBLE_UI)
@@ -688,7 +682,6 @@ volatile bool Temperature::raw_temps_ready = false;
         #define MAX_CYCLE_TIME_PID_AUTOTUNE 20L
       #endif
       if ((ms - _MIN(t1, t2)) > (MAX_CYCLE_TIME_PID_AUTOTUNE * 60L * 1000L)) {
-        TERN_(DWIN_CREALITY_LCD, DWIN_Popup_Temperature(0));
         TERN_(EXTENSIBLE_UI, ExtUI::onPidTuning(ExtUI::result_t::PID_TUNING_TIMEOUT));
         SERIAL_ECHOLNPGM(STR_PID_TIMEOUT);
         break;
@@ -748,9 +741,6 @@ volatile bool Temperature::raw_temps_ready = false;
 
       // Run HAL idle tasks
       TERN_(HAL_IDLETASK, HAL_idletask());
-
-      // Run UI update
-      //TERN(DWIN_CREALITY_LCD, DWIN_Update(), ui.update());    //by zyf
     }
     wait_for_heatup = false;
 
@@ -945,11 +935,11 @@ inline void loud_kill(PGM_P const lcd_msg, const heater_id_t heater_id) {
 
 void Temperature::_temp_error(const heater_id_t heater_id, PGM_P const serial_msg, PGM_P const lcd_msg) {
   static uint8_t killed = 0;
-  //TLDEBUG_PRINTLN("TL MAX TEMP Error!");
+  TLDEBUG_PRINTLN("TL MAX TEMP Error!");
   if (IsRunning() && TERN1(BOGUS_TEMPERATURE_GRACE_PERIOD, killed == 2)) {
-    SERIAL_ERROR_START();watchdog_refresh();
-    SERIAL_ECHOPGM_P(serial_msg);watchdog_refresh();
-    SERIAL_ECHOPGM(STR_STOPPED_HEATER);watchdog_refresh();
+    SERIAL_ERROR_START();
+    SERIAL_ECHOPGM_P(serial_msg);
+    SERIAL_ECHOPGM(STR_STOPPED_HEATER);
     if (heater_id >= 0)
       SERIAL_ECHO(heater_id);
     else if (TERN0(HAS_HEATED_CHAMBER, heater_id == H_CHAMBER))
@@ -992,7 +982,6 @@ void Temperature::_temp_error(const heater_id_t heater_id, PGM_P const serial_ms
 }
 
 void Temperature::max_temp_error(const heater_id_t heater_id) {
-  //TLDEBUG_PRINTLN("TL MAX TEMP Error!");
   _temp_error(heater_id, PSTR(STR_T_MAXTEMP), GET_TEXT(MSG_ERR_MAXTEMP));
 }
 
@@ -1279,7 +1268,9 @@ void Temperature::manage_heater() {
 
     HOTEND_LOOP() {
       #if ENABLED(THERMAL_PROTECTION_HOTENDS)
-        if (degHotend(e) > temp_range[e].maxtemp) max_temp_error((heater_id_t)e);
+        if (degHotend(e) > temp_range[e].maxtemp){
+         max_temp_error((heater_id_t)e);    //by zyf
+        }
       #endif
 
       TERN_(HEATER_IDLE_HANDLER, heater_idle[e].update(ms));
@@ -1297,7 +1288,6 @@ void Temperature::manage_heater() {
           if (watch_hotend[e].check(degHotend(e)))  // Increased enough?
             start_watching_hotend(e);               // If temp reached, turn off elapsed check
           else {
-            TERN_(DWIN_CREALITY_LCD, DWIN_Popup_Temperature(0));
             _temp_error((heater_id_t)e, str_t_heating_failed, GET_TEXT(MSG_HEATING_FAILED_LCD));
           }
         }
@@ -1340,7 +1330,6 @@ void Temperature::manage_heater() {
         if (watch_bed.check(degBed()))          // Increased enough?
           start_watching_bed();                 // If temp reached, turn off elapsed check
         else {
-          TERN_(DWIN_CREALITY_LCD, DWIN_Popup_Temperature(0));
           _temp_error(H_BED, str_t_heating_failed, GET_TEXT(MSG_HEATING_FAILED_LCD));
         }
       }
@@ -1628,7 +1617,7 @@ void Temperature::manage_heater() {
       const celsius_t v01 = celsius_t(pgm_read_word(&TBL[m-1].celsius)),  \
                       v11 = celsius_t(pgm_read_word(&TBL[m-0].celsius));  \
       float Cs=v01 + (raw - v00) * float(v11 - v01) / float(v10 - v00);   \
-      if(raw<20*OVERSAMPLENR && 0){                                       \
+      if(raw<1024*OVERSAMPLENR && 0){                /* by zyf */         \
         char tx[50];                                                      \
         sprintf_P(tx, "raw:%d, v:%d, C:%0.2f", raw/OVERSAMPLENR, v00/OVERSAMPLENR, Cs);             \
         TLDEBUG_PRINTLN(tx);                                                \
@@ -1637,9 +1626,7 @@ void Temperature::manage_heater() {
     }                                                                     \
   }                                                                       \ 
 }while(0)
-/*
 
-*/
 #if HAS_USER_THERMISTORS
 
   user_thermistor_t Temperature::user_thermistor[USER_THERMISTORS]; // Initialized by settings.load()
@@ -2463,7 +2450,6 @@ void Temperature::init() {
         state = TRRunaway;
 
       case TRRunaway:
-        TERN_(DWIN_CREALITY_LCD, DWIN_Popup_Temperature(0));
         _temp_error(heater_id, str_t_thermal_runaway, GET_TEXT(MSG_THERMAL_RUNAWAY));
     }
   }
@@ -2824,7 +2810,9 @@ void Temperature::readings_ready() {
         const bool heater_on = (temp_hotend[e].target > 0
           || TERN0(PIDTEMP, temp_hotend[e].soft_pwm_amount) > 0
         );
-        if (rawtemp > temp_range[e].raw_max * tdir) max_temp_error((heater_id_t)e);
+        if (rawtemp > temp_range[e].raw_max * tdir) {
+          //max_temp_error((heater_id_t)e);        //by zyf no need here, and it will trigger a watch dog error.
+        }
         if (heater_on && rawtemp < temp_range[e].raw_min * tdir && !is_preheating(e)) {
           #ifdef MAX_CONSECUTIVE_LOW_TEMPERATURE_ERROR_ALLOWED
             if (++consecutive_low_temperature_error[e] >= MAX_CONSECUTIVE_LOW_TEMPERATURE_ERROR_ALLOWED)
@@ -3718,13 +3706,6 @@ void Temperature::isr() {
 
       if (wait_for_heatup) {
         wait_for_heatup = false;
-        #if ENABLED(DWIN_CREALITY_LCD)
-          HMI_flag.heat_flag = 0;
-          duration_t elapsed = print_job_timer.duration();  // print timer
-          dwin_heat_time = elapsed.value;
-        #else
-          //ui.reset_status();    //by zyf  
-        #endif
         TERN_(PRINTER_EVENT_LEDS, printerEventLEDs.onHeatingDone());
         TERN_(HAS_LCD_MENU, ui.CompletedMaticHate());
         return true;

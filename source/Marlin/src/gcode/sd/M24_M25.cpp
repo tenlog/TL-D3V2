@@ -27,9 +27,7 @@
 #include "../gcode.h"
 #include "../../sd/cardreader.h"
 #include "../../module/printcounter.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-#include "../../lcd/marlinui.h"
-#else
+#if ENABLED(TENLOG_TOUCH_LCD)
 #include "../../lcd/tenlog/tenlog_touch_lcd.h"
 #endif
 
@@ -121,8 +119,6 @@ void GcodeSuite::M25() {
     print_job_timer.pause();
 
     TERN_(DGUS_LCD_UI_MKS, MKS_pause_print_move());
-
-    //IF_DISABLED(DWIN_CREALITY_LCD, ui.reset_status());  //by zyf
 
     #if ENABLED(HOST_ACTION_COMMANDS)
       TERN_(HOST_PROMPT_SUPPORT, host_prompt_open(PROMPT_PAUSE_RESUME, PSTR("Pause SD"), PSTR("Resume")));

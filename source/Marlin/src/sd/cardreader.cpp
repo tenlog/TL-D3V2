@@ -29,14 +29,8 @@
 #include "cardreader.h"
 
 #include "../MarlinCore.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../lcd/marlinui.h"
-#else
+#if ENABLED(TENLOG_TOUCH_LCD)
   #include "../lcd/tenlog/tenlog_touch_lcd.h"
-#endif
-
-#if ENABLED(DWIN_CREALITY_LCD)
-  #include "../lcd/dwin/e3v2/dwin.h"
 #endif
 
 #include "../module/planner.h"        // for synchronize
@@ -681,7 +675,6 @@ void CardReader::startFileprint() {
 //
 void CardReader::endFilePrint(TERN_(SD_RESORT, const bool re_sort/*=false*/)) {
   TERN_(ADVANCED_PAUSE_FEATURE, did_pause_print = 0);
-  TERN_(DWIN_CREALITY_LCD, HMI_flag.print_finish = flag.sdprinting);
   flag.sdprinting = flag.abort_sd_printing = false;
   if (isFileOpen()) file.close();
   TERN_(SD_RESORT, if (re_sort) presort());

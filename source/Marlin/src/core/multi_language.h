@@ -91,21 +91,7 @@ typedef const char Language_Str[];
 #if NUM_LANGUAGES > 1
   #define HAS_MULTI_LANGUAGE 1
 	
- #if ENABLED(DWIN_CREALITY_LCD)
-#define GET_TEXT(MSG) ( \
-    ui.language == 0 ? GET_LANG(LCD_LANGUAGE  )::MSG : \
-    ui.language == 1 ? GET_LANG(LCD_LANGUAGE_2)::MSG : \
-    ui.language == 2 ? GET_LANG(LCD_LANGUAGE_3)::MSG : \
-    ui.language == 3 ? GET_LANG(LCD_LANGUAGE_4)::MSG : \
-    ui.language == 4 ? GET_LANG(LCD_LANGUAGE_5)::MSG : \
-    ui.language == 5 ? GET_LANG(LCD_LANGUAGE_6)::MSG : \
-    ui.language == 6 ? GET_LANG(LCD_LANGUAGE_7)::MSG : \
-    ui.language == 7 ? GET_LANG(LCD_LANGUAGE_8)::MSG : \
-    ui.language == 8 ? GET_LANG(LCD_LANGUAGE_9)::MSG : \
-                       GET_LANG(LCD_LANGUAGE_10)::MSG   )
-#else
-#define GET_TEXT(MSG)(GET_LANG(LCD_LANGUAGE_2)::MSG)
-#endif
+  #define GET_TEXT(MSG)(GET_LANG(LCD_LANGUAGE_2)::MSG)
 
   #define MAX_LANG_CHARSIZE _MAX(GET_LANG(LCD_LANGUAGE  )::CHARSIZE, \
                                  GET_LANG(LCD_LANGUAGE_2)::CHARSIZE, \

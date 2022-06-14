@@ -2538,7 +2538,7 @@
   #define HAS_TEMPERATURE 1
 #endif
 
-#if HAS_TEMPERATURE && EITHER(HAS_LCD_MENU, DWIN_CREALITY_LCD)
+#if HAS_TEMPERATURE && HAS_LCD_MENU
   #ifdef PREHEAT_6_LABEL
     #define PREHEAT_COUNT 6
   #elif defined(PREHEAT_5_LABEL)
@@ -2971,7 +2971,7 @@
 #endif
 
 // Number of VFAT entries used. Each entry has 13 UTF-16 characters
-#if EITHER(SCROLL_LONG_FILENAMES, DWIN_CREALITY_LCD)
+#if EITHER(SCROLL_LONG_FILENAMES, 0)
   #define MAX_VFAT_ENTRIES (5)
 #else
   #define MAX_VFAT_ENTRIES (2)

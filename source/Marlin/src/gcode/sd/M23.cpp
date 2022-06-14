@@ -26,9 +26,6 @@
 
 #include "../gcode.h"
 #include "../../sd/cardreader.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-#include "../../lcd/marlinui.h"
-#endif
 
 /**
  * M23: Open a file

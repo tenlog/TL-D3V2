@@ -31,9 +31,6 @@
 #include "../../module/stepper.h"
 #include "../../module/planner.h"
 #include "../../module/probe.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-#include "../../lcd/marlinui.h"
-#endif
 
 #if HAS_LEVELING
   #include "../../feature/bedlevel/bedlevel.h"

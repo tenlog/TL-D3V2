@@ -27,9 +27,7 @@
 #include "../../gcode.h"
 #include "../../parser.h"
 #include "../../../feature/pause.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../../../lcd/marlinui.h"
-#endif
+
 #include "../../../module/motion.h"
 #include "../../../module/printcounter.h"
 #include "../../../sd/cardreader.h"

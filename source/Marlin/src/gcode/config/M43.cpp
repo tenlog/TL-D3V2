@@ -46,12 +46,6 @@
   #include "../../lcd/extui/ui_api.h"
 #endif
 
-#if HAS_RESUME_CONTINUE
-  #if DISABLED(TENLOG_TOUCH_LCD)
-    #include "../../lcd/marlinui.h"
-  #endif
-#endif
-
 #ifndef GET_PIN_MAP_PIN_M43
   #define GET_PIN_MAP_PIN_M43(Q) GET_PIN_MAP_PIN(Q)
 #endif

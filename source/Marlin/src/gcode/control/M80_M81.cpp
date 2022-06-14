@@ -26,10 +26,6 @@
 #include "../../module/planner.h"       // for planner.finish_and_disable
 #include "../../module/printcounter.h"  // for print_job_timer.stop
 
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../../lcd/marlinui.h"
-#endif
-
 #include "../../inc/MarlinConfig.h"
 
 #if HAS_SUICIDE

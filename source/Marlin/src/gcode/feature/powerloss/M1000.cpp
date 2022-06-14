@@ -27,9 +27,7 @@
 #include "../../gcode.h"
 #include "../../../feature/powerloss.h"
 #include "../../../module/motion.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../../../lcd/marlinui.h"
-#endif
+
 #if ENABLED(EXTENSIBLE_UI)
   #include "../../../lcd/extui/ui_api.h"
 #endif
@@ -64,8 +62,6 @@ void GcodeSuite::M1000() {
     if (parser.seen('S')) {
       #if HAS_LCD_MENU
         ui.goto_screen(menu_job_recovery);
-      #elif ENABLED(DWIN_CREALITY_LCD)
-        recovery.dwin_flag = true;
       #elif ENABLED(EXTENSIBLE_UI)
         ExtUI::onPowerLossResume();
       #else

@@ -26,10 +26,6 @@
 #include "cancel_object.h"
 #include "../gcode/gcode.h"
 
-//#if DISABLED(TENLOG_TOUCH_LCD)
-#include "../lcd/marlinui.h"
-//#endif
-
 CancelObject cancelable;
 
 int8_t CancelObject::object_count, // = 0

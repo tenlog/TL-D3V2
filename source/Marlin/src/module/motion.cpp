@@ -87,7 +87,7 @@ xyze_pos_t current_position = { X_HOME_POS, Y_HOME_POS,
   #ifdef Z_IDLE_HEIGHT
     Z_IDLE_HEIGHT
   #else
-    Z_HOME_POS
+    tl_Z_HOME_POS
   #endif
 };
 
@@ -1165,32 +1165,6 @@ void prepare_line_to_destination() {
     }
   #endif // PREVENT_COLD_EXTRUSION || PREVENT_LENGTHY_EXTRUDE
 
-  /*
-  if(destination.z > current_position.z && current_position.z < -66.00 && TLPrintingStatus == 1) {  // by zyf
-    TLDEBUG_PRINTLNPAIR("X C Pos ", current_position.x);
-    TLDEBUG_PRINTLNPAIR("X D Pos ", destination.x);
-    TLDEBUG_PRINTLNPAIR("Y C Pos ", current_position.y);
-    TLDEBUG_PRINTLNPAIR("Y D Pos ", destination.y);
-    TLDEBUG_PRINTLNPAIR("Z C Pos ", current_position.z);
-    TLDEBUG_PRINTLNPAIR("Z D Pos ", destination.z);
-
-    current_position.z = destination.z - 0.2;
-    if(active_extruder == 1){
-       current_position.x = hotend_offset[1].x;
-      //distination.y = 0;    
-    }
-    planner.set_position_mm(destination);
-
-    TLDEBUG_PRINTLNPAIR("AX C Pos ", current_position.x);
-    TLDEBUG_PRINTLNPAIR("AX D Pos ", destination.x);
-    TLDEBUG_PRINTLNPAIR("AY C Pos ", current_position.y);
-    TLDEBUG_PRINTLNPAIR("AY D Pos ", destination.y);
-    TLDEBUG_PRINTLNPAIR("AZ C Pos ", current_position.z);
-    TLDEBUG_PRINTLNPAIR("AZ D Pos ", destination.z);
-    //return;  
-  }
-  */
-
   if (TERN0(DUAL_X_CARRIAGE, dual_x_carriage_unpark())) return;
 
   if (
@@ -1939,7 +1913,8 @@ void set_axis_is_at_home(const AxisEnum axis) {
   #elif ENABLED(DELTA)
     current_position[axis] = (axis == Z_AXIS) ? DIFF_TERN(HAS_BED_PROBE, delta_height, probe.offset.z) : base_home_pos(axis);
   #else
-    current_position[axis] = base_home_pos(axis);
+    if(axis==Z_AXIS)current_position[axis] = tl_Z_HOME_POS;
+    else current_position[axis] = base_home_pos(axis);//by zyf
   #endif
 
   /**

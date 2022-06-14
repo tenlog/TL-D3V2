@@ -20,9 +20,6 @@
  *
  */
 #include "../inc/MarlinConfig.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-#include "../lcd/marlinui.h"
-#endif
 
 #if HAS_DRIVER_SAFE_POWER_PROTECT
 

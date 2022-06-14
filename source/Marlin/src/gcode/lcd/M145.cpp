@@ -25,9 +25,6 @@
 #if PREHEAT_COUNT
 
 #include "../gcode.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../../lcd/marlinui.h"
-#endif
 
 #if HAS_HOTEND
   #include "../../module/temperature.h"

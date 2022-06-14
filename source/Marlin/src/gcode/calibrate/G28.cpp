@@ -45,17 +45,8 @@
   #include "../../feature/bltouch.h"
 #endif
 
-#if DISABLED(TENLOG_TOUCH_LCD)
-#include "../../lcd/marlinui.h"
-#endif
-
-
 #ifdef PRINT_FROM_Z_HEIGHT
 #include "../../sd/cardreader.h"
-#endif
-
-#if ENABLED(DWIN_CREALITY_LCD)
-  #include "../../lcd/dwin/e3v2/dwin.h"
 #endif
 
 #if ENABLED(EXTENSIBLE_UI)
@@ -245,7 +236,6 @@ void GcodeSuite::G28() {
     return;
   }
 
-  TERN_(DWIN_CREALITY_LCD, DWIN_StartHoming());
   TERN_(EXTENSIBLE_UI, ExtUI::onHomingStart());
 
   planner.synchronize();          // Wait for planner moves to finish!
@@ -495,7 +485,6 @@ void GcodeSuite::G28() {
 
   //ui.refresh(); //by zyf
 
-  TERN_(DWIN_CREALITY_LCD, DWIN_CompletedHoming());
   TERN_(EXTENSIBLE_UI, ExtUI::onHomingComplete());
 
   report_current_position();

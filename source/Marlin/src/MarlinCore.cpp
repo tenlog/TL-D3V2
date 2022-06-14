@@ -86,12 +86,6 @@
   #include <lvgl.h>
 #endif
 
-#if ENABLED(DWIN_CREALITY_LCD)
-  #include "lcd/dwin/e3v2/dwin.h"
-  #include "lcd/dwin/e3v2/rotary_encoder.h"
-#endif
-
-
 #if ENABLED(EXTENSIBLE_UI)
   #include "lcd/extui/ui_api.h"
 #endif
@@ -857,7 +851,8 @@ void kill(PGM_P const lcd_error/*=nullptr*/, PGM_P const lcd_component/*=nullptr
       //settings.killFlagSet(1);
       char ErrorMessage[128];
       sprintf_P(ErrorMessage, PSTR("%s %s"), lcd_error, lcd_component);
-      //TJCMessage(1, 1, 24, "M1050 S0", "M1050 S0", ErrorMessage);
+      if(ErrorMessage[0]!='N' && ErrorMessage[1]!='D') //Do not display some special message
+        TJCMessage(1, 1, 24, "", "", ErrorMessage);
     }
   #endif
   thermalManager.disable_all_heaters();
@@ -1568,10 +1563,6 @@ void setup() {
   #endif
 
 
-  #if HAS_SERVICE_INTERVALS && DISABLED(DWIN_CREALITY_LCD)
-    ui.reset_status(true);  // Show service messages or keep current status
-  #endif
-
   #if ENABLED(MAX7219_DEBUG)
     SETUP_RUN(max7219.init());
   #endif
@@ -1631,10 +1622,9 @@ void setup() {
       get_command(1);
       if(tl_command[0]==0x66 && tl_command[2]==0xFF && tl_command[3]==0xFF && tl_command[4]==0xFF){
         lastPageID = tl_command[1];
-        TLDEBUG_PRINTLNPAIR("Page=", lastPageID);
+        //TLDEBUG_PRINTLNPAIR("Page=", lastPageID);
       }
     }
-
     if(lastPageID != 8)
       TlPageMain();
   }

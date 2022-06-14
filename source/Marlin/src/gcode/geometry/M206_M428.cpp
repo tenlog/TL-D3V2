@@ -26,9 +26,7 @@
 
 #include "../gcode.h"
 #include "../../module/motion.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../../lcd/marlinui.h"
-#endif
+
 #include "../../libs/buzzer.h"
 #include "../../MarlinCore.h"
 

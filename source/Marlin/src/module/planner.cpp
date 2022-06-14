@@ -67,9 +67,7 @@
 #include "stepper.h"
 #include "motion.h"
 #include "temperature.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../lcd/marlinui.h"
-#else
+#if ENABLED(TENLOG_TOUCH_LCD)
   #include "../sd/cardreader.h"
   #include "../lcd/tenlog/tenlog_touch_lcd.h"
 #endif

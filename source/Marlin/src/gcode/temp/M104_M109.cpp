@@ -35,10 +35,6 @@
 #include "../../module/motion.h"
 #include "../../module/planner.h"
 
-#if DISABLED(TENLOG_TOUCH_LCD)
-  #include "../../lcd/marlinui.h"
-#endif
-
 #include "../../MarlinCore.h" // for startOrResumeJob, etc.
 
 #if ENABLED(PRINTJOB_TIMER_AUTOSTART)

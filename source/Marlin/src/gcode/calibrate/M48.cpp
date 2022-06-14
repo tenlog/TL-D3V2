@@ -27,9 +27,6 @@
 #include "../gcode.h"
 #include "../../module/motion.h"
 #include "../../module/probe.h"
-#if DISABLED(TENLOG_TOUCH_LCD)
-#include "../../lcd/marlinui.h"
-#endif
 
 #include "../../feature/bedlevel/bedlevel.h"
 
