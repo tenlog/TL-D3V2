@@ -353,10 +353,13 @@ void CardReader::tl_ls() {
     }
 
     int pageNum = fileNum / 6 + 1;
-    if(tl_print_page_id > pageNum) tl_print_page_id = 0;
+    if(tl_print_page_id > pageNum - 1) tl_print_page_id = pageNum;
 
     if(tl_TouchScreenType == 1){
       NULLZERO(cmd);
+      //tl_print_page_id = 0;
+      //TLSTJC_println("select_file.vPageID.val=0");
+      //delay(20);
       sprintf_P(cmd, PSTR("select_file.vPageID.val=%d"), tl_print_page_id);
       TLSTJC_println(cmd);
       //TLDEBUG_PRINTLN(cmd);
@@ -580,49 +583,20 @@ void CardReader::manage_media() {
   uint8_t stat = uint8_t(IS_SD_INSERTED());
   if (stat == prev_stat) return;
 
-  DEBUG_ECHOLNPAIR("SD: Status changed from ", prev_stat, " to ", stat);
+  //TLDEBUG_PRINTLNPAIR("SD: Status changed from ", prev_stat, " to ", stat);
 
   flag.workDirIsRoot = true;          // Return to root on mount/release
 
-  #if DISABLED(TENLOG_TOUCH_LCD)
-  if (ui.detected()) {
-
-    uint8_t old_stat = prev_stat;
-    prev_stat = stat;                 // Change now to prevent re-entry
-
-    if (stat) {                       // Media Inserted
-      safe_delay(500);                // Some boards need a delay to get settled
-      if (TERN1(SD_IGNORE_AT_STARTUP, old_stat != 2))
-        mount();                      // Try to mount the media
-      #if MB(FYSETC_CHEETAH, FYSETC_CHEETAH_V12, FYSETC_AIO_II)
-        reset_stepper_drivers();      // Workaround for Cheetah bug
-      #endif
-      if (!isMounted()) stat = 0;     // Not mounted?
-    }
-    else {
-      #if PIN_EXISTS(SD_DETECT)
-        release();                    // Card is released
-      #endif
-    }
-
-    ui.media_changed(old_stat, stat); // Update the UI
-
-    if (stat) {
-      TERN_(SDCARD_EEPROM_EMULATION, settings.first_load());
-      if (old_stat == 2) {            // First mount?
-        DEBUG_ECHOLNPGM("First mount.");
-        #if ENABLED(POWER_LOSS_RECOVERY)
-          recovery.check();           // Check for PLR file. (If not there then call autofile_begin)
-        #elif DISABLED(NO_SD_AUTOSTART)
-          autofile_begin();           // Look for auto0.g on the next loop
-        #endif
+  #if ENABLED(TENLOG_TOUCH_LCD)
+    if(tl_TouchScreenType == 1){
+      if(prev_stat<2){
+        if(TLTJC_GetLastPage()==5){
+          TLSTJC_println("page select_file");
+        }
       }
     }
-  }
-  else
-    DEBUG_ECHOLNPGM("SD: No UI Detected.");  
-
   #endif //TENLOG_TOUCH_LCD
+  prev_stat = stat;                 // Change now to prevent re-entry
 }
 
 /**

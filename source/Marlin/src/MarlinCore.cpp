@@ -1612,22 +1612,15 @@ void setup() {
   #if ENABLED(POWER_LOSS_RECOVERY_TL)
   uint32_t isplr = settings.plr_is_pl();
   if(isplr > 2048){
-    TLDEBUG_PRINTLNPAIR("Power loss found! Point=", isplr);
+    //TLDEBUG_PRINTLNPAIR("Power loss found! Point=", isplr);
     TlIsPLR();
   }else{
-    uint8_t lastPageID = 0;
     if(tl_TouchScreenType == 1){
-      TLSTJC_println("sendme");
-      delay(200);
-      get_command(1);
-      if(tl_command[0]==0x66 && tl_command[2]==0xFF && tl_command[3]==0xFF && tl_command[4]==0xFF){
-        lastPageID = tl_command[1];
-        //TLDEBUG_PRINTLNPAIR("Page=", lastPageID);
-      }
+      uint8_t lastPageID = TLTJC_GetLastPage();
+      if(lastPageID != 8)
+        TlPageMain();
     }
-    if(lastPageID != 8)
-      TlPageMain();
-  }
+    }
   #endif
 
 }

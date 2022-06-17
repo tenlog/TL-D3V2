@@ -528,10 +528,6 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
       #if HAS_FAN
         case 106: M106(); break;                                  // M106: Fan On
         case 107: M107(); break;                                  // M107: Fan Off
-        #if ENABLED(TL_LASER)
-        case 1006: M106(1); break;                                  // M1006: Laser On
-        case 1007: M107(1); break;                                  // M1007: Laser Off
-        #endif
       #endif
 
       case 110: M110(); break;                                    // M110: Set Current Line Number

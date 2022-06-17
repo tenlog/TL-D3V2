@@ -39,11 +39,7 @@ int8_t wifiFirstSend = 0;
 
 char wifi_tjc_cmd[64]="";
 
-char printer_status_0[WIFI_MSG_LENGTH]="";
-char printer_status_1[WIFI_MSG_LENGTH]="";
-char printer_status_2[WIFI_MSG_LENGTH]="";
-char printer_status_3[WIFI_MSG_LENGTH]="";
-char printer_status_4[WIFI_MSG_LENGTH]="";
+uint8_t printer_status_0[WIFI_MSG_LENGTH]={0};
 
 uint8_t spi_tx[BUFFER_SIZE]="";
 uint8_t spi_rx[BUFFER_SIZE]="";
@@ -218,6 +214,11 @@ void SPI_RX_Handler(){
     }else if(control_code == 0x01){
         SPI_ConnectWIFI();
         
+        sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tIP.txt=\"Connecting...\""), ret);
+        TLSTJC_println(wifi_tjc_cmd);
+        delay(10);
+        sprintf_P(wifi_tjc_cmd, PSTR("setting.tIP.txt=\"Connecting...\""), ret);
+        TLSTJC_println(wifi_tjc_cmd);
         /*
         char cmd[BUFFER_SIZE];
         for(int i=0; i<BUFFER_SIZE; i++){
@@ -263,12 +264,28 @@ void WIFI_TX_Handler(int8_t control_code){
         case 0x07:
         memcpy_P(send, printer_status_0, WIFI_MSG_LENGTH);
         break;
-        case 0x08:
-        memcpy_P(send, printer_status_1, WIFI_MSG_LENGTH);
+        
+        case 0x08:      //SN no..
+        {
+            for(uint8_t i=0; i<32; i++){
+                send[i] = tl_hc_sn[i];
+            }
+
+            for(uint8_t i=0; i<18; i++){
+                send[i+35]=tl_tjc_sn[i];
+            }
+            /*
+            for(int i=0; i<WIFI_MSG_LENGTH; i++){
+                char acmd[10];
+                sprintf_P(acmd, "%d", send[i]);
+                TLDEBUG_PRINT(acmd);
+            }
+            TLDEBUG_PRINTLN(" tl_tjc_sn!");
+            TLDEBUG_PRINTLN(tl_tjc_sn);
+            */
+        }
         break;
         /*
-        case 0x09:
-        memcpy_P(send, printer_status_2, WIFI_MSG_LENGTH);
         break;
         case 0x0A:
         memcpy_P(send, printer_status_3, WIFI_MSG_LENGTH);
@@ -298,12 +315,7 @@ void WIFI_TX_Handler(int8_t control_code){
         //case 0x0A:
         //case 0x0B:
         for(int8_t i=0; i<WIFI_MSG_LENGTH; i++){
-            if(send[i]=='\0' || send[i]==0){
-                spi_tx[i+3]='\0';
-                break;
-            }else{
-                spi_tx[i+3]=send[i];
-            }
+            spi_tx[i+3]=send[i];
         }
         break;
     }

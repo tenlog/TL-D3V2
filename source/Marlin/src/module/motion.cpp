@@ -1084,17 +1084,19 @@ FORCE_INLINE void segment_idle(millis_t &next_idle_ms) {
         case DXC_MIRRORED_MODE:
         case DXC_DUPLICATION_MODE:
           if (active_extruder == 0) {
+            current_position.z+=15;
+            line_to_current_position(planner.settings.max_feedrate_mm_s[Z_AXIS]);
+
             xyze_pos_t new_pos = current_position;
-            if (dual_x_carriage_mode == DXC_DUPLICATION_MODE)
+            if (dual_x_carriage_mode == DXC_DUPLICATION_MODE){
               new_pos.x += duplicate_extruder_x_offset;
-            else
-              new_pos.x = inactive_extruder_x;
-            
-            if (dual_x_carriage_mode == DXC_DUPLICATION_MODE || dual_x_carriage_mode == DXC_MIRRORED_MODE)  //by zyf
-              new_pos.z += 10;
+            }else
+              new_pos.x = inactive_extruder_x;            
 
             // Move duplicate extruder into correct duplication position.
-            if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("Set planner X", inactive_extruder_x, " ... Line to X", new_pos.x);
+            //if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("Set planner X", inactive_extruder_x, " ... Line to X", new_pos.x);
+            //TLDEBUG_PRINTLNPAIR("Set planner X", inactive_extruder_x, " ... Line to X", new_pos.x);
+
             planner.set_position_mm(inactive_extruder_x, current_position.y, new_pos.z, current_position.e); //new pos by zyf
             if (!planner.buffer_line(new_pos, planner.settings.max_feedrate_mm_s[X_AXIS] * 0.35f, 1)) break; //move too fast, *0.35 by zyf  
 

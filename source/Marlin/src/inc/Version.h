@@ -67,7 +67,7 @@
  * Define a generic printer name to be output to the LCD after booting Marlin.
  */
 #ifndef MACHINE_NAME
-  #define MACHINE_NAME "3D Printer"
+  #define MACHINE_NAME "TENLOG 3D Printer"
 #endif
 
 /**
@@ -76,14 +76,14 @@
  * providing the source code to your customers.)
  */
 #ifndef SOURCE_CODE_URL
-  #define SOURCE_CODE_URL "github.com/MarlinFirmware/Marlin"
+  #define SOURCE_CODE_URL "github.com/tenlog/TL-D3V2"
 #endif
 
 /**
  * Default generic printer UUID.
  */
 #ifndef DEFAULT_MACHINE_UUID
-  #define DEFAULT_MACHINE_UUID "cede2a2f-41a2-4748-9b12-c55c62f367ff"
+  #define DEFAULT_MACHINE_UUID "dfa8e01a-ed32-11ec-8ea0-0242ac120002"
 #endif
 
   /**
@@ -91,9 +91,8 @@
    * documentation about a specific Marlin release. Displayed in the Info Menu.
    */
 #ifndef WEBSITE_URL
-  #define WEBSITE_URL "www.crealiyt.com"
+  #define WEBSITE_URL "www.tenlog3dprinter.com"
 #endif
-
 /**
  * Set the vendor info the serial USB interface, if changable
  * Currently only supported by DUE platform

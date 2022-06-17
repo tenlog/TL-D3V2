@@ -125,6 +125,7 @@ void TLSTJC_println(const char s[]);
 void TLSTJC_print(const char s[]);
 void TLSTJC_printend();
 void TLSTJC_printEmptyend();
+uint8_t TLTJC_GetLastPage();
 
 void TlLoadingMessage(const char Message[], const int ShowType=-1, const int DelayTime=500);
 void TlPageMain();
@@ -146,6 +147,7 @@ void plr_outage();
 //void plr_outage_test();
 
 void my_sleep(float time);
+void SyncFanSpeed(uint8_t FanSpeed);
 
 extern bool plr_enabled;
 
@@ -160,7 +162,8 @@ extern bool dwn_is_last_page;
 extern char file_name_list[7][13];
 extern char long_file_name_list[7][27];
 extern char m117_str[15];
-extern char tl_sn[32];
+extern char tl_hc_sn[32];
+extern char tl_tjc_sn[18];
 extern long tl_command[256];
 extern char printer_status[100];
 

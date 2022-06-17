@@ -96,7 +96,8 @@ int tl_TouchScreenType = 0;
 char file_name_list[7][13]={""};
 char long_file_name_list[7][27]={""};
 char m117_str[15] = {""};
-char tl_sn[32] = {""};
+char tl_hc_sn[32] = {""};
+char tl_tjc_sn[18] = {""};
 
 bool dwn_is_last_page = false;
 bool hotendOffsetChanged = false;
@@ -189,11 +190,11 @@ int DETECT_TLS(){
 
             get_command(1);
 
-            char SerialNo[64];
+            //char SerialNo[64];
             char ModelNo[64];
             int SLoop = 0;
             int MLoop = 0;
-            NULLZERO(SerialNo);
+            NULLZERO(tl_tjc_sn);
             NULLZERO(ModelNo);
             int iDHCount = 0;
             for(int i=0; i<100; i++){
@@ -202,7 +203,7 @@ int DETECT_TLS(){
                 if(iDHCount > 6) break;
                 if(iDHCount > 4 && iDHCount < 6){
                     if((tl_command[i] > 47 && tl_command[i] < 58) || (tl_command[i] > 64 && tl_command[i] < 71)){
-                        SerialNo[SLoop] = tl_command[i];
+                        tl_tjc_sn[SLoop] = tl_command[i];
                         SLoop++;
                     }
                 }
@@ -216,16 +217,16 @@ int DETECT_TLS(){
                         MLoop++;
                 }
             }
-            if(SerialNo[0] != '\0')
-                TLDEBUG_PRINTLNPAIR("Serial.. ", SerialNo);
+            if(tl_tjc_sn[0] != '\0')
+                TLDEBUG_PRINTLNPAIR("Serial.. ", tl_tjc_sn);
             if(ModelNo[0] != '\0')
                 TLDEBUG_PRINTLNPAIR("Model.. ", ModelNo);
 
             delay(50);
 
-            if (strlen(SerialNo) == 16){
+            if (strlen(tl_tjc_sn) == 16){
                 TLSTJC_print("loading.sDI.txt=\"");
-                TLSTJC_print(SerialNo);
+                TLSTJC_print(tl_tjc_sn);
                 TLSTJC_println("\"");
 
                 TLSTJC_print("loading.tUI.txt=\"UI ");
@@ -408,7 +409,7 @@ void tlInitSetting(){
         sprintf_P(cmd, PSTR("setting.xY2.val=%d"), lOffsetY);
         TLSTJC_println(cmd);
         delay(10);
-        sprintf_P(cmd, PSTR("setting.xZOffset.val=%d"), lOffsetZ);
+        sprintf_P(cmd, PSTR("setting.xZOffset.val=%d"), -lOffsetZ);
         TLSTJC_println(cmd);
         delay(10);
 
@@ -569,8 +570,8 @@ void TJCMessage(const int FromPageID, const int ToPageID, const int MessageID, c
 void initTLScreen(){    
     stc_efm_unique_id UID_data = EFM_ReadUID();
     //char cmd1[64];
-    sprintf_P(tl_sn, "SN:%08X%08X%08X", UID_data.uniqueID1, UID_data.uniqueID2, UID_data.uniqueID3);
-    TLDEBUG_PRINTLN(tl_sn);
+    sprintf_P(tl_hc_sn, "%08X%08X%08X", UID_data.uniqueID1, UID_data.uniqueID2, UID_data.uniqueID3);
+    TLDEBUG_PRINTLN(tl_hc_sn);
 
     tl_TouchScreenType = DETECT_TLS(); // check if it is tjc screen
     if(tl_TouchScreenType == 1){
@@ -580,7 +581,8 @@ void initTLScreen(){
         delay(100);
         TLDEBUG_PRINTLN("TL TJC Touch Screen Detected!");
     }else if(tl_TouchScreenType == 0){
-        DWN_Text(0x7280, 28, tl_sn);
+        sprintf_P(cmd, "SN:%S", tl_hc_sn);
+        DWN_Text(0x7280, 28, cmd);
         
         int iLoop = 0;
         bool bLRead = false;
@@ -684,6 +686,9 @@ float GCodelng(const char Header, const long FromPostion, long _command[], const
 }
 
 void TLAbortPrinting(){
+
+    thermalManager.set_fan_speed(0, 0);
+    thermalManager.set_fan_speed(1, 0);
     
     #ifdef PRINT_FROM_Z_HEIGHT
     PrintFromZHeightFound = true;
@@ -692,33 +697,38 @@ void TLAbortPrinting(){
     
     IF_DISABLED(NO_SD_AUTOSTART, card.autofile_cancel());
     card.endFilePrint(TERN_(SD_RESORT, true));
-
+    
     queue.clear();
     quickstop_stepper();
-
     print_job_timer.abort();
     IF_DISABLED(SD_ABORT_NO_COOLDOWN, thermalManager.disable_all_heaters());
 
     wait_for_heatup = false;
     TERN_(POWER_LOSS_RECOVERY_TL, settings.plr_reset());
 
-    EXECUTE_GCODE("G28 XY");
-    //queue.inject_P(PSTR(EVENT_GCODE_SD_ABORT));
+    if(dual_x_carriage_mode == DXC_DUPLICATION_MODE)
+        EXECUTE_GCODE("G28 XY");
+    else{
+        queue.inject_P(PSTR("G28 XY"));
+        queue.enqueue_one_now(PSTR("G92 Y0"));
+        queue.enqueue_one_now(PSTR("M107"));
+        queue.enqueue_one_now(PSTR("M84"));
+    }
+
     disable_all_steppers();
-    thermalManager.set_fan_speed(0, 0);
-    thermalManager.set_fan_speed(1, 0);
-    //queue.enqueue_one_now(PSTR("M107"));
     TLPrintingStatus = 0;
 
     if(tl_TouchScreenType == 0)
         DWN_Page(DWN_P_MAIN);
 
     if(dual_x_carriage_mode == DXC_DUPLICATION_MODE){
-        for(int i=0; i<4; i++){
-            delay(100);
-        }
         kill("ND ");
     }
+
+    thermalManager.setTargetHotend(0, 0);
+    thermalManager.setTargetHotend(0, 1);
+    thermalManager.setTargetBed(0);
+
 }
 
 void TLFilamentRunout(){
@@ -2291,13 +2301,14 @@ char * tenlog_status_update(bool isTJC)
 
     char cTime[10];
     NULLZERO(cTime);
+    uint16_t ln16 = 0;
     if(ln12 == 0)
     {
         sprintf_P(cTime, "%s", "00:00");
     }else{
-        uint16_t time_mm = millis() / 60000 - startPrintTime / 60000;
-        uint16_t time_h = time_mm/60;
-        uint16_t time_m = time_mm%60;
+        ln16 = millis() / 60000 - startPrintTime / 60000;
+        uint16_t time_h = ln16/60;
+        uint16_t time_m = ln16%60;
         sprintf_P(cTime, PSTR("%02d:%02d"), time_h, time_m);
     }
 
@@ -2309,19 +2320,61 @@ char * tenlog_status_update(bool isTJC)
     const int8_t ln19 = thermalManager.isHeatingHotend(1);
     const int8_t ln20 = thermalManager.isHeatingBed();
 
+
     sprintf_P(printer_status, PSTR("%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%s|%d|%d|%d|%d|"), 
         ln0, ln1, ln2, ln3, ln4, ln5, ln6, ln7, ln8, ln9, ln10, ln11, ln12, ln13, ln14, ln15, cTime, ln17, ln18, ln19, ln20);
 
     
     if(wifi_connected || wifiFirstSend < 10){
         wifiFirstSend ++;
-        sprintf_P(printer_status_0, PSTR("%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|"), 
-            ln0, ln1, ln2, ln3, ln4, ln5, ln6, ln7, ln8, ln9, ln10);
+        
+        ZERO(printer_status_0);
+
+        printer_status_0[0] = ln0 / 0xFF;
+        printer_status_0[1] = ln0 % 0xFF;
+        
+        printer_status_0[2] = ln1 / 0xFF;
+        printer_status_0[3] = ln1 % 0xFF;
+        
+        printer_status_0[4] = ln2 / 0xFF;
+        printer_status_0[5] = ln2 % 0xFF;
+        
+        printer_status_0[6] = ln4 / 0xFF;
+        printer_status_0[7] = ln4 % 0xFF;
+        
+        printer_status_0[8] = ln5 / 0xFF;
+        printer_status_0[9] = ln5 % 0xFF;
+        
+        printer_status_0[10] = ln6 / 0xFF;
+        printer_status_0[11] = ln6 % 0xFF;
+        
+        printer_status_0[12] = ln7 / 0xFF;
+        printer_status_0[13] = ln7 % 0xFF;
+        
+        printer_status_0[14] = ln8;
+        printer_status_0[15] = ln9;
+        printer_status_0[16] = ln10;
+        printer_status_0[17] = ln11;
+        printer_status_0[18] = ln12;
+        printer_status_0[19] = ln13;
+        printer_status_0[20] = ln14;
+        printer_status_0[21] = ln15;
+
+        printer_status_0[22] = ln16 / 0xFF;
+        printer_status_0[23] = ln16 % 0xFF;
+        
+        printer_status_0[24] = ln17;
+        printer_status_0[25] = ln18;
+        printer_status_0[26] = ln19;
+        printer_status_0[27] = ln20;
+        
         WIFI_TX_Handler(0x07);
 
-        sprintf_P(printer_status_1, PSTR("%d|%d|%d|%d|%d|%s|%d|%d|%d|%d|"), 
-            ln11, ln12, ln13, ln14, ln15, cTime, ln17, ln18, ln19, ln20);
-        WIFI_TX_Handler(0x08);
+        static bool SNSent = false;
+        if(!SNSent && wifi_connected){
+            WIFI_TX_Handler(0x08);
+            SNSent = true;
+        }
     }
 
     if(isTJC){
@@ -2910,6 +2963,33 @@ void my_sleep(float time){
         idle();
     } 
     planner.synchronize();          // Wait for planner moves to finish!      
+}
+
+uint8_t TLTJC_GetLastPage(){
+    uint8_t lastPageID = 0;
+    TLSTJC_println("sendme");
+    delay(200);
+    get_command(1);
+    if(tl_command[0]==0x66 && tl_command[2]==0xFF && tl_command[3]==0xFF && tl_command[4]==0xFF){
+    lastPageID = tl_command[1];
+    //TLDEBUG_PRINTLNPAIR("Page=", lastPageID);
+    }
+    return lastPageID;
+}
+
+void SyncFanSpeed(uint8_t FanSpeed){
+  #if ENABLED(DUAL_X_CARRIAGE)      
+    if (idex_is_duplicating()){ 
+      thermalManager.set_fan_speed(0, FanSpeed);
+      thermalManager.set_fan_speed(1, FanSpeed);
+    }
+    else{
+      thermalManager.set_fan_speed(active_extruder, FanSpeed);      
+      thermalManager.set_fan_speed(1 - active_extruder, 0);      
+    }
+  #else
+      thermalManager.set_fan_speed(0, FanSpeed);
+  #endif
 }
 
 #endif  //TENLOG_TOUCH_LCD

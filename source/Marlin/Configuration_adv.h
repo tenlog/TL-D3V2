@@ -3263,7 +3263,7 @@
  *
  * NOTE: This option sacrifices some cooling fan speed options.
  */
-#define LASER_SYNCHRONOUS_M106_M107
+//#define LASER_SYNCHRONOUS_M106_M107
 
 /**
  * Coolant Control

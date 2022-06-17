@@ -37,6 +37,8 @@
 
 #if ENABLED(TENLOG_TOUCH_LCD)
   #include "../../lcd/tenlog/tenlog_touch_lcd.h"
+  #include "../../module/temperature.h"
+  
 #endif
 
 #if ENABLED(DUAL_X_CARRIAGE)
@@ -91,6 +93,7 @@
           x_jog += .1f;
         }
         update_software_endstops(X_AXIS); //by zyf
+        SyncFanSpeed(thermalManager.common_fan_speed);//by zyf
         return;
       }
 
@@ -118,6 +121,8 @@
     }
     else if (!parser.seen('W'))  // if no S or W parameter, the DXC mode gets reset to the user's default
       dual_x_carriage_mode = DEFAULT_DUAL_X_CARRIAGE_MODE;
+      
+    SyncFanSpeed(thermalManager.common_fan_speed);//by zyf
 
     #ifdef DEBUG_DXC_MODE
 

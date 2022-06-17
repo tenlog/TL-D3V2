@@ -25,10 +25,6 @@
   #error "Oops! Select an HC32F46x board in 'options > c/c++->defines.'"
 #endif
 
-#if defined(CR10_STOCKDISPLAY) && !defined RET6_12864_LCD && !defined VET6_12864_LCD
-  #error "Define RET6_12864_LCD or VET6_12864_LCD to select pins for CR10_STOCKDISPLAY with the Creality V4 controller."
-#endif
-
 #define BOARD_INFO_NAME      "TENLOG v3.1.1"
 #define DEFAULT_MACHINE_NAME "TENLOG 3D"
 
