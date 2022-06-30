@@ -847,7 +847,6 @@ void kill(PGM_P const lcd_error/*=nullptr*/, PGM_P const lcd_component/*=nullptr
       SERIAL_ECHO_START(); SERIAL_ECHOLNPGM_P("Kill-Kill");
       watchdog_refresh();
       TLSTJC_println("main.vCC.val=0");
-      delay(10);
       //settings.killFlagSet(1);
       char ErrorMessage[128];
       sprintf_P(ErrorMessage, PSTR("%s %s"), lcd_error, lcd_component);

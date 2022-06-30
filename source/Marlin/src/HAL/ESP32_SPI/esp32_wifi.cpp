@@ -36,10 +36,12 @@ uint8_t wifi_mode = WIFI_DEFAULT_MODE;
 uint16_t http_port = WIFI_DEFAULT_PORT;
 bool wifi_connected = false;
 int8_t wifiFirstSend = 0;
+bool wifi_resent = false;
 
 char wifi_tjc_cmd[64]="";
 
-uint8_t printer_status_0[WIFI_MSG_LENGTH]={0};
+uint8_t printer_status[WIFI_MSG_LENGTH]={0};
+uint8_t printer_settings[WIFI_MSG_LENGTH]={0};
 
 uint8_t spi_tx[BUFFER_SIZE]="";
 uint8_t spi_rx[BUFFER_SIZE]="";
@@ -189,34 +191,34 @@ uint8_t get_control_code(){
 
 void SPI_RX_Handler(){
 
-    unsigned char ret[WIFI_MSG_LENGTH];
+    char ret[WIFI_MSG_LENGTH];
 	NULLZERO(ret);
     uint8_t control_code = get_control_code();
 
     if(control_code > 0){
         for(int i=0; i<WIFI_MSG_LENGTH; i++){
             ret[i] = spi_rx[i+3];
-            if(spi_rx[i+3] == '\0' || spi_rx[i+3] == 0){
-                ret[i] = '\0';
-                break;
-            }
         }
     }
 
     if(control_code== 0x06){
-        if(ret[0] == '1' || ret[0] == '2' || ret[0] == '3' || ret[0] == '4' || ret[0] == '5' || ret[0] == '6' || ret[0] == '7' || ret[0] == '8' || ret[0] == '9' || ret[0] == '0') wifi_connected = true;
-        sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tIP.txt=\"%s\""), ret);
-        TLSTJC_println(wifi_tjc_cmd);
-        delay(10);
-        sprintf_P(wifi_tjc_cmd, PSTR("setting.tIP.txt=\"%s\""), ret);
-        TLSTJC_println(wifi_tjc_cmd);
+        if(ret[0] == '1' || ret[0] == '2' || ret[0] == '3' || ret[0] == '4' || ret[0] == '5' || ret[0] == '6' || ret[0] == '7' || ret[0] == '8' || ret[0] == '9' || ret[0] == '0') {
+            wifi_connected = true;
+            wifi_resent = false;
+            tlInitSetting();
+        }
+        if(ret[0]){
+            sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tIP.txt=\"%s\""), ret);
+            TLSTJC_println(wifi_tjc_cmd);
+            sprintf_P(wifi_tjc_cmd, PSTR("setting.tIP.txt=\"%s\""), ret);
+            TLSTJC_println(wifi_tjc_cmd);
+        }
         ZERO(spi_rx);
     }else if(control_code == 0x01){
         SPI_ConnectWIFI();
         
         sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tIP.txt=\"Connecting...\""), ret);
         TLSTJC_println(wifi_tjc_cmd);
-        delay(10);
         sprintf_P(wifi_tjc_cmd, PSTR("setting.tIP.txt=\"Connecting...\""), ret);
         TLSTJC_println(wifi_tjc_cmd);
         /*
@@ -226,8 +228,13 @@ void SPI_RX_Handler(){
             TLDEBUG_PRINT(cmd);
         }
         TLDEBUG_PRINTLN(" ");
-        */
-        
+        */        
+    }else if(control_code == 0x07){     //GCode handler
+        long gcode_wifi[WIFI_MSG_LENGTH];
+    	for(int i=0; i<WIFI_MSG_LENGTH; i++){
+            gcode_wifi[i] = ret[i];
+        }
+        process_command_gcode(gcode_wifi);
     }
 
 }
@@ -262,39 +269,31 @@ void WIFI_TX_Handler(int8_t control_code){
         memcpy_P(send, wifi_acce_code, 20);
         break;
         case 0x07:
-        memcpy_P(send, printer_status_0, WIFI_MSG_LENGTH);
+        memcpy_P(send, printer_status, WIFI_MSG_LENGTH);
+        break;
+        case 0x09:
+        memcpy_P(send, printer_settings, WIFI_MSG_LENGTH);
         break;
         
         case 0x08:      //SN no..
         {
-            for(uint8_t i=0; i<32; i++){
+            //0-25  HCSN
+            for(uint8_t i=0; i<25; i++){
                 send[i] = tl_hc_sn[i];
             }
+            //25-42 TJCSN
+            for(uint8_t i=0; i<17; i++){
+                send[i+25]=tl_tjc_sn[i];
+            }
+            char str[16];
+            sprintf_P(str, PSTR("%s V%s.%s"), TL_MODEL_STR, SHORT_BUILD_VERSION, TL_SUBVERSION);
 
-            for(uint8_t i=0; i<18; i++){
-                send[i+35]=tl_tjc_sn[i];
+            //42-59 VERSION
+            for(uint8_t i=0; i<17; i++){
+                send[i+42]=str[i];
             }
-            /*
-            for(int i=0; i<WIFI_MSG_LENGTH; i++){
-                char acmd[10];
-                sprintf_P(acmd, "%d", send[i]);
-                TLDEBUG_PRINT(acmd);
-            }
-            TLDEBUG_PRINTLN(" tl_tjc_sn!");
-            TLDEBUG_PRINTLN(tl_tjc_sn);
-            */
         }
         break;
-        /*
-        break;
-        case 0x0A:
-        memcpy_P(send, printer_status_3, WIFI_MSG_LENGTH);
-        break;
-        case 0x0B:
-        memcpy_P(send, printer_status_4, WIFI_MSG_LENGTH);
-        break;
-        */
-        
     }
     spi_tx[2] = control_code;
 
@@ -309,9 +308,9 @@ void WIFI_TX_Handler(int8_t control_code){
         case 0x03:        
         case 0x04:        
         case 0x05:        
-        case 0x07:        
-        case 0x08:
-        //case 0x09:
+        case 0x07:  //status_0
+        case 0x08:  //Serial Nos..
+        case 0x09:  //Settings
         //case 0x0A:
         //case 0x0B:
         for(int8_t i=0; i<WIFI_MSG_LENGTH; i++){
@@ -326,7 +325,7 @@ void WIFI_TX_Handler(int8_t control_code){
 
     uint8_t verify8 = verify % 0xFF;
     spi_tx[BUFFER_SIZE-1]=verify8;
-    delay(5);
+    delay(1);//why need this?
     /*
     char cmd[BUFFER_SIZE];
     for(int i=0; i<BUFFER_SIZE; i++){

@@ -147,26 +147,26 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "010"
+#define TL_SUBVERSION "011"
 
 // The size of the printable area
 #if defined(TENLOG_D3P) 
-  #define TL_MODEL_STR "D3 Pro"
+  #define TL_MODEL_STR "D3"
   #define X_BED_SIZE 305
   #define Y_BED_SIZE 310
   #define Z_LENGTH   350
 #elif defined(TENLOG_H2P)
-  #define TL_MODEL_STR "Hands2 Pro"
+  #define TL_MODEL_STR "Hands2"
   #define X_BED_SIZE 235
   #define Y_BED_SIZE 240
   #define Z_LENGTH   260
 #elif defined(TENLOG_H2P)
-  #define TL_MODEL_STR "D5 Pro"
+  #define TL_MODEL_STR "D5"
   #define X_BED_SIZE 505
   #define Y_BED_SIZE 510
   #define Z_LENGTH   510
 #elif defined(TENLOG_H2P)
-  #define TL_MODEL_STR "D6 Pro"
+  #define TL_MODEL_STR "D6"
   #define X_BED_SIZE 605
   #define Y_BED_SIZE 610
   #define Z_LENGTH   610
@@ -223,7 +223,7 @@
 #endif
 
 // Name displayed in the LCD "Ready" message and Info menu
-#define CUSTOM_MACHINE_NAME "3D Printer"
+#define CUSTOM_MACHINE_NAME "TENLOG 3D Printer"
 
 // Printer's unique ID, used by some programs to differentiate between machines.
 // Choose your own or use a service like https://www.uuidgenerator.net/version4
@@ -924,7 +924,7 @@
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 500, 500, 100, 1000 }
+#define DEFAULT_MAX_ACCELERATION      {800, 800, 100, 1000}
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -939,9 +939,9 @@
  *   M204 R    Retract Acceleration
  *   M204 T    Travel Acceleration
  */
-#define DEFAULT_ACCELERATION          500    // X, Y, Z and E acceleration for printing moves
+#define DEFAULT_ACCELERATION          800    // X, Y, Z and E acceleration for printing moves
 #define DEFAULT_RETRACT_ACCELERATION  500    // E acceleration for retracts
-#define DEFAULT_TRAVEL_ACCELERATION   500    // X, Y, Z acceleration for travel (non printing) moves
+#define DEFAULT_TRAVEL_ACCELERATION   800    // X, Y, Z acceleration for travel (non printing) moves
 
 /**
  * Default Jerk limits (mm/s)
@@ -1686,7 +1686,7 @@
 #endif
 
 // Homing speeds (mm/min)
-#define HOMING_FEEDRATE_MM_M { (50*60), (50*60), (5*60) }
+#define HOMING_FEEDRATE_MM_M {9000, 9000, 300}
 
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS

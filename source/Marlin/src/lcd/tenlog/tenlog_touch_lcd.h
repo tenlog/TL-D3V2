@@ -74,6 +74,9 @@
 
 #define NULLZERO(a) memset(a,'\0',sizeof(a))
 
+#define TJC_DELAY delay(5)
+#define DWN_DELAY delay(5)
+
 #ifdef TL_DEBUG
 #define TLDEBUG_PRINTLNPAIR      SERIAL_ECHOLNPAIR
 #define TLDEBUG_PRINT         SERIAL_ECHOPGM_P
@@ -109,10 +112,10 @@ void DWN_Change_Icon(int IID0, int IID1, int ID);
 void DWN_Get_Ver();
 
 void TL_idle();
-void tenlog_command_handler();
-void tenlog_screen_update();
-void tenlog_screen_update_dwn();
-char * tenlog_status_update(bool isTJC);
+//void tenlog_command_handler();
+//void tenlog_screen_update();
+//void tenlog_screen_update_dwn();
+//char * tenlog_status_update(bool isTJC);
 void process_command_gcode(long _tl_command[]);
 void get_command(int ScreenType=1);
 
@@ -162,10 +165,9 @@ extern bool dwn_is_last_page;
 extern char file_name_list[7][13];
 extern char long_file_name_list[7][27];
 extern char m117_str[15];
-extern char tl_hc_sn[32];
+extern char tl_hc_sn[25];
 extern char tl_tjc_sn[18];
 extern long tl_command[256];
-extern char printer_status[100];
 
 extern bool hotendOffsetChanged;
 

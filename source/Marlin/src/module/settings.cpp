@@ -1504,6 +1504,7 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(http_port);
     #endif
 
+    //tlInitSetting();  //Show in ui
     //
     // Report final CRC and Data Size
     //
@@ -1531,11 +1532,8 @@ void MarlinSettings::postprocess() {
     #if ENABLED(UBL_SAVE_ACTIVE_ON_M500)
       if (ubl.storage_slot >= 0)
         store_mesh(ubl.storage_slot);
-    #endif
-
-    
+    #endif  
     //if (!eeprom_error) LCD_MESSAGEPGM(MSG_SETTINGS_STORED);   //by zyf
-
     TERN_(EXTENSIBLE_UI, ExtUI::onConfigurationStoreWritten(!eeprom_error));
 
     return !eeprom_error;
@@ -2486,7 +2484,7 @@ void MarlinSettings::postprocess() {
         http_port = uwifiport;
       #endif
       #if ENABLED(TENLOG_TOUCH_LCD)
-        tlInitSetting();
+        tlInitSetting();  //Show in ui
       #endif
       //
       // Validate Final Size and CRC
