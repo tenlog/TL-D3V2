@@ -33,6 +33,10 @@
   #include "../lcd/tenlog/tenlog_touch_lcd.h"
 #endif
 
+#if ENABLED(ESP32_WIFI)
+#include "../HAL/ESP32_SPI/esp32_wifi.h"
+#endif
+
 #include "../module/planner.h"        // for synchronize
 #include "../module/printcounter.h"
 #include "../gcode/queue.h"
@@ -318,28 +322,31 @@ void CardReader::ls() {
 // List All sd root file for tl_touch_lcd
 //
 
-void CardReader::tl_ls() {
+void CardReader::tl_ls(bool wifi) {
+  if(wifi)mount();
   char cmd[96];
   int LastID = 0;
   if (flag.mounted) {
-
-    delay(5);
-    if (tl_print_page_id == 0){
-      if(tl_TouchScreenType == 1){
-        TLSTJC_println("vis btUp,0");
-        delay(10);
-        TLSTJC_println("vis picUp,0");
+    
+    if(!wifi){
+      delay(5);
+      if (tl_print_page_id == 0){
+        if(tl_TouchScreenType == 1){
+          TLSTJC_println("vis btUp,0");
+          delay(10);
+          TLSTJC_println("vis picUp,0");
+        }
+        else
+          DWN_Data(0x8810, 1, 2);
+      }else{
+        if(tl_TouchScreenType == 1){
+          TLSTJC_println("vis btUp,1");
+          delay(10);
+          TLSTJC_println("vis picUp,1");
+        }
+        else if(tl_TouchScreenType == 0)
+          DWN_Data(0x8810, 0, 2);
       }
-      else
-        DWN_Data(0x8810, 1, 2);
-    }else{
-      if(tl_TouchScreenType == 1){
-        TLSTJC_println("vis btUp,1");
-        delay(10);
-        TLSTJC_println("vis picUp,1");
-      }
-      else if(tl_TouchScreenType == 0)
-        DWN_Data(0x8810, 0, 2);
     }
 
     root.rewind();
@@ -353,20 +360,18 @@ void CardReader::tl_ls() {
     }
 
     int pageNum = fileNum / 6 + 1;
-    if(tl_print_page_id > pageNum - 1) tl_print_page_id = pageNum;
+    if(!wifi){
+      if(tl_print_page_id > pageNum - 1) tl_print_page_id = pageNum;
 
-    if(tl_TouchScreenType == 1){
-      NULLZERO(cmd);
-      //tl_print_page_id = 0;
-      //TLSTJC_println("select_file.vPageID.val=0");
-      //delay(20);
-      sprintf_P(cmd, PSTR("select_file.vPageID.val=%d"), tl_print_page_id);
-      TLSTJC_println(cmd);
-      //TLDEBUG_PRINTLN(cmd);
-    }    
-    delay(5);
-    NULLZERO(file_name_list);
-    NULLZERO(long_file_name_list);
+      if(tl_TouchScreenType == 1){
+        NULLZERO(cmd);
+        sprintf_P(cmd, PSTR("select_file.vPageID.val=%d"), tl_print_page_id);
+        TLSTJC_println(cmd);
+      }    
+      delay(5);
+      NULLZERO(file_name_list);
+      NULLZERO(long_file_name_list);
+    }
 
     root.rewind();
     dir_t p;
@@ -374,57 +379,75 @@ void CardReader::tl_ls() {
     int iFileID = 0;    
     while (root.readDir(&p, longFilename) > 0) {
       if (is_dir_or_gcode(p, true)) {
-        createFilename(filename, p);            
+        ZERO(wifi_file_name);
+        createFilename(filename, p);
         iFileID++;
 
-        if (iFileID <= fileNum - tl_print_page_id * 6 && iFileID >= fileNum - (tl_print_page_id + 1) * 6){
+        if(wifi){
           
-          int SelectFileID = 1 - (iFileID - (fileNum - tl_print_page_id * 6 ));
-          if(LastID == 0) LastID = SelectFileID;
+          wifi_file_name[0]=fileNum;
+          wifi_file_name[1]=iFileID-1;
+          for(uint8_t i=0; i<13; i++){
+            wifi_file_name[2+i]=filename[i];
+          }
+          for(uint8_t i=0; i<32; i++){
+            wifi_file_name[15+i]=longFilename[i];
+          }
+          delay(15);
+          WIFI_TX_Handler(0x0A);
 
-          if(tl_TouchScreenType == 1){
-            NULLZERO(cmd);
-            sprintf_P(cmd, PSTR("select_file.tL%d.txt=\"%s\""), SelectFileID,longFilename);
-            TLSTJC_println(cmd);
-          }else if(tl_TouchScreenType == 0){
-            DWN_Text(0x7300 + (SelectFileID - 1) * 0x30, 32, longFilename);
-          }
+        }else{
+          if (iFileID <= fileNum - tl_print_page_id * 6 && iFileID >= fileNum - (tl_print_page_id + 1) * 6){
+            
+            int SelectFileID = 1 - (iFileID - (fileNum - tl_print_page_id * 6 ));
+            if(LastID == 0) LastID = SelectFileID;
 
-          for(int i = 0; i<27; i++){
-            long_file_name_list[SelectFileID-1][i] = longFilename[i];
+            if(tl_TouchScreenType == 1){
+              NULLZERO(cmd);
+              sprintf_P(cmd, PSTR("select_file.tL%d.txt=\"%s\""), SelectFileID,longFilename);
+              TLSTJC_println(cmd);
+            }else if(tl_TouchScreenType == 0){
+              DWN_Text(0x7300 + (SelectFileID - 1) * 0x30, 32, longFilename);
+            }
+
+            for(int i = 0; i<27; i++){
+              long_file_name_list[SelectFileID-1][i] = longFilename[i];
+            }
+            delay(5);
+            
+            for(int i = 0; i<13; i++){
+              file_name_list[SelectFileID-1][i] = filename[i];
+            }
+            delay(5);          
           }
-          delay(5);
-          
-          for(int i = 0; i<13; i++){
-            file_name_list[SelectFileID-1][i] = filename[i];
-          }
-          delay(5);          
         }
       }
     }
 
-    if ((tl_print_page_id + 1) * 6 >= iFileID) {
-      if(tl_TouchScreenType == 1){
-        TLSTJC_println("vis btDown,0");
-        delay(10);
-        TLSTJC_println("vis picDown,0");      
+    if(!wifi){
+      if ((tl_print_page_id + 1) * 6 >= iFileID) {
+        if(tl_TouchScreenType == 1){
+          TLSTJC_println("vis btDown,0");
+          delay(10);
+          TLSTJC_println("vis picDown,0");      
+        }
+        else if(tl_TouchScreenType == 0){
+          DWN_Data(0x8811, 1, 2);
+          dwn_is_last_page = true;
+        }
+      }else{
+        if(tl_TouchScreenType == 1){
+          TLSTJC_println("vis btDown,1");
+          delay(10);
+          TLSTJC_println("vis picDown,1");
+        }
+        else if(tl_TouchScreenType == 0){
+          DWN_Data(0x8811, 0, 2);
+          dwn_is_last_page = false;
+        }
       }
-      else if(tl_TouchScreenType == 0){
-        DWN_Data(0x8811, 1, 2);
-        dwn_is_last_page = true;
-      }
-    }else{
-      if(tl_TouchScreenType == 1){
-        TLSTJC_println("vis btDown,1");
-        delay(10);
-        TLSTJC_println("vis picDown,1");
-      }
-      else if(tl_TouchScreenType == 0){
-        DWN_Data(0x8811, 0, 2);
-        dwn_is_last_page = false;
-      }
+      delay(5);
     }
-    delay(5);
   }else{
     if(tl_TouchScreenType == 0){
         DWN_Data(0x8811, 1, 2);
@@ -434,21 +457,23 @@ void CardReader::tl_ls() {
     }
   }
 
-  //Clear the empty boxlist
-  for (int i=LastID+1; i<7; i++){
-    if(tl_TouchScreenType == 1){
-      NULLZERO(cmd);
-      sprintf_P(cmd, PSTR("select_file.tL%d.txt=\"\""), i);
-      TLSTJC_println(cmd);
-    }else if(tl_TouchScreenType == 0){
-      long lAddress = 0x7300 + (i-1) * 0x30;
-      DWN_Text(lAddress, 32, "  ");
-      sprintf_P(cmd, PSTR("Address %04X"), lAddress);
-      TLDEBUG_PRINTLN(cmd);
+  if(!wifi){
+    //Clear the empty boxlist
+    for (int i=LastID+1; i<7; i++){
+      if(tl_TouchScreenType == 1){
+        NULLZERO(cmd);
+        sprintf_P(cmd, PSTR("select_file.tL%d.txt=\"\""), i);
+        TLSTJC_println(cmd);
+      }else if(tl_TouchScreenType == 0){
+        long lAddress = 0x7300 + (i-1) * 0x30;
+        DWN_Text(lAddress, 32, "  ");
+        sprintf_P(cmd, PSTR("Address %04X"), lAddress);
+        TLDEBUG_PRINTLN(cmd);
+      }
+      file_name_list[i-1][0] = '\0';
+      long_file_name_list[i-1][0] = '\0';
+      delay(5);
     }
-    file_name_list[i-1][0] = '\0';
-    long_file_name_list[i-1][0] = '\0';
-    delay(5);
   }
 }
 
@@ -549,7 +574,12 @@ void CardReader::mount() {
   ) 
   {
     SERIAL_ECHO_MSG(STR_SD_INIT_FAIL);
-    
+    #if ENABLED(ESP32_WIFI)
+    ZERO(wifi_file_name);
+    delay(10);
+    WIFI_TX_Handler(0x0A);
+    #endif
+
   }
   else if (!volume.init(driver))
     SERIAL_ERROR_MSG(STR_SD_VOL_INIT_FAIL);
@@ -587,13 +617,15 @@ void CardReader::manage_media() {
 
   flag.workDirIsRoot = true;          // Return to root on mount/release
 
+  //auto reflush lcd file name list...
   #if ENABLED(TENLOG_TOUCH_LCD)
-    if(tl_TouchScreenType == 1){
-      if(prev_stat<2){
+    if(prev_stat<2){
+      if(tl_TouchScreenType == 1){
         if(TLTJC_GetLastPage()==5){
-          TLSTJC_println("page select_file");
+          TLSTJC_println("page select_file"); 
         }
       }
+      tl_ls(true);
     }
   #endif //TENLOG_TOUCH_LCD
   prev_stat = stat;                 // Change now to prevent re-entry

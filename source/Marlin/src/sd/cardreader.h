@@ -114,8 +114,8 @@ public:
   static void release();
   static inline bool isMounted() { return flag.mounted; }
   static void ls();
-  #if ENABLED(TENLOG_TOUCH_LCD)  
-  static void tl_ls();
+  #if ENABLED(TENLOG_TOUCH_LCD)
+  static void tl_ls(bool wifi=false);
   #endif 
 
   // Handle media insert/remove

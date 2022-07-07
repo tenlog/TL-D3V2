@@ -40,8 +40,9 @@ bool wifi_resent = false;
 
 char wifi_tjc_cmd[64]="";
 
-uint8_t printer_status[WIFI_MSG_LENGTH]={0};
-uint8_t printer_settings[WIFI_MSG_LENGTH]={0};
+uint8_t wifi_printer_status[WIFI_MSG_LENGTH]={0};
+uint8_t wifi_printer_settings[WIFI_MSG_LENGTH]={0};
+uint8_t wifi_file_name[WIFI_MSG_LENGTH]={0};
 
 uint8_t spi_tx[BUFFER_SIZE]="";
 uint8_t spi_rx[BUFFER_SIZE]="";
@@ -182,7 +183,7 @@ uint8_t get_control_code(){
 		for(int i=0; i<BUFFER_SIZE-1; i++){
 			verify += spi_rx[i];
 		}
-		if(verify % 0xFF == spi_rx[BUFFER_SIZE-1]){
+		if(verify % 0x100 == spi_rx[BUFFER_SIZE-1]){
 			return spi_rx[2];
 		}
 	}
@@ -260,19 +261,24 @@ void WIFI_TX_Handler(int8_t control_code){
     
     switch (control_code){
         case 0x03:
-        memcpy_P(send, wifi_ssid, 20);
+            memcpy_P(send, wifi_ssid, 20);
         break;
         case 0x04:
-        memcpy_P(send, wifi_pswd, 20);
+            memcpy_P(send, wifi_pswd, 20);
         break;
         case 0x05:
-        memcpy_P(send, wifi_acce_code, 20);
+            memcpy_P(send, wifi_acce_code, 20);
         break;
         case 0x07:
-        memcpy_P(send, printer_status, WIFI_MSG_LENGTH);
+            memcpy_P(send, wifi_printer_status, WIFI_MSG_LENGTH);
         break;
+        
         case 0x09:
-        memcpy_P(send, printer_settings, WIFI_MSG_LENGTH);
+            memcpy_P(send, wifi_printer_settings, WIFI_MSG_LENGTH);            
+        break;
+        
+        case 0x0A:
+            memcpy_P(send, wifi_file_name, WIFI_MSG_LENGTH);
         break;
         
         case 0x08:      //SN no..
@@ -302,8 +308,8 @@ void WIFI_TX_Handler(int8_t control_code){
         spi_tx[3] = wifi_mode;
         break;
         case 0x02:
-        spi_tx[3] = http_port / 0xFF;
-        spi_tx[4] = http_port % 0xFF;
+        spi_tx[3] = http_port / 0x100;
+        spi_tx[4] = http_port % 0x100;
         break;
         case 0x03:        
         case 0x04:        
@@ -311,10 +317,11 @@ void WIFI_TX_Handler(int8_t control_code){
         case 0x07:  //status_0
         case 0x08:  //Serial Nos..
         case 0x09:  //Settings
-        //case 0x0A:
-        //case 0x0B:
-        for(int8_t i=0; i<WIFI_MSG_LENGTH; i++){
-            spi_tx[i+3]=send[i];
+        case 0x0A:  //file name
+        {
+            for(int8_t i=0; i<WIFI_MSG_LENGTH; i++){
+                spi_tx[i+3]=send[i];
+            }
         }
         break;
     }
@@ -323,17 +330,9 @@ void WIFI_TX_Handler(int8_t control_code){
         verify += spi_tx[i];
     }
 
-    uint8_t verify8 = verify % 0xFF;
+    uint8_t verify8 = verify % 0x100;
     spi_tx[BUFFER_SIZE-1]=verify8;
-    delay(1);//why need this?
-    /*
-    char cmd[BUFFER_SIZE];
-    for(int i=0; i<BUFFER_SIZE; i++){
-        sprintf_P(cmd, " 0x%X", spi_tx[i]);
-        TLDEBUG_PRINT(cmd);
-    }
-    TLDEBUG_PRINTLN(" ");
-    */
+    delay(3);//why need this?
 
     SPI_RW_Message();
 

@@ -35,6 +35,7 @@
 			0x07 = printer status
 			0x08 = sn
 			0x09 = settings
+			0x0A = file_names
 
 	MISO:
 	control Code
@@ -45,7 +46,7 @@
 			0x04 = wifi_pswd_ok
 			0x05 = asse_code_ok
 			0x06 = ip
-			0x07 = gcode
+			0x07 = execute gcode
 
 
 */
@@ -66,8 +67,9 @@ extern bool wifi_connected;
 extern bool wifi_resent;
 extern int8_t wifiFirstSend;
 
-extern uint8_t printer_status[WIFI_MSG_LENGTH];
-extern uint8_t printer_settings[WIFI_MSG_LENGTH];
+extern uint8_t wifi_printer_status[WIFI_MSG_LENGTH];
+extern uint8_t wifi_printer_settings[WIFI_MSG_LENGTH];
+extern uint8_t wifi_file_name[WIFI_MSG_LENGTH];
 
 #define HEAD_OK(a)	(a[0]==0xFF && a[1]==0xFF)
 
