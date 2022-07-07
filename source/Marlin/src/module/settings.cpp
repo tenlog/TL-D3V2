@@ -1504,7 +1504,7 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(http_port);
     #endif
 
-    //tlInitSetting();  //Show in ui
+    tlInitSetting();  //Show in ui
     //
     // Report final CRC and Data Size
     //
@@ -4230,7 +4230,6 @@ void MarlinSettings::reset() {
       //Open file
       sprintf_P(cmd, PSTR("M23 %s"), file_name_list[6]);
       gcode.process_subcommands_now(cmd);
-      TLDEBUG_PRINTLN(cmd);
 
       //handling dual_x_carriage_mode
       if(i_dual_x_carriage_mode == 2 && f_duplicate_extruder_x_offset > 50.0f){
@@ -4240,16 +4239,13 @@ void MarlinSettings::reset() {
         sprintf_P(cmd, PSTR("M605 S%d"), i_dual_x_carriage_mode);
         gcode.process_subcommands_now(cmd);
       }
-      TLDEBUG_PRINTLN(cmd);
 
       //handling bed
       sprintf_P(cmd, PSTR("M190 S%i"), iBPos);
-      TLDEBUG_PRINTLN(cmd);
       gcode.process_subcommands_now(cmd);
       
       //handling fan
       sprintf_P(cmd, PSTR("M106 S%i"), iFan);
-      TLDEBUG_PRINTLN(cmd);
       gcode.process_subcommands_now(cmd);
       
       //handling headers
@@ -4257,15 +4253,12 @@ void MarlinSettings::reset() {
           if(iTPos0 > 0){
               sprintf_P(cmd, PSTR("M104 T0 S%i"), iTPos0);
               gcode.process_subcommands_now(cmd);
-              TLDEBUG_PRINTLN(cmd);
           }
           active_extruder = 1;
           //gcode.process_subcommands_now(PSTR("T1"));
-          TLDEBUG_PRINTLN("E2");
           if(iTPos1 > 0){
               sprintf_P(cmd, PSTR("M109 S%i"), iTPos1);
               gcode.process_subcommands_now(cmd);
-              TLDEBUG_PRINTLN(cmd);
           }
           active_extruder = 0;
           delay(100);
@@ -4275,20 +4268,16 @@ void MarlinSettings::reset() {
               NULLZERO(cmd);
               sprintf_P(cmd, PSTR("M104 T1 S%i"), iTPos1);
               gcode.process_subcommands_now(cmd);
-              TLDEBUG_PRINTLN(cmd);
           }
           active_extruder = 0;
-          TLDEBUG_PRINTLN("E1");
           //gcode.process_subcommands_now(PSTR("T0"));
           if(iTPos0 > 0){
               sprintf_P(cmd, PSTR("M109 S%i"), iTPos0);
-              TLDEBUG_PRINTLN(cmd);
               gcode.process_subcommands_now(cmd);
           }
           gcode.process_subcommands_now(PSTR("T0"));
       }
       //homging XY
-      TLDEBUG_PRINTLN("G28 XY");
       gcode.process_subcommands_now(PSTR("G28 XY"));
 
       my_sleep(1.5);
@@ -4297,7 +4286,6 @@ void MarlinSettings::reset() {
       
       sprintf_P(cmd, PSTR("G92.9 Z%.2f "), fZPos);
       gcode.process_subcommands_now(cmd);
-      TLDEBUG_PRINTLN(cmd);      
 
       //current_position[Z_AXIS] = -66.66;
       //planner.set_position_mm(current_position);
@@ -4306,7 +4294,6 @@ void MarlinSettings::reset() {
 
       sprintf_P(cmd, PSTR("M24 S%u"), lFPos);
       gcode.process_subcommands_now(cmd);
-      TLDEBUG_PRINTLN(cmd);
 
       TLPrintingStatus = 1;
     }
