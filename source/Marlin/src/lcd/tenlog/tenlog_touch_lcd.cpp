@@ -66,6 +66,7 @@ int dwnMessageID = -1;
 long lLEDTimeoutCount = 0;
 
 bool DWNMoving = false;
+bool TLMoving = false;
 
 int tl_print_page_id = 0;
 int iDWNPageID = 0;
@@ -88,6 +89,8 @@ bool bAtvGot1 = false;
 bool bAtv = false;
 int iOldLogoID = 0;
 long lAtvCode = 0;
+
+bool tl_busy_state = false;
 
 bool plr_enabled = true;
 int tl_TouchScreenType = 0;
@@ -170,6 +173,7 @@ int DETECT_TLS(){
             if(CanTry){
                 TLDEBUG_PRINTLNPAIR("Trying TJC... ", iTryCount);
                 TJC_DELAY;
+                TLSTJC_println("sleep=0");
                 TenlogScreen_end();
                 TenlogScreen_begin(lBaud);
                 TJC_DELAY;
@@ -204,40 +208,58 @@ int DETECT_TLS(){
                 }
 
                 if(iDHCount == 2){
-                    ModelNo[MLoop] = tl_command[i];
-                        
+                    ModelNo[MLoop] = tl_command[i];                        
                     if(ModelNo[MLoop] == '_')
                         ModelNo[MLoop] = '\0';
                     if(ModelNo[MLoop] != ',')
                         MLoop++;
                 }
             }
-            if(tl_tjc_sn[0] != '\0')
-                TLDEBUG_PRINTLNPAIR("Serial.. ", tl_tjc_sn);
-            if(ModelNo[0] != '\0')
-                TLDEBUG_PRINTLNPAIR("Model.. ", ModelNo);
-
             TJC_DELAY;
 
             if (strlen(tl_tjc_sn) == 16){
-                TLSTJC_print("loading.sDI.txt=\"");
-                TLSTJC_print(tl_tjc_sn);
-                TLSTJC_println("\"");
+                bool Ok16 = true;
+                uint8_t total = 0;
+                for(uint8_t i=0; i<16; i++){
+                    if(tl_tjc_sn[i]>='A' && tl_tjc_sn[i]<='F') total = total + tl_tjc_sn[i] - 'A' + 10;
+                    else if(tl_tjc_sn[i]>='0' && tl_tjc_sn[i]<='9') total = total + tl_tjc_sn[i] - '0' + 0;
+                    else {
+                        Ok16 = false;
+                        break;
+                    }
+                }
+                if(Ok16){
+                    total = total % 16;
+                    sprintf_P(cmd, "loading.sDI.txt=\"%s%X\"", tl_tjc_sn, total);
+                    TLSTJC_println(cmd);
+                    
+                    TLSTJC_print("loading.tUI.txt=\"UI ");
+                    TLSTJC_print(ModelNo);
+                    TLSTJC_println("\"");
 
-                TLSTJC_print("loading.tUI.txt=\"UI ");
-                TLSTJC_print(ModelNo);
-                TLSTJC_println("\"");
-                TLSTJC_println("click btA,0");
-                delay(50);
-                TLSTJC_println("bkcmd=0");
-                if(lBaud == 9600){
-                    delay(50);
-                    TLSTJC_println("bauds=115200");
-                    lBaud = 115200;
-                    iTryCount--;
-                }else {
-                    bCheckDone = true;
-                    return 1;
+
+                    uint8_t iLastPageID = TLTJC_GetLastPage();
+
+                    if(iLastPageID == 0){
+                        TLSTJC_println("click btA,0");
+                        delay(200);
+                        get_command(1);
+                        if(tl_command[2] == 'O' && tl_command[3] == 'K'){
+                            TLSTJC_println("bkcmd=0");
+                            if(lBaud == 9600){
+                                delay(50);
+                                TLSTJC_println("bauds=115200");
+                                lBaud = 115200;
+                                iTryCount--;
+                            }else {
+                                bCheckDone = true;
+                                return 1;
+                            }
+                        }
+                    }else{
+                        bCheckDone = true;
+                        return 1;
+                    }
                 }
             }
 
@@ -340,6 +362,7 @@ void tlInitSetting(){
     if(tl_TouchScreenType == 1)
     {
         //ZERO(wifi_printer_settings);
+        TLSTJC_println("sleep=0");
         NULLZERO(cmd);
         sprintf_P(cmd, PSTR("main.vLanguageID.val=%d"), tl_languageID);
         TLSTJC_println(cmd);
@@ -356,7 +379,9 @@ void tlInitSetting(){
         sprintf_P(cmd, PSTR("setting.cLight.val=%d"), tl_Light);
         TLSTJC_println(cmd);
         wifi_printer_settings[4] = tl_Light;
-        if(tl_Light) WRITE(LED_PIN, 1); else WRITE(LED_PIN, 0);
+        sprintf_P(cmd, PSTR("setting.cPLR.val=%d"), plr_enabled);
+        TLSTJC_println(cmd);
+        wifi_printer_settings[37] = plr_enabled;
         sprintf_P(cmd, PSTR("setting.nE1FT.val=%d"), tl_E1_FAN_START_TEMP);
         TLSTJC_println(cmd);
         wifi_printer_settings[5] = tl_E1_FAN_START_TEMP;
@@ -447,6 +472,7 @@ void tlInitSetting(){
         TLSTJC_println(cmd);
         wifi_printer_settings[35] = (Z_MAX_POS*10)/0x100;
         wifi_printer_settings[36] = (Z_MAX_POS*10)%0x100;
+
     }else if(tl_TouchScreenType == 0){
         DWN_DELAY;
         DWN_Language(tl_languageID);
@@ -517,7 +543,7 @@ void TlIsPLR(){
             if (card.isMounted()) {
                 if(card.fileExists(file_name_list[6])){
                     TLSTJC_println("page printing");
-                    TJCMessage(1, 6, 3, "M1003", "M1004", long_file_name_list[6]);
+                    TJCMessage(1, 6, 3, "M1003", "M1004", "", long_file_name_list[6]);
                 }
             }
         }
@@ -534,7 +560,7 @@ void TlIsPLR(){
     }
 }
 
-void TJCMessage(const int FromPageID, const int ToPageID, const int MessageID, const char OkValue[], const char CancleValue[], const char Message[]){
+void TJCMessage(const int FromPageID, const int ToPageID, const int MessageID, const char OkValue[], const char CancleValue[], const char StartValue[], const char Message[]){
     TJC_DELAY;
     TLSTJC_println("sleep=0");
     sprintf_P(cmd, PSTR("msgbox.vaFromPageID.val=%d"), FromPageID);
@@ -546,6 +572,8 @@ void TJCMessage(const int FromPageID, const int ToPageID, const int MessageID, c
     sprintf_P(cmd, PSTR("msgbox.vtOKValue.txt=\"%s\""), OkValue);
     TLSTJC_println(cmd);
     sprintf_P(cmd, PSTR("msgbox.vtCancelValue.txt=\"%s\""), CancleValue);
+    TLSTJC_println(cmd);
+    sprintf_P(cmd, PSTR("msgbox.vtStartValue.txt=\"%s\""), StartValue);
     TLSTJC_println(cmd);
     sprintf_P(cmd, PSTR("msgbox.vtMS.txt=\"%s\""), Message);
     TLSTJC_println(cmd);
@@ -605,6 +633,7 @@ void initTLScreen(){
 
 void TlLoadingMessage(const char Message[], const int ShowType, const int DelayTime){
     if(tl_TouchScreenType == 1 && (ShowType==1 || ShowType==-1)){
+        TLSTJC_println("sleep=0");
         TLSTJC_print("tStatus.txt=\"");
         TLSTJC_print(Message);
         TLSTJC_println("\"");
@@ -688,7 +717,8 @@ void TLAbortPrinting(){
     IF_DISABLED(SD_ABORT_NO_COOLDOWN, thermalManager.disable_all_heaters());
 
     wait_for_heatup = false;
-    TERN_(POWER_LOSS_RECOVERY_TL, settings.plr_reset());
+
+    TERN_(POWER_LOSS_RECOVERY_TL, if(plr_enabled) settings.plr_reset());
 
     if(dual_x_carriage_mode == DXC_DUPLICATION_MODE)
         EXECUTE_GCODE("G28 XY");
@@ -704,10 +734,6 @@ void TLAbortPrinting(){
 
     TlPageMain();
 
-    if(dual_x_carriage_mode == DXC_DUPLICATION_MODE){
-        kill("ND ");
-    }
-
     thermalManager.setTargetHotend(0, 0);
     thermalManager.setTargetHotend(0, 1);
     thermalManager.setTargetBed(0);
@@ -715,15 +741,31 @@ void TLAbortPrinting(){
 }
 
 void TLFilamentRunout(){
-    EXECUTE_GCODE("M25");
+    queue.inject_P(PSTR(FILAMENT_RUNOUT_SCRIPT));
+    //EXECUTE_GCODE("M25");
     //while(queue.has_commands_queued() || planner.movesplanned() > 1){
     //    idle();
     //}
     if(tl_TouchScreenType == 1){
         iBeepCount = 10;
         TLSTJC_println("main.vCC.val=1");
-        TJCMessage(15, 15, 6, "M1034", "M1034 01", "");
+        TJCMessage(15, 15, 6, "G28 X", "G28 X", "M1031 O1", "");
     }
+}
+
+void SetBusyMoving(bool Busy){
+    if(Busy){
+        TLMoving = true;
+        TLSTJC_println("main.vCC.val=1");
+    }else{
+        while(tl_busy_state){
+            my_sleep(0.2);                
+        }
+        TLMoving = false;
+        TLSTJC_println("main.vCC.val=0");
+    }
+    if(wifi_connected)
+        tenlog_status_update(false);
 }
 
 int feed_rate_Pause = 0;
@@ -742,10 +784,11 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
         if(lO == -999){
             //click pause from lcd
             EXECUTE_GCODE("M25");
-            TLSTJC_println("main.vCC.val=1");
+            SetBusyMoving(true);
             TJC_DELAY;
         } 
         if(lO == 0 || lO == 1 || lO == -999){
+
             bool FilaRunout = false;
             if(lO == 1) FilaRunout = true;  //runout from lcd
             
@@ -753,6 +796,7 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
             ePos_Pause = current_position[E_AXIS];
             feed_rate_Pause = feedrate_mm_s;
 
+            TLSTJC_println("sleep=0");
             TLSTJC_println("reload.vaFromPageID.val=6");
             sprintf_P(cmd, PSTR("reload.sT1T2.txt=\"%d\""), active_extruder + 1);
             TLSTJC_println(cmd);
@@ -774,19 +818,16 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
             if(FilaRunout){
                 thermalManager.setTargetHotend(0,0);
                 thermalManager.setTargetHotend(0,1);
-            }
+            }            
 
             queue.inject("G27");
-            TLDEBUG_PRINTLN("inject G27");
-
-            my_sleep(3.0);
-            TLSTJC_println("main.vCC.val=0");
+            SetBusyMoving(false);
         }
     }else{
         //Resume
         TLPrintingStatus = 2;
 
-        TLSTJC_println("main.vCC.val=1");
+        SetBusyMoving(true);
         delay(50);
 
         long lT = GCodelng('T', FromPos, tl_command);  //M1032 T0 H200 I0
@@ -849,7 +890,7 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
         //TLDEBUG_PRINTLN("M24");
         delay(100);
         
-        TLSTJC_println("main.vCC.val=0");
+        SetBusyMoving(false);
         TLPrintingStatus = 1;
     }
 }
@@ -861,7 +902,7 @@ void TLSDPrintFinished(){
     print_from_z_target = 0.0;
     #endif
 
-    TERN_(POWER_LOSS_RECOVERY_TL, settings.plr_reset());
+    TERN_(POWER_LOSS_RECOVERY_TL, if(plr_enabled) settings.plr_reset());
     my_sleep(1.5);
 
 
@@ -873,14 +914,16 @@ void TLSDPrintFinished(){
  
     TLPrintingStatus = 0;
 
+    tenlog_status_update(true);
+
     if(tl_TouchScreenType == 1){
         char time[10];
         sprintf_P(time, "%02d:%02d", hours, minutes);
-        TJCMessage(1, 1, 1, "", "", time);
+        TJCMessage(1, 1, 1, "", "", "", time);
     }else if(tl_TouchScreenType == 0){
 
     }
-    if(dual_x_carriage_mode == DXC_DUPLICATION_MODE) kill("ND ");
+    //if(dual_x_carriage_mode == DXC_DUPLICATION_MODE) kill("ND ");
 }
 
 void load_filament(int LoadUnload, int TValue)
@@ -913,480 +956,6 @@ void load_filament(int LoadUnload, int TValue)
     }
 }
 
-void process_command_gcode(long _tl_command[]) {
-    //Translate Gcode from TJC controller to the original gcode handler.
-
-    long lFrom[10] = {0}; //10 lines.
-    ZERO(lFrom);
-    //memset(lFrom, 0, sizeof(lFrom));
-
-    long lP = 1;
-    long lLen = 0;
-    for(long i=1; i<256; i++){
-        if(_tl_command[i] == 0x0A)
-        {
-            lFrom[lP] = i + 1;
-            lP++;
-        }
-        if(_tl_command[i] == '\0')
-            break;
-        lLen++;
-    }
-
-    if(lLen > 1) {
-        for(int i=0; i<lP; i++) {
-
-            int iFrom = lFrom[i];
-            long lG = GCodelng('G', iFrom, _tl_command, true);
-            long lT = GCodelng('T', iFrom, _tl_command, true);
-            long lM = GCodelng('M', iFrom, _tl_command, true);            
-            
-            if(lG == 1 || lG == 0) {
-                //G1
-                TLSTJC_println("main.vCC.val=1");
-                long lM = GCodelng('M', iFrom, _tl_command);
-                long lF = GCodelng('F', iFrom, _tl_command);
-                float fX = GCodelng('X', iFrom, _tl_command);
-                float fY = GCodelng('Y', iFrom, _tl_command);
-                float fZ = GCodelng('Z', iFrom, _tl_command);
-                long lE = GCodelng('E', iFrom, _tl_command);
-                long lR = GCodelng('R', iFrom, _tl_command);
-                
-                long lRate = 1;
-                long lMode = 0;
-                if(lR != -999) lRate = lR;
-                if(lM != -999) lMode = lM;
-
-                char sX[10],sY[10],sZ[10],sE[10],sF[10];
-                NULLZERO(sX);
-                NULLZERO(sY);
-                NULLZERO(sZ);
-                NULLZERO(sE);
-                NULLZERO(sF);
-                
-                float fTemp = 0.0;
-                if(fX > -999.0)
-                {
-                    fTemp = fX / (float)lRate + current_position[X_AXIS] * lMode;
-                    sprintf_P(sX, PSTR("X%s "), dtostrf(fTemp, 1, 1, str_1));                
-                }
-                if(fY > -999.0)
-                {
-                    fTemp = fY / (float)lRate + current_position[Y_AXIS] * lMode;
-                    sprintf_P(sY, PSTR("Y%s "), dtostrf(fTemp, 1, 1, str_1));                
-                }
-                if(fZ > -999.0)
-                {
-                    fTemp = fZ / (float)lRate + current_position[Z_AXIS] * lMode;
-                    sprintf_P(sZ, PSTR("Z%s "), dtostrf(fTemp, 1, 1, str_1));                
-                }
-                if(lE != -999)
-                {
-                    fTemp = (float)lE / (float)lRate;
-                    float fEPos = current_position[E_AXIS] * lM;
-                    fEPos += fTemp;
-                    sprintf_P(sE, PSTR("E%f "), fEPos);
-                }
-                if(lF != -999)
-                {
-                    sprintf_P(sF, PSTR("F%d "), lF);                
-                }
-                feedrate_mm_s = lF / 60;
-                sprintf_P(cmd, PSTR("G%d %s%s%s%s%s"), lG, sF, sX, sY, sZ, sE);
-                EXECUTE_GCODE(cmd);
-                TLDEBUG_PRINT(cmd);
-                TLSTJC_println("main.vCC.val=0");
-            } else if(lG == 28){
-                //G28                
-                TLSTJC_println("main.vCC.val=1");
-
-                long lX = GCodelng('X', iFrom, _tl_command);
-                long lY = GCodelng('Y', iFrom, _tl_command);
-                long lZ = GCodelng('Z', iFrom, _tl_command);
-
-                char sX[10],sY[10],sZ[10];
-                NULLZERO(sX);
-                NULLZERO(sY);
-                NULLZERO(sZ);
-
-                if(lX > -999) {
-                    sprintf_P(sX, PSTR("X%d "), lX);
-                }
-                if(lY > -999) {
-                    sprintf_P(sY, PSTR("Y%d "), lY);                
-                }
-                if(lZ > -999) {
-                    sprintf_P(sZ, PSTR("Z%d "), lZ);                
-                }
-
-                sprintf_P(cmd, PSTR("G%d %s%s%s"), lG, sX, sY, sZ);
-                EXECUTE_GCODE(cmd);                    
-                my_sleep(1.5);
-                TLSTJC_println("main.vCC.val=0");
-
-            }else if(lT == 0 || lT == 1){
-                //T0 , T1
-                sprintf_P(cmd, PSTR("T%d"), lT);
-                EXECUTE_GCODE(cmd);
-            }else if(lM == 1022){
-                //M1022
-                TLSTJC_println("main.vCC.val=1");
-                long lS = GCodelng('S', iFrom, _tl_command);
-                long lT = GCodelng('T', iFrom, _tl_command);
-                if((lS == 0 || lS == 1) && lT > -999){
-                    load_filament(lS, lT);
-                }else if(lS == 2 || lS == 3 || lS == 4 || lS == 5){
-                    long lX = 0;
-                    long lY = 0;
-                    if(lS == 5){
-                        lX = 32;
-                        lY = Y_MAX_POS - 53;
-                    }else if(lS == 4){
-                        lX = X2_MAX_POS - 81;
-                        lY = Y_MAX_POS - 53;
-                    }else if(lS == 2){
-                        lX = 32;
-                        lY = 25;
-                    }else if(lS == 3){
-                        lX = X2_MAX_POS - 81;
-                        lY = 25;
-                    }
-                    EXECUTE_GCODE("G1 F9000");
-                    my_sleep(0.2);
-                    EXECUTE_GCODE("G1 Z5.0 F9000");
-                    my_sleep(0.2);
-                    sprintf_P(cmd, PSTR("G1 X%d Y%d"), lX, lY);
-                    EXECUTE_GCODE(cmd);
-                    my_sleep(0.2);
-                    EXECUTE_GCODE("G1 Z0");
-                    my_sleep(0.2);
-                }else if(lS == 6){
-                    EXECUTE_GCODE("G28 XYZ");
-                    my_sleep(1.0);
-                    //EXECUTE_GCODE("G1 X-50.0 Y0");
-                    //my_sleep(1.0);
-                }
-                TLSTJC_println("main.vCC.val=0");
-            }else if(lM == 104){
-                //M104
-                long lTT = GCodelng('T', iFrom, _tl_command);
-                long lS = GCodelng('S', iFrom, _tl_command);
-                char sT[10],sS[10];
-                NULLZERO(sT);
-                NULLZERO(sS);
-                if(lTT > -999) {
-                    sprintf_P(sT, PSTR("T%d "), lTT);                
-                }
-                if(lS > -999) {
-                    sprintf_P(sS, PSTR("S%d "), lS);                
-                }
-                sprintf_P(cmd, PSTR("M%d %s%s"), lM, sT, sS);
-                EXECUTE_GCODE(cmd);
-            }else if(lM == 140 || lM == 220){
-                //M220 //M140
-                long lS = GCodelng('S', iFrom, _tl_command);
-                char sS[10];
-                NULLZERO(sS);
-                if(lS > -999) {
-                    sprintf_P(sS, PSTR("S%d "), lS);
-                }
-                sprintf_P(cmd, PSTR("M%d %s"), lM, sS);
-                EXECUTE_GCODE(cmd);
-            }else if(lM == 106){
-                //M106
-                float fS = GCodelng('S', iFrom, _tl_command);
-                long lR = GCodelng('R', iFrom, _tl_command);
-                char sS[10], sR[10];
-                NULLZERO(sS);
-                NULLZERO(sR);
-                float fR = 1.0f;
-                if(lR == 1){
-                    fR = 2.55f;
-                }
-                if(fS > -999) {
-                    long lS = fS * fR;
-                    sprintf_P(sS, PSTR("S%d "), lS);                
-                }
-                sprintf_P(cmd, PSTR("M%d %s"), lM, sS);                
-                EXECUTE_GCODE(cmd);
-            }else if(lM == 107){
-                //M107
-                sprintf_P(cmd, PSTR("M%d"), lM);
-                EXECUTE_GCODE(cmd);
-            }else if(lM == 21){
-                sprintf_P(cmd, PSTR("M%d"), lM);
-                EXECUTE_GCODE(cmd);
-            }else if(lM == 32){
-                //M32
-                long lF = GCodelng('F', iFrom, _tl_command);
-                NULLZERO(cmd);
-                if(lF > 0){
-                    sprintf_P(cmd, PSTR("M%d %s"), lM, file_name_list[lF-1]);
-                }else{
-                    char fileNameP[13];
-                    NULLZERO(fileNameP);
-                    for(int i=0; i<12; i++){
-                        fileNameP[i] = _tl_command[iFrom + 4 + i];
-                    }
-                    if(strlen(fileNameP) > 4)
-                        sprintf_P(cmd, PSTR("M%d %s"), lM, fileNameP);
-                }
-                if(strlen(cmd)){
-                    TLPrintingStatus = 1;
-                    settings.plr_fn_save(lF-1);
-                    EXECUTE_GCODE(cmd);
-                }
-            }else if(lM == 19){
-                //M19
-                tl_print_page_id = GCodelng('S', iFrom, _tl_command);
-                bool wifi = false;
-                if(GCodelng('R', iFrom, _tl_command) == 1) wifi=true;
-                card.tl_ls(wifi);
-            }else if(lM == 1001){
-                //M1001
-                tl_languageID = GCodelng('S', iFrom, _tl_command);
-                EXECUTE_GCODE(PSTR("M500"));
-            }else if(lM == 1017){
-                //M1017
-                tl_Sleep = GCodelng('S', iFrom, _tl_command);
-                EXECUTE_GCODE(PSTR("M500"));
-            }else if(lM == 1024){
-                //M1024
-                tl_ECO_MODE = GCodelng('S', iFrom, _tl_command);
-                EXECUTE_GCODE(PSTR("M500"));
-            }else if(lM == 1520){
-                //M1520
-                tl_THEME_ID = GCodelng('S', iFrom, _tl_command);
-                EXECUTE_GCODE(PSTR("M500"));
-            }else if(lM == 1521){
-                //M1521 Light On Off
-                tl_Light = GCodelng('S', iFrom, _tl_command);
-                if(tl_Light) WRITE(LED_PIN, 1); else WRITE(LED_PIN, 0);
-                EXECUTE_GCODE(PSTR("M500"));
-            }else if(lM == 1015){
-                //M1015
-                tl_E1_FAN_START_TEMP = GCodelng('S', iFrom, _tl_command);
-                EXECUTE_GCODE(PSTR("M500"));
-            }else if(lM == 1023){
-                //M1023
-                #ifdef FILAMENT_RUNOUT_SENSOR
-                runout.enabled = GCodelng('S', iFrom, _tl_command);
-                EXECUTE_GCODE(PSTR("M500"));
-                #endif
-            }else if(lM == 1014){
-                //M1014
-                tl_E2_FAN_START_TEMP = GCodelng('S', iFrom, _tl_command);
-                EXECUTE_GCODE(PSTR("M500"));
-            }else if(lM == 502){
-                //M502
-                EXECUTE_GCODE(PSTR("M502"));
-                delay(5);
-                EXECUTE_GCODE(PSTR("M500"));
-                delay(5);
-                EXECUTE_GCODE(PSTR("M501"));
-            }else if(lM == 92){
-                //M92
-                long lRate = 1; //M92
-                long lR = GCodelng('R', iFrom, _tl_command);
-                if(lR > -999) lRate = lR;
-
-                float fX = GCodelng('X', iFrom, _tl_command);
-                float fY = GCodelng('Y', iFrom, _tl_command);
-                float fZ = GCodelng('Z', iFrom, _tl_command);
-                float fE = GCodelng('E', iFrom, _tl_command);
-
-                char sX[10],sY[10],sZ[10],sE[10];
-
-                NULLZERO(sX);
-                NULLZERO(sY);
-                NULLZERO(sZ);
-                NULLZERO(sE);
-                
-                float fTemp = 0.0;
-                if(fX > -999.0){
-                    fTemp = fX / (float)lRate ;
-                    sprintf_P(sX, PSTR("X%s "), dtostrf(fTemp, 1, 2, str_1));                
-                }
-                if(fY > -999.0){
-                    fTemp = fY / (float)lRate ;
-                    sprintf_P(sY, PSTR("Y%s "), dtostrf(fTemp, 1, 2, str_1));                
-                }
-                if(fZ > -999.0){
-                    fTemp = fZ / (float)lRate ;
-                    sprintf_P(sZ, PSTR("Z%s "), dtostrf(fTemp, 1, 2, str_1));                
-                }
-                if(fE != -999.0){
-                    fTemp = fE / (float)lRate ;
-                    sprintf_P(sE, PSTR("E%s "), dtostrf(fTemp, 1, 2, str_1));                
-                }
-
-                sprintf_P(cmd, PSTR("M%d %s%s%s%s"), lM, sX, sY, sZ, sE);
-                EXECUTE_GCODE(cmd);
-                EXECUTE_GCODE(PSTR("M500"));
-                
-            }else if(lM == 605){
-                //M605
-                char sX[10],sR[10],sS[10];
-                
-                long lX = GCodelng('X', iFrom, _tl_command);
-                NULLZERO(sX);
-                if(lX > -999) {
-                    sprintf_P(sX, PSTR("X%d "), lX);
-                }
-                NULLZERO(sR);
-                long lR = GCodelng('R', iFrom, _tl_command);
-                if(lR > -999) {
-                    sprintf_P(sR, PSTR("R%d "), lR);
-                }
-                
-                NULLZERO(sS);
-                long lS = GCodelng('S', iFrom, _tl_command);
-                if(lS > -999) {
-                    sprintf_P(sS, PSTR("S%d "), lS);
-                }
-                sprintf_P(cmd, PSTR("M%d %s%s%s"), lM, sS, sX, sR);
-                EXECUTE_GCODE(cmd);
-            }else if(lM == 1031){                
-                //pause from lcd or runout //M1031
-                TJCPauseResumePrinting(true, 0);
-            }else if(lM == 1032){
-                //Resume from lcd M1032
-                TJCPauseResumePrinting(false, iFrom);
-            }else if(lM == 1033){
-                //M1033
-                //abortSDPrinting
-                TLAbortPrinting();
-            }else if(lM == 1021){
-                //Pre heat //M1021
-                long lS = GCodelng('S',iFrom, _tl_command);
-                if(lS == 0){
-                    //Pre heat ABS
-                    thermalManager.setTargetHotend(PREHEAT_2_TEMP_HOTEND, 0);
-                    thermalManager.setTargetHotend(PREHEAT_2_TEMP_HOTEND, 1);
-                    thermalManager.setTargetBed(PREHEAT_2_TEMP_BED);
-                }else if(lS == 1){
-                    //Pre heat PLA
-                    thermalManager.setTargetHotend(PREHEAT_1_TEMP_HOTEND, 0);
-                    thermalManager.setTargetHotend(PREHEAT_1_TEMP_HOTEND, 1);
-                    thermalManager.setTargetBed(PREHEAT_1_TEMP_BED);
-                }else if(lS == 2){
-                    thermalManager.setTargetHotend(0, 0);
-                    thermalManager.setTargetHotend(0, 1);
-                    thermalManager.setTargetBed(0);
-                    disable_all_steppers();
-                }            
-            }else if(lM == 1011 || lM == 1012 || lM == 1013){
-                //hoten offset 1 M1011 M1012 M1013
-                uint32_t lR = GCodelng('R',iFrom, _tl_command);
-                uint32_t lS = GCodelng('S',iFrom, _tl_command);
-                
-                if(lR == 100 && lS > 0 ){
-                    
-                    long lAxis = lM - 1011;
-                    float fOffset = (float)lS / (float)lR;
-                    if(lAxis == X_AXIS)
-                        hotend_offset[1].x = fOffset;
-                    else if(lAxis == Y_AXIS){
-                        fOffset = fOffset - 5.0f;
-                        hotend_offset[1].y = fOffset;
-                    }
-                    else if(lAxis == Z_AXIS){
-                        fOffset = fOffset;
-                        hotend_offset[1].z = fOffset;
-                    }
-                    EXECUTE_GCODE(PSTR("M500"));
-                    hotendOffsetChanged = true;
-                }
-            }else if(lM == 1004){
-                //M1004
-                settings.plr_reset();//cancel power loss resume.
-            }else if(lM == 1003){
-                //M1003
-                settings.plr_recovery();//do power loss resume.
-            }else if(lM == 1040){
-                //M1040
-                #ifdef PRINT_FROM_Z_HEIGHT
-                float fValue = GCodelng('S',iFrom, _tl_command);
-                if (fValue == 0){
-                    PrintFromZHeightFound = true;
-                }else{
-                    print_from_z_target = fValue / 10.0f;
-                    PrintFromZHeightFound = false;
-                }
-                #endif //PRINT_FROM_Z_HEIGHT
-            }else if (lM == 1050){
-                //M1050
-                int8_t KillFlag = GCodelng('S',iFrom, _tl_command);
-            }else if(lM > 1499 && lM < 1511){
-                //1500-1510
-                #if ENABLED(HAS_WIFI)
-                    if(lM == 1501){
-                        //M1501
-                        int _wifi_mode = GCodelng('S', iFrom, _tl_command);
-                        if(_wifi_mode != wifi_mode){
-                            wifi_mode = GCodelng('S', iFrom, _tl_command);
-                            EXECUTE_GCODE(PSTR("M500"));
-                        }
-                    }else if(lM == 1504){
-                        //M1504
-                        http_port = GCodelng('S', iFrom, _tl_command);
-                        sprintf_P(cmd, PSTR("M%d S%d"), lM, http_port);                        
-                        EXECUTE_GCODE(PSTR("M500"));
-                    }else if(lM == 1502){
-                        //M1502
-                        NULLZERO(wifi_ssid);
-                        for(int i=0; i<20; i++){
-                            wifi_ssid[i] = _tl_command[iFrom + 6 + i];
-                            if(wifi_ssid[i]==10){
-                                wifi_ssid[i] = '\0';
-                                break;
-                            }
-                        }
-                        sprintf_P(cmd, PSTR("M%d %s"), lM, wifi_ssid);
-                        EXECUTE_GCODE(PSTR("M500"));
-                    }else if(lM == 1503){
-                        //M1503
-                        NULLZERO(wifi_pswd);
-                        for(int i=0; i<20; i++){
-                            wifi_pswd[i] = _tl_command[iFrom + 6 + i]; 
-                            if(wifi_pswd[i]==10){
-                                wifi_pswd[i] = '\0';
-                                break;
-                            }
-                        }
-                        sprintf_P(cmd, PSTR("M%d %s"), lM, wifi_pswd);                        
-                        EXECUTE_GCODE(PSTR("M500"));
-                    }else if(lM == 1505){
-                        //M1505
-                        NULLZERO(wifi_acce_code);
-                        for(int i=0; i<20; i++){
-                            wifi_acce_code[i] = _tl_command[iFrom + 6 + i]; 
-                            if(wifi_acce_code[i]==10){
-                                wifi_acce_code[i] = '\0';
-                                break;
-                            }
-                        }
-                        sprintf_P(cmd, PSTR("M%d %s"), lM, wifi_acce_code);                        
-                        EXECUTE_GCODE(PSTR("M500"));
-                    }else if(lM == 1510){
-                       //M1510
-                       SPI_ConnectWIFI();
-                    }
-                #endif //Has wifi
-            }else if(lM == 290){
-                //M290 babysetp
-                float fZ = GCodelng('Z', iFrom, _tl_command);
-                if(fZ > -999.0)
-                {
-                    sprintf_P(cmd, PSTR("M%d Z%s"), lM, dtostrf(fZ, 1, 3, str_1));                
-                    EXECUTE_GCODE(cmd);
-                }
-            }
-
-            delay(100);
-        }//iLoop //lines in this command group
-    }
-}
 
 void process_command_dwn()
 {
@@ -2438,7 +2007,7 @@ void tenlog_status_update(bool isTJC)
     const int8_t ln19 = thermalManager.isHeatingHotend(1);
     const int8_t ln20 = thermalManager.isHeatingBed();
     
-    if((wifi_connected || wifiFirstSend < 50) && !isTJC){
+    if((wifi_connected || wifiFirstSend < 2000) && !isTJC){
         wifiFirstSend ++;
         
         ZERO(wifi_printer_status);
@@ -2484,6 +2053,7 @@ void tenlog_status_update(bool isTJC)
         wifi_printer_status[27] = ln18;
         wifi_printer_status[28] = ln19;
         wifi_printer_status[29] = ln20;
+        wifi_printer_status[30] = TLMoving?1:0;
         
         WIFI_TX_Handler(0x07);
 
@@ -2579,6 +2149,487 @@ void tenlog_status_update(bool isTJC)
     */
 }
 
+
+void process_command_gcode(long _tl_command[]) {
+    //Translate Gcode from TJC controller to the original gcode handler.
+
+    long lFrom[10] = {0}; //10 lines.
+    ZERO(lFrom);
+    //memset(lFrom, 0, sizeof(lFrom));
+    long lP = 1;
+    long lLen = 0;
+    for(long i=1; i<256; i++){
+        if(_tl_command[i] == 0x0A)
+        {
+            lFrom[lP] = i + 1;
+            lP++;
+        }
+        if(_tl_command[i] == '\0')
+            break;
+        lLen++;
+    }
+
+    if(true){
+        if(lLen > 1) {
+            for(int i=0; i<lP; i++) {
+
+                int iFrom = lFrom[i];
+                long lG = GCodelng('G', iFrom, _tl_command, true);
+                long lT = GCodelng('T', iFrom, _tl_command, true);
+                long lM = GCodelng('M', iFrom, _tl_command, true);
+
+                sprintf_P(cmd, PSTR("G%d T%d M%d "), lG, lT, lM);
+                //TLDEBUG_PRINTLN(cmd);
+                
+                if(lG == 1 || lG == 0) {
+                    //G1
+                    SetBusyMoving(true);
+                    long lM = GCodelng('M', iFrom, _tl_command);
+                    long lF = GCodelng('F', iFrom, _tl_command);
+                    float fX = GCodelng('X', iFrom, _tl_command);
+                    float fY = GCodelng('Y', iFrom, _tl_command);
+                    float fZ = GCodelng('Z', iFrom, _tl_command);
+                    long lE = GCodelng('E', iFrom, _tl_command);
+                    long lR = GCodelng('R', iFrom, _tl_command);
+                    
+                    long lRate = 1;
+                    long lMode = 0;
+                    if(lR != -999) lRate = lR;
+                    if(lM != -999) lMode = lM;
+
+                    char sX[10],sY[10],sZ[10],sE[10],sF[10];
+                    NULLZERO(sX);
+                    NULLZERO(sY);
+                    NULLZERO(sZ);
+                    NULLZERO(sE);
+                    NULLZERO(sF);
+                    
+                    float fTemp = 0.0;
+                    if(fX > -999.0)
+                    {
+                        fTemp = fX / (float)lRate + current_position[X_AXIS] * lMode;
+                        sprintf_P(sX, PSTR("X%s "), dtostrf(fTemp, 1, 1, str_1));                
+                    }
+                    if(fY > -999.0)
+                    {
+                        fTemp = fY / (float)lRate + current_position[Y_AXIS] * lMode;
+                        sprintf_P(sY, PSTR("Y%s "), dtostrf(fTemp, 1, 1, str_1));                
+                    }
+                    if(fZ > -999.0)
+                    {
+                        fTemp = fZ / (float)lRate + current_position[Z_AXIS] * lMode;
+                        sprintf_P(sZ, PSTR("Z%s "), dtostrf(fTemp, 1, 1, str_1));                
+                    }
+                    if(lE != -999)
+                    {
+                        fTemp = (float)lE / (float)lRate;
+                        float fEPos = current_position[E_AXIS] * lM;
+                        fEPos += fTemp;
+                        sprintf_P(sE, PSTR("E%f "), fEPos);
+                    }
+                    if(lF != -999)
+                    {
+                        sprintf_P(sF, PSTR("F%d "), lF);                
+                    }
+                    feedrate_mm_s = lF / 60;
+                    sprintf_P(cmd, PSTR("G%d %s%s%s%s%s"), lG, sF, sX, sY, sZ, sE);
+                    EXECUTE_GCODE(cmd);
+                    SetBusyMoving(false);
+                } else if(lG == 28){
+                    //G28
+                    SetBusyMoving(true);
+                    long lX = GCodelng('X', iFrom, _tl_command);
+                    long lY = GCodelng('Y', iFrom, _tl_command);
+                    long lZ = GCodelng('Z', iFrom, _tl_command);
+
+                    char sX[10],sY[10],sZ[10];
+                    NULLZERO(sX);
+                    NULLZERO(sY);
+                    NULLZERO(sZ);
+
+                    if(lX > -999) {
+                        sprintf_P(sX, PSTR("X%d "), lX);
+                    }
+                    if(lY > -999) {
+                        sprintf_P(sY, PSTR("Y%d "), lY);                
+                    }
+                    if(lZ > -999) {
+                        sprintf_P(sZ, PSTR("Z%d "), lZ);                
+                    }
+
+                    sprintf_P(cmd, PSTR("G%d %s%s%s"), lG, sX, sY, sZ);
+                    EXECUTE_GCODE(cmd);
+                    SetBusyMoving(false);
+                }else if(lT == 0 || lT == 1){                    
+                    //T0 , T1
+                    SetBusyMoving(true);
+                    sprintf_P(cmd, PSTR("T%d"), lT);
+                    EXECUTE_GCODE(cmd);
+                    SetBusyMoving(false);
+                }else if(lM == 1022){
+                    //M1022
+                    SetBusyMoving(true);
+                    long lS = GCodelng('S', iFrom, _tl_command);
+                    long lT = GCodelng('T', iFrom, _tl_command);
+                    if((lS == 0 || lS == 1) && lT > -999){
+                        load_filament(lS, lT);
+                    }else if(lS == 2 || lS == 3 || lS == 4 || lS == 5){
+                        long lX = 0;
+                        long lY = 0;
+                        if(lS == 5){
+                            lX = 32;
+                            lY = Y_MAX_POS - 53;
+                        }else if(lS == 4){
+                            lX = X2_MAX_POS - 81;
+                            lY = Y_MAX_POS - 53;
+                        }else if(lS == 2){
+                            lX = 32;
+                            lY = 25;
+                        }else if(lS == 3){
+                            lX = X2_MAX_POS - 81;
+                            lY = 25;
+                        }
+                        EXECUTE_GCODE("G1 F9000");
+                        my_sleep(0.8);
+                        EXECUTE_GCODE("G1 Z5.0 F9000");
+                        my_sleep(0.8);
+                        sprintf_P(cmd, PSTR("G1 X%d Y%d"), lX, lY);
+                        EXECUTE_GCODE(cmd);
+                        my_sleep(0.8);
+                        EXECUTE_GCODE("G1 Z0");
+                        my_sleep(0.8);
+                    }else if(lS == 6){
+                        EXECUTE_GCODE("G28 XYZ");
+                        my_sleep(2.0);
+                        //EXECUTE_GCODE("G1 X-50.0 Y0");
+                        //my_sleep(1.0);
+                    }
+                    SetBusyMoving(false);
+                }else if(lM == 104){
+                    //M104
+                    long lTT = GCodelng('T', iFrom, _tl_command);
+                    long lS = GCodelng('S', iFrom, _tl_command);
+                    char sT[10],sS[10];
+                    NULLZERO(sT);
+                    NULLZERO(sS);
+                    if(lTT > -999) {
+                        sprintf_P(sT, PSTR("T%d "), lTT);                
+                    }
+                    if(lS > -999) {
+                        sprintf_P(sS, PSTR("S%d "), lS);                
+                    }
+                    sprintf_P(cmd, PSTR("M%d %s%s"), lM, sT, sS);
+                    EXECUTE_GCODE(cmd);
+                }else if(lM == 140 || lM == 220){
+                    //M220 //M140
+                    long lS = GCodelng('S', iFrom, _tl_command);
+                    char sS[10];
+                    NULLZERO(sS);
+                    if(lS > -999) {
+                        sprintf_P(sS, PSTR("S%d "), lS);
+                    }
+                    sprintf_P(cmd, PSTR("M%d %s"), lM, sS);
+                    EXECUTE_GCODE(cmd);
+                }else if(lM == 106){
+                    //M106
+                    float fS = GCodelng('S', iFrom, _tl_command);
+                    long lR = GCodelng('R', iFrom, _tl_command);
+                    char sS[10], sR[10];
+                    NULLZERO(sS);
+                    NULLZERO(sR);
+                    float fR = 1.0f;
+                    if(lR == 1){
+                        fR = 2.55f;
+                    }
+                    if(fS > -999) {
+                        long lS = fS * fR;
+                        sprintf_P(sS, PSTR("S%d "), lS);                
+                    }
+                    sprintf_P(cmd, PSTR("M%d %s"), lM, sS);                
+                    EXECUTE_GCODE(cmd);
+                }else if(lM == 107){
+                    //M107
+                    sprintf_P(cmd, PSTR("M%d"), lM);
+                    EXECUTE_GCODE(cmd);
+                }else if(lM == 21){
+                    sprintf_P(cmd, PSTR("M%d"), lM);
+                    EXECUTE_GCODE(cmd);
+                }else if(lM == 32){
+                    //M32
+                    long lF = GCodelng('F', iFrom, _tl_command);
+                    NULLZERO(cmd);
+                    if(lF > 0){
+                        sprintf_P(cmd, PSTR("M%d %s"), lM, file_name_list[lF-1]);
+                    }else{
+                        char fileNameP[13];
+                        NULLZERO(fileNameP);
+                        for(int i=0; i<12; i++){
+                            fileNameP[i] = _tl_command[iFrom + 4 + i];
+                        }
+                        if(strlen(fileNameP) > 4)
+                            sprintf_P(cmd, PSTR("M%d %s"), lM, fileNameP);
+                    }
+                    if(strlen(cmd)){
+                        TLPrintingStatus = 1;
+                        settings.plr_fn_save(lF-1);
+                        EXECUTE_GCODE(cmd);
+                    }
+                }else if(lM == 19){
+                    //M19
+                    tl_print_page_id = GCodelng('S', iFrom, _tl_command);
+                    bool wifi = false;
+                    if(GCodelng('R', iFrom, _tl_command) == 1) wifi=true;
+                    card.tl_ls(wifi);
+                }else if(lM == 1001){
+                    //M1001
+                    tl_languageID = GCodelng('S', iFrom, _tl_command);
+                    EXECUTE_GCODE(PSTR("M500"));
+                }else if(lM == 1017){
+                    //M1017
+                    tl_Sleep = GCodelng('S', iFrom, _tl_command);
+                    EXECUTE_GCODE(PSTR("M500"));
+                }else if(lM == 1024){
+                    //M1024
+                    tl_ECO_MODE = GCodelng('S', iFrom, _tl_command);
+                    EXECUTE_GCODE(PSTR("M500"));
+                }else if(lM == 1520){
+                    //M1520
+                    tl_THEME_ID = GCodelng('S', iFrom, _tl_command);
+                    EXECUTE_GCODE(PSTR("M500"));
+                }else if(lM == 1521){
+                    //M1521 Light On Off
+                    tl_Light = GCodelng('S', iFrom, _tl_command);
+                    if(tl_Light) WRITE(LED_PIN, 1); else WRITE(LED_PIN, 0);
+                    EXECUTE_GCODE(PSTR("M500"));
+                }else if(lM == 413){
+                    //M413 PLR
+                    plr_enabled = GCodelng('S', iFrom, _tl_command);
+                    EXECUTE_GCODE(PSTR("M500"));
+                }else if(lM == 1015){
+                    //M1015
+                    tl_E1_FAN_START_TEMP = GCodelng('S', iFrom, _tl_command);
+                    EXECUTE_GCODE(PSTR("M500"));
+                }else if(lM == 1023){
+                    //M1023
+                    #ifdef FILAMENT_RUNOUT_SENSOR
+                    runout.enabled = GCodelng('S', iFrom, _tl_command);
+                    EXECUTE_GCODE(PSTR("M500"));
+                    #endif
+                }else if(lM == 1014){
+                    //M1014
+                    tl_E2_FAN_START_TEMP = GCodelng('S', iFrom, _tl_command);
+                    EXECUTE_GCODE(PSTR("M500"));
+                }else if(lM == 502){
+                    //M502
+                    EXECUTE_GCODE(PSTR("M502"));
+                    delay(5);
+                    EXECUTE_GCODE(PSTR("M500"));
+                    delay(5);
+                    EXECUTE_GCODE(PSTR("M501"));
+                }else if(lM == 92){
+                    //M92
+                    long lRate = 1; //M92
+                    long lR = GCodelng('R', iFrom, _tl_command);
+                    if(lR > -999) lRate = lR;
+
+                    float fX = GCodelng('X', iFrom, _tl_command);
+                    float fY = GCodelng('Y', iFrom, _tl_command);
+                    float fZ = GCodelng('Z', iFrom, _tl_command);
+                    float fE = GCodelng('E', iFrom, _tl_command);
+
+                    char sX[10],sY[10],sZ[10],sE[10];
+
+                    NULLZERO(sX);
+                    NULLZERO(sY);
+                    NULLZERO(sZ);
+                    NULLZERO(sE);
+                    
+                    float fTemp = 0.0;
+                    if(fX > -999.0){
+                        fTemp = fX / (float)lRate ;
+                        sprintf_P(sX, PSTR("X%s "), dtostrf(fTemp, 1, 2, str_1));                
+                    }
+                    if(fY > -999.0){
+                        fTemp = fY / (float)lRate ;
+                        sprintf_P(sY, PSTR("Y%s "), dtostrf(fTemp, 1, 2, str_1));                
+                    }
+                    if(fZ > -999.0){
+                        fTemp = fZ / (float)lRate ;
+                        sprintf_P(sZ, PSTR("Z%s "), dtostrf(fTemp, 1, 2, str_1));                
+                    }
+                    if(fE != -999.0){
+                        fTemp = fE / (float)lRate ;
+                        sprintf_P(sE, PSTR("E%s "), dtostrf(fTemp, 1, 2, str_1));                
+                    }
+
+                    sprintf_P(cmd, PSTR("M%d %s%s%s%s"), lM, sX, sY, sZ, sE);
+                    EXECUTE_GCODE(cmd);
+                    EXECUTE_GCODE(PSTR("M500"));
+                    
+                }else if(lM == 605){
+                    //M605
+                    char sX[10],sR[10],sS[10];
+                    
+                    long lX = GCodelng('X', iFrom, _tl_command);
+                    NULLZERO(sX);
+                    if(lX > -999) {
+                        sprintf_P(sX, PSTR("X%d "), lX);
+                    }
+                    NULLZERO(sR);
+                    long lR = GCodelng('R', iFrom, _tl_command);
+                    if(lR > -999) {
+                        sprintf_P(sR, PSTR("R%d "), lR);
+                    }
+                    
+                    NULLZERO(sS);
+                    long lS = GCodelng('S', iFrom, _tl_command);
+                    if(lS > -999) {
+                        sprintf_P(sS, PSTR("S%d "), lS);
+                    }
+                    sprintf_P(cmd, PSTR("M%d %s%s%s"), lM, sS, sX, sR);
+                    EXECUTE_GCODE(cmd);
+                }else if(lM == 1031){                
+                    //pause from lcd or runout //M1031
+                    TJCPauseResumePrinting(true, 0);
+                }else if(lM == 1032){
+                    //Resume from lcd M1032
+                    TJCPauseResumePrinting(false, iFrom);
+                }else if(lM == 1033){
+                    //M1033
+                    //abortSDPrinting
+                    TLAbortPrinting();
+                }else if(lM == 1021){
+                    //Pre heat //M1021
+                    long lS = GCodelng('S',iFrom, _tl_command);
+                    if(lS == 0){
+                        //Pre heat ABS
+                        thermalManager.setTargetHotend(PREHEAT_2_TEMP_HOTEND, 0);
+                        thermalManager.setTargetHotend(PREHEAT_2_TEMP_HOTEND, 1);
+                        thermalManager.setTargetBed(PREHEAT_2_TEMP_BED);
+                    }else if(lS == 1){
+                        //Pre heat PLA
+                        thermalManager.setTargetHotend(PREHEAT_1_TEMP_HOTEND, 0);
+                        thermalManager.setTargetHotend(PREHEAT_1_TEMP_HOTEND, 1);
+                        thermalManager.setTargetBed(PREHEAT_1_TEMP_BED);
+                    }else if(lS == 2){
+                        thermalManager.setTargetHotend(0, 0);
+                        thermalManager.setTargetHotend(0, 1);
+                        thermalManager.setTargetBed(0);
+                        disable_all_steppers();
+                    }            
+                }else if(lM == 1011 || lM == 1012 || lM == 1013){
+                    //hoten offset 1 M1011 M1012 M1013
+                    uint32_t lR = GCodelng('R',iFrom, _tl_command);
+                    uint32_t lS = GCodelng('S',iFrom, _tl_command);
+                    
+                    if(lR == 100 && lS > 0 ){
+                        
+                        long lAxis = lM - 1011;
+                        float fOffset = (float)lS / (float)lR;
+                        if(lAxis == X_AXIS)
+                            hotend_offset[1].x = fOffset;
+                        else if(lAxis == Y_AXIS){
+                            fOffset = fOffset - 5.0f;
+                            hotend_offset[1].y = fOffset;
+                        }
+                        else if(lAxis == Z_AXIS){
+                            fOffset = fOffset;
+                            hotend_offset[1].z = fOffset;
+                        }
+                        EXECUTE_GCODE(PSTR("M500"));
+                        hotendOffsetChanged = true;
+                    }
+                }else if(lM == 1004){
+                    //M1004
+                    settings.plr_reset();//cancel power loss resume.
+                }else if(lM == 1003){
+                    //M1003
+                    settings.plr_recovery();//do power loss resume.
+                }else if(lM == 1040){
+                    //M1040
+                    #ifdef PRINT_FROM_Z_HEIGHT
+                    float fValue = GCodelng('S',iFrom, _tl_command);
+                    if (fValue == 0){
+                        PrintFromZHeightFound = true;
+                    }else{
+                        print_from_z_target = fValue / 10.0f;
+                        PrintFromZHeightFound = false;
+                    }
+                    #endif //PRINT_FROM_Z_HEIGHT
+                }else if (lM == 1050){
+                    //M1050
+                    int8_t KillFlag = GCodelng('S',iFrom, _tl_command);
+                }else if(lM > 1499 && lM < 1511){
+                    //1500-1510
+                    #if ENABLED(HAS_WIFI)
+                        if(lM == 1501){
+                            //M1501
+                            int _wifi_mode = GCodelng('S', iFrom, _tl_command);
+                            if(_wifi_mode != wifi_mode){
+                                wifi_mode = GCodelng('S', iFrom, _tl_command);
+                                EXECUTE_GCODE(PSTR("M500"));
+                            }
+                        }else if(lM == 1504){
+                            //M1504
+                            http_port = GCodelng('S', iFrom, _tl_command);
+                            sprintf_P(cmd, PSTR("M%d S%d"), lM, http_port);                        
+                            EXECUTE_GCODE(PSTR("M500"));
+                        }else if(lM == 1502){
+                            //M1502
+                            NULLZERO(wifi_ssid);
+                            for(int i=0; i<20; i++){
+                                wifi_ssid[i] = _tl_command[iFrom + 6 + i];
+                                if(wifi_ssid[i]==10){
+                                    wifi_ssid[i] = '\0';
+                                    break;
+                                }
+                            }
+                            sprintf_P(cmd, PSTR("M%d %s"), lM, wifi_ssid);
+                            EXECUTE_GCODE(PSTR("M500"));
+                        }else if(lM == 1503){
+                            //M1503
+                            NULLZERO(wifi_pswd);
+                            for(int i=0; i<20; i++){
+                                wifi_pswd[i] = _tl_command[iFrom + 6 + i]; 
+                                if(wifi_pswd[i]==10){
+                                    wifi_pswd[i] = '\0';
+                                    break;
+                                }
+                            }
+                            sprintf_P(cmd, PSTR("M%d %s"), lM, wifi_pswd);                        
+                            EXECUTE_GCODE(PSTR("M500"));
+                        }else if(lM == 1505){
+                            //M1505
+                            NULLZERO(wifi_acce_code);
+                            for(int i=0; i<20; i++){
+                                wifi_acce_code[i] = _tl_command[iFrom + 6 + i]; 
+                                if(wifi_acce_code[i]==10){
+                                    wifi_acce_code[i] = '\0';
+                                    break;
+                                }
+                            }
+                            sprintf_P(cmd, PSTR("M%d %s"), lM, wifi_acce_code);                        
+                            EXECUTE_GCODE(PSTR("M500"));
+                        }else if(lM == 1510){
+                            //M1510
+                            SPI_ConnectWIFI();
+                        }
+                    #endif //Has wifi
+                }else if(lM == 290){
+                    //M290 babysetp
+                    float fZ = GCodelng('Z', iFrom, _tl_command);
+                    if(fZ > -999.0)
+                    {
+                        sprintf_P(cmd, PSTR("M%d Z%s"), lM, dtostrf(fZ, 1, 3, str_1));                
+                        EXECUTE_GCODE(cmd);
+                    }
+                }
+                delay(100);
+            }//iLoop //lines in this command group
+        }
+    }
+
+}
 
 void tenlog_screen_update()
 {    

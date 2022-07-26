@@ -93,7 +93,7 @@
 //void tenlog_status_screen();
 void TenlogScreen_begin(long boud);
 void TenlogScreen_end();
-void TJCMessage(const int FromPageID, const int ToPageID, const int MessageID, const char OkValue[], const char CancleValue[], const char Message[]);
+void TJCMessage(const int FromPageID, const int ToPageID, const int MessageID, const char OkValue[], const char CancleValue[], const char StartValue[], const char Message[]);
 
 
 void DWN_MessageHandler(bool ISOK);
@@ -112,17 +112,8 @@ void DWN_Change_Icon(int IID0, int IID1, int ID);
 void DWN_Get_Ver();
 
 void TL_idle();
-//void tenlog_command_handler();
-//void tenlog_screen_update();
-//void tenlog_screen_update_dwn();
-//char * tenlog_status_update(bool isTJC);
 void process_command_gcode(long _tl_command[]);
 void get_command(int ScreenType=1);
-
-//void Init_TLScreen_tjc();
-//void Init_TLScreen_dwn();
-
-//void CheckTempError_tjc();
 
 void TLSTJC_println(const char s[]);
 void TLSTJC_print(const char s[]);
@@ -148,18 +139,20 @@ void TLSDPrintFinished();
 void plr_setup();
 void plr_outage();
 //void plr_outage_test();
+void tenlog_status_update(bool isTJC);
 
 void my_sleep(float time);
 void SyncFanSpeed(uint8_t FanSpeed);
 
 extern bool plr_enabled;
-
 extern unsigned long startPrintTime;
 
 extern int tl_print_page_id;
 extern int iDWNPageID;
 extern int tl_TouchScreenType;
 extern bool DWNMoving;
+extern bool TLMoving;
+extern bool tl_busy_state;
 
 extern bool dwn_is_last_page;
 extern char file_name_list[7][13];

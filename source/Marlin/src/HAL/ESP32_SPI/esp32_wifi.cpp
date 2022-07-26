@@ -209,6 +209,8 @@ void SPI_RX_Handler(){
             tlInitSetting();
         }
         if(ret[0]){
+            TJC_DELAY;
+            TLSTJC_println("sleep=0");
             sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tIP.txt=\"%s\""), ret);
             TLSTJC_println(wifi_tjc_cmd);
             sprintf_P(wifi_tjc_cmd, PSTR("setting.tIP.txt=\"%s\""), ret);
@@ -217,7 +219,7 @@ void SPI_RX_Handler(){
         ZERO(spi_rx);
     }else if(control_code == 0x01){
         SPI_ConnectWIFI();
-        
+        TLSTJC_println("sleep=0");        
         sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tIP.txt=\"Connecting...\""), ret);
         TLSTJC_println(wifi_tjc_cmd);
         sprintf_P(wifi_tjc_cmd, PSTR("setting.tIP.txt=\"Connecting...\""), ret);
@@ -232,8 +234,11 @@ void SPI_RX_Handler(){
         */        
     }else if(control_code == 0x07){     //GCode handler
         long gcode_wifi[WIFI_MSG_LENGTH];
-    	for(int i=0; i<WIFI_MSG_LENGTH; i++){
+    	for(uint8_t i=0; i<WIFI_MSG_LENGTH; i++){
             gcode_wifi[i] = ret[i];
+            //char pcmd[16];
+            //sprintf_P(pcmd, PSTR("0x%X"), gcode_wifi[i]);
+            //TLDEBUG_PRINTLN(pcmd);
         }
         process_command_gcode(gcode_wifi);
     }
@@ -291,7 +296,7 @@ void WIFI_TX_Handler(int8_t control_code){
             for(uint8_t i=0; i<17; i++){
                 send[i+25]=tl_tjc_sn[i];
             }
-            char str[16];
+            char str[20];
             sprintf_P(str, PSTR("%s V%s.%s"), TL_MODEL_STR, SHORT_BUILD_VERSION, TL_SUBVERSION);
 
             //42-59 VERSION
@@ -344,6 +349,7 @@ void SPI_ConnectWIFI()
     wifi_connected = false;
     wifiFirstSend = 0;
     for(int8_t i=0; i<7; i++){
+        delay(5);
         WIFI_TX_Handler(i);
     }
 }
@@ -360,9 +366,7 @@ void WIFI_InitSPI(void)
 {
     WIFI_InitGPIO();    //初始化几个GPIO口，
     WIFI_InitSPI1();    //初始化SPI的几个口，包括SCK、MOSI以及MISO
-    //SPI_ConnectWIFI();
     //WIFI_InitDMA();     //初始化SPI DMA
-    //Test_SPI("ABCDEFGHIJKLMNOPQRSTUVWXYZ012345");  //测试
 }
 
 ///////////zyf

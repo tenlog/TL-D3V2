@@ -4075,6 +4075,7 @@ void MarlinSettings::reset() {
       TLDEBUG_PRINTLNPAIR("TL ECO Mode:", tl_ECO_MODE);
       TLDEBUG_PRINTLNPAIR("TL Theme ID:", tl_THEME_ID);
       TLDEBUG_PRINTLNPAIR("TL Light:", tl_Light);
+      TLDEBUG_PRINTLNPAIR("Power Loss Recovery:", plr_enabled);
       TLDEBUG_PRINTLNPAIR("TL Z Home Pos:", tl_Z_HOME_POS);
       TLDEBUG_PRINTLNPAIR("TL E1 Fan Temp:", tl_E1_FAN_START_TEMP);
       TLDEBUG_PRINTLNPAIR("TL E2 Fan Temp:", tl_E2_FAN_START_TEMP);
@@ -4111,9 +4112,11 @@ void MarlinSettings::reset() {
   #if ENABLED(POWER_LOSS_RECOVERY_TL)
 
     void MarlinSettings::plr_reset(){
-      plr_fn_save(-1);
-      plr_pre_save();
-      plr_save();
+      if(plr_enabled){
+        plr_fn_save(-1);
+        plr_pre_save();
+        plr_save();
+      }
     }
 
     void MarlinSettings::plr_save(uint32_t FPos, int8_t T01, float ZPos){

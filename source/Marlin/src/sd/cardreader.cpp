@@ -393,7 +393,8 @@ void CardReader::tl_ls(bool wifi) {
           for(uint8_t i=0; i<32; i++){
             wifi_file_name[15+i]=longFilename[i];
           }
-          delay(15);
+          //0TLDEBUG_PRINTLN(longFilename);
+          delay(10);
           WIFI_TX_Handler(0x0A);
 
         }else{

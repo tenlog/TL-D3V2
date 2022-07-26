@@ -851,7 +851,7 @@ void kill(PGM_P const lcd_error/*=nullptr*/, PGM_P const lcd_component/*=nullptr
       char ErrorMessage[128];
       sprintf_P(ErrorMessage, PSTR("%s %s"), lcd_error, lcd_component);
       if(ErrorMessage[0]!='N' && ErrorMessage[1]!='D') //Do not display some special message
-        TJCMessage(1, 1, 24, "", "", ErrorMessage);
+        TJCMessage(1, 1, 24, "", "", "", ErrorMessage);
     }
   #endif
   thermalManager.disable_all_heaters();
@@ -1275,19 +1275,6 @@ void setup() {
     SETUP_RUN(controllerFan.setup());
   #endif
 
-  // UI must be initialized before EEPROM
-  // (because EEPROM code calls the UI).
-
-  #if ENABLED(TENLOG_TOUCH_LCD)
-    //by zyf
-  #else
-    SETUP_RUN(ui.init());
-    #if BOTH(HAS_WIRED_LCD, SHOW_BOOTSCREEN)
-      SETUP_RUN(ui.show_bootscreen());
-      const millis_t bootscreen_ms = millis();
-    #endif
-    SETUP_RUN(ui.reset_status());     // Load welcome message early. (Retained if no errors exist.)
-  #endif
 
   #if PIN_EXISTS(SAFE_POWER)
     #if HAS_DRIVER_SAFE_POWER_PROTECT
@@ -1609,16 +1596,20 @@ void setup() {
 	SERIAL_ECHOLNPGM("=============SETUP FINISH=============\n");
 
   #if ENABLED(POWER_LOSS_RECOVERY_TL)
-  uint32_t isplr = settings.plr_is_pl();
-  if(isplr > 2048){
-    //TLDEBUG_PRINTLNPAIR("Power loss found! Point=", isplr);
-    TlIsPLR();
-  }else{
-    if(tl_TouchScreenType == 1){
-      uint8_t lastPageID = TLTJC_GetLastPage();
-      if(lastPageID != 8)
-        TlPageMain();
-    }
+    if(plr_enabled){
+      uint32_t isplr = settings.plr_is_pl();
+      if(isplr > 2048){
+        //TLDEBUG_PRINTLNPAIR("Power loss found! Point=", isplr);
+        TlIsPLR();
+      }else{
+        if(tl_TouchScreenType == 1){
+          uint8_t lastPageID = TLTJC_GetLastPage();
+          if(lastPageID != 8)
+            TlPageMain();
+        }
+        }
+    }else{
+      TlPageMain();
     }
   #endif
 

@@ -1084,7 +1084,7 @@ FORCE_INLINE void segment_idle(millis_t &next_idle_ms) {
         case DXC_MIRRORED_MODE:
         case DXC_DUPLICATION_MODE:
           if (active_extruder == 0) {
-            current_position.z+=15;
+            current_position.z+=15.0;
             line_to_current_position(planner.settings.max_feedrate_mm_s[Z_AXIS]);
 
             xyze_pos_t new_pos = current_position;
@@ -1094,9 +1094,9 @@ FORCE_INLINE void segment_idle(millis_t &next_idle_ms) {
               new_pos.x = inactive_extruder_x;            
 
             // Move duplicate extruder into correct duplication position.
-            //if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("Set planner X", inactive_extruder_x, " ... Line to X", new_pos.x);
-            //TLDEBUG_PRINTLNPAIR("Set planner X", inactive_extruder_x, " ... Line to X", new_pos.x);
+            TLDEBUG_PRINTLNPAIR("Set planner X", inactive_extruder_x, " ... Line to X", new_pos.x);
 
+            set_duplication_enabled(false);
             planner.set_position_mm(inactive_extruder_x, current_position.y, new_pos.z, current_position.e); //new pos by zyf
             if (!planner.buffer_line(new_pos, planner.settings.max_feedrate_mm_s[X_AXIS] * 0.35f, 1)) break; //move too fast, *0.35 by zyf  
 
@@ -1105,9 +1105,11 @@ FORCE_INLINE void segment_idle(millis_t &next_idle_ms) {
 
             set_duplication_enabled(true);
             idex_set_parked(false);
-            if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("set_duplication_enabled(true)\nidex_set_parked(false)");
+            //if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("set_duplication_enabled(true)\nidex_set_parked(false)");
+            TLDEBUG_PRINTLN("set_duplication_enabled(true)\nidex_set_parked(false)");
           }
-          else if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Active extruder not 0");
+          else TLDEBUG_PRINTLN("Active extruder not 0");
+          //else if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Active extruder not 0");
           break;
       }
     }

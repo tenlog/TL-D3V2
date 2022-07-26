@@ -87,11 +87,13 @@
         */  //why ? by zyf
 
         idex_set_mirrored_mode(true);
+        /*
         float x_jog = current_position.x - .1f;
         for (uint8_t i = 2; --i;) {
           planner.buffer_line(x_jog, current_position.y, current_position.z, current_position.e, feedrate_mm_s, 0);
           x_jog += .1f;
         }
+        */
         update_software_endstops(X_AXIS); //by zyf
         SyncFanSpeed(thermalManager.common_fan_speed);//by zyf
         return;

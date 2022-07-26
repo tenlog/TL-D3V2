@@ -33,7 +33,7 @@
 #include "../sd/cardreader.h" //for move back by zyf in line 1265
 
 #if ENABLED(TL_DEBUG)
-#define DEBUG_TOOL_CHANGE
+//#define DEBUG_TOOL_CHANGE
 #endif
 
 #define DEBUG_OUT ENABLED(DEBUG_TOOL_CHANGE)

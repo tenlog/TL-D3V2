@@ -131,11 +131,14 @@
  * respectfully request that you retain the unmodified Marlin boot screen.
  */
 
+
 //TL Medels and version
 //#define TENLOG_H2P
 #define TENLOG_D3P
 //#define TENLOG_D5P
 //#define TENLOG_D6P
+
+//#define TL_DEBUG
 
 #define TENLOG_TOUCH_LCD
 #define PRINT_FROM_Z_HEIGHT
@@ -147,7 +150,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "015"
+#define TL_SUBVERSION "019"
 
 // The size of the printable area
 #if defined(TENLOG_D3P) 
@@ -172,17 +175,15 @@
   #define Z_LENGTH   610
 #endif
 
-#define TL_DEBUG
-
 #if EITHER(ESP8266_WIFI, ESP32_WIFI)
   #define HAS_WIFI
 #endif
 
 #if ENABLED(HAS_WIFI)
-  #define WIFI_DEFAULT_SSID "TENLOG-AP"
-  #define WIFI_DEFAULT_PSWD "TENLOG"
-  #define WIFI_DEFAULT_ACCE_CODE "TENLOG"
-  #define WIFI_DEFAULT_MODE 1
+  #define WIFI_DEFAULT_SSID "TL-3D"
+  #define WIFI_DEFAULT_PSWD "12345678"
+  #define WIFI_DEFAULT_ACCE_CODE "12345"
+  #define WIFI_DEFAULT_MODE 2
   #define WIFI_DEFAULT_PORT 80
 #endif
 
@@ -1823,7 +1824,7 @@
 
 #if ENABLED(NOZZLE_PARK_FEATURE)
   // Specify a park position as { X, Y, Z_raise }
-  #define NOZZLE_PARK_POINT {0, 0, 15 }
+  #define NOZZLE_PARK_POINT {-40, 0, 15 }
   //#define DO_PARK_X                     //by zyf
   //#define DO_PARK_Y                     //by zyf
   //#define NOZZLE_PARK_X_ONLY          // X move only is required to park
