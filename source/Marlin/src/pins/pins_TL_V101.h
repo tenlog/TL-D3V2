@@ -115,8 +115,8 @@
   #define Z_STEP_PIN         PE13
   #define Z_DIR_PIN          PE12
   #define HEATER_BED_PIN     PE10 
-  #define FAN1_PIN           PE8  
-  #define FAN3_PIN           PE7 
+  #define FAN1_PIN           PE8  //FC2
+  #define FAN3_PIN           PE7  //FZ2
 #endif
 
 #define Z2_ENABLE_PIN       X_ENABLE_PIN

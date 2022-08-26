@@ -90,11 +90,11 @@
 
 #define EXECUTE_GCODE(X)  gcode.process_subcommands_now(X)
 
+
 //void tenlog_status_screen();
 void TenlogScreen_begin(long boud);
 void TenlogScreen_end();
 void TJCMessage(const int FromPageID, const int ToPageID, const int MessageID, const char OkValue[], const char CancleValue[], const char StartValue[], const char Message[]);
-
 
 void DWN_MessageHandler(bool ISOK);
 void DWN_Message(int MsgID, const char sMsg[], bool PowerOff);
@@ -144,6 +144,13 @@ void tenlog_status_update(bool isTJC);
 void my_sleep(float time);
 void SyncFanSpeed(uint8_t FanSpeed);
 
+//flash read write
+#define FLASH_READ_ADDRESS 0x00070000
+uint32_t flash_read_one(uint32_t address);
+void flash_read(uint32_t *readData);
+void flash_write(uint32_t *buffer);
+void flash_earea();
+
 extern bool plr_enabled;
 extern unsigned long startPrintTime;
 
@@ -163,6 +170,8 @@ extern char tl_tjc_sn[18];
 extern long tl_command[256];
 
 extern bool hotendOffsetChanged;
+extern bool plr1stZ;
+extern bool plr1stE;
 
 //static float feedrate = 1500.0, next_feedrate, saved_feedrate;
 

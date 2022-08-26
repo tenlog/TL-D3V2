@@ -1620,7 +1620,7 @@ void Temperature::manage_heater() {
       if(raw<1024*OVERSAMPLENR && 0){                /* by zyf */         \
         char tx[50];                                                      \
         sprintf_P(tx, "raw:%d, v:%d, C:%0.2f", raw/OVERSAMPLENR, v00/OVERSAMPLENR, Cs);             \
-        TLDEBUG_PRINTLN(tx);                                                \
+        /*TLDEBUG_PRINTLN(tx);*/                                          \
       }                                                                   \
       return Cs;                                                          \
     }                                                                     \

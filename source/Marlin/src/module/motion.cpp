@@ -983,6 +983,17 @@ FORCE_INLINE void segment_idle(millis_t &next_idle_ms) {
       }
     #endif // HAS_MESH
 
+    //by zyf-tenlog
+    if(plr1stZ  && card.flag.sdprinting){
+      if(destination.z > 0.0){
+        TLDEBUG_PRINTLNPAIR("dz:", destination.z);
+        current_position.z = destination.z;
+        planner.set_position_mm(current_position);
+        plr1stZ = false;
+        return false;
+      }
+    }
+
     planner.buffer_line(destination, scaled_fr_mm_s, active_extruder);
     return false; // caller will update current_position
   }
@@ -1162,9 +1173,10 @@ void prepare_line_to_destination() {
         }
       #endif
 
-      if (ignore_e || current_position.e < -66.00) { //by tenlog-zyf 
+      if (ignore_e || plr1stE) { //by zyf tenlog 
         current_position.e = destination.e;       // Behave as if the E move really took place
         planner.set_e_position_mm(destination.e); // Prevent the planner from complaining too
+        if(plr1stE) plr1stE = false;
       }
     }
   #endif // PREVENT_COLD_EXTRUSION || PREVENT_LENGTHY_EXTRUDE

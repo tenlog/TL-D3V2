@@ -4129,7 +4129,7 @@ void MarlinSettings::reset() {
         //PLR_EEPROM_WRITE(iTPos0);
         //PLR_EEPROM_WRITE(iTPos1);
         PLR_EEPROM_WRITE(T01);
-        PLR_EEPROM_WRITE(ZPos);
+        //PLR_EEPROM_WRITE(ZPos);
         //PLR_EEPROM_WRITE(iFan);
 
         //int32_t saveTime = millis() - startSave;
@@ -4217,7 +4217,7 @@ void MarlinSettings::reset() {
       
       PLR_EEPROM_READ(lFPos);
       PLR_EEPROM_READ(iT01);
-      PLR_EEPROM_READ(fZPos);
+      //PLR_EEPROM_READ(fZPos);
 
       TLPrintingStatus = 2;
       
@@ -4245,10 +4245,6 @@ void MarlinSettings::reset() {
 
       //handling bed
       sprintf_P(cmd, PSTR("M190 S%i"), iBPos);
-      gcode.process_subcommands_now(cmd);
-      
-      //handling fan
-      sprintf_P(cmd, PSTR("M106 S%i"), iFan);
       gcode.process_subcommands_now(cmd);
       
       //handling headers
@@ -4280,6 +4276,10 @@ void MarlinSettings::reset() {
           }
           gcode.process_subcommands_now(PSTR("T0"));
       }
+      //handling fan
+      sprintf_P(cmd, PSTR("M106 S%i"), iFan);
+      gcode.process_subcommands_now(cmd);
+      
       //homging XY
       gcode.process_subcommands_now(PSTR("G28 XY"));
 
@@ -4287,13 +4287,15 @@ void MarlinSettings::reset() {
       
       feedrate_mm_s = i_feedrate / 60.0;
       
-      sprintf_P(cmd, PSTR("G92.9 Z%.2f "), fZPos);
-      gcode.process_subcommands_now(cmd);
+      //sprintf_P(cmd, PSTR("G92.9 Z%.2f "), fZPos);
+      //gcode.process_subcommands_now(cmd);
 
       //current_position[Z_AXIS] = -66.66;
       //planner.set_position_mm(current_position);
-      current_position[E_AXIS] = -66.66;
-      planner.set_e_position_mm(current_position.e);
+      //current_position[E_AXIS] = -66.66;
+      //planner.set_e_position_mm(current_position.e);
+      plr1stE = true;
+      plr1stZ = true;
 
       sprintf_P(cmd, PSTR("M24 S%u"), lFPos);
       gcode.process_subcommands_now(cmd);
