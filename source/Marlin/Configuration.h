@@ -44,10 +44,10 @@
 
 //TL Medels and version
 //#define TENLOG_H2
-//#define TENLOG_D3
+#define TENLOG_D3
 //#define TENLOG_M3
 //#define TENLOG_D5
-#define TENLOG_D6
+//#define TENLOG_D6
 
 //#define TL_DEBUG
 
