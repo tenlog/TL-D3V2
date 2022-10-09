@@ -68,6 +68,7 @@ void GcodeSuite::M301() {
 
     thermalManager.updatePID();
 
+    #ifndef ELECTROMAGNETIC_VALUE
     SERIAL_ECHO_START();
     #if ENABLED(PID_PARAMS_PER_HOTEND)
       SERIAL_ECHOPAIR(" e:", e); // specify extruder in serial output
@@ -81,8 +82,8 @@ void GcodeSuite::M301() {
     #if ENABLED(PID_FAN_SCALING)
       SERIAL_ECHOPAIR(" f:", PID_PARAM(Kf, e));
     #endif
-
     SERIAL_EOL();
+    #endif
   }
   else
     SERIAL_ERROR_MSG(STR_INVALID_EXTRUDER);

@@ -801,13 +801,15 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
     };
 
     uint8_t fanState = 0;
-    HOTEND_LOOP()
-      #ifdef TENLOG_TOUCH_LCD
-      if (temp_hotend[e].celsius >= tl_E1_FAN_START_TEMP && e==0 || temp_hotend[e].celsius >= tl_E2_FAN_START_TEMP && e==1)
-      #else
-      if (temp_hotend[e].celsius >= EXTRUDER_AUTO_FAN_TEMPERATURE)
-      #endif
-        SBI(fanState, pgm_read_byte(&fanBit[e]));
+    #ifndef ELECTROMAGNETIC_VALUE
+      HOTEND_LOOP()
+        #ifdef TENLOG_TOUCH_LCD
+        if (temp_hotend[e].celsius >= tl_E1_FAN_START_TEMP && e==0 || temp_hotend[e].celsius >= tl_E2_FAN_START_TEMP && e==1)
+        #else
+        if (temp_hotend[e].celsius >= EXTRUDER_AUTO_FAN_TEMPERATURE)
+        #endif
+          SBI(fanState, pgm_read_byte(&fanBit[e]));
+    #endif
 
     #if HAS_AUTO_CHAMBER_FAN
       if (temp_chamber.celsius >= CHAMBER_AUTO_FAN_TEMPERATURE)
@@ -935,7 +937,7 @@ inline void loud_kill(PGM_P const lcd_msg, const heater_id_t heater_id) {
 
 void Temperature::_temp_error(const heater_id_t heater_id, PGM_P const serial_msg, PGM_P const lcd_msg) {
   static uint8_t killed = 0;
-  TLDEBUG_PRINTLN("TL MAX TEMP Error!");
+  TLECHO_PRINTLN("MAX TEMP Error!");
   if (IsRunning() && TERN1(BOGUS_TEMPERATURE_GRACE_PERIOD, killed == 2)) {
     SERIAL_ERROR_START();
     SERIAL_ECHOPGM_P(serial_msg);

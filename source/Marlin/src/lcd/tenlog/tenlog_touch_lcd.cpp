@@ -459,13 +459,17 @@ void tlInitSetting(){
         TLSTJC_println(cmd);
         sprintf_P(cmd, PSTR("wifisetting.tAccessCode.txt=\"%s\""), wifi_acce_code);
         TLSTJC_println(cmd);
+        
+        #ifndef ELECTROMAGNETIC_VALUE
         sprintf_P(cmd, PSTR("main.vTempMax.val=%d"), HEATER_0_MAXTEMP - HOTEND_OVERSHOOT);
         TLSTJC_println(cmd);
         wifi_printer_settings[28] = (HEATER_0_MAXTEMP-HOTEND_OVERSHOOT) / 0x100;
         wifi_printer_settings[29] = (HEATER_0_MAXTEMP-HOTEND_OVERSHOOT) % 0x100;
+        wifi_printer_settings[30] = (BED_MAXTEMP - BED_OVERSHOOT);
         sprintf_P(cmd, PSTR("main.vBedMax.val=%d"), BED_MAXTEMP - BED_OVERSHOOT);
         TLSTJC_println(cmd);
-        wifi_printer_settings[30] = (BED_MAXTEMP - BED_OVERSHOOT);
+        #endif
+        
         sprintf_P(cmd, PSTR("main.vXMax.val=%d"), lOffsetX / 10);
         TLSTJC_println(cmd);
         wifi_printer_settings[31] = (lOffsetX/10)/0x100;
@@ -685,7 +689,7 @@ float GCodelng(const char Header, const long FromPostion, long _command[], const
         _tl_command[i] = _command[i];
     }
 
-    for (int i = FromPostion; i < 254 && !bIsEnd; i++)
+    for (int i = FromPostion; i < 255 && !bIsEnd; i++)
     {
         //0-9 . -
         if((_tl_command[i+1] < 58 && _tl_command[i+1] > 47) || _tl_command[i+1]==45 || _tl_command[i+1]==46)
@@ -760,11 +764,12 @@ void TLAbortPrinting(){
     TLPrintingStatus = 0;
 
     TlPageMain();
-
+		
+		#if HAS_FAN
     thermalManager.setTargetHotend(0, 0);
     thermalManager.setTargetHotend(0, 1);
     thermalManager.setTargetBed(0);
-
+		#endif
 }
 
 void TLFilamentRunout(){
@@ -827,14 +832,17 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
             TLSTJC_println("reload.vaFromPageID.val=6");
             sprintf_P(cmd, PSTR("reload.sT1T2.txt=\"%d\""), active_extruder + 1);
             TLSTJC_println(cmd);
+						#ifndef ELECTROMAGNETIC_VALUE
             sprintf_P(cmd, PSTR("reload.vaTargetTemp0.val=%d"), int(thermalManager.degTargetHotend(0) + 0.5f));
             TLSTJC_println(cmd);
             sprintf_P(cmd, PSTR("reload.vaTargetTemp1.val=%d"), int(thermalManager.degTargetHotend(1) + 0.5f));
             TLSTJC_println(cmd);
             sprintf_P(cmd, PSTR("reload.vaTargetBed.val=%d"), int(thermalManager.degTargetBed() + 0.5f));
             TLSTJC_println(cmd);
+						#endif //!ELECTROMAGNETIC_VALUE
             sprintf_P(cmd, PSTR("reload.vaMode.val=%d"), dual_x_carriage_mode);
             TLSTJC_println(cmd);
+            
             if (duplicate_extruder_x_offset != DEFAULT_DUPLICATION_X_OFFSET) {
                 sprintf_P(cmd, PSTR("reload.vaMode2Offset.val=%d"), duplicate_extruder_x_offset);
                 TLSTJC_println(cmd);
@@ -843,8 +851,10 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
             }
 
             if(FilaRunout){
+								#if HAS_FAN
                 thermalManager.setTargetHotend(0,0);
                 thermalManager.setTargetHotend(0,1);
+								#endif
             }            
 
             queue.inject("G27");
@@ -982,9 +992,9 @@ void load_filament(int LoadUnload, int TValue)
     }
 }
 
-
 void process_command_dwn()
 {
+    /*
     char str_1[16], cmd[20], sC[10];
     if (tl_command[0] == 0x5A && tl_command[1] == 0xA5)
     { //Header Good
@@ -1071,18 +1081,18 @@ void process_command_dwn()
                     EXECUTE_GCODE("M500");
                     break;
                 case 0x23:
-                    /*
-                    tl_FAN2_VALUE = lData;
-                    if (tl_FAN2_VALUE > 100)
-                        tl_FAN2_VALUE = 80;
-                    EXECUTE_GCODE("M500");
-                    */
+                    
+                    //tl_FAN2_VALUE = lData;
+                    //if (tl_FAN2_VALUE > 100)
+                    //    tl_FAN2_VALUE = 80;
+                    //EXECUTE_GCODE("M500");
+                    
                     break;
                 case 0x22:
-                    /*
-                    tl_FAN2_START_TEMP = lData;
-                    EXECUTE_GCODE("M500");
-                    */
+                    
+                    //tl_FAN2_START_TEMP = lData;
+                    //EXECUTE_GCODE("M500");
+                    
                     break;
                 case 0x52:
                     {
@@ -1132,10 +1142,12 @@ void process_command_dwn()
                 {
                 case 0x07:
                 case 0x75:
+                    #if HAS_FAN
                     if (thermalManager.fan_speed[0] > 0)
                         EXECUTE_GCODE("M107");
                     else
                         EXECUTE_GCODE("M106 S255");
+                    #endif
                     break;
                 case 0x02:
                 case 0x17:
@@ -1385,17 +1397,17 @@ void process_command_dwn()
                     EXECUTE_GCODE(PSTR("M500"));
                     break;
                 case 0x25:
-                    /*
+                    
                     //it is back from settings page. not in use any more
-                    if (!card.isFileOpen())
-                    {
-                        DWN_Page(DWN_P_MAIN);
-                    }
-                    else
-                    {
-                        DWN_Page(DWN_P_PRINTING);
-                    }
-                    */
+                    //if (!card.isFileOpen())
+                    //{
+                    //    DWN_Page(DWN_P_MAIN);
+                    //}
+                    //else
+                    //{
+                    //    DWN_Page(DWN_P_PRINTING);
+                    //}
+                    
                     break;
 #ifdef HAS_PLR_MODULE
                 case 0x23:
@@ -1431,45 +1443,45 @@ void process_command_dwn()
                     dwnMessageID = -1;
                     break;                    
                 case 0xA6:
-                    /*
+                    
                     //in page reload, not in use any more
-                    if (degTargetHotend(0) > 50)
-                        command_M104(0, 0);
-                    else
-                        command_M104(0, pause_T0T);
-                    */
+                    //if (degTargetHotend(0) > 50)
+                    //    command_M104(0, 0);
+                    //else
+                    //    command_M104(0, pause_T0T);
+                    
                     break;
                 case 0xA7:
-                    /*
-                    if (degTargetHotend(0) > 50)
-                        command_M104(1, 0);
-                    else
-                        command_M104(1, pause_T1T);
-                    */
+                    
+                    //if (degTargetHotend(0) > 50)
+                    //    command_M104(1, 0);
+                    //else
+                    //    command_M104(1, pause_T1T);
+                    
                     break;
                 case 0xA1:
-                    /*
+                    
                     //back from relaod page
-                    if (card.isFileOpen())
-                    {
-                        DWN_Page(DWN_P_PRINTING);
-                        if (pause_T0T1 == 1)
-                            enquecommand_P(PSTR("T1"));
-                        else
-                            enquecommand_P(PSTR("T0"));
+                    //if (card.isFileOpen())
+                    //{
+                    //    DWN_Page(DWN_P_PRINTING);
+                    //    if (pause_T0T1 == 1)
+                    //        enquecommand_P(PSTR("T1"));
+                    //    else
+                    //        enquecommand_P(PSTR("T0"));
 
-                        _delay_ms(100);
+                    //    _delay_ms(100);
 
-                        if (pause_BedT > 0)
-                        {
-                            String strCommand = "M140 S" + String(pause_BedT);
-                            char *_Command = strCommand.c_str();
-                            enquecommand(_Command);
-                        }
-                    }
-                    else
-                        DWN_Page(DWN_P_TOOLS);
-                    */
+                    //    if (pause_BedT > 0)
+                    //    {
+                    //        String strCommand = "M140 S" + String(pause_BedT);
+                    //        char *_Command = strCommand.c_str();
+                    //        enquecommand(_Command);
+                    //    }
+                    //}
+                    //else
+                    //    DWN_Page(DWN_P_TOOLS);
+                    
                     break;
                 case 0xA2:
                     load_filament(0, 0);
@@ -1579,25 +1591,25 @@ void process_command_dwn()
                 }
                 break;
                 case 0xE2:
-                    /*
-                    long lCal = CalAtv(gsDeviceID);
-                    if (lCal == lAtvCode)
-                    {
-                        DWN_Text(0x1002, 22, gsDeviceID, false);
-                        _delay_ms(5);
-                        DWN_NORFData(0x000002, 0x1002, 22, true);
-                        _delay_ms(500);
-                        DWN_Data(0x1022, lAtvCode, 4);
-                        _delay_ms(5);
-                        DWN_NORFData(0x000022, 0x1022, 2, true);
-                        _delay_ms(500);
-                        bAtv = true;
-                    }
-                    else
-                    {
-                        DWN_Data(0x6066, 6666, 4);
-                    }
-                    */
+                    
+                    //long lCal = CalAtv(gsDeviceID);
+                    //if (lCal == lAtvCode)
+                    //{
+                    //    DWN_Text(0x1002, 22, gsDeviceID, false);
+                    //    _delay_ms(5);
+                    //    DWN_NORFData(0x000002, 0x1002, 22, true);
+                    //    _delay_ms(500);
+                    //    DWN_Data(0x1022, lAtvCode, 4);
+                    //    _delay_ms(5);
+                    //    DWN_NORFData(0x000022, 0x1022, 2, true);
+                    //    _delay_ms(500);
+                    //    bAtv = true;
+                    //}
+                    //else
+                    //{
+                    //    DWN_Data(0x6066, 6666, 4);
+                    //}
+                    
                     break;
                 }
             }
@@ -1605,6 +1617,7 @@ void process_command_dwn()
         tl_command[0] = 0x00;
         tl_command[1] = 0x00;
     }
+    */
 }
 
 void DWN_Message(const int MsgID, const char sMsg[], const bool PowerOff){
@@ -1746,6 +1759,7 @@ void DWN_MessageHandler(const bool ISOK){
 }
 
 void Setting_ECO_MODE(){
+		#ifndef ELECTROMAGNETIC_VALUE
     static bool bECOSeted;
     static int iECOBedT;
     if (current_position[Z_AXIS] >= ECO_HEIGHT && !bECOSeted && card.flag.sdprinting && tl_ECO_MODE == 1)
@@ -1764,12 +1778,12 @@ void Setting_ECO_MODE(){
     {
         bECOSeted = false;
     }
-
+		#endif
 }
 
 void tenlog_screen_update_dwn()
 {
-
+#ifdef SUPPORT_DWN
     //if (!bAtv)
     //    return;
     if (current_position[X_AXIS] < 0)
@@ -1818,12 +1832,18 @@ void tenlog_screen_update_dwn()
     DWN_DELAY;
 
     //BOF For old version UI
+    #if HAS_FAN
     int iFan = (int)((float)thermalManager.fan_speed[0] / 256.0f * 100.0f + 0.5f);
-
+    #else
+    int iFan = 0;
+    #endif
+    
+    #if HAS_FAN
     if (thermalManager.fan_speed[0] == 0)
         DWN_Data(0x8006, 0, 2);
     else
         DWN_Data(0x8006, 1, 2);
+    #endif
 
     DWN_DELAY;
     DWN_Data(0x600A, iFan, 2);
@@ -1906,7 +1926,7 @@ void tenlog_screen_update_dwn()
     DWN_Data(0x8805, active_extruder, 2);
     DWN_DELAY;
     
-    /*
+    
     if (gsM117 != "" && gsM117 != "Printing...")
     { 
         //Do not display "Printing..."
@@ -1961,7 +1981,7 @@ void tenlog_screen_update_dwn()
 
     if (iBeepCount >= 0)
     {
-#if (BEEPER > 0)
+    #if (BEEPER > 0)
         if (iBeepCount % 2 == 1)
         {
             WRITE(BEEPER, BEEPER_ON);
@@ -1970,7 +1990,7 @@ void tenlog_screen_update_dwn()
         {
             WRITE(BEEPER, BEEPER_OFF);
         }
-#endif
+    #endif
         iBeepCount--;
     }
     if (!bInited)
@@ -1978,6 +1998,7 @@ void tenlog_screen_update_dwn()
         //Init_TLScreen_dwn();
         bInited = true;
     }
+#endif //support dwn
 }
 
 void tenlog_status_update(bool isTJC)
@@ -1987,15 +2008,28 @@ void tenlog_status_update(bool isTJC)
     const int16_t ln1  = current_position[Y_AXIS] * 10.0f;
     const int16_t ln2  = current_position[Z_AXIS] * 10.0f;
     const int16_t ln3  = 0;
+		
+		#ifdef ELECTROMAGNETIC_VALUE
+    const int16_t ln4  = 0;
+    const int16_t ln5  = 0;
+    const int16_t ln6  = 0;
+    const int16_t ln7  = 0;
+    const int8_t ln8  = 0;
+    const int8_t ln9  = 0;		
+		#else
     const int16_t ln4  = int(thermalManager.degTargetHotend(0) + 0.5f);
-
     const int16_t ln5  = int(thermalManager.degHotend(0) + 0.5f);
     const int16_t ln6  = int(thermalManager.degTargetHotend(1) + 0.5f);
     const int16_t ln7  = int(thermalManager.degHotend(1) + 0.5f);
     const int8_t ln8  = int(thermalManager.degTargetBed() + 0.5f);
     const int8_t ln9  = int(thermalManager.degBed() + 0.5f);
+		#endif
+		
+    #if HAS_FAN
     const int8_t ln10 = (float)thermalManager.fan_speed[active_extruder] * 100.0f / 256.0f + 0.5f;
-    
+    #else
+    const int8_t ln10 = 0;
+    #endif    
     const int16_t ln11 = feedrate_percentage;
 
     int8_t ln12 = card.flag.sdprinting;
@@ -2029,10 +2063,16 @@ void tenlog_status_update(bool isTJC)
     if(ln17 == 0 && TLPrintingStatus == 2){
         ln17 = 1;
     }
+		#if HAS_HOTEND
     const int8_t ln18 = thermalManager.isHeatingHotend(0);
     const int8_t ln19 = thermalManager.isHeatingHotend(1);
     const int8_t ln20 = thermalManager.isHeatingBed();
-    
+		#else
+    const int8_t ln18 = 0;
+    const int8_t ln19 = 0;
+    const int8_t ln20 = 0;
+		#endif
+
     if((wifi_connected || wifiFirstSend < 2000) && !isTJC){
         wifiFirstSend ++;
         
@@ -2047,6 +2087,7 @@ void tenlog_status_update(bool isTJC)
         wifi_printer_status[4] = ln2 / 0x100;
         wifi_printer_status[5] = ln2 % 0x100;
         
+        #ifndef ELECTROMAGNETIC_VALUE
         wifi_printer_status[6] = (uint16_t)(thermalManager.degTargetHotend(0) * 100.0) / 0x100;
         wifi_printer_status[7] = (uint16_t)(thermalManager.degTargetHotend(0) * 100.0) % 0x100;
         
@@ -2061,9 +2102,29 @@ void tenlog_status_update(bool isTJC)
         
         wifi_printer_status[14] = (uint16_t)(thermalManager.degTargetBed() * 100.0) / 0x100;
         wifi_printer_status[15] = (uint16_t)(thermalManager.degTargetBed() * 100.0) % 0x100;
-        
+
         wifi_printer_status[16] = (uint16_t)(thermalManager.degBed() * 100.0) / 0x100;
         wifi_printer_status[17] = (uint16_t)(thermalManager.degBed() * 100.0) % 0x100;
+        #else
+        wifi_printer_status[6] = 0;
+        wifi_printer_status[7] = 0;
+
+        wifi_printer_status[8] = 0;
+        wifi_printer_status[9] = 0;
+
+        wifi_printer_status[10] = 0;
+        wifi_printer_status[11] = 0;
+
+        wifi_printer_status[12] = 0;
+        wifi_printer_status[13] = 0;
+
+        wifi_printer_status[14] = 0;
+        wifi_printer_status[15] = 0;
+
+        wifi_printer_status[16] = 0;
+        wifi_printer_status[17] = 0;
+       #endif
+
         
         wifi_printer_status[18] = ln10;
         wifi_printer_status[19] = ln11;
@@ -2527,6 +2588,7 @@ void process_command_gcode(long _tl_command[]) {
                     TLAbortPrinting();
                 }else if(lM == 1021){
                     //Pre heat //M1021
+                    #ifndef ELECTROMAGNETIC_VALUE
                     long lS = GCodelng('S',iFrom, _tl_command);
                     if(lS == 0){
                         //Pre heat ABS
@@ -2543,7 +2605,8 @@ void process_command_gcode(long _tl_command[]) {
                         thermalManager.setTargetHotend(0, 1);
                         thermalManager.setTargetBed(0);
                         disable_all_steppers();
-                    }            
+                    }
+                    #endif
                 }else if(lM == 1011 || lM == 1012 || lM == 1013){
                     //hoten offset 1 M1011 M1012 M1013
                     uint32_t lR = GCodelng('R',iFrom, _tl_command);
@@ -2640,7 +2703,7 @@ void process_command_gcode(long _tl_command[]) {
                             EXECUTE_GCODE(PSTR("M500"));
                         }else if(lM == 1510){
                             //M1510
-                            SPI_ConnectWIFI();
+                            SPI_RestartWIFI();
                         }
                     #endif //Has wifi
                 }else if(lM == 290){
@@ -2682,7 +2745,6 @@ void tenlog_wifi_update()
     {
         return;
     }
-
     lWLastUpdateTime=millis();
     tenlog_status_update(false);
         
@@ -2703,8 +2765,7 @@ void tenlog_command_handler()
     }
 }
 
-void TL_idle()
-{
+void TL_idle(){
     tenlog_command_handler();
     tenlog_screen_update();
     #if ENABLED(HAS_WIFI)
@@ -2990,7 +3051,9 @@ void plr_outage() {
             uint32_t sdPos = card.getIndex();
             float _duplicate_extruder_x_offset = duplicate_extruder_x_offset;
             if(_duplicate_extruder_x_offset == DEFAULT_DUPLICATION_X_OFFSET) _duplicate_extruder_x_offset = 0.0;
+            #ifndef ELECTROMAGNETIC_VALUE
             settings.plr_pre_save(sdPos, thermalManager.degTargetBed(), thermalManager.degTargetHotend(0), thermalManager.degTargetHotend(1), dual_x_carriage_mode, _duplicate_extruder_x_offset, uint16_t(feedrate_mm_s * 60.0f));
+            #endif
         }
     }
 }
@@ -3034,18 +3097,24 @@ uint8_t TLTJC_GetLastPage(){
     return lastPageID;
 }
 
-void SyncFanSpeed(uint8_t FanSpeed){
-  #if ENABLED(DUAL_X_CARRIAGE)      
-    if (idex_is_duplicating()){ 
-      thermalManager.set_fan_speed(0, FanSpeed);
-      thermalManager.set_fan_speed(1, FanSpeed);
-    }
-    else{
-      thermalManager.set_fan_speed(active_extruder, FanSpeed);      
-      thermalManager.set_fan_speed(1 - active_extruder, 0);      
-    }
-  #else
-      thermalManager.set_fan_speed(0, FanSpeed);
+void SyncFanSpeed(){
+  #if HAS_FAN
+    #if ENABLED(DUAL_X_CARRIAGE)      
+        if (idex_is_duplicating()){ 
+        thermalManager.set_fan_speed(0, thermalManager.common_fan_speed);
+        thermalManager.set_fan_speed(1, thermalManager.common_fan_speed);
+        }
+        else{
+        thermalManager.set_fan_speed(active_extruder, thermalManager.common_fan_speed);      
+        thermalManager.set_fan_speed(1 - active_extruder, 0);      
+        }
+    #else
+        thermalManager.set_fan_speed(0, thermalManager.common_fan_speed);
+    #endif
+    
+    #if ENABLED(LASER_SYNCHRONOUS_M106_M107)
+    planner.buffer_sync_block(BLOCK_FLAG_SYNC_FANS);
+    #endif
   #endif
 }
 

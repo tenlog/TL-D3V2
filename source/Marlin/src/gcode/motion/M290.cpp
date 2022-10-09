@@ -83,12 +83,6 @@ void GcodeSuite::M290() {
     if (parser.seenval('Z') || parser.seenval('S')) {
       const float offs = constrain(parser.value_axis_units(Z_AXIS), -2, 2);
       
-      /*
-      char cmd[16];
-      sprintf_P(cmd, PSTR("Babysetp Z=\"%f\""), offs);
-      TLDEBUG_PRINTLN(cmd);
-      */
-
       babystep.add_mm(Z_AXIS, offs);
       #if ENABLED(BABYSTEP_ZPROBE_OFFSET)
         if (!parser.seen('P') || parser.value_bool()) mod_probe_offset(offs);

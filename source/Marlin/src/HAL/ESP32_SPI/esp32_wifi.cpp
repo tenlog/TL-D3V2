@@ -44,6 +44,8 @@ uint8_t wifi_printer_status[WIFI_MSG_LENGTH]={0};
 uint8_t wifi_printer_settings[WIFI_MSG_LENGTH]={0};
 uint8_t wifi_file_name[WIFI_MSG_LENGTH]={0};
 
+uint8_t wifi_version[3]={0};
+
 uint8_t spi_tx[BUFFER_SIZE]="";
 uint8_t spi_rx[BUFFER_SIZE]="";
 
@@ -218,29 +220,22 @@ void SPI_RX_Handler(){
         }
         ZERO(spi_rx);
     }else if(control_code == 0x01){
-        SPI_ConnectWIFI();
         TLSTJC_println("sleep=0");        
         sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tIP.txt=\"Connecting...\""), ret);
         TLSTJC_println(wifi_tjc_cmd);
         sprintf_P(wifi_tjc_cmd, PSTR("setting.tIP.txt=\"Connecting...\""), ret);
         TLSTJC_println(wifi_tjc_cmd);
-        /*
-        char cmd[BUFFER_SIZE];
-        for(int i=0; i<BUFFER_SIZE; i++){
-            sprintf_P(cmd, " 0x%X", spi_rx[i]);
-            TLDEBUG_PRINT(cmd);
-        }
-        TLDEBUG_PRINTLN(" ");
-        */        
+        SPI_ConnectWIFI();
     }else if(control_code == 0x07){     //GCode handler
         long gcode_wifi[WIFI_MSG_LENGTH];
     	for(uint8_t i=0; i<WIFI_MSG_LENGTH; i++){
             gcode_wifi[i] = ret[i];
-            //char pcmd[16];
-            //sprintf_P(pcmd, PSTR("0x%X"), gcode_wifi[i]);
-            //TLDEBUG_PRINTLN(pcmd);
         }
         process_command_gcode(gcode_wifi);
+    }else if(control_code == 0x08){     //wifi version
+    	for(uint8_t i=0; i<2; i++){
+            wifi_version[i] = ret[i];
+        }
     }
 
 }
@@ -344,13 +339,23 @@ void WIFI_TX_Handler(int8_t control_code){
 }
 
 /**************************************************************************/
-void SPI_ConnectWIFI()
-{
+void SPI_ConnectWIFI(){
     wifi_connected = false;
     wifiFirstSend = 0;
     for(int8_t i=0; i<7; i++){
         delay(5);
         WIFI_TX_Handler(i);
+    }
+}
+
+void SPI_RestartWIFI(){
+    if(wifi_version[0]>=1 && wifi_version[1]>=2){
+        TLECHO_PRINTLN("Restarting WIFI...");
+        WIFI_TX_Handler(0x0B);
+    }
+    else{
+        TLECHO_PRINTLN("Connecting WIFI...");
+        SPI_ConnectWIFI();
     }
 }
 

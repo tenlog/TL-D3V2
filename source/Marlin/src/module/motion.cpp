@@ -1120,7 +1120,6 @@ FORCE_INLINE void segment_idle(millis_t &next_idle_ms) {
             TLDEBUG_PRINTLN("set_duplication_enabled(true)\nidex_set_parked(false)");
           }
           else TLDEBUG_PRINTLN("Active extruder not 0");
-          //else if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Active extruder not 0");
           break;
       }
     }

@@ -59,12 +59,12 @@
 //
 // EEPROM
 //
-  #define IIC_BL24CXX_EEPROM                      // EEPROM on I2C-0
-  //#define SDCARD_EEPROM_EMULATION
+#define IIC_BL24CXX_EEPROM                      // EEPROM on I2C-0
+//#define SDCARD_EEPROM_EMULATION
 
 #ifdef IIC_BL24CXX_EEPROM
-#define IIC_EEPROM_SDA       PA12
-#define IIC_EEPROM_SCL       PA11
+  #define IIC_EEPROM_SDA       PA12
+  #define IIC_EEPROM_SCL       PA11
   #define MARLIN_EEPROM_SIZE               0x800  // 2Kb (24C16)
 #endif
 
@@ -78,7 +78,11 @@
 #define Y_STOP_PIN         PC3// y-
 
 #define Z_STOP_PIN         PC15// Z-
-#define Z_MAX_PIN          PC14// Z+
+#ifdef TENLOG_M3
+  #define Z_MAX_PIN          PC15// Z+ PC14
+#else
+  #define Z_MAX_PIN          PC14// Z+ PC14
+#endif
 
 //
 // Filament Runout Sensor
@@ -105,31 +109,45 @@
 
 #define Z_ENABLE_PIN       X_ENABLE_PIN
 
-#if ENABLED(OLD_PIN)
-  #define Z_STEP_PIN         PB1
-  #define Z_DIR_PIN          PB0
-  #define HEATER_BED_PIN     PA6  
-  #define FAN1_PIN           PA1 
-  #define FAN3_PIN           PA0 
-#else
-  #define Z_STEP_PIN         PE13
-  #define Z_DIR_PIN          PE12
-  #define HEATER_BED_PIN     PE10 
-  #define FAN1_PIN           PE8  //FC2
-  #define FAN3_PIN           PE7  //FZ2
-#endif
+#define Z_STEP_PIN         PE13
+#define Z_DIR_PIN          PE12
+#define HEATER_BED_PIN     PE10 
 
 #define Z2_ENABLE_PIN       X_ENABLE_PIN
 #define Z2_STEP_PIN         PB13
 #define Z2_DIR_PIN          PB12
 
+
 #define E0_ENABLE_PIN      X_ENABLE_PIN
 #define E0_STEP_PIN        PB4
-#define E0_DIR_PIN         PB3
-
 #define E1_ENABLE_PIN      X_ENABLE_PIN
 #define E1_STEP_PIN        PB6
+#define E0_DIR_PIN         PB3
 #define E1_DIR_PIN         PB5
+
+#ifdef ELECTROMAGNETIC_VALUE
+  #define ELECTROMAGNETIC_VALUE_ON            1
+  #define ELECTROMAGNETIC_VALUE_OFF           0
+  #define ELECTROMAGNETIC_VALUE_0_PIN         PA0
+  //#define ELECTROMAGNETIC_VALUE_1_PIN       FAN3_PIN
+  #define ELECTROMAGNETIC_VALUE_MOTO0_PIN     PA5
+  #define ELECTROMAGNETIC_VALUE_LED0_PIN      PA1
+  //#define ELECTROMAGNETIC_VALUE_LED1_PIN    HEATER_1_PIN
+
+  #define FAN_PIN               -1   
+  #define FAN1_PIN              -1   
+  #define HEATER_0_PIN          -1   
+  #define HEATER_1_PIN          -1   
+  #define FAN2_PIN              -1 
+  #define FAN3_PIN              -1   
+#else
+  #define FAN_PIN               PA1   // FAN  FC1
+  #define FAN1_PIN              PE8   //FC2
+  #define HEATER_0_PIN          PA5   // HEATER0
+  #define HEATER_1_PIN          PA4   // HEATER1
+  #define FAN2_PIN              PA0   //FAN2 FZ1 PA0
+  #define FAN3_PIN              PE7   //FZ2
+#endif
 
 //
 // Temperature Sensors
@@ -143,11 +161,7 @@
 //
 // Heaters / Fans
 //
-#define HEATER_0_PIN        PA5   // HEATER0
-#define HEATER_1_PIN        PA4   // HEATER1
 
-#define FAN_PIN             PA1   // FAN  FC1 PA1
-#define FAN2_PIN            PA0    //FAN2 FZ1 PA0
 
 #define CHAMEBER_PIN        PE3   //机箱风扇口
 #define LED_PIN             PE2   //LED 控制管脚

@@ -60,7 +60,7 @@ void GcodeSuite::M1504() {
 }
 
 void GcodeSuite::M1510() {
-    SPI_ConnectWIFI();
+    SPI_RestartWIFI();
 }
 
 #endif

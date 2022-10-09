@@ -393,7 +393,6 @@ void CardReader::tl_ls(bool wifi) {
           for(uint8_t i=0; i<32; i++){
             wifi_file_name[15+i]=longFilename[i];
           }
-          //0TLDEBUG_PRINTLN(longFilename);
           delay(10);
           WIFI_TX_Handler(0x0A);
 
@@ -613,9 +612,6 @@ void CardReader::manage_media() {
   static uint8_t prev_stat = 2;       // First call, no prior state
   uint8_t stat = uint8_t(IS_SD_INSERTED());
   if (stat == prev_stat) return;
-
-  //TLDEBUG_PRINTLNPAIR("SD: Status changed from ", prev_stat, " to ", stat);
-
   flag.workDirIsRoot = true;          // Return to root on mount/release
 
   //auto reflush lcd file name list...

@@ -36,18 +36,18 @@
 			0x08 = sn
 			0x09 = settings
 			0x0A = file_names
+			0x0B = reboot
 
 	MISO:
 	control Code
 	 		0x01 = request wifi connect
-
 	 		0x02 = http_port_ok
 			0x03 = wifi_ssid_ok
 			0x04 = wifi_pswd_ok
 			0x05 = asse_code_ok
 			0x06 = ip
 			0x07 = execute gcode
-
+			0x08 = wifi version
 
 */
 
@@ -70,6 +70,8 @@ extern int8_t wifiFirstSend;
 extern uint8_t wifi_printer_status[WIFI_MSG_LENGTH];
 extern uint8_t wifi_printer_settings[WIFI_MSG_LENGTH];
 extern uint8_t wifi_file_name[WIFI_MSG_LENGTH];
+
+extern uint8_t wifi_version[3];
 
 #define HEAD_OK(a)	(a[0]==0xFF && a[1]==0xFF)
 
@@ -110,6 +112,7 @@ uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data);
 
 void WIFI_InitSPI(void);
 void SPI_ConnectWIFI();
+void SPI_RestartWIFI();
 
 void WIFI_TX_Handler(int8_t control_code);
 

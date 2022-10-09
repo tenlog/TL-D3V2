@@ -87,6 +87,9 @@
 #define TLDEBUG_PRINTLN(...)       NOOP
 #endif
 #define TL_ECHO SERIAL_CHAR
+#define TLECHO_PRINTLNPAIR      SERIAL_ECHOLNPAIR
+#define TLECHO_PRINT         SERIAL_ECHOPGM_P
+#define TLECHO_PRINTLN       SERIAL_ECHOLNPGM_P
 
 #define EXECUTE_GCODE(X)  gcode.process_subcommands_now(X)
 
@@ -142,7 +145,7 @@ void plr_outage();
 void tenlog_status_update(bool isTJC);
 
 void my_sleep(float time);
-void SyncFanSpeed(uint8_t FanSpeed);
+void SyncFanSpeed();
 
 //flash read write
 #define FLASH_READ_ADDRESS 0x00070000

@@ -2069,7 +2069,9 @@
 
 #define HAS_TEMP(N) ANY(HAS_TEMP_ADC_##N, TEMP_SENSOR_##N##_IS_MAX_TC, TEMP_SENSOR_##N##_IS_DUMMY)
 #if HAS_HOTEND && HAS_TEMP(0)
+  #ifndef ELECTROMAGNETIC_VALUE
   #define HAS_TEMP_HOTEND 1
+  #endif
 #endif
 #if HAS_TEMP(BED)
   #define HAS_TEMP_BED 1

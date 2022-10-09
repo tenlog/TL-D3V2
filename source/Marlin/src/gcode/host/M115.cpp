@@ -64,7 +64,7 @@ void GcodeSuite::M115() {
   );
 
   #if ENABLED(TENLOG_TOUCH_LCD)
-    TLDEBUG_PRINT("HCSN:");
+    TLDEBUG_PRINT("HCUID:");
     TLDEBUG_PRINTLN(tl_hc_sn);
   #endif
 

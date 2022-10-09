@@ -940,6 +940,7 @@ void MarlinSettings::postprocess() {
     //
     // PIDTEMP
     //
+    #ifndef ELECTROMAGNETIC_VALUE
     {
       _FIELD_TEST(hotendPID);
       HOTEND_LOOP() {
@@ -964,7 +965,8 @@ void MarlinSettings::postprocess() {
       #endif
       EEPROM_WRITE(TERN(PID_EXTRUSION_SCALING, thermalManager.lpq_len, lpq_len));
     }
-
+    #endif
+    
     //
     // PIDTEMPBED
     //

@@ -57,8 +57,9 @@
  *  S<target> : The target temperature in current units
  */
 void GcodeSuite::M104() {
-
-  if (DEBUGGING(DRYRUN)) return;
+#ifndef ELECTROMAGNETIC_VALUE
+  
+	if (DEBUGGING(DRYRUN)) return;
 
   #if ENABLED(MIXING_EXTRUDER) && MIXING_VIRTUAL_TOOLS > 1
     constexpr int8_t target_extruder = 0;
@@ -110,6 +111,7 @@ void GcodeSuite::M104() {
 
   TERN_(AUTOTEMP, planner.autotemp_M104_M109());
 	TERN_(HAS_LCD_MENU,ui.clr_autoflag());
+#endif //ELECTROMAGNETIC_VALUE
 }
 
 /**
@@ -134,7 +136,7 @@ void GcodeSuite::M104() {
  *  (used by printingIsActive, etc.) and turning off heaters will stop the timer.
  */
 void GcodeSuite::M109() {
-
+#ifndef ELECTROMAGNETIC_VALUE
   if (DEBUGGING(DRYRUN)) return;
 
   #if ENABLED(MIXING_EXTRUDER) && MIXING_VIRTUAL_TOOLS > 1
@@ -202,6 +204,7 @@ void GcodeSuite::M109() {
     #endif
 
   }
+#endif //!ELECTROMAGNETIC_VALUE
 }
 
 #endif // EXTRUDERS

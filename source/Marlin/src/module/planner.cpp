@@ -1394,7 +1394,7 @@ void Planner::check_axes_activity() {
   #endif
 }
 
-#if ENABLED(AUTOTEMP)
+#if ENABLED(AUTOTEMP) 
 
   #if ENABLED(AUTOTEMP_PROPORTIONAL)
     void Planner::_autotemp_update_from_hotend() {
@@ -1437,7 +1437,8 @@ void Planner::check_axes_activity() {
    * currently in the planner.
    */
   void Planner::autotemp_task() {
-    static float oldt = 0;
+	
+		static float oldt = 0;
 
     if (!autotemp_enabled) return;
     if (thermalManager.degTargetHotend(active_extruder) < autotemp_min - 2) return; // Below the min?
@@ -1455,7 +1456,9 @@ void Planner::check_axes_activity() {
     LIMIT(t, autotemp_min, autotemp_max);
     if (t < oldt) t *= (1.0f - (AUTOTEMP_OLDWEIGHT)) + oldt * (AUTOTEMP_OLDWEIGHT);
     oldt = t;
+		#ifndef ELECTROMAGNETIC_VALUE
     thermalManager.setTargetHotend(t, active_extruder);
+		#endif
   }
 
 #endif
@@ -2910,10 +2913,12 @@ bool Planner::buffer_line(const_float_t rx, const_float_t ry, const_float_t rz, 
           lPrintZMid = lPrintZStart + (lPrintZEnd - lPrintZStart) / 2;
           PrintFromZHeightFound = false;
           card.setIndex(lPrintZMid);
+          /*
           TLDEBUG_PRINTLNPAIR("lPrintZStart:", lPrintZStart);
           TLDEBUG_PRINTLNPAIR("lPrintZEnd:", lPrintZEnd);
           TLDEBUG_PRINTLNPAIR("lPrintZMid:", lPrintZMid);
           TLDEBUG_PRINTLNPAIR("rz:", rz);
+          */
         }
         zLast = rz;
       }else{
@@ -2924,14 +2929,18 @@ bool Planner::buffer_line(const_float_t rx, const_float_t ry, const_float_t rz, 
         current_position.z = rz;
         current_position.e = e;
         set_position_mm(current_position);
-        //thermalManager.fan_speed[0] = 255;
-        SyncFanSpeed(255);
-        feedrate_mm_s = 80;
+        #if HAS_FAN
+        thermalManager.common_fan_speed = 255;
+        SyncFanSpeed();
+        #endif
 
+        feedrate_mm_s = 80;
+        /*
         TLDEBUG_PRINTLNPAIR("FF lPrintZStart:", lPrintZStart);
         TLDEBUG_PRINTLNPAIR("FF lPrintZEnd:", lPrintZEnd);
         TLDEBUG_PRINTLNPAIR("FF lPrintZMid:", lPrintZMid);
         TLDEBUG_PRINTLNPAIR("FF rz:", rz);
+        */
       }
       return false;
     }else{
@@ -2940,7 +2949,9 @@ bool Planner::buffer_line(const_float_t rx, const_float_t ry, const_float_t rz, 
       }else if(rz > zLast && zLast > 0){
         zLast = 0.0;
       }else if(rz == zLast && zLast > 0){
+        #if HAS_FAN
         thermalManager.fan_speed[0] = 255;
+        #endif
         feedrate_mm_s = 80;
       }
 

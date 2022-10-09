@@ -523,10 +523,9 @@ void Stepper::set_directions() {
       if (motor_direction(E_AXIS)) {
         REV_E_DIR(stepper_extruder);
         count_direction.e = -1;
-      }
-      else {
-        NORM_E_DIR(stepper_extruder);
-        count_direction.e = 1;
+      } else {
+        NORM_E_DIR(stepper_extruder); //By tenlog zyf
+        count_direction.e = 1; 
       }
     #endif
   #endif // !LIN_ADVANCE
@@ -1813,6 +1812,34 @@ uint32_t Stepper::block_phase_isr() {
   // If there is a current block
   if (current_block) {
 
+    #ifdef ELECTROMAGNETIC_VALUE
+    int8_t EVONOFF = ELECTROMAGNETIC_VALUE_ON;
+    if(current_block->steps.e>0)
+    {
+      if(motor_direction(E_AXIS))
+        EVONOFF=ELECTROMAGNETIC_VALUE_OFF;
+      else
+        EVONOFF=ELECTROMAGNETIC_VALUE_ON;      
+    }else{
+      EVONOFF=ELECTROMAGNETIC_VALUE_OFF;
+    }
+    
+    if(extruder_duplication_enabled)        
+    {
+      WRITE(ELECTROMAGNETIC_VALUE_0_PIN, EVONOFF);
+      WRITE(ELECTROMAGNETIC_VALUE_MOTO0_PIN, !EVONOFF);
+      WRITE(ELECTROMAGNETIC_VALUE_LED0_PIN, EVONOFF);
+      //WRITE(ELECTROMAGNETIC_VALUE_1_PIN, EVONOFF);
+      //WRITE(ELECTROMAGNETIC_VALUE_LED1_PIN, EVONOFF);
+    }else if(current_block->extruder == 0){
+      WRITE(ELECTROMAGNETIC_VALUE_0_PIN, EVONOFF);
+      WRITE(ELECTROMAGNETIC_VALUE_LED0_PIN, EVONOFF);
+    }else if(current_block->extruder == 1){
+      //WRITE(ELECTROMAGNETIC_VALUE_1_PIN, EVONOFF);
+      //WRITE(ELECTROMAGNETIC_VALUE_LED1_PIN, EVONOFF);
+    }
+    #endif
+
     // If current block is finished, reset pointer and finalize state
     if (step_events_completed >= step_event_count) {
       #if ENABLED(DIRECT_STEPPING)
@@ -2016,9 +2043,11 @@ uint32_t Stepper::block_phase_isr() {
       // Sync block? Sync the stepper counts or fan speeds and return
       while (current_block->flag & BLOCK_MASK_SYNC) {
 
-        #if ENABLED(LASER_SYNCHRONOUS_M106_M107)
+        #if ENABLED(LASER_SYNCHRONOUS_M106_M107) && HAS_FAN
+          
           const bool is_sync_fans = TEST(current_block->flag, BLOCK_BIT_SYNC_FANS);
           if (is_sync_fans) planner.sync_fan_speeds(current_block->fan_speed);
+          
         #else
           constexpr bool is_sync_fans = false;
         #endif
@@ -2457,6 +2486,20 @@ void Stepper::init() {
       Z4_DIR_INIT();
     #endif
   #endif
+
+  #ifdef ELECTROMAGNETIC_VALUE
+    SET_OUTPUT(ELECTROMAGNETIC_VALUE_0_PIN);
+    SET_OUTPUT(ELECTROMAGNETIC_VALUE_MOTO0_PIN);
+    //SET_OUTPUT(ELECTROMAGNETIC_VALUE_1_PIN);
+    SET_OUTPUT(ELECTROMAGNETIC_VALUE_LED0_PIN);
+    //SET_OUTPUT(ELECTROMAGNETIC_VALUE_LED1_PIN);
+    WRITE(ELECTROMAGNETIC_VALUE_0_PIN, ELECTROMAGNETIC_VALUE_OFF);
+    //WRITE(ELECTROMAGNETIC_VALUE_1_PIN, ELECTROMAGNETIC_VALUE_OFF);
+    WRITE(ELECTROMAGNETIC_VALUE_LED0_PIN, ELECTROMAGNETIC_VALUE_OFF);
+    WRITE(ELECTROMAGNETIC_VALUE_MOTO0_PIN, ELECTROMAGNETIC_VALUE_OFF);
+    //WRITE(ELECTROMAGNETIC_VALUE_LED1_PIN, ELECTROMAGNETIC_VALUE_OFF);
+  #endif
+
   #if HAS_E0_DIR
     E0_DIR_INIT();
   #endif

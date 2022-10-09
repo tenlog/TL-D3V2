@@ -82,15 +82,10 @@ void GcodeSuite::M106() {
 
     if (!got_preset && parser.seenval('S')){
       speed = parser.value_ushort();
-      thermalManager.common_fan_speed = speed;
+      //thermalManager.common_fan_speed = speed;
     }
-
-   SyncFanSpeed(speed);
-
-
-    #if ENABLED(LASER_SYNCHRONOUS_M106_M107)
-      planner.buffer_sync_block(BLOCK_FLAG_SYNC_FANS);
-    #endif
+    thermalManager.common_fan_speed = speed;
+    SyncFanSpeed();
   }
 }
 
@@ -106,11 +101,9 @@ void GcodeSuite::M107() {
 
   if (pfan >= _CNT_P) return;
 
-  SyncFanSpeed(0);
+  thermalManager.common_fan_speed = 0;
+  SyncFanSpeed();
 
-  #if ENABLED(LASER_SYNCHRONOUS_M106_M107)
-    planner.buffer_sync_block(BLOCK_FLAG_SYNC_FANS);
-  #endif
 }
 
 #endif // HAS_FAN

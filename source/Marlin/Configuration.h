@@ -21,6 +21,110 @@
  */
 #pragma once
 
+// Author info of this build printed to the host during boot and M115
+#define STRING_CONFIG_H_AUTHOR "(TENLOG)" // Who made the changes.
+//#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
+
+/**
+ * *** VENDORS PLEASE READ ***
+ *
+ * Marlin allows you to add a custom boot image for Graphical LCDs.
+ * With this option Marlin will first show your custom screen followed
+ * by the standard Marlin logo with version number and web URL.
+ *
+ * We encourage you to take advantage of this new feature and we also
+ * respectfully request that you retain the unmodified Marlin boot screen.
+ */
+#define SHORT_BUILD_VERSION "2.0.8"
+
+//update log 
+//20220930 add DC motor (moto_1) to ELECTROMAGNETIC_VALUE mode
+//20221008 Add wifi version 
+//version 027
+
+//TL Medels and version
+//#define TENLOG_H2
+//#define TENLOG_D3
+//#define TENLOG_M3
+//#define TENLOG_D5
+#define TENLOG_D6
+
+//#define TL_DEBUG
+
+#define TENLOG_TOUCH_LCD
+#define PRINT_FROM_Z_HEIGHT
+//#define ESP8266_WIFI
+#define ESP32_WIFI
+
+//#define ELECTROMAGNETIC_VALUE
+
+/**
+ * Marlin release version identifier
+ */
+#define TL_SUBVERSION "027"
+
+// The size of the printable area
+#if defined(TENLOG_D3) 
+  #define TL_MODEL_STR_0 "D3"
+  #define X_BED_SIZE 310
+  #define Y_BED_SIZE 310
+  #define Z_LENGTH   350
+#elif defined(TENLOG_M3)
+  #define TL_MODEL_STR_0 "M3"
+  #define X_BED_SIZE 300
+  #define Y_BED_SIZE 210
+  #define Z_LENGTH   200
+#elif defined(TENLOG_H2)
+  #define TL_MODEL_STR_0 "Hands2"
+  #define X_BED_SIZE 235
+  #define Y_BED_SIZE 240
+  #define Z_LENGTH   260
+#elif defined(TENLOG_D5)
+  #define TL_MODEL_STR_0 "D5"
+  #define X_BED_SIZE 505
+  #define Y_BED_SIZE 510
+  #define Z_LENGTH   610
+#elif defined(TENLOG_D6)
+  #define TL_MODEL_STR_0 "D6"
+  #define X_BED_SIZE 605
+  #define Y_BED_SIZE 610
+  #define Z_LENGTH   610
+#endif
+
+#ifdef ELECTROMAGNETIC_VALUE
+  #define TL_MODEL_STR_1 "-EV"
+#else
+  #define TL_MODEL_STR_1 ""
+#endif
+
+#define TL_MODEL_STR TL_MODEL_STR_0 TL_MODEL_STR_1
+
+#if EITHER(ESP8266_WIFI, ESP32_WIFI)
+  #define HAS_WIFI
+#endif
+
+#if ENABLED(HAS_WIFI)
+  #define WIFI_DEFAULT_SSID "TL-3D"
+  #define WIFI_DEFAULT_PSWD "12345678"
+  #define WIFI_DEFAULT_ACCE_CODE "12345"
+  #define WIFI_DEFAULT_MODE 2
+  #define WIFI_DEFAULT_PORT 80
+#endif
+
+#ifdef TENLOG_M3
+#define INVERT_X_DIR false
+#else
+#define INVERT_X_DIR true
+#endif
+
+// Homing speeds (mm/min)
+#ifdef TENLOG_M3
+#define HOMING_FEEDRATE_MM_M {5000, 5000, 300}
+#else
+#define HOMING_FEEDRATE_MM_M {9000, 9000, 300}
+#endif
+
+
 #ifdef redefined
 #define __STM32F1__
 #endif
@@ -68,7 +172,6 @@
 #define ARDUINO 100
 #endif
 
-
 /**
  * Configuration.h
  *
@@ -115,76 +218,6 @@
 //===========================================================================
 
 // @section info
-
-// Author info of this build printed to the host during boot and M115
-#define STRING_CONFIG_H_AUTHOR "(TENLOG)" // Who made the changes.
-//#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
-
-/**
- * *** VENDORS PLEASE READ ***
- *
- * Marlin allows you to add a custom boot image for Graphical LCDs.
- * With this option Marlin will first show your custom screen followed
- * by the standard Marlin logo with version number and web URL.
- *
- * We encourage you to take advantage of this new feature and we also
- * respectfully request that you retain the unmodified Marlin boot screen.
- */
-
-
-//TL Medels and version
-//#define TENLOG_H2P
-#define TENLOG_D3P
-//#define TENLOG_D5P
-//#define TENLOG_D6P
-
-//#define TL_DEBUG
-
-#define TENLOG_TOUCH_LCD
-#define PRINT_FROM_Z_HEIGHT
-//#define ESP8266_WIFI
-#define ESP32_WIFI
-
-/**
- * Marlin release version identifier
- */
-#define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "024"
-
-// The size of the printable area
-#if defined(TENLOG_D3P) 
-  #define TL_MODEL_STR "D3"
-  #define X_BED_SIZE 310
-  #define Y_BED_SIZE 310
-  #define Z_LENGTH   350
-#elif defined(TENLOG_H2P)
-  #define TL_MODEL_STR "Hands2"
-  #define X_BED_SIZE 235
-  #define Y_BED_SIZE 240
-  #define Z_LENGTH   260
-#elif defined(TENLOG_H2P)
-  #define TL_MODEL_STR "D5"
-  #define X_BED_SIZE 505
-  #define Y_BED_SIZE 510
-  #define Z_LENGTH   510
-#elif defined(TENLOG_H2P)
-  #define TL_MODEL_STR "D6"
-  #define X_BED_SIZE 605
-  #define Y_BED_SIZE 610
-  #define Z_LENGTH   610
-#endif
-
-#if EITHER(ESP8266_WIFI, ESP32_WIFI)
-  #define HAS_WIFI
-#endif
-
-#if ENABLED(HAS_WIFI)
-  #define WIFI_DEFAULT_SSID "TL-3D"
-  #define WIFI_DEFAULT_PSWD "12345678"
-  #define WIFI_DEFAULT_ACCE_CODE "12345"
-  #define WIFI_DEFAULT_MODE 2
-  #define WIFI_DEFAULT_PORT 80
-#endif
 
 /**
  * Select the serial port on the board to use for communication with the host.
@@ -501,18 +534,25 @@
  *   998 : Dummy Table that ALWAYS reads 25��C or the temperature defined below.
  *   999 : Dummy Table that ALWAYS reads 100��C or the temperature defined below.
  */
-#define TEMP_SENSOR_0 1
-#define TEMP_SENSOR_1 1
-#define TEMP_SENSOR_2 0
-#define TEMP_SENSOR_3 0
-#define TEMP_SENSOR_4 0
-#define TEMP_SENSOR_5 0
-#define TEMP_SENSOR_6 0
-#define TEMP_SENSOR_7 0
-#define TEMP_SENSOR_BED 1
-#define TEMP_SENSOR_PROBE 0
-#define TEMP_SENSOR_CHAMBER 0
-#define TEMP_SENSOR_COOLER 0
+#ifdef ELECTROMAGNETIC_VALUE
+  #define TEMP_SENSOR_0 0
+  #define TEMP_SENSOR_1 0
+  #define TEMP_SENSOR_2 0
+  #define TEMP_SENSOR_3 0
+  #define TEMP_SENSOR_4 0
+  #define TEMP_SENSOR_5 0
+  #define TEMP_SENSOR_6 0
+  #define TEMP_SENSOR_7 0
+  #define TEMP_SENSOR_BED 0
+  #define TEMP_SENSOR_PROBE 0
+  #define TEMP_SENSOR_CHAMBER 0
+  #define TEMP_SENSOR_COOLER 0
+#else
+  #define TEMP_SENSOR_0 1
+  #define TEMP_SENSOR_1 1
+  #define TEMP_SENSOR_BED 1
+#endif
+
 
 // Dummy thermistor constant temperature readings, for use with 998 and 999
 #define DUMMY_THERMISTOR_998_VALUE  25
@@ -584,7 +624,9 @@
 // PID Tuning Guide here: https://reprap.org/wiki/PID_Tuning
 
 // Comment the following line to disable PID and enable bang-bang.
+#ifndef ELECTROMAGNETIC_VALUE
 #define PIDTEMP
+#endif
 #define BANG_MAX 255     // Limits current to nozzle while in bang-bang mode; 255=full current
 #define PID_MAX BANG_MAX // Limits current to nozzle while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
 #define PID_K1 0.95      // Smoothing factor within any PID loop
@@ -1288,7 +1330,6 @@
 // @section machine
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-#define INVERT_X_DIR true
 #define INVERT_Y_DIR false
 #define INVERT_Z_DIR true
 
@@ -1684,9 +1725,6 @@
   #define Z_SAFE_HOMING_X_POINT X_CENTER  // X point for Z homing
   #define Z_SAFE_HOMING_Y_POINT Y_CENTER  // Y point for Z homing
 #endif
-
-// Homing speeds (mm/min)
-#define HOMING_FEEDRATE_MM_M {9000, 9000, 300}
 
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS

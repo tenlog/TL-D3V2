@@ -78,6 +78,7 @@ void GcodeSuite::T(const int8_t tool_index) {
       || parser.boolval('S')
     #endif
   );
+  SyncFanSpeed();
 
   #if BOTH(TENLOG_TOUCH_LCD, DUAL_X_CARRIAGE)
     if(hotendOffsetChanged){

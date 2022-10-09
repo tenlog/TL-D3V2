@@ -1599,7 +1599,7 @@ void setup() {
     if(plr_enabled){
       uint32_t isplr = settings.plr_is_pl();
       if(isplr > 2048){
-        //TLDEBUG_PRINTLNPAIR("Power loss found! Point=", isplr);
+        TLDEBUG_PRINTLNPAIR("Power loss found! Point=", isplr);
         TlIsPLR();
       }else{
         if(tl_TouchScreenType == 1){

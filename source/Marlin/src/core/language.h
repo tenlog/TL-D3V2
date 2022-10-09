@@ -111,7 +111,7 @@
 #define STR_SOFTWARE_RESET                  " Software Reset"
 #define STR_FREE_MEMORY                     " Free Memory: "
 #define STR_PLANNER_BUFFER_BYTES            "  PlannerBufferBytes: "
-#define STR_OK                              "Ok"
+#define STR_OK                              "ok"
 #define STR_WAIT                            "wait"
 #define STR_STATS                           "Stats: "
 #define STR_FILE_SAVED                      "Done saving file."
