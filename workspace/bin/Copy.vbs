@@ -1,10 +1,4 @@
-Dim bChangeIcon
-bChangeIcon=False 
-Dim bToT1
-bToT1=True  
-
 Set fso=CreateObject("Scripting.filesystemobject")  
-
 SrcFile = createobject("Scripting.FileSystemObject").GetFile(Wscript.ScriptFullName).ParentFolder.Path&"\firmware.bin"  
 DstFile = "F:\user\firmware.bin"  
 DstFile1 = createobject("Scripting.FileSystemObject").GetFile(Wscript.ScriptFullName).ParentFolder.Path&"\bin\1.bin"
