@@ -804,17 +804,23 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
     #ifndef ELECTROMAGNETIC_VALUE
       HOTEND_LOOP()
         #ifdef TENLOG_TOUCH_LCD
-        if (temp_hotend[e].celsius >= tl_E1_FAN_START_TEMP && e==0 || temp_hotend[e].celsius >= tl_E2_FAN_START_TEMP && e==1)
+        if (temp_hotend[e].celsius >= tl_E_FAN_START_TEMP)
         #else
         if (temp_hotend[e].celsius >= EXTRUDER_AUTO_FAN_TEMPERATURE)
         #endif
-          SBI(fanState, pgm_read_byte(&fanBit[e]));
+          thermalManager.set_fan_speed(e+2, (uint8_t)((float)tl_E_FAN_SPEED * 2.55f));
+          //SBI(fanState, pgm_read_byte(&fanBit[e]));
+        else// b zyf
+          thermalManager.set_fan_speed(e+2, 0);
+        #if ENABLED(LASER_SYNCHRONOUS_M106_M107)
+          planner.buffer_sync_block(BLOCK_FLAG_SYNC_FANS);
+        #endif
     #endif
 
     #if HAS_AUTO_CHAMBER_FAN
       if (temp_chamber.celsius >= CHAMBER_AUTO_FAN_TEMPERATURE)
         SBI(fanState, pgm_read_byte(&fanBit[CHAMBER_FAN_INDEX]));
-    #elif defined(TLCHAMBER_AUTO_FAN_PIN)     
+    #elif defined(TLCHAMBER_AUTO_FAN_PIN)  // by zyf   
       bool isStepEna = (X_ENABLE_READ() == X_ENABLE_ON || Y_ENABLE_READ() == Y_ENABLE_ON || Z_ENABLE_READ() == Z_ENABLE_ON
       #if HAS_X2_ENABLE
         || X2_ENABLE_READ() == X_ENABLE_ON
@@ -853,6 +859,8 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
         WRITE(P##_AUTO_FAN_PIN, D);                      \
     }while(0)
 
+    //by zyf
+    /*
     uint8_t fanDone = 0;
     LOOP_L_N(f, COUNT(fanBit)) {
       const uint8_t realFan = pgm_read_byte(&fanBit[f]);
@@ -906,8 +914,10 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
           case CHAMBER_FAN_INDEX: _UPDATE_AUTO_FAN(TLCHAMBER, fan_on, CHAMBER_AUTO_FAN_SPEED); break;
         #endif
       }
+
       SBI(fanDone, realFan);
     }
+    */
   }
 
 #endif // HAS_AUTO_FAN
@@ -1985,7 +1995,8 @@ void Temperature::updateTemperaturesFromRawValues() {
 #endif
 #define INIT_FAN_PIN(P) do{ _INIT_FAN_PIN(P); SET_FAST_PWM_FREQ(P); }while(0)
 #if EXTRUDER_AUTO_FAN_SPEED != 255
-  #define INIT_E_AUTO_FAN_PIN(P) do{ if (P == FAN1_PIN || P == FAN2_PIN) { SET_PWM(P); SET_FAST_PWM_FREQ(P); } else SET_OUTPUT(P); }while(0)
+  //#define INIT_E_AUTO_FAN_PIN(P) do{ if (P == FAN1_PIN || P == FAN2_PIN) { SET_PWM(P); SET_FAST_PWM_FREQ(P); } else SET_OUTPUT(P); }while(0)
+  #define INIT_E_AUTO_FAN_PIN(P) do{ if (P == FAN2_PIN || P == FAN3_PIN) {_INIT_FAN_PIN(P); SET_FAST_PWM_FREQ(P); } else SET_OUTPUT(P); }while(0)
 #else
   #define INIT_E_AUTO_FAN_PIN(P) SET_OUTPUT(P)
 #endif
@@ -2129,7 +2140,6 @@ void Temperature::init() {
   #endif
 
   TERN_(THERMO_SEPARATE_SPI, max_tc_spi.init());
-
   HAL_adc_init();
 
   #if HAS_TEMP_ADC_0
@@ -3017,8 +3027,7 @@ void Temperature::isr() {
           _FAN_PWM(7);
         #endif
       #endif
-    }
-    else {
+    }else {
       #define _PWM_LOW(N,S) do{ if (S.count <= pwm_count_tmp) WRITE_HEATER_##N(LOW); }while(0)
       #if HAS_HOTEND
         #define _PWM_LOW_E(N) _PWM_LOW(N, soft_pwm_hotend[N]);

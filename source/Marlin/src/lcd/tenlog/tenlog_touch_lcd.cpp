@@ -55,8 +55,8 @@ unsigned long startPrintTime = 0;
 //for eeprom setting...
 int8_t tl_languageID = 0;
 int8_t tl_Sleep = 0;
-int8_t tl_E2_FAN_START_TEMP = 80;
-int8_t tl_E1_FAN_START_TEMP = 80;
+int8_t tl_E_FAN_SPEED = 80;
+int8_t tl_E_FAN_START_TEMP = 80;
 int8_t tl_ECO_MODE = 0;
 int8_t tl_THEME_ID = 0;
 int8_t tl_Light = 0;
@@ -344,8 +344,8 @@ void tlResetEEPROM(){
     tl_Sleep = 0;
     //tl_FAN2_VALUE = 80;
     //tl_FAN2_START_TEMP = 80;
-    tl_E2_FAN_START_TEMP = 80;
-    tl_E1_FAN_START_TEMP = 80;
+    tl_E_FAN_SPEED = 80;
+    tl_E_FAN_START_TEMP = 80;
     tl_ECO_MODE = 0;
     tl_THEME_ID = 0;
     tl_Light = 0;
@@ -387,12 +387,12 @@ void tlInitSetting(){
         sprintf_P(cmd, PSTR("setting.cPLR.val=%d"), plr_enabled);
         TLSTJC_println(cmd);
         wifi_printer_settings[37] = plr_enabled;
-        sprintf_P(cmd, PSTR("setting.nE1FT.val=%d"), tl_E1_FAN_START_TEMP);
+        sprintf_P(cmd, PSTR("setting.nE1FT.val=%d"), tl_E_FAN_START_TEMP);
         TLSTJC_println(cmd);
-        wifi_printer_settings[5] = tl_E1_FAN_START_TEMP;
-        sprintf_P(cmd, PSTR("setting.nE2FT.val=%d"), tl_E2_FAN_START_TEMP);
+        wifi_printer_settings[5] = tl_E_FAN_START_TEMP;
+        sprintf_P(cmd, PSTR("setting.nE2FT.val=%d"), tl_E_FAN_SPEED);
         TLSTJC_println(cmd);
-        wifi_printer_settings[6] = tl_E2_FAN_START_TEMP;
+        wifi_printer_settings[6] = tl_E_FAN_SPEED;
 
         uint32_t lX = planner.settings.axis_steps_per_mm[X_AXIS] * 100;
         wifi_printer_settings[7] = lX / 0x10000;
@@ -2009,21 +2009,21 @@ void tenlog_status_update(bool isTJC)
     const int16_t ln2  = current_position[Z_AXIS] * 10.0f;
     const int16_t ln3  = 0;
 		
-		#ifdef ELECTROMAGNETIC_VALUE
+	#ifdef ELECTROMAGNETIC_VALUE
     const int16_t ln4  = 0;
     const int16_t ln5  = 0;
     const int16_t ln6  = 0;
     const int16_t ln7  = 0;
     const int8_t ln8  = 0;
     const int8_t ln9  = 0;		
-		#else
+	#else
     const int16_t ln4  = int(thermalManager.degTargetHotend(0) + 0.5f);
     const int16_t ln5  = int(thermalManager.degHotend(0) + 0.5f);
     const int16_t ln6  = int(thermalManager.degTargetHotend(1) + 0.5f);
     const int16_t ln7  = int(thermalManager.degHotend(1) + 0.5f);
     const int8_t ln8  = int(thermalManager.degTargetBed() + 0.5f);
     const int8_t ln9  = int(thermalManager.degBed() + 0.5f);
-		#endif
+	#endif
 		
     #if HAS_FAN
     const int8_t ln10 = (float)thermalManager.fan_speed[active_extruder] * 100.0f / 256.0f + 0.5f;
@@ -2420,7 +2420,7 @@ void process_command_gcode(long _tl_command[]) {
                 }else if(lM == 106){
                     //M106
                     float fS = GCodelng('S', iFrom, _tl_command);
-                    long lR = GCodelng('R', iFrom, _tl_command);
+                    uint8_t lR = GCodelng('R', iFrom, _tl_command);
                     char sS[10], sR[10];
                     NULLZERO(sS);
                     NULLZERO(sR);
@@ -2428,8 +2428,8 @@ void process_command_gcode(long _tl_command[]) {
                     if(lR == 1){
                         fR = 2.55f;
                     }
-                    if(fS > -999) {
-                        long lS = fS * fR;
+                    if(fS > -999.0) {
+                        uint8_t lS = fS * fR;
                         sprintf_P(sS, PSTR("S%d "), lS);                
                     }
                     sprintf_P(cmd, PSTR("M%d %s"), lM, sS);                
@@ -2495,7 +2495,7 @@ void process_command_gcode(long _tl_command[]) {
                     EXECUTE_GCODE(PSTR("M500"));
                 }else if(lM == 1015){
                     //M1015
-                    tl_E1_FAN_START_TEMP = GCodelng('S', iFrom, _tl_command);
+                    tl_E_FAN_START_TEMP = GCodelng('S', iFrom, _tl_command);
                     EXECUTE_GCODE(PSTR("M500"));
                 }else if(lM == 1023){
                     //M1023
@@ -2505,7 +2505,7 @@ void process_command_gcode(long _tl_command[]) {
                     #endif
                 }else if(lM == 1014){
                     //M1014
-                    tl_E2_FAN_START_TEMP = GCodelng('S', iFrom, _tl_command);
+                    tl_E_FAN_SPEED = GCodelng('S', iFrom, _tl_command);
                     EXECUTE_GCODE(PSTR("M500"));
                 }else if(lM == 502){
                     //M502
@@ -3101,12 +3101,12 @@ void SyncFanSpeed(){
   #if HAS_FAN
     #if ENABLED(DUAL_X_CARRIAGE)      
         if (idex_is_duplicating()){ 
-        thermalManager.set_fan_speed(0, thermalManager.common_fan_speed);
-        thermalManager.set_fan_speed(1, thermalManager.common_fan_speed);
+            thermalManager.set_fan_speed(0, thermalManager.common_fan_speed);
+            thermalManager.set_fan_speed(1, thermalManager.common_fan_speed);
         }
         else{
-        thermalManager.set_fan_speed(active_extruder, thermalManager.common_fan_speed);      
-        thermalManager.set_fan_speed(1 - active_extruder, 0);      
+            thermalManager.set_fan_speed(active_extruder, thermalManager.common_fan_speed);      
+            thermalManager.set_fan_speed(1 - active_extruder, 0);      
         }
     #else
         thermalManager.set_fan_speed(0, thermalManager.common_fan_speed);

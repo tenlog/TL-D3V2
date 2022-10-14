@@ -143,10 +143,10 @@
 #else
   #define FAN_PIN               PA1   // FAN  FC1
   #define FAN1_PIN              PE8   //FC2
-  #define HEATER_0_PIN          PA5   // HEATER0
-  #define HEATER_1_PIN          PA4   // HEATER1
   #define FAN2_PIN              PA0   //FAN2 FZ1 PA0
   #define FAN3_PIN              PE7   //FZ2
+  #define HEATER_0_PIN          PA5   // HEATER0
+  #define HEATER_1_PIN          PA4   // HEATER1
 #endif
 
 //

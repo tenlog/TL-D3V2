@@ -1279,10 +1279,10 @@ void Planner::recalculate() {
     #define FAN_SET(F) do{ kickstart_fan(fan_speed, ms, F); _FAN_SET(F); }while(0)
 
     const millis_t ms = millis();
-    TERN_(HAS_FAN0, FAN_SET(0));
-    TERN_(HAS_FAN1, FAN_SET(1));
-    TERN_(HAS_FAN2, FAN_SET(2));
-    TERN_(HAS_FAN3, FAN_SET(3));
+    TERN_(HAS_FAN0, FAN_SET(0));    //E0 Fan
+    TERN_(HAS_FAN1, FAN_SET(1));    //E1 Fan
+    TERN_(HAS_FAN2, FAN_SET(2));    //E0 Auto Fan
+    TERN_(HAS_FAN3, FAN_SET(3));    //E1 Auto Fan
     TERN_(HAS_FAN4, FAN_SET(4));
     TERN_(HAS_FAN5, FAN_SET(5));
     TERN_(HAS_FAN6, FAN_SET(6));
@@ -1392,7 +1392,7 @@ void Planner::check_axes_activity() {
     TERN_(HAS_HEATER_1, analogWrite(pin_t(HEATER_1_PIN), tail_valve_pressure));
     TERN_(HAS_HEATER_2, analogWrite(pin_t(HEATER_2_PIN), tail_e_to_p_pressure));
   #endif
-}
+} //check_axes_activity
 
 #if ENABLED(AUTOTEMP) 
 

@@ -60,7 +60,7 @@ typedef uint16_t hal_timer_t;
  *     or Timer 4 on other boards.
  */
 #define STEP_TIMER_NUM 		2 // TIMER0 CHB
-#define TEMP_TIMER_NUM 	1    // TIMER0 CHA
+#define TEMP_TIMER_NUM 	    1 // TIMER0 CHA
 #define PULSE_TIMER_NUM 	STEP_TIMER_NUM
 
 #define TEMP_TIMER_FREQUENCY    1000 // temperature interrupt frequency

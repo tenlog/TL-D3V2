@@ -1494,8 +1494,8 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(tl_THEME_ID);
       EEPROM_WRITE(tl_Light);
       EEPROM_WRITE(tl_Z_HOME_POS);
-      EEPROM_WRITE(tl_E1_FAN_START_TEMP);
-      EEPROM_WRITE(tl_E2_FAN_START_TEMP);
+      EEPROM_WRITE(tl_E_FAN_START_TEMP);
+      EEPROM_WRITE(tl_E_FAN_SPEED);
     #endif
 
     #if ENABLED(HAS_WIFI)
@@ -2462,13 +2462,13 @@ void MarlinSettings::postprocess() {
         EEPROM_READ(ui_tlStartTemp1);
         if(ui_tlStartTemp1 < 0) ui_tlStartTemp1 = 80;
         if(ui_tlStartTemp1 > 100) ui_tlStartTemp1 = 80;
-        tl_E1_FAN_START_TEMP = ui_tlStartTemp1;
+        tl_E_FAN_START_TEMP = ui_tlStartTemp1;
 
-        uint8_t ui_tlStartTemp2;
-        EEPROM_READ(ui_tlStartTemp2);
-        if(ui_tlStartTemp2 < 0) ui_tlStartTemp2 = 80;
-        if(ui_tlStartTemp2 > 100) ui_tlStartTemp2 = 80;
-        tl_E2_FAN_START_TEMP = ui_tlStartTemp2;
+        uint8_t ui_tlFanSpeed;
+        EEPROM_READ(ui_tlFanSpeed);
+        if(ui_tlFanSpeed < 0) ui_tlFanSpeed = 80;
+        if(ui_tlFanSpeed > 100) ui_tlFanSpeed = 80;
+        tl_E_FAN_SPEED = ui_tlFanSpeed;
 
       #endif
       
@@ -4079,8 +4079,8 @@ void MarlinSettings::reset() {
       TLDEBUG_PRINTLNPAIR("TL Light:", tl_Light);
       TLDEBUG_PRINTLNPAIR("Power Loss Recovery:", plr_enabled);
       TLDEBUG_PRINTLNPAIR("TL Z Home Pos:", tl_Z_HOME_POS);
-      TLDEBUG_PRINTLNPAIR("TL E1 Fan Temp:", tl_E1_FAN_START_TEMP);
-      TLDEBUG_PRINTLNPAIR("TL E2 Fan Temp:", tl_E2_FAN_START_TEMP);
+      TLDEBUG_PRINTLNPAIR("TL E Fan Temp:", tl_E_FAN_START_TEMP);
+      TLDEBUG_PRINTLNPAIR("TL E Fan Speed:", tl_E_FAN_SPEED);
     #endif
 
     #if ENABLED(HAS_WIFI)
