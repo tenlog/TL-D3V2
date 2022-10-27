@@ -32,6 +32,7 @@
 char wifi_ssid[20] = WIFI_DEFAULT_SSID;
 char wifi_pswd[20] = WIFI_DEFAULT_PSWD;
 char wifi_acce_code[20] = WIFI_DEFAULT_ACCE_CODE;
+uint8_t wifi_ip_settings[20] = WIFI_DEFAULT_IP_SETTINGS;
 uint8_t wifi_mode = WIFI_DEFAULT_MODE;
 uint16_t http_port = WIFI_DEFAULT_PORT;
 bool wifi_connected = false;
@@ -233,9 +234,15 @@ void SPI_RX_Handler(){
         }
         process_command_gcode(gcode_wifi);
     }else if(control_code == 0x08){     //wifi version
-    	for(uint8_t i=0; i<2; i++){
+    	for(uint8_t i=0; i<3; i++){
             wifi_version[i] = ret[i];
         }
+
+        if(wifi_version[1] % 2 == 0)
+            sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tVersion.txt=\"WIFI V%d.%d.%d\""), wifi_version[0],wifi_version[1],wifi_version[2]);
+        else
+            sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tVersion.txt=\"WIFICAM V%d.%d.%d\""), wifi_version[0],wifi_version[1],wifi_version[2]);
+        TLSTJC_println(wifi_tjc_cmd);        
     }
 
 }
@@ -260,6 +267,9 @@ void WIFI_TX_Handler(int8_t control_code){
     ZERO(send);
     
     switch (control_code){
+        case 0x01:
+            memcpy_P(send, wifi_ip_settings, 20);
+        break;
         case 0x03:
             memcpy_P(send, wifi_ssid, 20);
         break;
@@ -271,12 +281,10 @@ void WIFI_TX_Handler(int8_t control_code){
         break;
         case 0x07:
             memcpy_P(send, wifi_printer_status, WIFI_MSG_LENGTH);
-        break;
-        
+        break;        
         case 0x09:
             memcpy_P(send, wifi_printer_settings, WIFI_MSG_LENGTH);            
-        break;
-        
+        break;        
         case 0x0A:
             memcpy_P(send, wifi_file_name, WIFI_MSG_LENGTH);
         break;
@@ -305,7 +313,12 @@ void WIFI_TX_Handler(int8_t control_code){
 
     switch (control_code){
         case 0x01:
-        spi_tx[3] = wifi_mode;
+        {
+            spi_tx[3] = wifi_mode;
+            for(int8_t i=0; i<WIFI_MSG_LENGTH; i++){
+                spi_tx[i+4]=send[i];
+            }
+        }
         break;
         case 0x02:
         spi_tx[3] = http_port / 0x100;
@@ -380,6 +393,9 @@ void wifiResetEEPROM(){
     sprintf_P(wifi_ssid, "%s", WIFI_DEFAULT_SSID);
     sprintf_P(wifi_pswd, "%s", WIFI_DEFAULT_PSWD);
     sprintf_P(wifi_acce_code, "%s", WIFI_DEFAULT_ACCE_CODE);
+    ZERO(wifi_ip_settings);
+    uint8_t WIFI_IP[12] = WIFI_DEFAULT_IP_SETTINGS;
+    memcpy_P(wifi_ip_settings, WIFI_IP, 12);
     http_port = WIFI_DEFAULT_PORT;
 }
 

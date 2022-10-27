@@ -56,6 +56,7 @@ unsigned long startPrintTime = 0;
 int8_t tl_languageID = 0;
 int8_t tl_Sleep = 0;
 int8_t tl_E_FAN_SPEED = 80;
+bool tl_E_FAN_CHANGED = false;
 int8_t tl_E_FAN_START_TEMP = 80;
 int8_t tl_ECO_MODE = 0;
 int8_t tl_THEME_ID = 0;
@@ -69,6 +70,7 @@ bool DWNMoving = false;
 bool TLMoving = false;
 
 int tl_print_page_id = 0;
+int tl_print_file_id = 0;
 int iDWNPageID = 0;
 
 char gsM117[30] = "";
@@ -458,6 +460,12 @@ void tlInitSetting(){
         sprintf_P(cmd, PSTR("wifisetting.nPort.val=%d"), http_port);
         TLSTJC_println(cmd);
         sprintf_P(cmd, PSTR("wifisetting.tAccessCode.txt=\"%s\""), wifi_acce_code);
+        TLSTJC_println(cmd);
+        sprintf_P(cmd, PSTR("wifisetting.tGateway.txt=\"%d.%d.%d.%d\""), wifi_ip_settings[0],wifi_ip_settings[1],wifi_ip_settings[2],wifi_ip_settings[3]);
+        TLSTJC_println(cmd);
+        sprintf_P(cmd, PSTR("wifisetting.tSubnet.txt=\"%d.%d.%d.%d\""), wifi_ip_settings[4],wifi_ip_settings[5],wifi_ip_settings[6],wifi_ip_settings[7]);
+        TLSTJC_println(cmd);
+        sprintf_P(cmd, PSTR("wifisetting.tLIP.txt=\"%d.%d.%d.%d\""), wifi_ip_settings[8],wifi_ip_settings[9],wifi_ip_settings[10],wifi_ip_settings[11]);
         TLSTJC_println(cmd);
         
         #ifndef ELECTROMAGNETIC_VALUE
@@ -2124,10 +2132,10 @@ void tenlog_status_update(bool isTJC)
         wifi_printer_status[16] = 0;
         wifi_printer_status[17] = 0;
        #endif
-
         
         wifi_printer_status[18] = ln10;
-        wifi_printer_status[19] = ln11;
+        wifi_printer_status[19] =  (uint16_t)ln11 % 0x100; //19 & 33 = feedrate per
+
         wifi_printer_status[20] = ln12;
         wifi_printer_status[21] = ln13;
         wifi_printer_status[22] = ln14;
@@ -2141,6 +2149,10 @@ void tenlog_status_update(bool isTJC)
         wifi_printer_status[28] = ln19;
         wifi_printer_status[29] = ln20;
         wifi_printer_status[30] = TLMoving?1:0;
+        wifi_printer_status[31] = tl_print_page_id;
+        wifi_printer_status[32] = tl_print_file_id;
+
+        wifi_printer_status[33] =  (uint16_t)ln11 / 0x100; //19 & 33 = feedrate per
         
         WIFI_TX_Handler(0x07);
 
@@ -2447,14 +2459,16 @@ void process_command_gcode(long _tl_command[]) {
                     NULLZERO(cmd);
                     if(lF > 0){
                         sprintf_P(cmd, PSTR("M%d %s"), lM, file_name_list[lF-1]);
+                        tl_print_file_id=lF;
                     }else{
                         char fileNameP[13];
                         NULLZERO(fileNameP);
                         for(int i=0; i<12; i++){
                             fileNameP[i] = _tl_command[iFrom + 4 + i];
                         }
-                        if(strlen(fileNameP) > 4)
+                        if(strlen(fileNameP) > 4){
                             sprintf_P(cmd, PSTR("M%d %s"), lM, fileNameP);
+                        }
                     }
                     if(strlen(cmd)){
                         TLPrintingStatus = 1;
@@ -2496,6 +2510,7 @@ void process_command_gcode(long _tl_command[]) {
                 }else if(lM == 1015){
                     //M1015
                     tl_E_FAN_START_TEMP = GCodelng('S', iFrom, _tl_command);
+                    tl_E_FAN_CHANGED = true;
                     EXECUTE_GCODE(PSTR("M500"));
                 }else if(lM == 1023){
                     //M1023
@@ -2506,6 +2521,7 @@ void process_command_gcode(long _tl_command[]) {
                 }else if(lM == 1014){
                     //M1014
                     tl_E_FAN_SPEED = GCodelng('S', iFrom, _tl_command);
+                    tl_E_FAN_CHANGED = true;
                     EXECUTE_GCODE(PSTR("M500"));
                 }else if(lM == 502){
                     //M502
@@ -2690,7 +2706,7 @@ void process_command_gcode(long _tl_command[]) {
                             sprintf_P(cmd, PSTR("M%d %s"), lM, wifi_pswd);                        
                             EXECUTE_GCODE(PSTR("M500"));
                         }else if(lM == 1505){
-                            //M1505
+                            //M1505 access code
                             NULLZERO(wifi_acce_code);
                             for(int i=0; i<20; i++){
                                 wifi_acce_code[i] = _tl_command[iFrom + 6 + i]; 
@@ -2700,6 +2716,26 @@ void process_command_gcode(long _tl_command[]) {
                                 }
                             }
                             sprintf_P(cmd, PSTR("M%d %s"), lM, wifi_acce_code);                        
+                            EXECUTE_GCODE(PSTR("M500"));
+                        }else if(lM == 1506 || lM == 1507 || lM == 1508){
+                            //M1506 wifi_gateway
+                            for(int i=0; i<4; i++){
+                                wifi_ip_settings[4* (lM - 1506) + i] = 0x00;
+                            }
+                            uint8_t uIP = 0;
+                            uint8_t pointCount = 0;
+                            for(int i=0; i<20; i++){
+                                if(_tl_command[iFrom + 6 + i]=='.'){
+                                    wifi_ip_settings[4* (lM - 1506) + pointCount] = uIP;
+                                    pointCount++;
+                                    uIP = 0;
+                                }
+                                if(_tl_command[iFrom + 6 + i] >= '0' && _tl_command[iFrom + 6 + i]<='9'){
+                                    uIP = uIP * 10 + _tl_command[iFrom + 6 + i] - '0';
+                                }
+                            }
+                            sprintf_P(cmd, PSTR("M%d %d.%d.%d.%d"), lM, wifi_ip_settings[4* (lM - 1506) + 0],wifi_ip_settings[4* (lM - 1506) + 1],wifi_ip_settings[4* (lM - 1506) + 2],wifi_ip_settings[4* (lM - 1506) + 3]);
+                            TLDEBUG_PRINTLN(cmd);
                             EXECUTE_GCODE(PSTR("M500"));
                         }else if(lM == 1510){
                             //M1510

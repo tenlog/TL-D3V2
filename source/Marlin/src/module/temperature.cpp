@@ -801,20 +801,29 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
     };
 
     uint8_t fanState = 0;
+    static bool eFanOn[2];
     #ifndef ELECTROMAGNETIC_VALUE
-      HOTEND_LOOP()
-        #ifdef TENLOG_TOUCH_LCD
-        if (temp_hotend[e].celsius >= tl_E_FAN_START_TEMP)
-        #else
-        if (temp_hotend[e].celsius >= EXTRUDER_AUTO_FAN_TEMPERATURE)
-        #endif
+
+      for(uint8_t e=0; e<2; e++){
+        if (temp_hotend[e].celsius >= tl_E_FAN_START_TEMP && (!eFanOn[e] || tl_E_FAN_CHANGED) ){
           thermalManager.set_fan_speed(e+2, (uint8_t)((float)tl_E_FAN_SPEED * 2.55f));
           //SBI(fanState, pgm_read_byte(&fanBit[e]));
-        else// b zyf
+          #if ENABLED(LASER_SYNCHRONOUS_M106_M107)
+            planner.buffer_sync_block(BLOCK_FLAG_SYNC_FANS);
+          #endif
+          eFanOn[e] = true;
+          if(tl_E_FAN_CHANGED) tl_E_FAN_CHANGED = false;
+        }
+        if(temp_hotend[e].celsius < tl_E_FAN_START_TEMP && (eFanOn[e] || tl_E_FAN_CHANGED)){  // b zyf
           thermalManager.set_fan_speed(e+2, 0);
-        #if ENABLED(LASER_SYNCHRONOUS_M106_M107)
-          planner.buffer_sync_block(BLOCK_FLAG_SYNC_FANS);
-        #endif
+          #if ENABLED(LASER_SYNCHRONOUS_M106_M107)
+            planner.buffer_sync_block(BLOCK_FLAG_SYNC_FANS);
+          #endif
+          eFanOn[e] = false;
+          if(tl_E_FAN_CHANGED) tl_E_FAN_CHANGED = false;
+        }
+      }
+
     #endif
 
     #if HAS_AUTO_CHAMBER_FAN

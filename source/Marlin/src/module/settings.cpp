@@ -511,6 +511,7 @@ typedef struct SettingsDataStruct {
     char w_wifi_ssid[20];
     char w_wifi_pswd[20];
     char w_wifi_acce_code[20];
+    uint8_t w_wifi_ip_settings[20];
   #endif
 
 } SettingsData;
@@ -1504,6 +1505,7 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(wifi_pswd);
       EEPROM_WRITE(wifi_acce_code);
       EEPROM_WRITE(http_port);
+      EEPROM_WRITE(wifi_ip_settings);
     #endif
 
     tlInitSetting();  //Show in ui
@@ -2484,6 +2486,7 @@ void MarlinSettings::postprocess() {
         EEPROM_READ(uwifiport);
         if(uwifiport < 0 || uwifiport > 65535) uwifiport = WIFI_DEFAULT_PORT;
         http_port = uwifiport;
+        EEPROM_READ(wifi_ip_settings);
       #endif
       #if ENABLED(TENLOG_TOUCH_LCD)
         tlInitSetting();  //Show in ui
@@ -4089,6 +4092,13 @@ void MarlinSettings::reset() {
       TLDEBUG_PRINTLNPAIR("WIFI PSWD:", wifi_pswd);
       TLDEBUG_PRINTLNPAIR("WIFI Access code:", wifi_acce_code);
       TLDEBUG_PRINTLNPAIR("HTTP PORT:", http_port);
+      char cmd [32];
+      sprintf_P(cmd, "Gateway:%d.%d.%d.%d.",wifi_ip_settings[0],wifi_ip_settings[1],wifi_ip_settings[2],wifi_ip_settings[3]);
+      TLDEBUG_PRINTLN(cmd);
+      sprintf_P(cmd, "Subnet:%d.%d.%d.%d.",wifi_ip_settings[4],wifi_ip_settings[5],wifi_ip_settings[6],wifi_ip_settings[7]);
+      TLDEBUG_PRINTLN(cmd);
+      sprintf_P(cmd, "Local IP:%d.%d.%d.%d.",wifi_ip_settings[8],wifi_ip_settings[9],wifi_ip_settings[10],wifi_ip_settings[11]);
+      TLDEBUG_PRINTLN(cmd);
     #endif
   }
 

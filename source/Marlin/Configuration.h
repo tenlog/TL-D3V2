@@ -26,28 +26,33 @@
 //#define CUSTOM_VERSION_FILE Version.h // Path from the root directory (no quotes)
 
 /**
- * *** VENDORS PLEASE READ ***
- *
- * Marlin allows you to add a custom boot image for Graphical LCDs.
- * With this option Marlin will first show your custom screen followed
- * by the standard Marlin logo with version number and web URL.
- *
- * We encourage you to take advantage of this new feature and we also
- * respectfully request that you retain the unmodified Marlin boot screen.
+ * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
+#define TL_SUBVERSION "030"
 
 //update log 
 //20220930 add DC motor (moto_1) to ELECTROMAGNETIC_VALUE mode
 //20221008 Add wifi version 
 //version 027
+//20221015  wifi static ip ok
+//version 028
+//20221024  fix bug: can not release moto.
+//version 029
+//20221026  fix bug: can not print from wifi website. (need wifi ver1.2.1)
+//          fix bug: wifi web page display feed rate error (when > 255)(in printing page.)
+//          fix bug: can not display printing file name when start print from touch screen.(in printing page).
+//          Add wifi version.
+//version 030
+//20221027  TOOLCHANGE_ZRAISE 0.2
+//Version 031
 
 //TL Medels and version
 //#define TENLOG_H2
-//#define TENLOG_D3
+#define TENLOG_D3
 //#define TENLOG_M3
 //#define TENLOG_D5
-#define TENLOG_D6
+//#define TENLOG_D6
 
 //#define TL_DEBUG
 
@@ -58,10 +63,6 @@
 
 //#define ELECTROMAGNETIC_VALUE
 
-/**
- * Marlin release version identifier
- */
-#define TL_SUBVERSION "028"
 
 // The size of the printable area
 #if defined(TENLOG_D3) 
@@ -109,6 +110,7 @@
   #define WIFI_DEFAULT_ACCE_CODE "12345"
   #define WIFI_DEFAULT_MODE 2
   #define WIFI_DEFAULT_PORT 80
+  #define WIFI_DEFAULT_IP_SETTINGS {192,168,0,1,255,255,255,0,192,168,0,88}
 #endif
 
 #ifdef TENLOG_M3

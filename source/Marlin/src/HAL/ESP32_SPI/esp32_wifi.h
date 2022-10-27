@@ -61,6 +61,7 @@
 extern char wifi_ssid[20];
 extern char wifi_pswd[20];
 extern char wifi_acce_code[20];
+extern uint8_t wifi_ip_settings[20];
 extern uint8_t wifi_mode;
 extern uint16_t http_port;
 extern bool wifi_connected;

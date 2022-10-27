@@ -158,6 +158,7 @@ extern bool plr_enabled;
 extern unsigned long startPrintTime;
 
 extern int tl_print_page_id;
+extern int tl_print_file_id;
 extern int iDWNPageID;
 extern int tl_TouchScreenType;
 extern bool DWNMoving;
@@ -185,6 +186,7 @@ extern int iPrintID;
 extern int8_t tl_languageID;
 extern int8_t tl_Sleep;
 extern int8_t tl_E_FAN_SPEED;
+extern bool tl_E_FAN_CHANGED;
 extern int8_t tl_E_FAN_START_TEMP;
 extern int8_t tl_ECO_MODE;
 extern int8_t tl_THEME_ID;
