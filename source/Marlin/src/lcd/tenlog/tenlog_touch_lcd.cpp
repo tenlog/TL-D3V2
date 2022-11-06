@@ -2172,9 +2172,9 @@ void tenlog_status_update(bool isTJC)
         }
 
         if((!SettingsSent) && wifi_connected){
-            for(int8_t i=1; i<6; i++){
-                WIFI_TX_Handler(i);
-            }
+            //for(int8_t i=1; i<6; i++){
+            //    WIFI_TX_Handler(i);
+            //}
             WIFI_TX_Handler(0x09);
             ZERO(wifi_printer_settings);
         }
@@ -2602,6 +2602,10 @@ void process_command_gcode(long _tl_command[]) {
                     //M1033
                     //abortSDPrinting
                     TLAbortPrinting();
+                }else if(lM == 1035){
+                    //M1035
+                    //resend wifi
+                    wifi_resent = false;
                 }else if(lM == 1021){
                     //Pre heat //M1021
                     #ifndef ELECTROMAGNETIC_VALUE
@@ -2775,15 +2779,19 @@ void tenlog_screen_update()
 }
 
 void tenlog_wifi_update()
-{    
-    static unsigned long lWLastUpdateTime;
-    if(millis() - lWLastUpdateTime < 200)
-    {
+{   
+    /*
+    if(wifi_uploading_file){
+        WIFI_TX_Handler(0x0C);
         return;
     }
+    */
+    static unsigned long lWLastUpdateTime;
+    if(millis() - lWLastUpdateTime < 200)
+        return;
+    
     lWLastUpdateTime=millis();
-    tenlog_status_update(false);
-        
+    tenlog_status_update(false);        
 }
 
 

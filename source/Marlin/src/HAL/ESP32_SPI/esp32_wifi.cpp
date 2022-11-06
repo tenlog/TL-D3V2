@@ -22,12 +22,14 @@
 
 //By tenlo zyf
 
+#include "watchdog.h"
 #include "../../MarlinCore.h"
 #include "../../inc/MarlinConfig.h"
 #include "../../lcd/tenlog/tenlog_touch_lcd.h"
 
 #ifdef ESP32_WIFI
 #include "esp32_wifi.h"
+
 
 char wifi_ssid[20] = WIFI_DEFAULT_SSID;
 char wifi_pswd[20] = WIFI_DEFAULT_PSWD;
@@ -36,23 +38,27 @@ uint8_t wifi_ip_settings[20] = WIFI_DEFAULT_IP_SETTINGS;
 uint8_t wifi_mode = WIFI_DEFAULT_MODE;
 uint16_t http_port = WIFI_DEFAULT_PORT;
 bool wifi_connected = false;
-int8_t wifiFirstSend = 0;
+int16_t wifiFirstSend = 0;
 bool wifi_resent = false;
 
+char wifi_writing_file_name[26] = "";
 char wifi_tjc_cmd[64]="";
 
 uint8_t wifi_printer_status[WIFI_MSG_LENGTH]={0};
 uint8_t wifi_printer_settings[WIFI_MSG_LENGTH]={0};
 uint8_t wifi_file_name[WIFI_MSG_LENGTH]={0};
 
+uint8_t wifi_writing_file_data[WIFI_DATA_LENGTH]={0};
+bool wifi_uploading_file = false;
+
 uint8_t wifi_version[3]={0};
 
-uint8_t spi_tx[BUFFER_SIZE]="";
-uint8_t spi_rx[BUFFER_SIZE]="";
+uint8_t spi_tx[SPI_BUFFER_SIZE]="";
+uint8_t spi_rx[SPI_BUFFER_SIZE]="";
 
-/*
 void WIFI_InitDMA(void)
 {
+    #ifdef USE_SPI_DMA
     stc_dma_config_t stcDmaCfg;
     stc_irq_regi_conf_t stcIrqRegiCfg;
        
@@ -61,12 +67,11 @@ void WIFI_InitDMA(void)
 
     // Configuration peripheral clock 
     PWC_Fcg0PeriphClockCmd(SPI_DMA_CLOCK_UNIT, Enable);
-    //PWC_Fcg0PeriphClockCmd(PWC_FCG0_PERIPH_AOS, Enable);
 
     // Configure TX DMA 
     stcDmaCfg.u16BlockSize = 1u;
-    stcDmaCfg.u16TransferCnt = 128;
-    stcDmaCfg.u32SrcAddr = 0;
+    stcDmaCfg.u16TransferCnt = SPI_BUFFER_SIZE;
+    stcDmaCfg.u32SrcAddr = (uint32_t)(&spi_tx[0]);
     stcDmaCfg.u32DesAddr = (uint32_t)(&SPI1_UNIT->DR);
     stcDmaCfg.stcDmaChCfg.enSrcInc = AddressIncrease;
     stcDmaCfg.stcDmaChCfg.enDesInc = AddressFix;
@@ -76,8 +81,8 @@ void WIFI_InitDMA(void)
     DMA_SetTriggerSrc(SPI_DMA_UNIT, SPI_DMA_TX_CHANNEL, SPI_DMA_TX_TRIG_SOURCE);
     // Enable DMA. 
     DMA_Cmd(SPI_DMA_UNIT, Enable);
+    #endif 
 }
-*/
 
 //【2】其次是GPIO口初始化（这边将SPI的CS脚当作GPIO进行初始化）：
 
@@ -183,10 +188,10 @@ uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data)
 uint8_t get_control_code(){
 	if(HEAD_OK(spi_rx)){
 		int16_t verify=0;
-		for(int i=0; i<BUFFER_SIZE-1; i++){
+		for(int i=0; i<SPI_BUFFER_SIZE-1; i++){
 			verify += spi_rx[i];
 		}
-		if(verify % 0x100 == spi_rx[BUFFER_SIZE-1]){
+		if(verify % 0x100 == spi_rx[SPI_BUFFER_SIZE-1]){
 			return spi_rx[2];
 		}
 	}
@@ -237,20 +242,30 @@ void SPI_RX_Handler(){
     	for(uint8_t i=0; i<3; i++){
             wifi_version[i] = ret[i];
         }
-
         if(wifi_version[1] % 2 == 0)
             sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tVersion.txt=\"WIFI V%d.%d.%d\""), wifi_version[0],wifi_version[1],wifi_version[2]);
         else
             sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tVersion.txt=\"WIFICAM V%d.%d.%d\""), wifi_version[0],wifi_version[1],wifi_version[2]);
-        TLSTJC_println(wifi_tjc_cmd);        
+        TLSTJC_println(wifi_tjc_cmd);
+    }else if(control_code == 0x09){ //start handling upload
+        //memcpy_P(wifi_writing_file_name, ret, WIFI_MSG_LENGTH);
+        //TLDEBUG_PRINT("Starting upload ");
+        //TLDEBUG_PRINTLN(wifi_writing_file_name);
+        //wifi_uploading_file = true;
+        //TJCMessage(1, 1, -1, "", "", "", "" wifi_writing_file_name);
+    }else if(control_code == 0x0A){
+        TLDEBUG_PRINTLN("file data received.");
+    }else if(control_code == 0x0B){
+        wifi_uploading_file = false;
+        delay(100);
+        TLDEBUG_PRINTLN("Upload done!");
     }
-
 }
 
 void SPI_RW_Message(){
     ZERO(spi_rx);
     SPI1_NSS_LOW();
-    for(int i=0; i<BUFFER_SIZE; i++){
+    for(int i=0; i<SPI_BUFFER_SIZE; i++){
         spi_rx[i] = SPI_RW(SPI1_UNIT, spi_tx[i]); 
     }
     SPI1_NSS_HIGH();
@@ -258,6 +273,7 @@ void SPI_RW_Message(){
 }
 
 void WIFI_TX_Handler(int8_t control_code){
+    HAL_watchdog_refresh(); //feed my dog
     ZERO(spi_tx);
     int16_t verify = 0;
     for(int8_t i=0; i<2; i++){
@@ -337,14 +353,16 @@ void WIFI_TX_Handler(int8_t control_code){
             }
         }
         break;
+        //0x0B = reboot;
+        //0x0C = send zero;
     }
 
-    for(uint8_t i=0; i<BUFFER_SIZE-1; i++){
+    for(uint8_t i=0; i<SPI_BUFFER_SIZE-1; i++){
         verify += spi_tx[i];
     }
 
     uint8_t verify8 = verify % 0x100;
-    spi_tx[BUFFER_SIZE-1]=verify8;
+    spi_tx[SPI_BUFFER_SIZE-1]=verify8;
     delay(3);//why need this?
 
     SPI_RW_Message();
@@ -384,7 +402,7 @@ void WIFI_InitSPI(void)
 {
     WIFI_InitGPIO();    //初始化几个GPIO口，
     WIFI_InitSPI1();    //初始化SPI的几个口，包括SCK、MOSI以及MISO
-    //WIFI_InitDMA();     //初始化SPI DMA
+    WIFI_InitDMA();     //初始化SPI DMA
 }
 
 ///////////zyf

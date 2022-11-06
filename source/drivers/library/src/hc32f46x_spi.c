@@ -547,7 +547,6 @@ en_result_t SPI_SendData8(M4_SPI_TypeDef *SPIx, uint8_t u8Data)
         SPIx->DR = u8Data;
         enRet = Ok;
     }
-
     return enRet;
 }
 

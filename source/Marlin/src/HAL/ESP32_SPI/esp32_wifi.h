@@ -37,6 +37,7 @@
 			0x09 = settings
 			0x0A = file_names
 			0x0B = reboot
+			0x0C = sent null message to spi slave to receive file data
 
 	MISO:
 	control Code
@@ -48,15 +49,24 @@
 			0x06 = ip
 			0x07 = execute gcode
 			0x08 = wifi version
-
+			0x09 = start file transfer
+			0x0A = write file data
+			0x0B = end file transfer
 */
 
 #pragma once
 
 #ifdef ESP32_WIFI
 
+#define USE_SPI_DMA
+
+#define WIFI_DATA_LENGTH 252
+#define SPI_BUFFER_SIZE 256
 #define WIFI_MSG_LENGTH 60
-#define BUFFER_SIZE 64
+
+
+extern uint8_t spi_tx[SPI_BUFFER_SIZE];
+extern uint8_t spi_rx[SPI_BUFFER_SIZE];
 
 extern char wifi_ssid[20];
 extern char wifi_pswd[20];
@@ -66,11 +76,15 @@ extern uint8_t wifi_mode;
 extern uint16_t http_port;
 extern bool wifi_connected;
 extern bool wifi_resent;
-extern int8_t wifiFirstSend;
+extern int16_t wifiFirstSend;
 
 extern uint8_t wifi_printer_status[WIFI_MSG_LENGTH];
 extern uint8_t wifi_printer_settings[WIFI_MSG_LENGTH];
 extern uint8_t wifi_file_name[WIFI_MSG_LENGTH];
+
+extern uint8_t wifi_writing_file_data[WIFI_DATA_LENGTH];
+extern char wifi_writing_file_name[26];
+extern bool wifi_uploading_file;
 
 extern uint8_t wifi_version[3];
 
@@ -102,11 +116,14 @@ extern uint8_t wifi_version[3];
 #define SPI1_UNIT_CLOCK                  (PWC_FCG1_PERIPH_SPI1)
 
 //spi DMA
-//#define SPI_DMA_UNIT                     (M4_DMA2)
-//#define SPI_DMA_CLOCK_UNIT               (PWC_FCG0_PERIPH_DMA1)
-//#define SPI_DMA_TX_CHANNEL               (DmaCh0)
-//#define SPI_DMA_TX_TRIG_SOURCE           (EVT_SPI1_SPII)//(EVT_SPI1_SPTI)     
+#ifdef USE_SPI_DMA
+#define SPI_DMA_UNIT                     (M4_DMA1)
+#define SPI_DMA_CLOCK_UNIT               (PWC_FCG0_PERIPH_DMA1)
+#define SPI_DMA_TX_CHANNEL               (DmaCh0)
+#define SPI_DMA_TX_TRIG_SOURCE           (EVT_SPI1_SPII)//(EVT_SPI1_SPTI)
+#endif
 
+void WIFI_Upload_File();
 void WIFI_InitGPIO(void);
 void WIFI_InitSPI1(void);
 uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data);
@@ -120,7 +137,7 @@ void WIFI_TX_Handler(int8_t control_code);
 //uint8_t get_control_code();
 //void get_data_code(uint8_t control_code);
 
-//void WIFI_InitDMA(void);
+void WIFI_InitDMA(void);
 
 void wifiResetEEPROM();
 #endif

@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "030"
+#define TL_SUBVERSION "031"
 
 //update log 
 //20220930 add DC motor (moto_1) to ELECTROMAGNETIC_VALUE mode
@@ -45,6 +45,7 @@
 //          Add wifi version.
 //version 030
 //20221027  TOOLCHANGE_ZRAISE 0.2
+//20221104  Modified the temperature table
 //Version 031
 
 //TL Medels and version
@@ -54,7 +55,7 @@
 //#define TENLOG_D5
 //#define TENLOG_D6
 
-//#define TL_DEBUG
+#define TL_DEBUG
 
 #define TENLOG_TOUCH_LCD
 #define PRINT_FROM_Z_HEIGHT
@@ -62,7 +63,6 @@
 #define ESP32_WIFI
 
 //#define ELECTROMAGNETIC_VALUE
-
 
 // The size of the printable area
 #if defined(TENLOG_D3) 
