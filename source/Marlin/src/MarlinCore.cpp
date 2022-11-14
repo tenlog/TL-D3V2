@@ -1097,7 +1097,7 @@ inline void tmc_standby_setup() {
  *  - Set Marlin to RUNNING State
  */
 void setup() {
-  
+
   #ifdef BOARD_PREINIT
     BOARD_PREINIT(); // Low-level init (before serial init)
   #endif
@@ -1311,7 +1311,7 @@ void setup() {
   sync_plan_position();               // Vital to init stepper/planner equivalent for current_position
 
   TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init Temperature..."));
-  SETUP_RUN(thermalManager.init());   // Initialize temperature loop
+  SETUP_RUN(thermalManager.init());   // Initialize temperature loop 
 
   SETUP_RUN(print_job_timer.init());  // Initial setup of print job timer
 
@@ -1589,7 +1589,7 @@ void setup() {
   
   #if ENABLED(ESP32_WIFI)
     TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init Tenlog Wifi..."));
-    WIFI_InitSPI();
+    WIFI_Init();
   #endif
   
   SETUP_LOG("setup() completed.");

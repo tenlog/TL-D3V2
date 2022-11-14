@@ -11,7 +11,7 @@ adc_dev adc1 = {
 	.PeriphClock = PWC_FCG3_PERIPH_ADC1,
 	.Channel = ADC1_SA_CHANNEL/*|ADC1_SB_CHANNEL*/,
 
-	.DMARegs = M4_DMA1,
+	.DMARegs = M4_DMA1, 
 	.DMAPeriphClock = PWC_FCG0_PERIPH_DMA1,
  	.DMAChannel = DmaCh3,
 	.DMAenSrc = EVT_ADC1_EOCA,

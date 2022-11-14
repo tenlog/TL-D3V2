@@ -41,7 +41,7 @@
  */
 #include "startup.h"
 #include "../MarlinCore.h"
-
+//#include "../Marlin/src/HAL/ESP32_SPI/esp32_wifi.h"
 // Force init to be called *first*, i.e. before static object allocation.
 // Otherwise, statically allocated objects that need libmaple may fail.
  __attribute__(( constructor (101))) void premain() {
@@ -49,10 +49,11 @@
 }
 int main(void){
 	setup();
-
+	
 	while (1) {
 		loop();
 	}
+	
 }
 
 

@@ -2172,9 +2172,6 @@ void tenlog_status_update(bool isTJC)
         }
 
         if((!SettingsSent) && wifi_connected){
-            //for(int8_t i=1; i<6; i++){
-            //    WIFI_TX_Handler(i);
-            //}
             WIFI_TX_Handler(0x09);
             ZERO(wifi_printer_settings);
         }
@@ -2815,8 +2812,8 @@ void TL_idle(){
     #if ENABLED(HAS_WIFI)
         tenlog_wifi_update();
     #endif
+    spi_idle();
 }
-
 
 #define CEND  0xFF
 void TLSTJC_println(const char s[])

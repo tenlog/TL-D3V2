@@ -22,9 +22,9 @@
 
 //By zyf tenlog 
 
-
+//https://blog.csdn.net/ZCShouCSDN/article/details/118597633?ops_request_misc=&request_id=&biz_id=102&utm_term=hc32f460%20spi%20dma%20%E4%BB%8E%E6%9C%BA&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduweb~default-0-118597633.142^v63^pc_rank_34_queryrelevant25,201^v3^control,213^v2^t3_esquery_v1&spm=1018.2226.3001.4187
 /*
-	MOSI:
+	MISO:	from mainboard to wifi.
 	control Code
 	 		0x01 = wifi_mode
 	 		0x02 = http_port
@@ -39,7 +39,7 @@
 			0x0B = reboot
 			0x0C = sent null message to spi slave to receive file data
 
-	MISO:
+	MOSI:	from wifi to mainboard.
 	control Code
 	 		0x01 = request wifi connect
 	 		0x02 = http_port_ok
@@ -58,12 +58,9 @@
 
 #ifdef ESP32_WIFI
 
-#define USE_SPI_DMA
-
 #define WIFI_DATA_LENGTH 252
 #define SPI_BUFFER_SIZE 256
 #define WIFI_MSG_LENGTH 60
-
 
 extern uint8_t spi_tx[SPI_BUFFER_SIZE];
 extern uint8_t spi_rx[SPI_BUFFER_SIZE];
@@ -94,50 +91,49 @@ extern uint8_t wifi_version[3];
 #define SPI1_SCK_PORT                    (PortA)
 #define SPI1_SCK_PIN                     (Pin06)
 #define SPI1_SCK_FUNC                    (Func_Spi1_Sck)
-
+ 
 /* SPI_NSS Port/Pin definition */
 #define SPI1_NSS_PORT                    (PortB)
 #define SPI1_NSS_PIN                     (Pin01)
 #define SPI1_NSS_HIGH()                  (PORT_SetBits(SPI1_NSS_PORT, SPI1_NSS_PIN))
 #define SPI1_NSS_LOW()                   (PORT_ResetBits(SPI1_NSS_PORT, SPI1_NSS_PIN))
-
-/* SPI_MOSI Port/Pin definition */
-#define SPI1_MOSI_PORT                   (PortA)
-#define SPI1_MOSI_PIN                    (Pin07)
-#define SPI1_MOSI_FUNC                   (Func_Spi1_Mosi)
+#define SPI1_NSS_FUNC                    (Func_Spi1_Nss0)
 
 /* SPI_MISO Port/Pin definition */
 #define SPI1_MISO_PORT                   (PortB)
 #define SPI1_MISO_PIN                    (Pin00)
 #define SPI1_MISO_FUNC                   (Func_Spi1_Miso)
 
+/* SPI_MOSI Port/Pin definition */
+#define SPI1_MOSI_PORT                   (PortA)
+#define SPI1_MOSI_PIN                    (Pin07)
+#define SPI1_MOSI_FUNC                   (Func_Spi1_Mosi)
+
 /* SPI unit and clock definition */
 #define SPI1_UNIT                        (M4_SPI1)
 #define SPI1_UNIT_CLOCK                  (PWC_FCG1_PERIPH_SPI1)
 
 //spi DMA
-#ifdef USE_SPI_DMA
 #define SPI_DMA_UNIT                     (M4_DMA1)
 #define SPI_DMA_CLOCK_UNIT               (PWC_FCG0_PERIPH_DMA1)
-#define SPI_DMA_TX_CHANNEL               (DmaCh0)
-#define SPI_DMA_TX_TRIG_SOURCE           (EVT_SPI1_SPII)//(EVT_SPI1_SPTI)
-#endif
+#define SPI_DMA_TX_CHANNEL               (DmaCh2)
+#define SPI_DMA_RX_CHANNEL               (DmaCh1)
+#define SPI_DMA_TX_TRIG_SOURCE           (EVT_SPI1_SPII)
+#define SPI_DMA_RX_TRIG_SOURCE           (EVT_SPI1_SRRI) //SRRI
+#define IRQ_DMA1_TC1					 Int007_IRQn
 
-void WIFI_Upload_File();
 void WIFI_InitGPIO(void);
-void WIFI_InitSPI1(void);
-uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data);
-
 void WIFI_InitSPI(void);
-void SPI_ConnectWIFI();
-void SPI_RestartWIFI();
-
-void WIFI_TX_Handler(int8_t control_code);
-
-//uint8_t get_control_code();
-//void get_data_code(uint8_t control_code);
-
 void WIFI_InitDMA(void);
 
+void WIFI_Init(void);
+void SPI_ConnectWIFI();
+void SPI_RestartWIFI();
+void SPI_Receive_DMA(M4_SPI_TypeDef *SPIx, uint8_t *pData, uint16_t Size);
+
+void WIFI_TX_Handler(int8_t control_code);
+void DmaSPIIrqCallback(void);
+void spi_idle();
 void wifiResetEEPROM();
+void WIFI_Upload_File();
 #endif

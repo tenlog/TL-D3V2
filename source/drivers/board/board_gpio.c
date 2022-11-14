@@ -7,24 +7,23 @@
 
 extern const cfg_pin_info PIN_MAP[BOARD_NR_GPIO_PINS] = {
 
-    	{0,	PortA, Pin00, &adc1,  	ADC1_IN0, 			Func_Gpio}, /* PA0   OK*/
-    	{1,	PortA, Pin01, &adc1,  	ADC1_IN1, 			Func_Gpio}, /* PA1   OK*/
+    {0,	PortA, Pin00, &adc1,  	ADC1_IN0, 			Func_Gpio}, /* PA0   OK*/
+    {1,	PortA, Pin01, &adc1,  	ADC1_IN1, 			Func_Gpio}, /* PA1   OK*/
 	{2,	PortA, Pin02, &adc1,  	ADC1_IN2, 			    Func_Usart2_Tx}, /* PA2   OK*/
-    	{3,	PortA, Pin03, &adc1,  	ADC1_IN3, 			    Func_Usart2_Rx}, /* PA3   OK*/
+    {3,	PortA, Pin03, &adc1,  	ADC1_IN3, 			    Func_Usart2_Rx}, /* PA3   OK*/
 	{4,	PortA, Pin04, &adc1,  	ADC12_IN4, 			Func_Gpio}, /* PA4   OK*/	
-    	{5,	PortA, Pin05, &adc1,  	ADC12_IN5, 			Func_Gpio}, /* PA5 */
-    	{6,	PortA, Pin06, &adc1,  	ADC12_IN6, 			Func_Gpio}, /* PA6 */
-    	{7,	PortA, Pin07, &adc1,  	ADC12_IN7, 			Func_Gpio}, /* PA7  OK*/  
+    {5,	PortA, Pin05, &adc1,  	ADC12_IN5, 			Func_Gpio}, /* PA5 */
+    {6,	PortA, Pin06, &adc1,  	ADC12_IN6, 			Func_Gpio}, /* PA6 */
+    {7,	PortA, Pin07, &adc1,  	ADC12_IN7, 			Func_Gpio}, /* PA7  OK*/  
    	{8,	PortA, Pin08, NULL,  	ADC_PIN_INVALID, 	Func_Gpio}, /* PA8  OK*/
-    	{9,	PortA, Pin09, NULL,  	ADC_PIN_INVALID,	Func_Gpio}, /* PA9  OK*/
-    	{10,	PortA, Pin10, NULL, 	ADC_PIN_INVALID, 	    Func_Sdio}, /* PA10  OK*/
-    	{11,	PortA, Pin11, NULL, 	ADC_PIN_INVALID, 	Func_Gpio}, /* PA11   OK*/
-    	{12,	PortA, Pin12, NULL, 	ADC_PIN_INVALID, 	Func_Gpio}, /* PA12   OK*/	
-    	{13,	PortA, Pin13, NULL, 	ADC_PIN_INVALID, 	Func_Gpio}, /* PA13 */
-    	{14,	PortA, Pin14, NULL, 	ADC_PIN_INVALID, 	Func_Gpio}, /* PA14 */
-    	{15,	PortA, Pin15, NULL, 	ADC_PIN_INVALID, 	Func_Gpio}, /* PA15 */
+    {9,	PortA, Pin09, NULL,  	ADC_PIN_INVALID,	Func_Gpio}, /* PA9  OK*/
+    {10,	PortA, Pin10, NULL, 	ADC_PIN_INVALID, 	    Func_Sdio}, /* PA10  OK*/
+    {11,	PortA, Pin11, NULL, 	ADC_PIN_INVALID, 	Func_Gpio}, /* PA11   OK*/
+    {12,	PortA, Pin12, NULL, 	ADC_PIN_INVALID, 	Func_Gpio}, /* PA12   OK*/	
+    {13,	PortA, Pin13, NULL, 	ADC_PIN_INVALID, 	Func_Gpio}, /* PA13 */
+    {14,	PortA, Pin14, NULL, 	ADC_PIN_INVALID, 	Func_Gpio}, /* PA14 */
+    {15,	PortA, Pin15, NULL, 	ADC_PIN_INVALID, 	Func_Gpio}, /* PA15 */
 
-	
 	{0,	PortB, Pin00, &adc1,  	ADC12_IN8, 			Func_Gpio}, /* PB0   OK*/
 	{1,	PortB, Pin01, &adc1,  	ADC12_IN9, 			Func_Gpio}, /* PB1   OK*/
 	{2,	PortB, Pin02, NULL,  	ADC_PIN_INVALID, 	Func_Gpio}, /* PB2   OK*/
@@ -41,7 +40,6 @@ extern const cfg_pin_info PIN_MAP[BOARD_NR_GPIO_PINS] = {
 	{13,	PortB, Pin13, NULL, 	ADC_PIN_INVALID, 	Func_Gpio}, /* PB13     OK*/
 	{14,	PortB, Pin14, NULL, 	ADC_PIN_INVALID, 	Func_Gpio}, /* PB14     OK*/
 	{15,	PortB, Pin15, NULL, 	ADC_PIN_INVALID, 	Func_Gpio}, /* PB15     OK*/
-
 
 	{0,	PortC, Pin00, &adc1,  	ADC12_IN10, 			Func_Gpio}, /* PC0 */
 	{1,	PortC, Pin01, &adc1,  	ADC12_IN11, 			Func_Gpio}, /* PC1 */
@@ -60,7 +58,6 @@ extern const cfg_pin_info PIN_MAP[BOARD_NR_GPIO_PINS] = {
 	{14,	PortC, Pin14, NULL, 	ADC_PIN_INVALID, 	Func_Gpio}, /* PC14 */
 	{15,	PortC, Pin15, NULL, 	ADC_PIN_INVALID, 	Func_Gpio}, /* PC15 */
 
-
 	{0,	PortD, Pin00, NULL,	ADC_PIN_INVALID, 	Func_Gpio}, /* PD0 */
 	{1,	PortD, Pin01, NULL,	ADC_PIN_INVALID, 	Func_Gpio}, /* PD1 */
 	{2,	PortD, Pin02, NULL,	ADC_PIN_INVALID,		Func_Sdio}, /* PD2     OK*/
@@ -77,7 +74,6 @@ extern const cfg_pin_info PIN_MAP[BOARD_NR_GPIO_PINS] = {
 	{13,	PortD, Pin13, NULL,	ADC_PIN_INVALID,	Func_Gpio}, /* PD13    OK */
 	{14,	PortD, Pin14, NULL,	ADC_PIN_INVALID,	Func_Gpio}, /* PD14    OK */
 	{15,	PortD, Pin15, NULL,	ADC_PIN_INVALID,	Func_Gpio}, /* PD15    OK */
-
 
 	{0,	PortE, Pin00, NULL,	ADC_PIN_INVALID,	Func_Gpio}, /* PE0     OK*/
 	{1,	PortE, Pin01, NULL,	ADC_PIN_INVALID,	Func_Gpio}, /* PE1     OK*/
@@ -96,7 +92,6 @@ extern const cfg_pin_info PIN_MAP[BOARD_NR_GPIO_PINS] = {
 	{14,	PortE, Pin14, NULL,	ADC_PIN_INVALID,	Func_Sdio}, /* PE14     OK*/
 	{15,	PortE, Pin15, NULL,	ADC_PIN_INVALID,	Func_Gpio}, /* PE15     OK*/
 	
-
 	{0,	PortH, Pin00, NULL,	ADC_PIN_INVALID,	Func_Gpio}, /* PH0 */
 	{1,	PortH, Pin01, NULL,	ADC_PIN_INVALID,	Func_Gpio}, /* PH1 */
 	{2,	PortH, Pin02, NULL,	ADC_PIN_INVALID,	Func_Gpio}, /* PH2 */
