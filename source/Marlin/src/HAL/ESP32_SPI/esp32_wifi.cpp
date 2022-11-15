@@ -107,11 +107,11 @@ void WIFI_InitSPI(void)
 
 void WIFI_InitDMA(void)
 {
-    stc_dma_config_t stcDmaCfg;
-    stc_irq_regi_conf_t stcIrqRegiCfg;
-       
-    // configuration structure initialization 
-    MEM_ZERO_STRUCT(stcDmaCfg);
+ 	stc_dma_config_t stcDmaCfg;
+	stc_irq_regi_conf_t stcIrqRegiCfg;
+
+	// configuration structure initialization */
+	MEM_ZERO_STRUCT(stcDmaCfg);
 
     // Configuration peripheral clock 
     PWC_Fcg0PeriphClockCmd(SPI_DMA_CLOCK_UNIT, Enable);
@@ -132,13 +132,13 @@ void WIFI_InitDMA(void)
     stcDmaCfg.stcDmaChCfg.enTrnWidth = Dma8Bit;
     stcDmaCfg.stcDmaChCfg.enIntEn = Disable;
     DMA_InitChannel(SPI_DMA_UNIT, SPI_DMA_TX_CHANNEL, &stcDmaCfg);    
-    DMA_ChannelCmd(SPI_DMA_UNIT, SPI_DMA_TX_CHANNEL, Enable);
+    //DMA_ChannelCmd(SPI_DMA_UNIT, SPI_DMA_TX_CHANNEL, Enable);
 //	DMA_SetTriggerSrc(SPI_DMA_UNIT, SPI_DMA_TX_CHANNEL, SPI_DMA_TX_TRIG_SOURCE);
 
     /* Configure RX DMA */
  //   stcDmaCfg.u16SrcRptSize = 1;
  //   stcDmaCfg.u16DesRptSize = SPI_BUFFER_SIZE;
-    spi_rx[0] = 0xFF;
+    spi_rx[0] = 0xFE;
 	stcDmaCfg.u16BlockSize = 1u;
 	stcDmaCfg.u16TransferCnt = SPI_BUFFER_SIZE;
 	stcDmaCfg.u32SrcAddr = (uint32_t)(&SPI1_UNIT->DR);
@@ -166,7 +166,7 @@ void WIFI_InitDMA(void)
 	NVIC_EnableIRQ(stcIrqRegiCfg.enIRQn);
     //----------------------------------------------
     // Enable DMA. 
-    //DMA_Cmd(SPI_DMA_UNIT, Enable);
+    DMA_Cmd(SPI_DMA_UNIT, Enable);
     TLDEBUG_PRINTLN("DMA config done");
 }
 
@@ -201,10 +201,8 @@ void DmaSPIIrqCallback(void)
     SPI_ClearFlag(SPI1_UNIT,SpiFlagUnderloadError);
     SPI_ClearFlag(SPI1_UNIT,SpiFlagModeFaultError);
     SPI_ClearFlag(SPI1_UNIT,SpiFlagOverloadError);
-
-        SPI_Receive_DMA(spi_rx, SPI_BUFFER_SIZE);
-
-    TLDEBUG_PRINT("!");   
+    SPI_Receive_DMA(spi_rx, SPI_BUFFER_SIZE);
+    //TLDEBUG_PRINT("!");   
 }
 
 /**************************************************************************
