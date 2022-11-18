@@ -294,7 +294,7 @@ typedef enum en_spi_clk_div
 typedef enum en_spi_sck_polarity
 {
     SpiSckIdleLevelLow  = 0u,               ///< SCK is low level when SCK idle
-    SpiSckIdelLevelHigh = 1u,               ///< SCK is high level when SCK idle
+    SpiSckIdleLevelHigh = 1u,               ///< SCK is high level when SCK idle
 } en_spi_sck_polarity_t;
 
 /**

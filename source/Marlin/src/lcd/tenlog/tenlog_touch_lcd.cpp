@@ -2164,7 +2164,7 @@ void tenlog_status_update(bool isTJC)
         }
 
         bool SettingsSent = true;
-        for (int i=0; i<WIFI_MSG_LENGTH; i++){
+        for (uint16_t i=0; i<WIFI_MSG_LENGTH; i++){
             if(wifi_printer_settings[i] > 0){
                 SettingsSent = false;
                 break;

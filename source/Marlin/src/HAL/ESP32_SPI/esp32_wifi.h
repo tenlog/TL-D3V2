@@ -58,9 +58,9 @@
 
 #ifdef ESP32_WIFI
 
-#define WIFI_DATA_LENGTH 252
 #define SPI_BUFFER_SIZE 256
-#define WIFI_MSG_LENGTH 60
+#define WIFI_DATA_LENGTH SPI_BUFFER_SIZE - 4
+#define WIFI_MSG_LENGTH WIFI_DATA_LENGTH
 
 extern uint8_t spi_tx[SPI_BUFFER_SIZE];
 extern uint8_t spi_rx[SPI_BUFFER_SIZE];
@@ -114,6 +114,7 @@ extern uint8_t wifi_version[3];
 #define SPI1_UNIT_CLOCK                  (PWC_FCG1_PERIPH_SPI1)
 
 //spi DMA
+/*
 #define SPI_DMA_UNIT                     (M4_DMA1)
 #define SPI_DMA_CLOCK_UNIT               (PWC_FCG0_PERIPH_DMA1)
 #define SPI_DMA_TX_CHANNEL               (DmaCh2)
@@ -121,10 +122,14 @@ extern uint8_t wifi_version[3];
 #define SPI_DMA_TX_TRIG_SOURCE           (EVT_SPI1_SPII)
 #define SPI_DMA_RX_TRIG_SOURCE           (EVT_SPI1_SRRI) //SRRI
 #define IRQ_DMA1_TC1					 Int007_IRQn
+*/
 
 void WIFI_InitGPIO(void);
 void WIFI_InitSPI(void);
-void WIFI_InitDMA(void);
+//void WIFI_InitDMA(void);
+
+void SPI_RW_Message();
+uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data);
 
 void WIFI_Init(void);
 void SPI_ConnectWIFI();
