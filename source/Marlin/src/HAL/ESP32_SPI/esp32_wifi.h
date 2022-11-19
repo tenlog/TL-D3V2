@@ -114,27 +114,22 @@ extern uint8_t wifi_version[3];
 #define SPI1_UNIT_CLOCK                  (PWC_FCG1_PERIPH_SPI1)
 
 //spi DMA
-/*
 #define SPI_DMA_UNIT                     (M4_DMA1)
 #define SPI_DMA_CLOCK_UNIT               (PWC_FCG0_PERIPH_DMA1)
-#define SPI_DMA_TX_CHANNEL               (DmaCh2)
-#define SPI_DMA_RX_CHANNEL               (DmaCh1)
-#define SPI_DMA_TX_TRIG_SOURCE           (EVT_SPI1_SPII)
+#define SPI_DMA_TX_CHANNEL               (DmaCh1)
+#define SPI_DMA_RX_CHANNEL               (DmaCh0)
+#define SPI_DMA_TX_TRIG_SOURCE           (EVT_SPI1_SRTI)
 #define SPI_DMA_RX_TRIG_SOURCE           (EVT_SPI1_SRRI) //SRRI
 #define IRQ_DMA1_TC1					 Int007_IRQn
-*/
 
 void WIFI_InitGPIO(void);
 void WIFI_InitSPI(void);
-//void WIFI_InitDMA(void);
-
-void SPI_RW_Message();
-uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data);
+void WIFI_InitDMA(void);
 
 void WIFI_Init(void);
 void SPI_ConnectWIFI();
 void SPI_RestartWIFI();
-void SPI_Receive_DMA(M4_SPI_TypeDef *SPIx, uint8_t *pData, uint16_t Size);
+void SPI_Receive_DMA(uint8_t *pData, uint16_t Size);
 
 void WIFI_TX_Handler(int8_t control_code);
 void DmaSPIIrqCallback(void);

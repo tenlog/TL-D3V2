@@ -66,7 +66,7 @@ void WIFI_InitSPI(void)
     PWC_Fcg1PeriphClockCmd(SPI1_UNIT_CLOCK, Enable);
 
     /* Configuration SPI pin */
-    //PORT_SetFunc(SPI1_NSS_PORT, SPI1_NSS_PIN, SPI1_NSS_FUNC, Disable);
+    PORT_SetFunc(SPI1_NSS_PORT, SPI1_NSS_PIN, SPI1_NSS_FUNC, Disable);
     PORT_SetFunc(SPI1_SCK_PORT, SPI1_SCK_PIN, SPI1_SCK_FUNC,  Disable);
     PORT_SetFunc(SPI1_MOSI_PORT, SPI1_MOSI_PIN, SPI1_MOSI_FUNC, Disable);
     PORT_SetFunc(SPI1_MISO_PORT, SPI1_MISO_PIN, SPI1_MISO_FUNC, Disable);
@@ -77,7 +77,7 @@ void WIFI_InitSPI(void)
     stcSpiInit.enDataLength             = SpiDataLengthBit8;
     stcSpiInit.enFirstBitPosition       = SpiFirstBitPositionMSB;
     stcSpiInit.enSckPolarity            = SpiSckIdleLevelLow;
-    stcSpiInit.enSckPhase               = SpiSckOddSampleEvenChange; //SpiSckOddChangeEvenSample; 
+    stcSpiInit.enSckPhase               = SpiSckOddSampleEvenChange;
     stcSpiInit.enReadBufferObject       = SpiReadReceiverBuffer;
     stcSpiInit.enWorkMode               = SpiWorkMode4Line;
     stcSpiInit.enTransMode              = SpiTransFullDuplex;
@@ -87,46 +87,18 @@ void WIFI_InitSPI(void)
     stcSpiInit.enParityEn               = Disable;
     stcSpiInit.enParity                 = SpiParityEven;
 
-    /* SPI master mode */
-    /*
-    stcSpiInit.enMasterSlaveMode                     = SpiModeMaster;
-    stcSpiInit.stcDelayConfig.enSsSetupDelayOption   = SpiSsSetupDelayCustomValue;
-    stcSpiInit.stcDelayConfig.enSsSetupDelayTime     = SpiSsSetupDelaySck1;
-    stcSpiInit.stcDelayConfig.enSsHoldDelayOption    = SpiSsHoldDelayCustomValue;
-    stcSpiInit.stcDelayConfig.enSsHoldDelayTime      = SpiSsHoldDelaySck3;
-    stcSpiInit.stcDelayConfig.enSsIntervalTimeOption = SpiSsIntervalCustomValue;
-    stcSpiInit.stcDelayConfig.enSsIntervalTime       = SpiSsIntervalSck1PlusPck2;
-    stcSpiInit.stcSsConfig.enSsValidBit              = SpiSsValidChannel0;
-    stcSpiInit.stcSsConfig.enSs0Polarity             = SpiSsLowValid;
-    */
-    stcSpiInit.enMasterSlaveMode = SpiModeSlave;
+	stcSpiInit.enMasterSlaveMode = SpiModeSlave;
     SPI_Init(SPI1_UNIT, &stcSpiInit);
-    SPI_Cmd(SPI1_UNIT, Enable);
-    //TLDEBUG_PRINTLN("SPI config done");
+    TLDEBUG_PRINTLN("SPI config done");
 }
 
-//GPIO口初始化（这边将SPI的CS脚当作GPIO进行初始化）：
-void WIFI_InitGPIO(void)
-{
-    stc_port_init_t stcPortInit;
-
-    /* configure structure initialization */
-    MEM_ZERO_STRUCT(stcPortInit);
-    stcPortInit.enPinMode = Pin_Mode_In;
-    //PORT_Init(SPI1_NSS_PORT, SPI1_NSS_PIN, &stcPortInit);
-	stcPortInit.enPullUp = Enable;
-	PORT_Init(SPI1_SCK_PORT, SPI1_SCK_PIN, &stcPortInit); 
-}
-
-
-/*
 void WIFI_InitDMA(void)
 {
- 	stc_dma_config_t stcDmaCfg;
-	stc_irq_regi_conf_t stcIrqRegiCfg;
-
-	// configuration structure initialization 
-	MEM_ZERO_STRUCT(stcDmaCfg);
+    stc_dma_config_t stcDmaCfg;
+    stc_irq_regi_conf_t stcIrqRegiCfg;
+       
+    // configuration structure initialization 
+    MEM_ZERO_STRUCT(stcDmaCfg);
 
     // Configuration peripheral clock 
     PWC_Fcg0PeriphClockCmd(SPI_DMA_CLOCK_UNIT, Enable);
@@ -136,42 +108,38 @@ void WIFI_InitDMA(void)
     spi_tx[0] = 0xFF;
     stcDmaCfg.u16BlockSize = 1u;    //每次传输数据
     stcDmaCfg.u16TransferCnt = SPI_BUFFER_SIZE;   //无限
-    //stcDmaCfg.u16SrcRptSize = SPI_BUFFER_SIZE;  //总缓冲区大小
     stcDmaCfg.u32SrcAddr = (uint32_t)(&spi_tx); 
     stcDmaCfg.u32DesAddr = (uint32_t)(&SPI1_UNIT->DR);
-    //stcDmaCfg.u16DesRptSize = 0;                //发送缓冲区无限
-    //stcDmaCfg.stcDmaChCfg.enSrcRptEn =Disable;
-    //stcDmaCfg.stcDmaChCfg.enDesRptEn =Disable;
     stcDmaCfg.stcDmaChCfg.enSrcInc = AddressIncrease;
     stcDmaCfg.stcDmaChCfg.enDesInc = AddressFix;
     stcDmaCfg.stcDmaChCfg.enTrnWidth = Dma8Bit;
-    stcDmaCfg.stcDmaChCfg.enIntEn = Disable;
+    stcDmaCfg.stcDmaChCfg.enIntEn = Enable;
     DMA_InitChannel(SPI_DMA_UNIT, SPI_DMA_TX_CHANNEL, &stcDmaCfg);    
     //DMA_ChannelCmd(SPI_DMA_UNIT, SPI_DMA_TX_CHANNEL, Enable);
-//	DMA_SetTriggerSrc(SPI_DMA_UNIT, SPI_DMA_TX_CHANNEL, SPI_DMA_TX_TRIG_SOURCE);
+    //DMA_SetTriggerSrc(SPI_DMA_UNIT, SPI_DMA_TX_CHANNEL, SPI_DMA_TX_TRIG_SOURCE);
 
-    // Configure RX DMA 
- //   stcDmaCfg.u16SrcRptSize = 1;
- //   stcDmaCfg.u16DesRptSize = SPI_BUFFER_SIZE;
-    spi_rx[0] = 0xFE;
+    /* Configure RX DMA */
+    //stcDmaCfg.u16SrcRptSize = 1;
+    //stcDmaCfg.u16DesRptSize = SPI_BUFFER_SIZE;
+    spi_rx[0] = 0xFF;
 	stcDmaCfg.u16BlockSize = 1u;
 	stcDmaCfg.u16TransferCnt = SPI_BUFFER_SIZE;
 	stcDmaCfg.u32SrcAddr = (uint32_t)(&SPI1_UNIT->DR);
 	stcDmaCfg.u32DesAddr = (uint32_t)(&spi_rx);
 	stcDmaCfg.stcDmaChCfg.enSrcInc = AddressFix;
 	stcDmaCfg.stcDmaChCfg.enDesInc = AddressIncrease;
-    // Enable repeat function. 
+    /* Enable repeat function. */
  //   stcDmaCfg.stcDmaChCfg.enSrcRptEn = Disable;
  //   stcDmaCfg.stcDmaChCfg.enDesRptEn = Enable;
 	stcDmaCfg.stcDmaChCfg.enTrnWidth = Dma8Bit;
-	stcDmaCfg.stcDmaChCfg.enIntEn = Enable;
+	stcDmaCfg.stcDmaChCfg.enIntEn = Disable;
 	DMA_InitChannel(SPI_DMA_UNIT, SPI_DMA_RX_CHANNEL, &stcDmaCfg);
     //DMA_ChannelCmd(SPI_DMA_UNIT, SPI_DMA_RX_CHANNEL, Enable);
-	//DMA_SetTriggerSrc(SPI_DMA_UNIT, SPI_DMA_TX_CHANNEL, SPI_DMA_TX_TRIG_SOURCE);
+	DMA_SetTriggerSrc(SPI_DMA_UNIT, SPI_DMA_TX_CHANNEL, SPI_DMA_TX_TRIG_SOURCE);
 	DMA_SetTriggerSrc(SPI_DMA_UNIT, SPI_DMA_RX_CHANNEL, SPI_DMA_RX_TRIG_SOURCE);
     //---------------------------------------
 
-    // Set DMA block transfer complete IRQ  //设置DMA传输块完成中断
+    /* Set DMA block transfer complete IRQ */ //设置DMA传输块完成中断
 	stcIrqRegiCfg.enIRQn = IRQ_DMA1_TC1;
 	stcIrqRegiCfg.pfnCallback = &DmaSPIIrqCallback;
 	stcIrqRegiCfg.enIntSrc = INT_DMA1_TC1;
@@ -184,26 +152,21 @@ void WIFI_InitDMA(void)
     DMA_Cmd(SPI_DMA_UNIT, Enable);
     TLDEBUG_PRINTLN("DMA config done");
 }
-*/
 
+//GPIO口初始化（这边将SPI的CS脚当作GPIO进行初始化）：
 
-uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data)
+void WIFI_InitGPIO(void)
 {
-    while (Reset == SPI_GetFlag(SPIx, SpiFlagSendBufferEmpty))NOOP;
-    SPI_SendData8(SPIx, data);
-    while (Reset == SPI_GetFlag(SPIx, SpiFlagReceiveBufferFull))NOOP;
-    return SPI_ReceiveData8(SPIx);
+    stc_port_init_t stcPortInit;
+
+    /* configure structure initialization */
+    MEM_ZERO_STRUCT(stcPortInit);
+    stcPortInit.enPinMode = Pin_Mode_In;
+    PORT_Init(SPI1_NSS_PORT, SPI1_NSS_PIN, &stcPortInit);
+	stcPortInit.enPullUp = Enable;
+	PORT_Init(SPI1_SCK_PORT, SPI1_SCK_PIN, &stcPortInit);
 }
 
-void SPI_RW_Message(){
-    ZERO(spi_rx);
-    for(uint16_t i=0; i<SPI_BUFFER_SIZE; i++){
-        spi_rx[i] = SPI_RW(SPI1_UNIT, spi_tx[i]); 
-    }
-    //SPI_RX_Handler();
-}
-
-/*
 void SPI_Receive_DMA(uint8_t *pData, uint16_t Size)
 {
 	SPI_Cmd(SPI1_UNIT, Disable);
@@ -223,7 +186,6 @@ void DmaSPIIrqCallback(void)
     SPI_Receive_DMA(spi_rx, SPI_BUFFER_SIZE);
     //TLDEBUG_PRINT("!");   
 }
-*/
 
 /**************************************************************************
 * 函数名称： WIFI_Init
@@ -236,12 +198,13 @@ void DmaSPIIrqCallback(void)
 void WIFI_Init(void)
 {
     WIFI_InitGPIO();   //初始化几个GPIO口，
-    //WIFI_InitDMA();    //初始化SPI的几个口，包括SCK、MOSI以及MISO
+    WIFI_InitDMA();    //初始化SPI的几个口，包括SCK、MOSI以及MISO
     WIFI_InitSPI();    //初始化SPI的几个口，包括SCK、MOSI以及MISO
+
+    SPI_Receive_DMA(spi_rx, SPI_BUFFER_SIZE);
 }
 
 void spi_idle(){
-    SPI_RW_Message();
     /*
     SPI_Receive_DMA(spi_rx, SPI_BUFFER_SIZE);
     char temp[8];    
