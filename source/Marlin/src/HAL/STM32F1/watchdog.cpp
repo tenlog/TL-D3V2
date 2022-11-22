@@ -58,8 +58,6 @@ void watchdog_init() {
   iwdg_init();
   wdt_init_flag = true;
 }
-#else
-void HAL_watchdog_refresh() {}
-#endif // USE_WATCHDOG
 
+#endif // USE_WATCHDOG
 #endif // __STM32F1__

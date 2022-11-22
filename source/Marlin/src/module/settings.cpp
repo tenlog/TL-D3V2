@@ -1062,15 +1062,13 @@ void MarlinSettings::postprocess() {
     // Power-Loss Recovery
     //
     {
-      _FIELD_TEST(recovery_enabled);
-      #if ENABLED(SDSUPPORT)
+      _FIELD_TEST(recovery_enabled);      
       #if ENABLED(POWER_LOSS_RECOVERY)
       const bool recovery_enabled = TERN(POWER_LOSS_RECOVERY, recovery.enabled, ENABLED(PLR_ENABLED_DEFAULT));
       #elif ENABLED(POWER_LOSS_RECOVERY_TL)
       const bool recovery_enabled = TERN(POWER_LOSS_RECOVERY_TL, plr_enabled, ENABLED(PLR_ENABLED_DEFAULT));
       #endif
       EEPROM_WRITE(recovery_enabled);
-      #endif //SDSUPPORT
     }
 
     //

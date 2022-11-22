@@ -100,8 +100,8 @@
 #define X_DIR_PIN          PC6
 
 #define X2_ENABLE_PIN       X_ENABLE_PIN
-#define X2_STEP_PIN         PA9   //PA9
-#define X2_DIR_PIN          PA8   //PA8
+#define X2_STEP_PIN         PA9
+#define X2_DIR_PIN          PA8
 
 #define Y_ENABLE_PIN       X_ENABLE_PIN
 #define Y_STEP_PIN         PB15
@@ -117,11 +117,12 @@
 #define Z2_STEP_PIN         PB13
 #define Z2_DIR_PIN          PB12
 
+
 #define E0_ENABLE_PIN      X_ENABLE_PIN
-#define E0_STEP_PIN        PB4  //PB4
-#define E0_DIR_PIN         PB3  //PB3
+#define E0_STEP_PIN        PB4
 #define E1_ENABLE_PIN      X_ENABLE_PIN
 #define E1_STEP_PIN        PB6
+#define E0_DIR_PIN         PB3
 #define E1_DIR_PIN         PB5
 
 #ifdef ELECTROMAGNETIC_VALUE

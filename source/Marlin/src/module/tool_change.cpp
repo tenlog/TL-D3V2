@@ -1262,11 +1262,9 @@ void tool_change(const uint8_t new_tool, bool no_move/*=false*/) {
             #if ENABLED(TOOLCHANGE_PARK)
               if (toolchange_settings.enable_park) do_blocking_move_to_xy_z(destination, destination.z, MMM_TO_MMS(TOOLCHANGE_PARK_XY_FEEDRATE));
             #else
-              #if ENABLED(SDSUPPORT)
               if(card.flag.sdprinting && !hotendOffsetChanged){      //by zyf do not move back when is not printing.
                 do_blocking_move_to_xy(destination, planner.settings.max_feedrate_mm_s[X_AXIS] * 0.35f); //0.35 by zyf
               }
-              #endif
               do_blocking_move_to_z(destination.z, planner.settings.max_feedrate_mm_s[Z_AXIS]);
             #endif
 

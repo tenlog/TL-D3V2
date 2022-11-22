@@ -848,12 +848,9 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
       
       bool isHeating =  isHeatingHotend(0) && degTargetHotend(0) > 20 || isHeatingHotend(1) && degTargetHotend(1) > 20 || isHeatingBed() && degTargetBed() > 5 ;
       static uint32_t LastChamberFanRun;
-      if(millis() - LastChamberFanRun < 180000 && LastChamberFanRun > 0){
-        WRITE(TLCHAMBER_AUTO_FAN_PIN, 1);
-      }else{
-        WRITE(TLCHAMBER_AUTO_FAN_PIN, 0);
-      }
-        //SBI(fanState, pgm_read_byte(&fanBit[CHAMBER_FAN_INDEX]));
+      if(millis() - LastChamberFanRun < 180000 && LastChamberFanRun > 0)
+      
+        SBI(fanState, pgm_read_byte(&fanBit[CHAMBER_FAN_INDEX]));
 
       if(isStepEna || isHeating)
         LastChamberFanRun = millis();
