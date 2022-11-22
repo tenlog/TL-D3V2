@@ -68,7 +68,7 @@ void WIFI_InitSPI(void)
 	PWC_Fcg1PeriphClockCmd(WIFI_SPI_UNIT_CLOCK, Enable);
 	
 	/* Configuration SPI pin */
-	//PORT_SetFunc(SPI1_NSS_PORT, SPI1_NSS_PIN, SPI1_NSS_FUNC, Disable);
+	PORT_SetFunc(SPI1_NSS_PORT, SPI1_NSS_PIN, SPI1_NSS_FUNC, Disable);
 	PORT_SetFunc(SPI1_SCK_PORT, SPI1_SCK_PIN, SPI1_SCK_FUNC, Disable);
 	PORT_SetFunc(SPI1_MOSI_PORT, SPI1_MOSI_PIN, SPI1_MOSI_FUNC, Disable);
 	PORT_SetFunc(SPI1_MISO_PORT, SPI1_MISO_PIN, SPI1_MISO_FUNC, Disable);
@@ -108,12 +108,11 @@ void WIFI_InitDMA(void)
 	PWC_Fcg0PeriphClockCmd(PWC_FCG0_PERIPH_PTDIS, Enable);
 
 	/* Configure TX DMA */
-	spi_tx[0] = 0xff;
 	stcDmaCfg.u16BlockSize = 1u;
 	stcDmaCfg.u16TransferCnt = SPI_BUFFER_SIZE;
 	stcDmaCfg.u32SrcAddr = (uint32_t)(&spi_tx);
 	stcDmaCfg.u32DesAddr = (uint32_t)(&WIFI_SPI_UNIT->DR);
-	stcDmaCfg.stcDmaChCfg.enSrcInc = AddressFix;//AddressIncrease;
+	stcDmaCfg.stcDmaChCfg.enSrcInc = AddressIncrease;//AddressIncrease;
 	stcDmaCfg.stcDmaChCfg.enDesInc = AddressFix;
 	stcDmaCfg.stcDmaChCfg.enTrnWidth = Dma8Bit;
 	stcDmaCfg.stcDmaChCfg.enIntEn = Enable;//Disable;
@@ -163,12 +162,13 @@ void WIFI_InitGPIO(void)
 	PORT_Init(SPI1_SCK_PORT, SPI1_SCK_PIN, &stcPortInit);
 }
 
-void SPI_Receive_DMA(uint8_t *pData, uint16_t Size)
+void SPI_Receive_DMA(uint8_t *pTxData, uint8_t *pRxData, uint16_t Size)
 {
 	SPI_Cmd(WIFI_SPI_UNIT, Disable);
 	DMA_SetTransferCnt(WIFI_DMA_UNIT, WIFI_DMA_TX_CHANNEL, Size);
 	DMA_SetTransferCnt(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL, Size);
-	DMA_SetDesAddress(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL,(uint32_t)pData);
+	DMA_SetSrcAddress(WIFI_DMA_UNIT, WIFI_DMA_TX_CHANNEL,(uint32_t)pTxData);
+	DMA_SetDesAddress(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL,(uint32_t)pRxData);
 	DMA_ChannelCmd(WIFI_DMA_UNIT, WIFI_DMA_TX_CHANNEL, Enable);
 	DMA_ChannelCmd(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL, Enable);
 	SPI_Cmd(WIFI_SPI_UNIT, Enable);
@@ -184,14 +184,14 @@ void DmaSPIIrqCallback(void)
 		SPI_ClearFlag(WIFI_SPI_UNIT,SpiFlagUnderloadError);
 		SPI_ClearFlag(WIFI_SPI_UNIT,SpiFlagModeFaultError);
 		SPI_ClearFlag(WIFI_SPI_UNIT,SpiFlagOverloadError);
-		DMA_ClearIrqFlag(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL,TrnCpltIrq);
-		DMA_ClearIrqFlag(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL,BlkTrnCpltIrq);
+		//DMA_ClearIrqFlag(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL,TrnCpltIrq);
+		//DMA_ClearIrqFlag(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL,BlkTrnCpltIrq);
 
 		//if(DMA_GetIrqFlag(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL,TrnCpltIrq)){
         if(rx_switch)
-            SPI_Receive_DMA(spi_rx, SPI_BUFFER_SIZE);
+            SPI_Receive_DMA(spi_tx, spi_rx, SPI_BUFFER_SIZE);
         else
-            SPI_Receive_DMA(spi_rx1, SPI_BUFFER_SIZE);
+            SPI_Receive_DMA(spi_tx, spi_rx1, SPI_BUFFER_SIZE);
     //}
 }
 
@@ -210,13 +210,11 @@ void WIFI_Init(void)
     WIFI_InitSPI();    //初始化SPI的几个口，包括SCK、MOSI以及MISO
 
     //SPI_Cmd(WIFI_SPI_UNIT, Enable);
-    SPI_Receive_DMA(spi_rx, SPI_BUFFER_SIZE);
+    SPI_Receive_DMA(spi_tx, spi_rx, SPI_BUFFER_SIZE);
 }
 
 void spi_idle(){
-    //DmaSPIIrqCallback();
     /*
-    SPI_Receive_DMA(spi_rx, SPI_BUFFER_SIZE);
     char temp[8];    
     for (size_t i = 0; i < SPI_BUFFER_SIZE; ++i) {
         sprintf(temp, "%d:0x%02X ", i, spi_rx[i]);
@@ -393,7 +391,8 @@ void WIFI_TX_Handler(int8_t control_code){
 
     uint8_t verify8 = verify % 0x100;
     spi_tx[SPI_BUFFER_SIZE-1]=verify8;
-    delay(3);//why need this?
+    //delay(3);//why need this?
+    
 }
 
 /**************************************************************************/

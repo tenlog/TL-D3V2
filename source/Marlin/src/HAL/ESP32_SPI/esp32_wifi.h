@@ -131,7 +131,7 @@ void WIFI_InitDMA(void);
 void WIFI_Init(void);
 void SPI_ConnectWIFI();
 void SPI_RestartWIFI();
-void SPI_Receive_DMA(uint8_t *pData, uint16_t Size);
+void SPI_Receive_DMA(uint8_t *pTxData, uint8_t *pRxData, uint16_t Size);
 
 void WIFI_TX_Handler(int8_t control_code);
 void DmaSPIIrqCallback(void);

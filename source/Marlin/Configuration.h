@@ -32,22 +32,27 @@
 #define TL_SUBVERSION "031"
 
 //update log 
-//20220930 add DC motor (moto_1) to ELECTROMAGNETIC_VALUE mode
-//20221008 Add wifi version 
-//version 027
-//20221015  wifi static ip ok
-//version 028
-//20221024  fix bug: can not release moto.
-//version 029
-//20221026  fix bug: can not print from wifi website. (need wifi ver1.2.1)
-//          fix bug: wifi web page display feed rate error (when > 255)(in printing page.)
-//          fix bug: can not display printing file name when start print from touch screen.(in printing page).
-//          Add wifi version.
-//version 030
-//20221027  TOOLCHANGE_ZRAISE 0.2
-//20221104  Modified the temperature table
-//Version 031
-
+/*
+*20220930   add DC motor (moto_1) to ELECTROMAGNETIC_VALUE mode
+*20221008   Add wifi version 
+*version    027
+*20221015   wifi static ip ok
+*version    028
+*20221024   fix bug: can not release moto.
+*version    029
+*20221026   fix bug: can not print from wifi website. (need wifi ver1.2.1)
+*           fix bug: wifi web page display feed rate error (when > 255)(in printing page.)
+*           fix bug: can not display printing file name when start print from touch screen.(in printing page).
+            Add wifi version.
+*version    030
+*20221027   TOOLCHANGE_ZRAISE 0.2
+*20221104   Modified the temperature table
+*20221122   WIFI SPI DMA RX Test OK.
+*           Modify homing speed XY.
+*           PIDTEMPBED enabled.
+*           Bug fixed: chamber fan not run.
+*Version    031
+*/
 //TL Medels and version
 //#define TENLOG_H2
 #define TENLOG_D3
