@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "030"
+#define TL_SUBVERSION "032"
 
 //update log 
 //20220930 add DC motor (moto_1) to ELECTROMAGNETIC_VALUE mode
@@ -45,6 +45,7 @@
 //          Add wifi version.
 //version 030
 //20221027  TOOLCHANGE_ZRAISE 0.2
+//          fix bug: chamber fan not working.
 //Version 031
 
 //TL Medels and version
@@ -120,12 +121,7 @@
 #endif
 
 // Homing speeds (mm/min)
-#ifdef TENLOG_M3
 #define HOMING_FEEDRATE_MM_M {5000, 5000, 300}
-#else
-#define HOMING_FEEDRATE_MM_M {9000, 9000, 300}
-#endif
-
 
 #ifdef redefined
 #define __STM32F1__
@@ -678,7 +674,7 @@
  * heater. If your configuration is significantly different than this and you don't understand
  * the issues involved, don't use bed PID until someone else verifies that your hardware works.
  */
-//#define PIDTEMPBED
+#define PIDTEMPBED
 
 //#define BED_LIMIT_SWITCHING
 
@@ -699,9 +695,12 @@
   // #define DEFAULT_bedKp 10.00
   // #define DEFAULT_bedKi .023
   // #define DEFAULT_bedKd 305.4
-  #define DEFAULT_bedKp 462.10
-  #define DEFAULT_bedKi 85.47
-  #define DEFAULT_bedKd 624.59
+  #define DEFAULT_bedKp 22.23
+  #define DEFAULT_bedKi 1.61
+  #define DEFAULT_bedKd 76.95
+  //#define DEFAULT_bedKp 462.10
+  //#define DEFAULT_bedKi 85.47
+  //#define DEFAULT_bedKd 624.59
 
   // FIND YOUR OWN: "M303 E-1 C8 S90" to run autotune on the bed at 90 degreesC for 8 cycles.
 #endif // PIDTEMPBED
