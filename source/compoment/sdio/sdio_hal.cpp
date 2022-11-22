@@ -6,7 +6,7 @@
 
 static stc_sd_handle_t stcSdhandle;
 stc_sdcard_init_t stcCardInitCfg = {SdiocBusWidth4Bit, SdiocClk2M, SdiocNormalSpeedMode, NULL,};
-stc_sdcard_dma_init_t stcDmaInitCfg = {M4_DMA2, DmaCh0,};//M4_DMA2 //by zyf
+stc_sdcard_dma_init_t stcDmaInitCfg = {M4_DMA2, DmaCh2,};//M4_DMA2 DmaCh0 //by zyf
 Sdioc_Class::Sdioc_Class(M4_SDIOC_TypeDef *SDIOCx){
 	MEM_ZERO_STRUCT(stcSdhandle);
 	/* Initialize SDIOC pin */

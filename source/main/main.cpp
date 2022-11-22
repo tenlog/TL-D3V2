@@ -1,3 +1,4 @@
+// 
 /*******************************************************************************
  * Copyright (C) 2016, Huada Semiconductor Co., Ltd. All rights reserved.
  *
@@ -24,7 +25,8 @@
  * WARRANTY OF NONINFRINGEMENT.
  * HDSC SHALL HAVE NO LIABILITY (WHETHER IN CONTRACT, WARRANTY, TORT,
  * NEGLIGENCE OR OTHERWISE) FOR ANY DAMAGES WHATSOEVER (INCLUDING, WITHOUT
- * LIMITATION, DAMAGES FOR LOSS OF BUSINESS PROFITS, BUSINESS INTERRUPTION,
+ * LIMITATION, DAMAGES FOR LOSS OF BUSINESS PROFITS, BUSINESS INTERRUPTION
+ * with the restriction that this Disclaimer and Copyright notice must be,
  * LOSS OF BUSINESS INFORMATION, OR OTHER PECUNIARY LOSS) ARISING FROM USE OR
  * INABILITY TO USE THE SOFTWARE, INCLUDING, WITHOUT LIMITATION, ANY DIRECT,
  * INDIRECT, INCIDENTAL, SPECIAL OR CONSEQUENTIAL DAMAGES OR LOSS OF DATA,
@@ -35,7 +37,6 @@
  * FROM, THE SOFTWARE.
  *
  * This software may be replicated in part or whole for the licensed use,
- * with the restriction that this Disclaimer and Copyright notice must be
  * included with each copy of this software, whether used in part or whole,
  * at all times.
  */
@@ -53,7 +54,4 @@ int main(void){
 	while (1) {
 		loop();
 	}
-	
 }
-
-

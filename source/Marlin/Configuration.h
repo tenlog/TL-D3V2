@@ -55,14 +55,16 @@
 //#define TENLOG_D5
 //#define TENLOG_D6
 
-#define TL_DEBUG
+//#define TL_DEBUG
 
+//TL hardware.
 #define TENLOG_TOUCH_LCD
-#define PRINT_FROM_Z_HEIGHT
 //#define ESP8266_WIFI
 #define ESP32_WIFI
 
+//TL Functions
 //#define ELECTROMAGNETIC_VALUE
+#define PRINT_FROM_Z_HEIGHT
 
 // The size of the printable area
 #if defined(TENLOG_D3) 
@@ -120,12 +122,7 @@
 #endif
 
 // Homing speeds (mm/min)
-#ifdef TENLOG_M3
-#define HOMING_FEEDRATE_MM_M {5000, 5000, 300}
-#else
 #define HOMING_FEEDRATE_MM_M {9000, 9000, 300}
-#endif
-
 
 #ifdef redefined
 #define __STM32F1__
@@ -678,7 +675,7 @@
  * heater. If your configuration is significantly different than this and you don't understand
  * the issues involved, don't use bed PID until someone else verifies that your hardware works.
  */
-//#define PIDTEMPBED
+#define PIDTEMPBED
 
 //#define BED_LIMIT_SWITCHING
 
@@ -696,12 +693,10 @@
 
   // 120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
   // from FOPDT model - kp=.39 Tp=405 Tdead=66, Tc set to 79.2, aggressive factor of .15 (vs .1, 1, 10)
-  // #define DEFAULT_bedKp 10.00
-  // #define DEFAULT_bedKi .023
-  // #define DEFAULT_bedKd 305.4
-  #define DEFAULT_bedKp 462.10
-  #define DEFAULT_bedKi 85.47
-  #define DEFAULT_bedKd 624.59
+  
+  #define DEFAULT_bedKp 22.23
+  #define DEFAULT_bedKi 1.61
+  #define DEFAULT_bedKd 76.95
 
   // FIND YOUR OWN: "M303 E-1 C8 S90" to run autotune on the bed at 90 degreesC for 8 cycles.
 #endif // PIDTEMPBED

@@ -64,6 +64,7 @@
 
 extern uint8_t spi_tx[SPI_BUFFER_SIZE];
 extern uint8_t spi_rx[SPI_BUFFER_SIZE];
+extern uint8_t spi_rx1[SPI_BUFFER_SIZE];
 
 extern char wifi_ssid[20];
 extern char wifi_pswd[20];
@@ -110,17 +111,18 @@ extern uint8_t wifi_version[3];
 #define SPI1_MOSI_FUNC                   (Func_Spi1_Mosi)
 
 /* SPI unit and clock definition */
-#define SPI1_UNIT                        (M4_SPI1)
-#define SPI1_UNIT_CLOCK                  (PWC_FCG1_PERIPH_SPI1)
+#define WIFI_SPI_UNIT                    (M4_SPI1)
+#define WIFI_SPI_UNIT_CLOCK              (PWC_FCG1_PERIPH_SPI1)
 
 //spi DMA
-#define SPI_DMA_UNIT                     (M4_DMA1)
-#define SPI_DMA_CLOCK_UNIT               (PWC_FCG0_PERIPH_DMA1)
-#define SPI_DMA_TX_CHANNEL               (DmaCh1)
-#define SPI_DMA_RX_CHANNEL               (DmaCh0)
-#define SPI_DMA_TX_TRIG_SOURCE           (EVT_SPI1_SRTI)
-#define SPI_DMA_RX_TRIG_SOURCE           (EVT_SPI1_SRRI) //SRRI
-#define IRQ_DMA1_TC1					 Int007_IRQn
+#define WIFI_DMA_UNIT                     (M4_DMA2)
+#define WIFI_DMA_CLOCK_UNIT               (PWC_FCG0_PERIPH_DMA2)
+#define WIFI_DMA_TX_CHANNEL               (DmaCh1)
+#define WIFI_DMA_RX_CHANNEL               (DmaCh0)
+#define WIFI_DMA_TX_TRIG_SOURCE           (EVT_SPI1_SRTI)
+#define WIFI_DMA_RX_TRIG_SOURCE           (EVT_SPI1_SRRI)	//(EVT_SPI1_SRRI) //SRRI
+#define IRQ_DMA_TC					  	  Int007_IRQn
+#define INT_DMA_TC					  	  INT_DMA2_TC1
 
 void WIFI_InitGPIO(void);
 void WIFI_InitSPI(void);

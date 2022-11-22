@@ -1320,7 +1320,6 @@ void setup() {
   TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init Stepper..."));
   SETUP_RUN(stepper.init());          // Init stepper. This enables interrupts!
 
-
   #if HAS_SERVOS
     SETUP_RUN(servo_init());
   #endif
@@ -1587,7 +1586,7 @@ void setup() {
     print_from_z_target = 0.0;
   #endif
   
-  #if ENABLED(ESP32_WIFI)
+  #if ENABLED(HAS_WIFI)
     TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init Tenlog Wifi..."));
     WIFI_Init();
   #endif
