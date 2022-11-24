@@ -32,22 +32,27 @@
 #define TL_SUBVERSION "032"
 
 //update log 
-//20220930 add DC motor (moto_1) to ELECTROMAGNETIC_VALUE mode
-//20221008 Add wifi version 
-//version 027
-//20221015  wifi static ip ok
-//version 028
-//20221024  fix bug: can not release moto.
-//version 029
-//20221026  fix bug: can not print from wifi website. (need wifi ver1.2.1)
-//          fix bug: wifi web page display feed rate error (when > 255)(in printing page.)
-//          fix bug: can not display printing file name when start print from touch screen.(in printing page).
-//          Add wifi version.
-//version 030
-//20221027  TOOLCHANGE_ZRAISE 0.2
-//          fix bug: chamber fan not working.
-//Version 031
-
+/*
+*20220930   add DC motor (moto_1) to ELECTROMAGNETIC_VALUE mode
+*20221008   Add wifi version 
+*version    027
+*20221015   wifi static ip ok
+*version    028
+*20221024   fix bug: can not release moto.
+*version    029
+*20221026   fix bug: can not print from wifi website. (need wifi ver1.2.1)
+*           fix bug: wifi web page display feed rate error (when > 255)(in printing page.)
+*           fix bug: can not display printing file name when start print from touch screen.(in printing page).
+            Add wifi version.
+*version    030
+*20221027   TOOLCHANGE_ZRAISE 0.2
+*20221104   Modified the temperature table
+*20221122   WIFI SPI DMA RX Test OK.
+*           Modify homing speed XY.
+*           PIDTEMPBED enabled.
+*           Bug fixed: chamber fan not run.
+*Version    031
+*/
 //TL Medels and version
 //#define TENLOG_H2
 #define TENLOG_D3
@@ -55,15 +60,16 @@
 //#define TENLOG_D5
 //#define TENLOG_D6
 
-//#define TL_DEBUG
+#define TL_DEBUG
 
+//TL hardware.
 #define TENLOG_TOUCH_LCD
-#define PRINT_FROM_Z_HEIGHT
 //#define ESP8266_WIFI
-#define ESP32_WIFI
+//#define ESP32_WIFI
 
+//TL Functions
 //#define ELECTROMAGNETIC_VALUE
-
+#define PRINT_FROM_Z_HEIGHT
 
 // The size of the printable area
 #if defined(TENLOG_D3) 
@@ -121,7 +127,7 @@
 #endif
 
 // Homing speeds (mm/min)
-#define HOMING_FEEDRATE_MM_M {5000, 5000, 300}
+#define HOMING_FEEDRATE_MM_M {9000, 9000, 300}
 
 #ifdef redefined
 #define __STM32F1__
@@ -692,15 +698,10 @@
 
   // 120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
   // from FOPDT model - kp=.39 Tp=405 Tdead=66, Tc set to 79.2, aggressive factor of .15 (vs .1, 1, 10)
-  // #define DEFAULT_bedKp 10.00
-  // #define DEFAULT_bedKi .023
-  // #define DEFAULT_bedKd 305.4
+  
   #define DEFAULT_bedKp 22.23
   #define DEFAULT_bedKi 1.61
   #define DEFAULT_bedKd 76.95
-  //#define DEFAULT_bedKp 462.10
-  //#define DEFAULT_bedKi 85.47
-  //#define DEFAULT_bedKd 624.59
 
   // FIND YOUR OWN: "M303 E-1 C8 S90" to run autotune on the bed at 90 degreesC for 8 cycles.
 #endif // PIDTEMPBED

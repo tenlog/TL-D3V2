@@ -22,12 +22,14 @@
 
 //By tenlo zyf
 
+#include "watchdog.h"
 #include "../../MarlinCore.h"
 #include "../../inc/MarlinConfig.h"
 #include "../../lcd/tenlog/tenlog_touch_lcd.h"
 
 #ifdef ESP32_WIFI
 #include "esp32_wifi.h"
+
 
 char wifi_ssid[20] = WIFI_DEFAULT_SSID;
 char wifi_pswd[20] = WIFI_DEFAULT_PSWD;
@@ -36,157 +38,197 @@ uint8_t wifi_ip_settings[20] = WIFI_DEFAULT_IP_SETTINGS;
 uint8_t wifi_mode = WIFI_DEFAULT_MODE;
 uint16_t http_port = WIFI_DEFAULT_PORT;
 bool wifi_connected = false;
-int8_t wifiFirstSend = 0;
+int16_t wifiFirstSend = 0;
 bool wifi_resent = false;
 
+char wifi_writing_file_name[26] = "";
 char wifi_tjc_cmd[64]="";
 
 uint8_t wifi_printer_status[WIFI_MSG_LENGTH]={0};
 uint8_t wifi_printer_settings[WIFI_MSG_LENGTH]={0};
 uint8_t wifi_file_name[WIFI_MSG_LENGTH]={0};
 
+uint8_t wifi_writing_file_data[WIFI_DATA_LENGTH]={0};
+bool wifi_uploading_file = false;
+
 uint8_t wifi_version[3]={0};
 
-uint8_t spi_tx[BUFFER_SIZE]="";
-uint8_t spi_rx[BUFFER_SIZE]="";
+uint8_t spi_tx[SPI_BUFFER_SIZE]="";
+uint8_t spi_rx[SPI_BUFFER_SIZE]="";
+uint8_t spi_rx1[SPI_BUFFER_SIZE]="";
 
-/*
+void WIFI_InitSPI(void)
+{
+	stc_spi_init_t stcSpiInit;
+
+	/* configuration structure initialization */
+	MEM_ZERO_STRUCT(stcSpiInit);
+
+	/* Configuration peripheral clock */
+	PWC_Fcg1PeriphClockCmd(WIFI_SPI_UNIT_CLOCK, Enable);
+	
+	/* Configuration SPI pin */
+	PORT_SetFunc(SPI1_NSS_PORT, SPI1_NSS_PIN, SPI1_NSS_FUNC, Disable);
+	PORT_SetFunc(SPI1_SCK_PORT, SPI1_SCK_PIN, SPI1_SCK_FUNC, Disable);
+	PORT_SetFunc(SPI1_MOSI_PORT, SPI1_MOSI_PIN, SPI1_MOSI_FUNC, Disable);
+	PORT_SetFunc(SPI1_MISO_PORT, SPI1_MISO_PIN, SPI1_MISO_FUNC, Disable);
+
+	/* Configuration SPI structure */
+	stcSpiInit.enClkDiv                 = SpiClkDiv4;//SpiClkDiv64;//  80M/2=40M
+	stcSpiInit.enFrameNumber            = SpiFrameNumber1;
+	stcSpiInit.enDataLength             = SpiDataLengthBit8;
+	stcSpiInit.enFirstBitPosition       = SpiFirstBitPositionMSB;
+	stcSpiInit.enSckPolarity            = SpiSckIdleLevelLow;//SpiSckIdelLevelHigh;//
+	stcSpiInit.enSckPhase               = SpiSckOddSampleEvenChange;//SpiSckOddChangeEvenSample;	//SPI3-CFG2-CPHA should be 1;
+	stcSpiInit.enReadBufferObject       = SpiReadReceiverBuffer;
+	stcSpiInit.enWorkMode               = SpiWorkMode4Line;//SpiWorkMode3Line;//
+	stcSpiInit.enTransMode              = SpiTransFullDuplex;
+	stcSpiInit.enCommAutoSuspendEn      = Disable;
+	stcSpiInit.enModeFaultErrorDetectEn = Disable;
+	stcSpiInit.enParitySelfDetectEn     = Disable;
+	stcSpiInit.enParityEn               = Disable;
+	stcSpiInit.enParity                 = SpiParityEven;
+
+	stcSpiInit.enMasterSlaveMode        = SpiModeSlave;
+
+	SPI_Init(WIFI_SPI_UNIT, &stcSpiInit);
+    TLDEBUG_PRINTLN("SPI config done");
+}
+
 void WIFI_InitDMA(void)
 {
-    stc_dma_config_t stcDmaCfg;
-    stc_irq_regi_conf_t stcIrqRegiCfg;
-       
-    // configuration structure initialization 
-    MEM_ZERO_STRUCT(stcDmaCfg);
+	stc_dma_config_t stcDmaCfg;
+	stc_irq_regi_conf_t stcIrqRegiCfg;
 
-    // Configuration peripheral clock 
-    PWC_Fcg0PeriphClockCmd(SPI_DMA_CLOCK_UNIT, Enable);
-    //PWC_Fcg0PeriphClockCmd(PWC_FCG0_PERIPH_AOS, Enable);
+	/* configuration structure initialization */
+	MEM_ZERO_STRUCT(stcDmaCfg);
 
-    // Configure TX DMA 
-    stcDmaCfg.u16BlockSize = 1u;
-    stcDmaCfg.u16TransferCnt = 128;
-    stcDmaCfg.u32SrcAddr = 0;
-    stcDmaCfg.u32DesAddr = (uint32_t)(&SPI1_UNIT->DR);
-    stcDmaCfg.stcDmaChCfg.enSrcInc = AddressIncrease;
-    stcDmaCfg.stcDmaChCfg.enDesInc = AddressFix;
-    stcDmaCfg.stcDmaChCfg.enTrnWidth = Dma8Bit;
-    stcDmaCfg.stcDmaChCfg.enIntEn = Disable;
-    DMA_InitChannel(SPI_DMA_UNIT, SPI_DMA_TX_CHANNEL, &stcDmaCfg);
-    DMA_SetTriggerSrc(SPI_DMA_UNIT, SPI_DMA_TX_CHANNEL, SPI_DMA_TX_TRIG_SOURCE);
-    // Enable DMA. 
-    DMA_Cmd(SPI_DMA_UNIT, Enable);
+	/* Configuration peripheral clock */
+	PWC_Fcg0PeriphClockCmd(WIFI_DMA_CLOCK_UNIT, Enable);
+	PWC_Fcg0PeriphClockCmd(PWC_FCG0_PERIPH_PTDIS, Enable);
+
+	/* Configure TX DMA */
+	stcDmaCfg.u16BlockSize = 1u;
+	stcDmaCfg.u16TransferCnt = SPI_BUFFER_SIZE;
+	stcDmaCfg.u32SrcAddr = (uint32_t)(&spi_tx);
+	stcDmaCfg.u32DesAddr = (uint32_t)(&WIFI_SPI_UNIT->DR);
+	stcDmaCfg.stcDmaChCfg.enSrcInc = AddressFix;//AddressIncrease;
+	stcDmaCfg.stcDmaChCfg.enDesInc = AddressIncrease;
+	stcDmaCfg.stcDmaChCfg.enTrnWidth = Dma8Bit;
+	stcDmaCfg.stcDmaChCfg.enIntEn = Enable;//Disable;
+	DMA_InitChannel(WIFI_DMA_UNIT, WIFI_DMA_TX_CHANNEL, &stcDmaCfg);
+	DMA_SetTriggerSrc(WIFI_DMA_UNIT, WIFI_DMA_TX_CHANNEL, WIFI_DMA_TX_TRIG_SOURCE);
+
+	/* Configure RX DMA */
+	stcDmaCfg.u16BlockSize = 1u;
+	stcDmaCfg.u16TransferCnt = SPI_BUFFER_SIZE;
+	stcDmaCfg.u32SrcAddr = (uint32_t)(&WIFI_SPI_UNIT->DR);
+	stcDmaCfg.u32DesAddr = (uint32_t)(&spi_rx);
+	stcDmaCfg.stcDmaChCfg.enSrcInc = AddressFix;
+	stcDmaCfg.stcDmaChCfg.enDesInc = AddressIncrease;
+	
+	stcDmaCfg.stcDmaChCfg.enTrnWidth = Dma8Bit;
+	stcDmaCfg.stcDmaChCfg.enIntEn = Disable;//Enable;		//enable DMA-SPI int
+	//stcDmaCfg.stcDmaChCfg.enDesRptEn = Enable;//2021-1-18 timothy for wifi
+	DMA_InitChannel(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL, &stcDmaCfg);
+	DMA_SetTriggerSrc(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL, WIFI_DMA_RX_TRIG_SOURCE);
+		
+	/* Set DMA block transfer complete IRQ */
+	stcIrqRegiCfg.enIRQn = IRQ_DMA_TC;
+	stcIrqRegiCfg.pfnCallback = &DmaSPIIrqCallback;
+	stcIrqRegiCfg.enIntSrc = INT_DMA_TC;
+	enIrqRegistration(&stcIrqRegiCfg);
+	NVIC_SetPriority(stcIrqRegiCfg.enIRQn, DDL_IRQ_PRIORITY_01);
+	NVIC_ClearPendingIRQ(stcIrqRegiCfg.enIRQn);
+	NVIC_EnableIRQ(stcIrqRegiCfg.enIRQn);
+    //-------------------------------------------------------------
+	/* Enable DMA. */
+	//DMA_Cmd(WIFI_DMA_UNIT, Enable);
+
+    TLDEBUG_PRINTLN("DMA config done");
 }
-*/
 
-//【2】其次是GPIO口初始化（这边将SPI的CS脚当作GPIO进行初始化）：
-
-/**************************************************************************
-* 函数名称： WIFI_InitGPIO
-* 功能描述： WIFI初始化GPIO引脚
-* 输入参数： 
-* 输出参数： 
-* 返 回 值： 
-* 其它说明： 初始化WIFI用到的GPIO口，包括RES、DC、BL以及SPI的NSS引脚
-**************************************************************************/
+//GPIO口初始化（这边将SPI的CS脚当作GPIO进行初始化）：
 void WIFI_InitGPIO(void)
 {
     stc_port_init_t stcPortInit;
 
     /* configure structure initialization */
     MEM_ZERO_STRUCT(stcPortInit);
-    stcPortInit.enPinMode = Pin_Mode_Out;
-
-    /* SPI NSS */
-    PORT_Init(SPI1_NSS_PORT, SPI1_NSS_PIN, &stcPortInit);
-    SPI1_NSS_HIGH();
+    stcPortInit.enPinMode = Pin_Mode_In;
+    //PORT_Init(SPI1_NSS_PORT, SPI1_NSS_PIN, &stcPortInit);
+	stcPortInit.enPullUp = Enable;
+	PORT_Init(SPI1_SCK_PORT, SPI1_SCK_PIN, &stcPortInit);
 }
 
-//        【3】SPI初始化：
+void SPI_Receive_DMA(uint8_t *pTxData, uint8_t *pRxData, uint16_t Size)
+{
+	SPI_Cmd(WIFI_SPI_UNIT, Disable);
+	DMA_SetTransferCnt(WIFI_DMA_UNIT, WIFI_DMA_TX_CHANNEL, Size);
+	DMA_SetTransferCnt(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL, Size);
+	DMA_SetSrcAddress(WIFI_DMA_UNIT, WIFI_DMA_TX_CHANNEL,(uint32_t)pTxData);
+	DMA_SetDesAddress(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL,(uint32_t)pRxData);
+	DMA_ChannelCmd(WIFI_DMA_UNIT, WIFI_DMA_TX_CHANNEL, Enable);
+	DMA_ChannelCmd(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL, Enable);
+	SPI_Cmd(WIFI_SPI_UNIT, Enable);
+}
+
+void DmaSPIIrqCallback(void)
+{
+		static uint8_t rx_switch;
+
+		rx_switch ++;
+		rx_switch &= 1;
+	
+		SPI_ClearFlag(WIFI_SPI_UNIT,SpiFlagUnderloadError);
+		SPI_ClearFlag(WIFI_SPI_UNIT,SpiFlagModeFaultError);
+		SPI_ClearFlag(WIFI_SPI_UNIT,SpiFlagOverloadError);
+		//DMA_ClearIrqFlag(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL,TrnCpltIrq);
+		//DMA_ClearIrqFlag(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL,BlkTrnCpltIrq);
+
+		//if(DMA_GetIrqFlag(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL,TrnCpltIrq)){
+        if(rx_switch)
+            SPI_Receive_DMA(spi_tx, spi_rx, SPI_BUFFER_SIZE);
+        else
+            SPI_Receive_DMA(spi_tx, spi_rx1, SPI_BUFFER_SIZE);
+    //}
+}
+
 /**************************************************************************
-* 函数名称： WIFI_InitSPI1
-* 功能描述： WIFI初始化SPI
+* 函数名称： WIFI_Init
+* 功能描述： WIFI初始化
 * 输入参数： 
 * 输出参数： 
 * 返 回 值： 
-* 其它说明： 初始化SPI用到的口，包括MOSI、MISO、SCK
+* 其它说明： 
 **************************************************************************/
-void WIFI_InitSPI1(void)
+void WIFI_Init(void)
 {
-    stc_spi_init_t stcSpiInit;
+    WIFI_InitGPIO();   //初始化几个GPIO口，
+    WIFI_InitDMA();    //初始化SPI的几个口，包括SCK、MOSI以及MISO
+    WIFI_InitSPI();    //初始化SPI的几个口，包括SCK、MOSI以及MISO
 
-    /* configuration structure initialization */
-    MEM_ZERO_STRUCT(stcSpiInit);
-
-    /* Configuration peripheral clock */
-    PWC_Fcg1PeriphClockCmd(SPI1_UNIT_CLOCK, Enable);
-
-    /* Configuration SPI pin */
-    PORT_SetFunc(SPI1_SCK_PORT, SPI1_SCK_PIN, SPI1_SCK_FUNC,  Disable);
-    PORT_SetFunc(SPI1_MOSI_PORT, SPI1_MOSI_PIN, SPI1_MOSI_FUNC, Disable);
-    PORT_SetFunc(SPI1_MISO_PORT, SPI1_MISO_PIN, SPI1_MISO_FUNC, Disable);
-
-    /* Configuration SPI structure */
-    stcSpiInit.enClkDiv                 = SpiClkDiv8;
-    stcSpiInit.enFrameNumber            = SpiFrameNumber1;
-    stcSpiInit.enDataLength             = SpiDataLengthBit8;
-    stcSpiInit.enFirstBitPosition       = SpiFirstBitPositionMSB;
-    stcSpiInit.enSckPolarity            = SpiSckIdleLevelLow;
-    stcSpiInit.enSckPhase               = SpiSckOddSampleEvenChange;
-    stcSpiInit.enReadBufferObject       = SpiReadReceiverBuffer;
-    stcSpiInit.enWorkMode               = SpiWorkMode4Line;
-    stcSpiInit.enTransMode              = SpiTransFullDuplex;
-    stcSpiInit.enCommAutoSuspendEn      = Disable;
-    stcSpiInit.enModeFaultErrorDetectEn = Disable;
-    stcSpiInit.enParitySelfDetectEn     = Disable;
-    stcSpiInit.enParityEn               = Disable;
-    stcSpiInit.enParity                 = SpiParityEven;
-
-    /* SPI master mode */
-    stcSpiInit.enMasterSlaveMode                     = SpiModeMaster;
-    stcSpiInit.stcDelayConfig.enSsSetupDelayOption   = SpiSsSetupDelayCustomValue;
-    stcSpiInit.stcDelayConfig.enSsSetupDelayTime     = SpiSsSetupDelaySck1;
-    stcSpiInit.stcDelayConfig.enSsHoldDelayOption    = SpiSsHoldDelayCustomValue;
-    stcSpiInit.stcDelayConfig.enSsHoldDelayTime      = SpiSsHoldDelaySck3;
-    stcSpiInit.stcDelayConfig.enSsIntervalTimeOption = SpiSsIntervalCustomValue;
-    stcSpiInit.stcDelayConfig.enSsIntervalTime       = SpiSsIntervalSck1PlusPck2;
-    stcSpiInit.stcSsConfig.enSsValidBit              = SpiSsValidChannel0;
-    stcSpiInit.stcSsConfig.enSs0Polarity             = SpiSsLowValid;
-
-    SPI_Init(SPI1_UNIT, &stcSpiInit);
-    SPI_Cmd(SPI1_UNIT, Enable);
+    //SPI_Cmd(WIFI_SPI_UNIT, Enable);
+    SPI_Receive_DMA(spi_tx, spi_rx, SPI_BUFFER_SIZE);
 }
 
-//【4】SPI的读写功能：
-/**************************************************************************
-* 函数名称： SPI_RW
-* 功能描述： SPI读写功能
-* 输入参数：
-* 输出参数：
-* 返 回 值：
-* 其它说明：
-**************************************************************************/
-uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data)
-{
-    while (Reset == SPI_GetFlag(SPIx, SpiFlagSendBufferEmpty))
-    {
-        NOOP;
+void spi_idle(){
+    /*
+    char temp[8];    
+    for (size_t i = 0; i < SPI_BUFFER_SIZE; ++i) {
+        sprintf(temp, "%d:0x%02X ", i, spi_rx[i]);
+        TLDEBUG_PRINT(temp);
     }
-    SPI_SendData8(SPIx, data);
-    while (Reset == SPI_GetFlag(SPIx, SpiFlagReceiveBufferFull))
-    {
-        NOOP;
-    }
-    return SPI_ReceiveData8(SPIx);
+    */
 }
 
 uint8_t get_control_code(){
 	if(HEAD_OK(spi_rx)){
 		int16_t verify=0;
-		for(int i=0; i<BUFFER_SIZE-1; i++){
+		for(int i=0; i<SPI_BUFFER_SIZE-1; i++){
 			verify += spi_rx[i];
 		}
-		if(verify % 0x100 == spi_rx[BUFFER_SIZE-1]){
+		if(verify % 0x100 == spi_rx[SPI_BUFFER_SIZE-1]){
 			return spi_rx[2];
 		}
 	}
@@ -200,7 +242,7 @@ void SPI_RX_Handler(){
     uint8_t control_code = get_control_code();
 
     if(control_code > 0){
-        for(int i=0; i<WIFI_MSG_LENGTH; i++){
+        for(uint16_t i=0; i<WIFI_MSG_LENGTH; i++){
             ret[i] = spi_rx[i+3];
         }
     }
@@ -216,7 +258,7 @@ void SPI_RX_Handler(){
             TLSTJC_println("sleep=0");
             sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tIP.txt=\"%s\""), ret);
             TLSTJC_println(wifi_tjc_cmd);
-            sprintf_P(wifi_tjc_cmd, PSTR("setting.tIP.txt=\"%s\""), ret);
+            sprintf_P(wifi_tjc_cmd, PSTR("settings.tIP.txt=\"%s\""), ret);
             TLSTJC_println(wifi_tjc_cmd);
         }
         ZERO(spi_rx);
@@ -224,12 +266,12 @@ void SPI_RX_Handler(){
         TLSTJC_println("sleep=0");        
         sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tIP.txt=\"Connecting...\""), ret);
         TLSTJC_println(wifi_tjc_cmd);
-        sprintf_P(wifi_tjc_cmd, PSTR("setting.tIP.txt=\"Connecting...\""), ret);
+        sprintf_P(wifi_tjc_cmd, PSTR("settings.tIP.txt=\"Connecting...\""), ret);
         TLSTJC_println(wifi_tjc_cmd);
         SPI_ConnectWIFI();
     }else if(control_code == 0x07){     //GCode handler
         long gcode_wifi[WIFI_MSG_LENGTH];
-    	for(uint8_t i=0; i<WIFI_MSG_LENGTH; i++){
+    	for(uint16_t i=0; i<WIFI_MSG_LENGTH; i++){
             gcode_wifi[i] = ret[i];
         }
         process_command_gcode(gcode_wifi);
@@ -237,27 +279,28 @@ void SPI_RX_Handler(){
     	for(uint8_t i=0; i<3; i++){
             wifi_version[i] = ret[i];
         }
-
         if(wifi_version[1] % 2 == 0)
             sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tVersion.txt=\"WIFI V%d.%d.%d\""), wifi_version[0],wifi_version[1],wifi_version[2]);
         else
             sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tVersion.txt=\"WIFICAM V%d.%d.%d\""), wifi_version[0],wifi_version[1],wifi_version[2]);
-        TLSTJC_println(wifi_tjc_cmd);        
+        TLSTJC_println(wifi_tjc_cmd);
+    }else if(control_code == 0x09){ //start handling upload
+        //memcpy_P(wifi_writing_file_name, ret, WIFI_MSG_LENGTH);
+        //TLDEBUG_PRINT("Starting upload ");
+        //TLDEBUG_PRINTLN(wifi_writing_file_name);
+        //wifi_uploading_file = true;
+        //TJCMessage(1, 1, -1, "", "", "", "" wifi_writing_file_name);
+    }else if(control_code == 0x0A){
+        TLDEBUG_PRINTLN("file data received.");
+    }else if(control_code == 0x0B){
+        wifi_uploading_file = false;
+        delay(100);
+        TLDEBUG_PRINTLN("Upload done!");
     }
-
-}
-
-void SPI_RW_Message(){
-    ZERO(spi_rx);
-    SPI1_NSS_LOW();
-    for(int i=0; i<BUFFER_SIZE; i++){
-        spi_rx[i] = SPI_RW(SPI1_UNIT, spi_tx[i]); 
-    }
-    SPI1_NSS_HIGH();
-    SPI_RX_Handler();
 }
 
 void WIFI_TX_Handler(int8_t control_code){
+    HAL_watchdog_refresh(); //feed my dog
     ZERO(spi_tx);
     int16_t verify = 0;
     for(int8_t i=0; i<2; i++){
@@ -315,7 +358,7 @@ void WIFI_TX_Handler(int8_t control_code){
         case 0x01:
         {
             spi_tx[3] = wifi_mode;
-            for(int8_t i=0; i<WIFI_MSG_LENGTH; i++){
+            for(int16_t i=0; i<WIFI_MSG_LENGTH; i++){
                 spi_tx[i+4]=send[i];
             }
         }
@@ -332,23 +375,26 @@ void WIFI_TX_Handler(int8_t control_code){
         case 0x09:  //Settings
         case 0x0A:  //file name
         {
-            for(int8_t i=0; i<WIFI_MSG_LENGTH; i++){
+            for(int16_t i=0; i<WIFI_MSG_LENGTH; i++){
                 spi_tx[i+3]=send[i];
             }
         }
         break;
+        //0x0B = reboot;
+        //0x0C = send zero;
     }
 
-    for(uint8_t i=0; i<BUFFER_SIZE-1; i++){
+    for(uint16_t i=0; i<SPI_BUFFER_SIZE-1; i++){
         verify += spi_tx[i];
     }
 
     uint8_t verify8 = verify % 0x100;
-    spi_tx[BUFFER_SIZE-1]=verify8;
-    delay(3);//why need this?
-
-    SPI_RW_Message();
-
+    spi_tx[SPI_BUFFER_SIZE-1]=verify8;
+    //delay(3);//why need this?
+    for(uint16 i=0; i<256; i++){
+        spi_tx[i] = 0x85;
+    }
+    
 }
 
 /**************************************************************************/
@@ -372,22 +418,6 @@ void SPI_RestartWIFI(){
     }
 }
 
-/**************************************************************************
-* 函数名称： WIFI_InitSPI
-* 功能描述： WIFI初始化
-* 输入参数： 
-* 输出参数： 
-* 返 回 值： 
-* 其它说明： 
-**************************************************************************/
-void WIFI_InitSPI(void)
-{
-    WIFI_InitGPIO();    //初始化几个GPIO口，
-    WIFI_InitSPI1();    //初始化SPI的几个口，包括SCK、MOSI以及MISO
-    //WIFI_InitDMA();     //初始化SPI DMA
-}
-
-///////////zyf
 void wifiResetEEPROM(){
     wifi_mode = WIFI_DEFAULT_MODE;
     sprintf_P(wifi_ssid, "%s", WIFI_DEFAULT_SSID);
@@ -398,6 +428,5 @@ void wifiResetEEPROM(){
     memcpy_P(wifi_ip_settings, WIFI_IP, 12);
     http_port = WIFI_DEFAULT_PORT;
 }
-
 #endif
 

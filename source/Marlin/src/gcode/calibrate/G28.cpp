@@ -332,13 +332,12 @@ void GcodeSuite::G28() {
 
     //for PRINT_FROM_Z_HEIGHT by zyf
     bool bSkip = false;
-    #ifdef PRINT_FROM_Z_HEIGHT
+    #if defined(PRINT_FROM_Z_HEIGHT) && defined(SDSUPPORT)
       if ((home_all || doZ) && !PrintFromZHeightFound && card.flag.sdprinting)
       {
           bSkip = true;
       }
       bool b_temp_PrintFromZHeightFound = PrintFromZHeightFound;
-
       PrintFromZHeightFound = true;
     #endif // by zyf
 
@@ -510,7 +509,7 @@ void GcodeSuite::G28() {
   #endif
 
 
-    #ifdef PRINT_FROM_Z_HEIGHT
+    #if BOTH(PRINT_FROM_Z_HEIGHT,SDSUPPORT)
     if(!b_temp_PrintFromZHeightFound){
       if(dual_x_carriage_mode == DXC_DUPLICATION_MODE ||dual_x_carriage_mode == DXC_MIRRORED_MODE) idex_set_parked();
       EXECUTE_GCODE("G1 X0.0");
@@ -523,7 +522,7 @@ void GcodeSuite::G28() {
       do_z_clearance(original_z, true);
     }
 
-    #ifdef PRINT_FROM_Z_HEIGHT
+    #if BOTH(PRINT_FROM_Z_HEIGHT, SDSUPPORT)
     if(!b_temp_PrintFromZHeightFound){
       EXECUTE_GCODE("G92.9 Z0.0");
       my_sleep(1.0);

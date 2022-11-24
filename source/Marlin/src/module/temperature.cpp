@@ -853,7 +853,7 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
       }else{
         WRITE(TLCHAMBER_AUTO_FAN_PIN, 0);
       }
-      //SBI(fanState, pgm_read_byte(&fanBit[CHAMBER_FAN_INDEX]));
+        //SBI(fanState, pgm_read_byte(&fanBit[CHAMBER_FAN_INDEX]));
 
       if(isStepEna || isHeating)
         LastChamberFanRun = millis();
