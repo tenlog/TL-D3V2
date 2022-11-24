@@ -263,7 +263,7 @@ const char str_t_thermal_runaway[] PROGMEM = STR_T_THERMAL_RUNAWAY,
     temp_info_t Temperature::temp_redundant;
   #endif
   #define _HMT(N) HEATER_##N##_MAXTEMP,
-  const celsius_t Temperature::hotend_maxtemp[HOTENDS] = ARRAY_BY_HOTENDS(HEATER_0_MAXTEMP, HEATER_1_MAXTEMP, HEATER_2_MAXTEMP, HEATER_3_MAXTEMP, HEATER_4_MAXTEMP, HEATER_5_MAXTEMP, HEATER_6_MAXTEMP, HEATER_7_MAXTEMP);
+  celsius_t Temperature::hotend_maxtemp[HOTENDS] = ARRAY_BY_HOTENDS(HEATER_0_MAXTEMP, HEATER_1_MAXTEMP, HEATER_2_MAXTEMP, HEATER_3_MAXTEMP, HEATER_4_MAXTEMP, HEATER_5_MAXTEMP, HEATER_6_MAXTEMP, HEATER_7_MAXTEMP);
 #endif
 
 #if ENABLED(AUTO_POWER_E_FANS)
@@ -795,8 +795,8 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
         #define _CFAN(B) _FANOVERLAP(CHAMBER,B) ? B :
         , REPEAT(HOTENDS,_CFAN) (HOTENDS)
       #elif defined(TLCHAMBER_AUTO_FAN_PIN)
-        #define _CFAN(B) _FANOVERLAP(TLCHAMBER,B) ? B :
-      , REPEAT(HOTENDS,_CFAN) (HOTENDS)
+        //#define _CFAN(B) _FANOVERLAP(TLCHAMBER,B) ? B :
+        //, REPEAT(HOTENDS,_CFAN) (HOTENDS)
       #endif
     };
 
@@ -846,12 +846,24 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
       #endif
       ); //bool isStepEna
       
+      static bool cFanOn;
       bool isHeating =  isHeatingHotend(0) && degTargetHotend(0) > 20 || isHeatingHotend(1) && degTargetHotend(1) > 20 || isHeatingBed() && degTargetBed() > 5 ;
       static uint32_t LastChamberFanRun;
-      if(millis() - LastChamberFanRun < 180000 && LastChamberFanRun > 0){
-        WRITE(TLCHAMBER_AUTO_FAN_PIN, 1);
-      }else{
-        WRITE(TLCHAMBER_AUTO_FAN_PIN, 0);
+      if(millis() - LastChamberFanRun < TLCHAMBER_FAN_TURN_OFF_DELAY && LastChamberFanRun > 0 && (!cFanOn || tl_C_FAN_CHANGED)){
+        thermalManager.set_fan_speed(4, (uint8_t)((float)tl_C_FAN_SPEED * 2.55f));
+        #if ENABLED(LASER_SYNCHRONOUS_M106_M107)
+          planner.buffer_sync_block(BLOCK_FLAG_SYNC_FANS);
+        #endif        
+        //WRITE(TLCHAMBER_AUTO_FAN_PIN, 1);
+        cFanOn = true;
+        if(tl_C_FAN_CHANGED) tl_C_FAN_CHANGED = false;
+      }else if(millis() - LastChamberFanRun > TLCHAMBER_FAN_TURN_OFF_DELAY && (cFanOn||tl_C_FAN_CHANGED)){
+        thermalManager.set_fan_speed(4, 0);
+        #if ENABLED(LASER_SYNCHRONOUS_M106_M107)
+          planner.buffer_sync_block(BLOCK_FLAG_SYNC_FANS);
+        #endif        
+        cFanOn = false;
+        if(tl_C_FAN_CHANGED) tl_C_FAN_CHANGED = false;
       }
         //SBI(fanState, pgm_read_byte(&fanBit[CHAMBER_FAN_INDEX]));
 
@@ -2014,7 +2026,7 @@ void Temperature::updateTemperaturesFromRawValues() {
   #define INIT_E_AUTO_FAN_PIN(P) SET_OUTPUT(P)
 #endif
 #if CHAMBER_AUTO_FAN_SPEED != 255
-  #define INIT_CHAMBER_AUTO_FAN_PIN(P) do{ if (P == FAN1_PIN || P == FAN2_PIN) { SET_PWM(P); SET_FAST_PWM_FREQ(P); } else SET_OUTPUT(P); }while(0)
+  #define INIT_CHAMBER_AUTO_FAN_PIN(P) do{ if (P == FAN4_PIN) {_INIT_FAN_PIN(P); SET_FAST_PWM_FREQ(P); } else SET_OUTPUT(P); }while(0)
 #else
   #define INIT_CHAMBER_AUTO_FAN_PIN(P) SET_OUTPUT(P)
 #endif

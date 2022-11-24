@@ -56,8 +56,11 @@ unsigned long startPrintTime = 0;
 int8_t tl_languageID = 0;
 int8_t tl_Sleep = 0;
 int8_t tl_E_FAN_SPEED = 80;
+int8_t tl_C_FAN_SPEED = 80;
 bool tl_E_FAN_CHANGED = false;
+bool tl_C_FAN_CHANGED = false;
 int8_t tl_E_FAN_START_TEMP = 80;
+int16_t tl_E_MAX_TEMP = HEATER_0_MAXTEMP;
 int8_t tl_ECO_MODE = 0;
 int8_t tl_THEME_ID = 0;
 int8_t tl_Light = 0;
@@ -347,7 +350,9 @@ void tlResetEEPROM(){
     //tl_FAN2_VALUE = 80;
     //tl_FAN2_START_TEMP = 80;
     tl_E_FAN_SPEED = 80;
+    tl_C_FAN_SPEED = 80;
     tl_E_FAN_START_TEMP = 80;
+    tl_E_MAX_TEMP = HEATER_0_MAXTEMP;
     tl_ECO_MODE = 0;
     tl_THEME_ID = 0;
     tl_Light = 0;
@@ -395,6 +400,9 @@ void tlInitSetting(){
         sprintf_P(cmd, PSTR("settings2.nEFS.val=%d"), tl_E_FAN_SPEED);
         TLSTJC_println(cmd);
         TERN_(ESP32_WIFI, wifi_printer_settings[6] = tl_E_FAN_SPEED);
+
+        sprintf_P(cmd, PSTR("settings2.nCFS.val=%d"), tl_C_FAN_SPEED);
+        TLSTJC_println(cmd);
 
         uint32_t lX = planner.settings.axis_steps_per_mm[X_AXIS] * 100;
         TERN_(ESP32_WIFI, wifi_printer_settings[7] = lX / 0x10000);
@@ -471,7 +479,7 @@ void tlInitSetting(){
         #endif
         
         #ifndef ELECTROMAGNETIC_VALUE
-        sprintf_P(cmd, PSTR("main.vTempMax.val=%d"), HEATER_0_MAXTEMP - HOTEND_OVERSHOOT);
+        sprintf_P(cmd, PSTR("main.vTempMax.val=%d"), tl_E_MAX_TEMP - HOTEND_OVERSHOOT);
         TLSTJC_println(cmd);
         TERN_(ESP32_WIFI, wifi_printer_settings[28] = (HEATER_0_MAXTEMP-HOTEND_OVERSHOOT) / 0x100);
         TERN_(ESP32_WIFI, wifi_printer_settings[29] = (HEATER_0_MAXTEMP-HOTEND_OVERSHOOT) % 0x100);
@@ -501,8 +509,8 @@ void tlInitSetting(){
         TLSTJC_println(cmd);        
         sprintf_P(cmd, PSTR("settings1.xM201E.val=%d"), planner.settings.max_acceleration_mm_per_s2[E_AXIS]);
         TLSTJC_println(cmd);
+
         sprintf_P(cmd, PSTR("settings1.xM203X.val=%d"), (uint16_t)planner.settings.max_feedrate_mm_s[X_AXIS]);
-        TLDEBUG_PRINTLN(cmd);
         TLSTJC_println(cmd);
         sprintf_P(cmd, PSTR("settings1.xM203Y.val=%d"), (uint16_t)planner.settings.max_feedrate_mm_s[Y_AXIS]);
         TLSTJC_println(cmd);
@@ -511,24 +519,21 @@ void tlInitSetting(){
         sprintf_P(cmd, PSTR("settings1.xM203E.val=%d"), (uint16_t)planner.settings.max_feedrate_mm_s[E_AXIS]);
         TLSTJC_println(cmd); 
 
-        sprintf_P(cmd, PSTR("settings1.xM301P.val=%d"), (uint32_t)(PID_PARAM(Kp, 0) * 100.0));
+        sprintf_P(cmd, PSTR("settings1.xM301P.val=%d"), (uint32_t)(PID_PARAM(Kp, 0) * 100.0 + 0.5));
         TLSTJC_println(cmd);
-        sprintf_P(cmd, PSTR("settings1.xM301I.val=%d"), (uint32_t)(PID_PARAM(Ki, 0) * 100.0));
+        sprintf_P(cmd, PSTR("settings1.xM301I.val=%d"), (uint32_t)(unscalePID_i(PID_PARAM(Ki, 0)) * 100.0 + 0.5));
         TLSTJC_println(cmd);
-        sprintf_P(cmd, PSTR("settings1.xM301D.val=%d"), (uint32_t)(PID_PARAM(Kd, 0) * 100.0));
+        sprintf_P(cmd, PSTR("settings1.xM301D.val=%d"), (uint32_t)(unscalePID_d(PID_PARAM(Kd, 0)) * 100.0 + 0.5));
         TLSTJC_println(cmd);
         
-        sprintf_P(cmd, PSTR("settings1.xM304P.val=%d"), (uint32_t)(thermalManager.temp_bed.pid.Kp * 100.0));
+        sprintf_P(cmd, PSTR("settings1.xM304P.val=%d"), (uint32_t)(thermalManager.temp_bed.pid.Kp * 100.0 + 0.5));
         TLSTJC_println(cmd);
-        TLDEBUG_PRINTLN(cmd);
-        sprintf_P(cmd, PSTR("settings1.xM304I.val=%d"), (uint32_t)(thermalManager.temp_bed.pid.Ki * 100.0));
+        sprintf_P(cmd, PSTR("settings1.xM304I.val=%d"), (uint32_t)(unscalePID_i(thermalManager.temp_bed.pid.Ki) * 100.0 + 0.5));
         TLSTJC_println(cmd); 
-        TLDEBUG_PRINTLN(cmd);
-        sprintf_P(cmd, PSTR("settings1.xM304D.val=%d"), (uint32_t)(thermalManager.temp_bed.pid.Kd * 100.0));
+        sprintf_P(cmd, PSTR("settings1.xM304D.val=%d"), (uint32_t)(unscalePID_d(thermalManager.temp_bed.pid.Kd) * 100.0 + 0.5));
         TLSTJC_println(cmd);
-        TLDEBUG_PRINTLN(cmd);
 
-        sprintf_P(cmd, PSTR("settings2.xM306S.val=%d"), (uint16_t)(thermalManager.hotend_maxtemp[0]));
+        sprintf_P(cmd, PSTR("settings2.xM306S.val=%d"), (uint16_t)(tl_E_MAX_TEMP));
         TLSTJC_println(cmd);
         sprintf_P(cmd, PSTR("settings2.xM204P.val=%d"), (uint16_t)(planner.settings.acceleration));
         TLSTJC_println(cmd);
@@ -537,13 +542,13 @@ void tlInitSetting(){
         sprintf_P(cmd, PSTR("settings2.xM204R.val=%d"), (uint16_t)(planner.settings.retract_acceleration));
         TLSTJC_println(cmd);
 
-        sprintf_P(cmd, PSTR("settings2.xM205X.val=%d"), (uint16_t)(planner.max_jerk.x * 100.0));
+        sprintf_P(cmd, PSTR("settings2.xM205X.val=%d"), (uint16_t)(planner.max_jerk.x * 100.0 + 0.5));
         TLSTJC_println(cmd);
-        sprintf_P(cmd, PSTR("settings2.xM205Y.val=%d"), (uint16_t)(planner.max_jerk.y * 100.0));
+        sprintf_P(cmd, PSTR("settings2.xM205Y.val=%d"), (uint16_t)(planner.max_jerk.y * 100.0 + 0.5));
         TLSTJC_println(cmd);
-        sprintf_P(cmd, PSTR("settings2.xM205Z.val=%d"), (uint16_t)(planner.max_jerk.z * 100.0));
+        sprintf_P(cmd, PSTR("settings2.xM205Z.val=%d"), (uint16_t)(planner.max_jerk.z * 100.0 + 0.5));
         TLSTJC_println(cmd);
-        sprintf_P(cmd, PSTR("settings2.xM205E.val=%d"), (uint16_t)(planner.max_jerk.e * 100.0));
+        sprintf_P(cmd, PSTR("settings2.xM205E.val=%d"), (uint16_t)(planner.max_jerk.e * 100.0 + 0.5));
         TLSTJC_println(cmd);        
         
     }else if(tl_TouchScreenType == 0){
@@ -2410,6 +2415,90 @@ void process_command_gcode(long _tl_command[]) {
                     sprintf_P(cmd, PSTR("G%d %s%s%s%s%s"), lG, sF, sX, sY, sZ, sE);
                     EXECUTE_GCODE(cmd);
                     SetBusyMoving(false);
+                } else if(lM == 201 || lM == 203 || lM == 204 || lM == 205 || lM == 301 || lM == 304){
+                    //M201 XYZE M203 XYZE M204 PTR M205 XYZE M301 PID M304 PID
+
+                    float fX = GCodelng('X', iFrom, _tl_command);
+                    float fY = GCodelng('Y', iFrom, _tl_command);
+                    float fZ = GCodelng('Z', iFrom, _tl_command);
+                    float fE = GCodelng('E', iFrom, _tl_command);
+                    float fT = GCodelng('T', iFrom, _tl_command);
+                    float fP = GCodelng('P', iFrom, _tl_command);
+                    float fI = GCodelng('I', iFrom, _tl_command);
+                    float fD = GCodelng('D', iFrom, _tl_command);
+                    int32_t lR = GCodelng('R', iFrom, _tl_command);
+
+                    uint32_t lRate = 1;                    
+                    if(lM != 204) if(lR != -999) lRate = lR;
+
+                    char sX[16],sY[16],sZ[16],sE[16],sP[16],sI[16],sD[16],sR[16],sT[16];
+                    NULLZERO(sX);
+                    NULLZERO(sY);
+                    NULLZERO(sZ);
+                    NULLZERO(sE);
+                    NULLZERO(sP);
+                    NULLZERO(sI);
+                    NULLZERO(sD);
+                    NULLZERO(sR);
+                    NULLZERO(sT);
+
+                    uint8_t PageNo = 1;
+                    if(lM == 204 || lM == 205) PageNo = 2;
+                    char chrA[2];
+                    NULLZERO(chrA);
+
+                    float fTemp = 0.0;
+                    if(fX > -999.0) {
+                        fTemp = fX / (float)lRate;
+                        sprintf_P(sX, PSTR("X%.2f "), fTemp);
+                        chrA[0] = 'X';
+                    }
+                    if(fY > -999.0) {
+                        fTemp = fY / (float)lRate;
+                        sprintf_P(sY, PSTR("Y%.2f "), fTemp);
+                        chrA[0] = 'Y';
+                    }
+                    if(fZ > -999.0) {
+                        fTemp = fZ / (float)lRate;
+                        sprintf_P(sZ, PSTR("Z%.2f "), fTemp);
+                        chrA[0] = 'Z';
+                    }
+                    if(fE > -999.0) {
+                        fTemp = fE / (float)lRate;
+                        sprintf_P(sE, PSTR("E%.2f "), fTemp);
+                        chrA[0] = 'E';
+                    }
+                    if(fP > -999.0) {
+                        fTemp = fP / (float)lRate;
+                        sprintf_P(sP, PSTR("P%.2f "), fTemp);
+                        chrA[0] = 'P';
+                    }
+                    if(fI > -999.0) {
+                        fTemp = fI / (float)lRate;
+                        sprintf_P(sI, PSTR("I%.2f "), fTemp);
+                        chrA[0] = 'I';
+                    }
+                    if(fD > -999.0) {
+                        fTemp = fD / (float)lRate;
+                        sprintf_P(sD, PSTR("D%.2f "), fTemp);
+                        chrA[0] = 'D';
+                    }
+                    if(fT > -999.0) {
+                        fTemp = fT / (float)lRate;
+                        sprintf_P(sT, PSTR("T%.2f "), fTemp);
+                        chrA[0] = 'T';
+                    }
+                    if(lR > -999 && lM == 204){
+                        sprintf_P(sR, PSTR("R%d "), lR);
+                        chrA[0] = 'R';
+                    }
+                    sprintf_P(cmd, "settings%d.xM%d%s.val=%d", PageNo, lM, chrA, fTemp * lRate);
+                    TLSTJC_println(cmd);
+
+                    sprintf_P(cmd, PSTR("M%d %s%s%s%s%s%s%s%s%s"), lM, sX, sY, sZ, sE, sP, sI, sD, sT, sR);
+                    EXECUTE_GCODE(cmd);
+                    EXECUTE_GCODE(PSTR("M500"));
+
                 } else if(lG == 28){
                     //G28
                     SetBusyMoving(true);
@@ -2587,20 +2676,31 @@ void process_command_gcode(long _tl_command[]) {
                     //M413 PLR
                     plr_enabled = GCodelng('S', iFrom, _tl_command);
                     EXECUTE_GCODE(PSTR("M500"));
-                }else if(lM == 1015){
-                    //M1015
-                    tl_E_FAN_START_TEMP = GCodelng('S', iFrom, _tl_command);
-                    tl_E_FAN_CHANGED = true;
-                    EXECUTE_GCODE(PSTR("M500"));
                 }else if(lM == 1023){
                     //M1023
                     #ifdef FILAMENT_RUNOUT_SENSOR
                     runout.enabled = GCodelng('S', iFrom, _tl_command);
                     EXECUTE_GCODE(PSTR("M500"));
                     #endif
+                }else if(lM == 1018){
+                    //M1018
+                    tl_E_MAX_TEMP = GCodelng('S', iFrom, _tl_command);
+                    thermalManager.hotend_maxtemp[0] = tl_E_MAX_TEMP;
+                    thermalManager.hotend_maxtemp[1] = tl_E_MAX_TEMP;
+                    EXECUTE_GCODE(PSTR("M500"));
+                }else if(lM == 1016){
+                    //M1016
+                    tl_C_FAN_SPEED = GCodelng('S', iFrom, _tl_command);
+                    tl_C_FAN_CHANGED = true;
+                    EXECUTE_GCODE(PSTR("M500"));
+                }else if(lM == 1015){
+                    //M1015
+                    tl_E_FAN_SPEED = GCodelng('S', iFrom, _tl_command);
+                    tl_E_FAN_CHANGED = true;
+                    EXECUTE_GCODE(PSTR("M500"));
                 }else if(lM == 1014){
                     //M1014
-                    tl_E_FAN_SPEED = GCodelng('S', iFrom, _tl_command);
+                    tl_E_FAN_START_TEMP = GCodelng('S', iFrom, _tl_command);
                     tl_E_FAN_CHANGED = true;
                     EXECUTE_GCODE(PSTR("M500"));
                 }else if(lM == 502){

@@ -327,7 +327,7 @@ class Temperature {
         static temp_info_t temp_redundant;
       #endif
       static hotend_info_t temp_hotend[HOTENDS];
-      static const celsius_t hotend_maxtemp[HOTENDS];
+      static celsius_t hotend_maxtemp[HOTENDS];
       static inline celsius_t hotend_max_target(const uint8_t e) { return hotend_maxtemp[e] - (HOTEND_OVERSHOOT); }
     #endif
     #if ENABLED(HAS_HEATED_BED)

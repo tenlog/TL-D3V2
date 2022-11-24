@@ -501,8 +501,10 @@ typedef struct SettingsDataStruct {
     uint8_t ui_tlTheme;
     uint8_t ui_tlLight;
     float ui_tlZHP;
-    uint8_t ui_tlStartTemp1;
-    uint8_t ui_tlStartTemp2;
+    uint8_t ui_tlEFanTemp;
+    uint8_t ui_tlEFanSpeed;
+    uint8_t ui_tlCFanSpeed;
+    uint16_t ui_tlEMaxTemp;
   #endif
 
   #if ENABLED(HAS_WIFI)
@@ -1499,6 +1501,8 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(tl_Z_HOME_POS);
       EEPROM_WRITE(tl_E_FAN_START_TEMP);
       EEPROM_WRITE(tl_E_FAN_SPEED);
+      EEPROM_WRITE(tl_C_FAN_SPEED);
+      EEPROM_WRITE(tl_E_MAX_TEMP);
     #endif
 
     #if ENABLED(HAS_WIFI)
@@ -1510,7 +1514,7 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(wifi_ip_settings);
     #endif
 
-    tlInitSetting();  //Show in ui
+    //tlInitSetting();  //Show in ui
     //
     // Report final CRC and Data Size
     //
@@ -2474,6 +2478,19 @@ void MarlinSettings::postprocess() {
         if(ui_tlFanSpeed > 100) ui_tlFanSpeed = 80;
         tl_E_FAN_SPEED = ui_tlFanSpeed;
 
+        uint8_t ui_tlCFanSpeed;
+        EEPROM_READ(ui_tlCFanSpeed);
+        if(ui_tlCFanSpeed < 0) ui_tlCFanSpeed = 80;
+        if(ui_tlCFanSpeed > 100) ui_tlCFanSpeed = 80;
+        tl_C_FAN_SPEED = ui_tlCFanSpeed;
+
+        uint16_t ui_tlEMaxTemp;
+        EEPROM_READ(ui_tlEMaxTemp);
+        if(ui_tlEMaxTemp < 0) ui_tlEMaxTemp = 330;
+        if(ui_tlEMaxTemp > 350) ui_tlEMaxTemp = 330;
+        tl_E_MAX_TEMP = ui_tlEMaxTemp;
+        thermalManager.hotend_maxtemp[0] = tl_E_MAX_TEMP;
+        thermalManager.hotend_maxtemp[1] = tl_E_MAX_TEMP;
       #endif
       
       #if ENABLED(HAS_WIFI)
@@ -4086,6 +4103,8 @@ void MarlinSettings::reset() {
       TLDEBUG_PRINTLNPAIR("TL Z Home Pos:", tl_Z_HOME_POS);
       TLDEBUG_PRINTLNPAIR("TL E Fan Temp:", tl_E_FAN_START_TEMP);
       TLDEBUG_PRINTLNPAIR("TL E Fan Speed:", tl_E_FAN_SPEED);
+      TLDEBUG_PRINTLNPAIR("TL C Fan Speed:", tl_C_FAN_SPEED);
+      TLDEBUG_PRINTLNPAIR("TL E Max Temp:", tl_E_MAX_TEMP);
     #endif
 
     #if ENABLED(HAS_WIFI)

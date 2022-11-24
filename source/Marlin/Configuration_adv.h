@@ -556,9 +556,11 @@
 #define EXTRUDER_AUTO_FAN_TEMPERATURE 80
 #define EXTRUDER_AUTO_FAN_SPEED 50   // 255 == full speed
 #define CHAMBER_AUTO_FAN_TEMPERATURE 80
-#define CHAMBER_AUTO_FAN_SPEED 255
+#define CHAMBER_AUTO_FAN_SPEED 50
 #define COOLER_AUTO_FAN_TEMPERATURE 18
 #define COOLER_AUTO_FAN_SPEED 255
+
+#define TLCHAMBER_FAN_TURN_OFF_DELAY  180000 //turn off chamber fan after move or heatup. 
 
 /**
  * Part-Cooling Fan Multiplexer

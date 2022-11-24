@@ -1283,7 +1283,7 @@ void Planner::recalculate() {
     TERN_(HAS_FAN1, FAN_SET(1));    //E1 Fan
     TERN_(HAS_FAN2, FAN_SET(2));    //E0 Auto Fan
     TERN_(HAS_FAN3, FAN_SET(3));    //E1 Auto Fan
-    TERN_(HAS_FAN4, FAN_SET(4));
+    TERN_(HAS_FAN4, FAN_SET(4));    //Chamber fan
     TERN_(HAS_FAN5, FAN_SET(5));
     TERN_(HAS_FAN6, FAN_SET(6));
     TERN_(HAS_FAN7, FAN_SET(7));

@@ -124,6 +124,7 @@
 #define E1_STEP_PIN        PB6
 #define E1_DIR_PIN         PB5
 
+
 #ifdef ELECTROMAGNETIC_VALUE
   #define ELECTROMAGNETIC_VALUE_ON            1
   #define ELECTROMAGNETIC_VALUE_OFF           0
@@ -148,6 +149,11 @@
   #define HEATER_1_PIN          PA4   // HEATER1
 #endif
 
+#define FAN4_PIN                PE3   //FZ2
+#define CHAMEBER_PIN            FAN4_PIN   //机箱风扇口
+#define LED_PIN                 PE2   //LED 控制管脚
+
+
 //
 // Temperature Sensors
 //
@@ -161,9 +167,6 @@
 // Heaters / Fans
 //
 
-
-#define CHAMEBER_PIN        PE3   //机箱风扇口
-#define LED_PIN             PE2   //LED 控制管脚
 
 #if PIN_EXISTS(FAN)
   #define FAN_SOFT_PWM

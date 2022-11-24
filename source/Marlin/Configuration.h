@@ -51,7 +51,9 @@
 *           Modify homing speed XY.
 *           PIDTEMPBED enabled.
 *           Bug fixed: chamber fan not run.
-*Version    031
+20221124    More settings detail in UI, 
+            PWM speed for chamber fan, can be setted in ui.
+*Version    032
 */
 //TL Medels and version
 //#define TENLOG_H2
