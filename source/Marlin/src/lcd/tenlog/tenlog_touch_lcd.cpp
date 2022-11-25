@@ -3000,7 +3000,7 @@ void TL_idle(){
     tenlog_screen_update();
     #if ENABLED(HAS_WIFI)
         tenlog_wifi_update();
-			  spi_idle();
+		//spi_idle();
     #endif
 }
 
