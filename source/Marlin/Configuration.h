@@ -62,7 +62,7 @@
 //#define TENLOG_D5
 //#define TENLOG_D6
 
-//#define TL_DEBUG
+#define TL_DEBUG
 
 //TL hardware.
 #define TENLOG_TOUCH_LCD

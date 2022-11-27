@@ -2429,7 +2429,7 @@ void process_command_gcode(long _tl_command[]) {
                     int32_t lR = GCodelng('R', iFrom, _tl_command);
 
                     uint32_t lRate = 1;                    
-                    if(lM != 204) if(lR != -999) lRate = lR;
+                    if(lM != 204 && lR != -999) lRate = lR;
 
                     char sX[16],sY[16],sZ[16],sE[16],sP[16],sI[16],sD[16],sR[16],sT[16];
                     NULLZERO(sX);
@@ -2491,9 +2491,12 @@ void process_command_gcode(long _tl_command[]) {
                     if(lR > -999 && lM == 204){
                         sprintf_P(sR, PSTR("R%d "), lR);
                         chrA[0] = 'R';
+                        fTemp = lR;
                     }
-                    sprintf_P(cmd, "settings%d.xM%d%s.val=%d", PageNo, lM, chrA, fTemp * lRate);
+                    sprintf_P(cmd, "settings%d.xM%d%s.val=%d", PageNo, lM, chrA, (int32_t)(fTemp * (float)lRate));
                     TLSTJC_println(cmd);
+                    sprintf_P(cmd, "Temp:%.2f, Rate:%d", fTemp, lRate);
+                    TLDEBUG_PRINTLN(cmd);  
 
                     sprintf_P(cmd, PSTR("M%d %s%s%s%s%s%s%s%s%s"), lM, sX, sY, sZ, sE, sP, sI, sD, sT, sR);
                     EXECUTE_GCODE(cmd);
