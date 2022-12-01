@@ -143,7 +143,7 @@ void plr_setup();
 void plr_outage();
 //void plr_outage_test();
 void tenlog_status_update(bool isTJC);
-
+void command_M1521(int8_t Status);
 void my_sleep(float time);
 void SyncFanSpeed();
 

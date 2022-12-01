@@ -185,6 +185,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>spi_rx1[100]</ItemText>
         </Ww>
+        <Ww>
+          <count>7</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\firmware\../source/Marlin/src/HAL/ESP32_SPI/esp32_wifi.cpp\spi_rx[191]</ItemText>
+        </Ww>
       </WatchWindow1>
       <MemoryWindow1>
         <Mm>
@@ -3680,7 +3685,7 @@
       <GroupNumber>14</GroupNumber>
       <FileNumber>277</FileNumber>
       <FileType>8</FileType>
-      <tvExp>0</tvExp>
+      <tvExp>1</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>..\source\Marlin\src\HAL\ESP32_SPI\esp32_wifi.cpp</PathWithFileName>

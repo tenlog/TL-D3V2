@@ -2673,7 +2673,7 @@ void process_command_gcode(long _tl_command[]) {
                 }else if(lM == 1521){
                     //M1521 Light On Off
                     tl_Light = GCodelng('S', iFrom, _tl_command);
-                    if(tl_Light) WRITE(LED_PIN, 1); else WRITE(LED_PIN, 0);
+                    command_M1521(tl_Light);
                     EXECUTE_GCODE(PSTR("M500"));
                 }else if(lM == 413){
                     //M413 PLR
@@ -3003,7 +3003,7 @@ void TL_idle(){
     tenlog_screen_update();
     #if ENABLED(HAS_WIFI)
         tenlog_wifi_update();
-		//spi_idle();
+		spi_idle();
     #endif
 }
 
@@ -3382,6 +3382,10 @@ void flash_earea(){
     while(Set != EFM_GetFlagStatus(EFM_FLAG_RDY));
     EFM_SectorErase(FLASH_READ_ADDRESS);
     EFM_Lock();
+}
+
+void command_M1521(int8_t Status){
+    if(Status) WRITE(LED_PIN, 1); else WRITE(LED_PIN, 0);
 }
 
 #endif  //TENLOG_TOUCH_LCD
