@@ -2690,6 +2690,8 @@ void process_command_gcode(long _tl_command[]) {
                     tl_E_MAX_TEMP = GCodelng('S', iFrom, _tl_command);
                     thermalManager.hotend_maxtemp[0] = tl_E_MAX_TEMP;
                     thermalManager.hotend_maxtemp[1] = tl_E_MAX_TEMP;
+                    sprintf_P(cmd, PSTR("main.vTempMax.val=%d"), tl_E_MAX_TEMP - HOTEND_OVERSHOOT);
+                    TLSTJC_println(cmd);
                     EXECUTE_GCODE(PSTR("M500"));
                 }else if(lM == 1016){
                     //M1016

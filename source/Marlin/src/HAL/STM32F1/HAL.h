@@ -57,10 +57,10 @@
 #define _MSERIAL(X) Serial##X
 #define MSERIAL(X) _MSERIAL(X)
 
-#if EITHER(STM32_HIGH_DENSITY, STM32_XL_DENSITY)
-  #define NUM_UARTS 4
-#else
+#if BOTH(ESP32_WIFI, TENLOG_TOUCH_LCD)
   #define NUM_UARTS 3
+#else
+  #define NUM_UARTS 1
 #endif
 
 #if SERIAL_PORT == -1

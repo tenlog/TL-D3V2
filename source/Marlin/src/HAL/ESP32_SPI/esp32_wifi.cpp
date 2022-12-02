@@ -30,7 +30,6 @@
 #ifdef ESP32_WIFI
 #include "esp32_wifi.h"
 
-
 char wifi_ssid[20] = WIFI_DEFAULT_SSID;
 char wifi_pswd[20] = WIFI_DEFAULT_PSWD;
 char wifi_acce_code[20] = WIFI_DEFAULT_ACCE_CODE;
@@ -57,8 +56,8 @@ uint8_t spi_tx[SPI_BUFFER_SIZE]="";
 uint8_t spi_rx[SPI_BUFFER_SIZE]="";
 uint8_t spi_rx1[SPI_BUFFER_SIZE]="";
 
-#define SPI_MASTER_MODE
-//#define USE_INT_IRQ
+//#define SPI_MASTER_MODE
+#define USE_INT_IRQ
 //#define USE_3_LINE
 
 //GPIO口初始化（这边将SPI的CS脚当作GPIO进行初始化）：
@@ -70,6 +69,8 @@ void WIFI_InitGPIO(void)
     MEM_ZERO_STRUCT(stcPortInit);
     #ifdef SPI_MASTER_MODE
     stcPortInit.enPinMode = Pin_Mode_Out;
+	//stcPortInit.enPullUp = Enable;
+	//stcPortInit.enPinDrv = Pin_Drv_H;		//high drive
     #ifndef USE_3_LINE
     PORT_Init(SPI1_NSS_PORT, SPI1_NSS_PIN, &stcPortInit);
     #endif
@@ -80,6 +81,8 @@ void WIFI_InitGPIO(void)
     PORT_Init(SPI1_MISO_PORT, SPI1_MISO_PIN, &stcPortInit);
     #else
     stcPortInit.enPinMode = Pin_Mode_In;
+	//stcPortInit.enPullUp = Enable;
+	//stcPortInit.enPinDrv = Pin_Drv_H;		//high drive
     #ifndef USE_3_LINE
     PORT_Init(SPI1_NSS_PORT, SPI1_NSS_PIN, &stcPortInit);
     #endif
@@ -109,11 +112,12 @@ void WIFI_InitSPI(void)
 	PORT_SetFunc(SPI1_MISO_PORT, SPI1_MISO_PIN, SPI1_MISO_FUNC, Disable);
 
 	/* Configuration SPI structure */
-	#ifdef SPI_MASTER_MODE
+    #ifdef SPI_MASTER_MODE
     stcSpiInit.enClkDiv                 = SpiClkDiv8;
     #else
-	stcSpiInit.enClkDiv                 = SpiClkDiv2;
+    stcSpiInit.enClkDiv                 = SpiClkDiv2;
     #endif
+
 	stcSpiInit.enFrameNumber            = SpiFrameNumber1;
 	stcSpiInit.enDataLength             = SpiDataLengthBit8;
 	stcSpiInit.enFirstBitPosition       = SpiFirstBitPositionMSB;
@@ -141,12 +145,16 @@ void WIFI_InitSPI(void)
     stcSpiInit.stcDelayConfig.enSsHoldDelayTime         = SpiSsHoldDelaySck1;
     stcSpiInit.stcDelayConfig.enSsIntervalTimeOption    = SpiSsIntervalCustomValue;
     stcSpiInit.stcDelayConfig.enSsIntervalTime          = SpiSsIntervalSck6PlusPck2;
+    #ifndef USE_3_LINE
     stcSpiInit.stcSsConfig.enSsValidBit                 = SpiSsValidChannel0;
     stcSpiInit.stcSsConfig.enSs0Polarity                = SpiSsLowValid;
+    #endif
 #else
 	stcSpiInit.enMasterSlaveMode        = SpiModeSlave;
+    #ifndef USE_3_LINE
     stcSpiInit.stcSsConfig.enSsValidBit = SpiSsValidChannel0;
     stcSpiInit.stcSsConfig.enSs0Polarity = SpiSsLowValid;
+    #endif
 #endif
 
 	SPI_Init(WIFI_SPI_UNIT, &stcSpiInit);
@@ -171,9 +179,12 @@ void WIFI_InitDMA(void)
 	stcDmaCfg.u32SrcAddr = (uint32_t)(&spi_tx[0]);
 	stcDmaCfg.stcDmaChCfg.enSrcInc = AddressIncrease; //
 	stcDmaCfg.stcDmaChCfg.enDesInc = AddressFix;
-
 	stcDmaCfg.stcDmaChCfg.enTrnWidth = Dma8Bit;
+    #ifdef USE_INT_IRQ
 	stcDmaCfg.stcDmaChCfg.enIntEn = Enable;//Must be enabled;
+    #else
+	stcDmaCfg.stcDmaChCfg.enIntEn = Disable;
+    #endif
 	DMA_InitChannel(WIFI_DMA_UNIT, WIFI_DMA_TX_CHANNEL, &stcDmaCfg);
 
 	/* Configure RX DMA */
@@ -184,9 +195,8 @@ void WIFI_InitDMA(void)
 	stcDmaCfg.u32DesAddr = (uint32_t)(&spi_rx[0]);
 	stcDmaCfg.stcDmaChCfg.enSrcInc = AddressFix;
 	stcDmaCfg.stcDmaChCfg.enDesInc = AddressIncrease;
-	
 	stcDmaCfg.stcDmaChCfg.enTrnWidth = Dma8Bit;
-	stcDmaCfg.stcDmaChCfg.enIntEn = Disable;//Enable;
+	stcDmaCfg.stcDmaChCfg.enIntEn = Disable;
 	DMA_InitChannel(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL, &stcDmaCfg);
 	
     DMA_SetTriggerSrc(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL, WIFI_DMA_RX_TRIG_SOURCE);
@@ -224,8 +234,10 @@ void SPI_Receive_Send_DMA()
 	DMA_SetTransferCnt(WIFI_DMA_UNIT, WIFI_DMA_TX_CHANNEL, SPI_BUFFER_SIZE);
 	DMA_SetDesAddress(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL,(uint32_t)(&spi_rx[0]));
 	DMA_SetTransferCnt(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL, SPI_BUFFER_SIZE);
+    /* Enable DMA channel */
 	DMA_ChannelCmd(WIFI_DMA_UNIT, WIFI_DMA_TX_CHANNEL, Enable);
 	DMA_ChannelCmd(WIFI_DMA_UNIT, WIFI_DMA_RX_CHANNEL, Enable);
+    /* Enable SPI to start DMA */
 	SPI_Cmd(WIFI_SPI_UNIT, Enable);
 
     #ifndef USE_INT_IRQ

@@ -92,13 +92,6 @@ extern uint8_t wifi_version[3];
 #define SPI1_SCK_PIN                     (Pin06)
 #define SPI1_SCK_FUNC                    (Func_Spi1_Sck)
  
-/* SPI_NSS Port/Pin definition */
-#define SPI1_NSS_PORT                    (PortB)
-#define SPI1_NSS_PIN                     (Pin01)
-#define SPI1_NSS_HIGH()                  (PORT_SetBits(SPI1_NSS_PORT, SPI1_NSS_PIN))
-#define SPI1_NSS_LOW()                   (PORT_ResetBits(SPI1_NSS_PORT, SPI1_NSS_PIN))
-#define SPI1_NSS_FUNC                    (Func_Spi1_Nss0)
-
 /* SPI_MISO Port/Pin definition */
 #define SPI1_MISO_PORT                   (PortB)
 #define SPI1_MISO_PIN                    (Pin00)
@@ -108,6 +101,14 @@ extern uint8_t wifi_version[3];
 #define SPI1_MOSI_PORT                   (PortA)
 #define SPI1_MOSI_PIN                    (Pin07)
 #define SPI1_MOSI_FUNC                   (Func_Spi1_Mosi)
+
+/* SPI_NSS Port/Pin definition */
+#define SPI1_NSS_PORT                    (PortB)
+#define SPI1_NSS_PIN                     (Pin01)
+#define SPI1_NSS_HIGH()                  (PORT_SetBits(SPI1_NSS_PORT, SPI1_NSS_PIN))
+#define SPI1_NSS_LOW()                   (PORT_ResetBits(SPI1_NSS_PORT, SPI1_NSS_PIN))
+#define SPI1_NSS_FUNC                    (Func_Spi1_Nss0)
+
 
 /* SPI unit and clock definition */
 #define WIFI_SPI_UNIT                    (M4_SPI1)

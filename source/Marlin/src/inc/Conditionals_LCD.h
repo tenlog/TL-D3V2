@@ -964,7 +964,7 @@
   #define LCD_SERIAL_PORT 1 // Tenlog 3d printer board.
 #endif
 
-#if ENABLED(ESP8266_WIFI)
+#if ENABLED(ESP32_WIFI)
   //#define SERIAL_CATCHALL 0
   #define WIFI_SERIAL_PORT 3 // Tenlog 3d printer board.
 #endif
