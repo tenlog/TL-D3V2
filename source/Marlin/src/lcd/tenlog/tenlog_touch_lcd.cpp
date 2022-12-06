@@ -122,6 +122,8 @@ bool PrintFromZHeightFound = true;
 float print_from_z_target = 0.0;
 #endif
 
+uint32_t wifi_update_interval = 500;
+
 ///////////////// common functions
 
 long ConvertHexLong(long command[], int Len)
@@ -2971,14 +2973,12 @@ void tenlog_screen_update()
 
 void tenlog_wifi_update()
 {   
-    /*
-    if(wifi_uploading_file){
+    if(file_uploading){
         WIFI_TX_Handler(0x0C);
         return;
     }
-    */
     static unsigned long lWLastUpdateTime;
-    if(millis() - lWLastUpdateTime < 200)
+    if(millis() - lWLastUpdateTime < wifi_update_interval)
         return;
     
     lWLastUpdateTime=millis();
@@ -3005,7 +3005,7 @@ void TL_idle(){
     tenlog_screen_update();
     #if ENABLED(HAS_WIFI)
         tenlog_wifi_update();
-		spi_idle();
+		//spi_idle();
     #endif
 }
 

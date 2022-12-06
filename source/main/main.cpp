@@ -49,7 +49,7 @@
 	init();
 }
 int main(void){
-	setup();
+ 	setup();
 	
 	while (1) {
 		loop();

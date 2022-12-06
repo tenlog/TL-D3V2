@@ -94,6 +94,7 @@
 #define EXECUTE_GCODE(X)  gcode.process_subcommands_now(X)
 
 
+
 //void tenlog_status_screen();
 void TenlogScreen_begin(long boud);
 void TenlogScreen_end();
@@ -218,5 +219,7 @@ extern int TLPrintingStatus;
 extern bool PrintFromZHeightFound;
 extern float print_from_z_target;
 #endif
+
+extern uint32_t wifi_update_interval;
 
 #endif  //TENLOG_TOUCH_LCD
