@@ -62,7 +62,7 @@
 //#define TENLOG_D5
 //#define TENLOG_D6
 
-//#define TL_DEBUG
+#define TL_DEBUG
 
 //TL hardware.
 #define TENLOG_TOUCH_LCD
@@ -129,7 +129,7 @@
 #endif
 
 // Homing speeds (mm/min)
-#define HOMING_FEEDRATE_MM_M {9000, 9000, 300}
+#define HOMING_FEEDRATE_MM_M {6000, 5000, 300}
 
 #ifdef redefined
 #define __STM32F1__

@@ -57,7 +57,7 @@
 
 #ifdef ESP32_WIFI
 
-#define BUFFER_SIZE 1228
+#define BUFFER_SIZE 1024
 #define WIFI_MSG_LENGTH BUFFER_SIZE - 4
 
 extern char wifi_ssid[20];
@@ -76,6 +76,7 @@ extern uint8_t wifi_file_name[WIFI_MSG_LENGTH];
 
 extern uint8_t wifi_version[3];
 extern bool file_uploading;
+extern bool file_writing;
 
 #define HEAD_OK(a)	(a[0]==0xFF && a[1]==0xFF)
 

@@ -1514,7 +1514,7 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(wifi_ip_settings);
     #endif
 
-    //tlInitSetting();  //Show in ui
+    tlInitSetting(false);  //Show in ui
     //
     // Report final CRC and Data Size
     //
@@ -2508,7 +2508,7 @@ void MarlinSettings::postprocess() {
         EEPROM_READ(wifi_ip_settings);
       #endif
       #if ENABLED(TENLOG_TOUCH_LCD)
-        tlInitSetting();  //Show in ui
+        tlInitSetting(false);  //Show in ui
       #endif
       //
       // Validate Final Size and CRC

@@ -213,7 +213,7 @@ bool CardReader::is_dir_or_gcode(const dir_t &p, bool onlyGcode) {
 
   return (
     flag.filenameIsDir && !onlyGcode                    // All Directories are ok  //by zyf only gcode
-    || (p.name[8] == 'G' && p.name[9] != '~')           // Non-backup *.G* files are accepted
+    || (p.name[8] == 'G' && p.name[9] != '~' )           // Non-backup *.G* files are accepted
   );
 }
 
@@ -383,16 +383,18 @@ void CardReader::tl_ls(bool wifi) {
         createFilename(filename, p);
         iFileID++;
 
-        if(wifi){
-          
+        if(wifi){          
           #if ENABLED(HAS_WIFI)
           wifi_file_name[0]=fileNum;
           wifi_file_name[1]=iFileID-1;
           for(uint8_t i=0; i<13; i++){
             wifi_file_name[2+i]=filename[i];
           }
-          for(uint8_t i=0; i<32; i++){
-            wifi_file_name[15+i]=longFilename[i];
+          for(uint8_t i=0; i<LONG_FILENAME_LENGTH; i++){
+            if(longFilename[0] == 0x00)
+              wifi_file_name[15+i]=filename[i];
+            else
+              wifi_file_name[15+i]=longFilename[i];
           }
           delay(10);
           WIFI_TX_Handler(0x0A);
@@ -405,13 +407,16 @@ void CardReader::tl_ls(bool wifi) {
 
             if(tl_TouchScreenType == 1){
               NULLZERO(cmd);
-              sprintf_P(cmd, PSTR("select_file.tL%d.txt=\"%s\""), SelectFileID,longFilename);
+              if(longFilename[0] == 0x00)
+                sprintf_P(cmd, PSTR("select_file.tL%d.txt=\"%s\""), SelectFileID, filename);
+              else
+                sprintf_P(cmd, PSTR("select_file.tL%d.txt=\"%s\""), SelectFileID, longFilename);
               TLSTJC_println(cmd);
             }else if(tl_TouchScreenType == 0){
               DWN_Text(0x7300 + (SelectFileID - 1) * 0x30, 32, longFilename);
             }
 
-            for(int i = 0; i<27; i++){
+            for(int i = 0; i<LONG_FILENAME_LENGTH; i++){
               long_file_name_list[SelectFileID-1][i] = longFilename[i];
             }
             delay(5);
@@ -449,7 +454,7 @@ void CardReader::tl_ls(bool wifi) {
       }
       delay(5);
     }
-  }else{
+  }else{  //DWIN monitor
     if(tl_TouchScreenType == 0){
         DWN_Data(0x8811, 1, 2);
         delay(5);
@@ -568,6 +573,7 @@ void CardReader::mount() {
   flag.mounted = false;
   if (root.isOpen()) root.close();
 
+  sd_OK = 0;
   if (!driver->init(SD_SPI_SPEED, SDSS)
     #if defined(LCD_SDSS) && (LCD_SDSS != SDSS)
       && !driver->init(SD_SPI_SPEED, LCD_SDSS)
@@ -589,6 +595,7 @@ void CardReader::mount() {
   else {
     flag.mounted = true;
     SERIAL_ECHO_MSG(STR_SD_CARD_OK);
+    sd_OK = 1;
   }
 
   if (flag.mounted)

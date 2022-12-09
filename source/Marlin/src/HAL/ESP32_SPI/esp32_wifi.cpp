@@ -26,6 +26,7 @@
 #include "../../MarlinCore.h"
 #include "../../inc/MarlinConfig.h"
 #include "../../lcd/tenlog/tenlog_touch_lcd.h"
+#include "../../sd/cardreader.h"
 
 #ifdef ESP32_WIFI
 #include "esp32_wifi.h"
@@ -52,6 +53,7 @@ uint8_t spi_tx[BUFFER_SIZE]="";
 uint8_t spi_rx[BUFFER_SIZE]="";
 
 bool file_uploading = false;
+bool file_writing = false;
 
 /*
 void WIFI_InitDMA(void)
@@ -80,7 +82,7 @@ void WIFI_InitDMA(void)
 }
 */
 
-//【2】其次是GPIO口初始化（这边将SPI的CS脚当作GPIO进行初始化）：
+//其次是GPIO口初始化（这边将SPI的CS脚当作GPIO进行初始化）：
 
 /**************************************************************************
 * 函数名称： WIFI_InitGPIO
@@ -109,7 +111,7 @@ void WIFI_InitGPIO(void)
     SPI1_NSS_HIGH();
 }
 
-//        【3】SPI初始化：
+//SPI初始化：
 /**************************************************************************
 * 函数名称： WIFI_InitSPI1
 * 功能描述： WIFI初始化SPI
@@ -165,7 +167,7 @@ void WIFI_InitSPI1(void)
     SPI_Cmd(SPI1_UNIT, Enable);
 }
 
-//【4】SPI的读写功能：
+//SPI的读写功能：
 /**************************************************************************
 * 函数名称： SPI_RW
 * 功能描述： SPI读写功能
@@ -190,18 +192,21 @@ uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data)
 
 uint8_t get_control_code(){
 	if(HEAD_OK(spi_rx)){
-		uint8_t verify=0;
+        uint8_t code = spi_rx[2];
+		if(code == 0x0A) return code;
+        uint8_t verify=0;
 		for(uint16_t i=0; i<BUFFER_SIZE-1; i++){
 			verify += spi_rx[i];
 		}
 		if(verify % 0x100 == spi_rx[BUFFER_SIZE-1]){
-			return spi_rx[2];
+			return code;
 		}
 	}
 	return 0;
 }
 
 void SPI_RX_Handler(){
+    char cmd[64];
 	HAL_watchdog_refresh();
     char ret[WIFI_MSG_LENGTH];
 	NULLZERO(ret);
@@ -217,7 +222,7 @@ void SPI_RX_Handler(){
         if(ret[0] == '1' || ret[0] == '2' || ret[0] == '3' || ret[0] == '4' || ret[0] == '5' || ret[0] == '6' || ret[0] == '7' || ret[0] == '8' || ret[0] == '9' || ret[0] == '0') {
             wifi_connected = true;
             wifi_resent = false;
-            tlInitSetting();
+            tlInitSetting(false);
         }
         if(ret[0]){
             TJC_DELAY;
@@ -245,24 +250,52 @@ void SPI_RX_Handler(){
     	for(uint8_t i=0; i<3; i++){
             wifi_version[i] = ret[i];
         }
-
         if(wifi_version[1] % 2 == 0)
             sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tVersion.txt=\"WIFI V%d.%d.%d\""), wifi_version[0],wifi_version[1],wifi_version[2]);
         else
             sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tVersion.txt=\"WIFICAM V%d.%d.%d\""), wifi_version[0],wifi_version[1],wifi_version[2]);
         TLSTJC_println(wifi_tjc_cmd);
     }else if(control_code == 0x09){
-        wifi_update_interval = 1;
-        file_uploading = true;        
-        //WIFI_TX_Handler(0x0C);
-    }else if(control_code == 0x0A){
-        wifi_update_interval = 1;
         file_uploading = true;
-        //WIFI_TX_Handler(0x0C);
+        if (!card.isMounted()) card.mount();
+        char fname[27] = "";
+        NULLZERO(fname);
+        uint8_t name_length = ret[0];
+        for(uint8_t i = 0; i<name_length; i++){
+            fname[i] = ret[i+1];
+        }
+        
+        card.openFileWrite(fname);
+        if (!card.isFileOpen()) {
+            file_writing = false;
+            //sprintf_P(cmd, "Failed to open %s to write. length:%d", fname, name_length);
+        }else{
+            file_writing = true;
+            //sprintf_P(cmd, "Seccess to open %s to write. length:%d", fname, name_length);
+        }
+        //TLDEBUG_PRINT(cmd);
+    }else if(control_code == 0x0A){
+        #define WIFI_FILE_DATA_LENGTH WIFI_MSG_LENGTH-2
+        if(file_writing){
+            uint8_t file_data[WIFI_FILE_DATA_LENGTH]={0};
+            ZERO(file_data);
+            uint16_t file_buffer_size = ret[0] * 0x100 + ret[1];
+            for(uint16_t i=0; i<file_buffer_size; i++){
+                file_data[i] = ret[i+2];
+            }
+            card.write(file_data, file_buffer_size);
+            //sprintf_P(cmd, "Writing %d bytes.", file_buffer_size);
+            //TLDEBUG_PRINT(cmd);
+        }
     }else if(control_code == 0x0B){
-        wifi_update_interval = 500;
+        if(file_writing){
+            card.closefile();
+        }
+        file_writing = false;
+        //wifi_update_interval = 500;
         file_uploading = false;
-        //WIFI_TX_Handler(0x0C);
+        //sprintf_P(cmd, "Writing Done. %d", file_uploading);
+        //TLDEBUG_PRINT(cmd);
     }
 }
 

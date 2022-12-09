@@ -114,6 +114,7 @@ char cmd[64], str_1[32];
 int TLPrintingStatus = 0;
 bool plr1stZ = false;
 bool plr1stE = false;
+uint8_t sd_OK = 0;
 
 #define TL_LCD_SERIAL LCD_SERIAL
 
@@ -244,10 +245,8 @@ int DETECT_TLS(){
                     sprintf_P(cmd, "about.tUID.txt=\"UID:%s\"", tl_hc_sn);
                     TLSTJC_println(cmd);
                     
-                    TLSTJC_print("loading.tUI.txt=\"UI ");
-                    TLSTJC_print(ModelNo);
-                    TLSTJC_println("\"");
-
+                    sprintf_P(cmd, "loading.tUI.txt=\"UI %s\"", ModelNo);
+                    TLSTJC_println(cmd);
 
                     uint8_t iLastPageID = TLTJC_GetLastPage();
 
@@ -372,39 +371,41 @@ void TLVersion(){
     }
 }
 
-void tlInitSetting(){
+void tlInitSetting(bool only_wifi){
+    #define PRINTTJC(a) if(!only_wifi)TLSTJC_println(a)
+
     if(tl_TouchScreenType == 1)
     {
         //ZERO(wifi_printer_settings);
-        TLSTJC_println("sleep=0");
+        PRINTTJC("sleep=0");
         NULLZERO(cmd);
         sprintf_P(cmd, PSTR("main.vLanguageID.val=%d"), tl_languageID);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         TERN_(ESP32_WIFI, wifi_printer_settings[0] = tl_languageID;);
         sprintf_P(cmd, PSTR("settings2.nSleep.val=%d"), tl_Sleep);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         TERN_(ESP32_WIFI, wifi_printer_settings[1] = tl_Sleep);
         sprintf_P(cmd, PSTR("settings2.cECOMode.val=%d"), tl_ECO_MODE);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         TERN_(ESP32_WIFI, wifi_printer_settings[2] = tl_ECO_MODE);
         sprintf_P(cmd, PSTR("main.vThemeID.val=%d"), tl_THEME_ID);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         TERN_(ESP32_WIFI, wifi_printer_settings[3] = tl_THEME_ID);
         sprintf_P(cmd, PSTR("settings2.cLight.val=%d"), tl_Light);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         TERN_(ESP32_WIFI, wifi_printer_settings[4] = tl_Light);
         sprintf_P(cmd, PSTR("settings.cPLR.val=%d"), plr_enabled);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         TERN_(ESP32_WIFI, wifi_printer_settings[37] = plr_enabled);
         sprintf_P(cmd, PSTR("settings2.nEFT.val=%d"), tl_E_FAN_START_TEMP);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         TERN_(ESP32_WIFI, wifi_printer_settings[5] = tl_E_FAN_START_TEMP);
         sprintf_P(cmd, PSTR("settings2.nEFS.val=%d"), tl_E_FAN_SPEED);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         TERN_(ESP32_WIFI, wifi_printer_settings[6] = tl_E_FAN_SPEED);
 
         sprintf_P(cmd, PSTR("settings2.nCFS.val=%d"), tl_C_FAN_SPEED);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
 
         uint32_t lX = planner.settings.axis_steps_per_mm[X_AXIS] * 100;
         TERN_(ESP32_WIFI, wifi_printer_settings[7] = lX / 0x10000);
@@ -424,19 +425,19 @@ void tlInitSetting(){
         TERN_(ESP32_WIFI, wifi_printer_settings[18] = lE % 0x100);
 
         sprintf_P(cmd, PSTR("settings.xXs.val=%d"), lX);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings.xYs.val=%d"), lY);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings.xZs.val=%d"), lZ);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings.xEs.val=%d"), lE);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
 
         #ifdef FILAMENT_RUNOUT_SENSOR
         if(runout.enabled)
-            TLSTJC_println("settings.cFilaSensor.val=1");
+            PRINTTJC("settings.cFilaSensor.val=1");
         else
-            TLSTJC_println("settings.cFilaSensor.val=0");
+            PRINTTJC("settings.cFilaSensor.val=0");
         #endif
         TERN_(ESP32_WIFI, wifi_printer_settings[19] = runout.enabled);
 
@@ -456,102 +457,102 @@ void tlInitSetting(){
         TERN_(ESP32_WIFI, wifi_printer_settings[27] = lOffsetZW % 0x100);
 
         sprintf_P(cmd, PSTR("settings.xX2.val=%d"), lOffsetX);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings.xY2.val=%d"), lOffsetY);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings.xZOffset.val=%d"), lOffsetZ);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         #if ENABLED(HAS_WIFI)
         sprintf_P(cmd, PSTR("wifisetting.vMode.val=%d"), wifi_mode);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("wifisetting.tSSID.txt=\"%s\""), wifi_ssid);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("wifisetting.tPwd.txt=\"%s\""), wifi_pswd);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("wifisetting.nPort.val=%d"), http_port);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("wifisetting.tAccessCode.txt=\"%s\""), wifi_acce_code);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("wifisetting.tGateway.txt=\"%d.%d.%d.%d\""), wifi_ip_settings[0],wifi_ip_settings[1],wifi_ip_settings[2],wifi_ip_settings[3]);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("wifisetting.tSubnet.txt=\"%d.%d.%d.%d\""), wifi_ip_settings[4],wifi_ip_settings[5],wifi_ip_settings[6],wifi_ip_settings[7]);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("wifisetting.tLIP.txt=\"%d.%d.%d.%d\""), wifi_ip_settings[8],wifi_ip_settings[9],wifi_ip_settings[10],wifi_ip_settings[11]);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         #endif
         
         #ifndef ELECTROMAGNETIC_VALUE
         sprintf_P(cmd, PSTR("main.vTempMax.val=%d"), tl_E_MAX_TEMP - HOTEND_OVERSHOOT);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         TERN_(ESP32_WIFI, wifi_printer_settings[28] = (HEATER_0_MAXTEMP-HOTEND_OVERSHOOT) / 0x100);
         TERN_(ESP32_WIFI, wifi_printer_settings[29] = (HEATER_0_MAXTEMP-HOTEND_OVERSHOOT) % 0x100);
         TERN_(ESP32_WIFI, wifi_printer_settings[30] = (BED_MAXTEMP - BED_OVERSHOOT));
         sprintf_P(cmd, PSTR("main.vBedMax.val=%d"), BED_MAXTEMP - BED_OVERSHOOT);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         #endif
         
         sprintf_P(cmd, PSTR("main.vXMax.val=%d"), lOffsetX / 10);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         TERN_(ESP32_WIFI, wifi_printer_settings[31] = (lOffsetX/10)/0x100);
         TERN_(ESP32_WIFI, wifi_printer_settings[32] = (lOffsetX/10)%0x100);
         sprintf_P(cmd, PSTR("main.vYMax.val=%d"), Y_MAX_POS * 10);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         TERN_(ESP32_WIFI, wifi_printer_settings[33] = (Y_MAX_POS*10)/0x100);
         TERN_(ESP32_WIFI, wifi_printer_settings[34] = (Y_MAX_POS*10)%0x100);
         sprintf_P(cmd, PSTR("main.vZMax.val=%d"), Z_MAX_POS * 10);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         TERN_(ESP32_WIFI, wifi_printer_settings[35] = (Z_MAX_POS*10)/0x100);
         TERN_(ESP32_WIFI, wifi_printer_settings[36] = (Z_MAX_POS*10)%0x100);
 
         sprintf_P(cmd, PSTR("settings1.xM201X.val=%d"), planner.settings.max_acceleration_mm_per_s2[X_AXIS]);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings1.xM201Y.val=%d"), planner.settings.max_acceleration_mm_per_s2[Y_AXIS]);
-        TLSTJC_println(cmd);        
+        PRINTTJC(cmd);        
         sprintf_P(cmd, PSTR("settings1.xM201Z.val=%d"), planner.settings.max_acceleration_mm_per_s2[Z_AXIS]);
-        TLSTJC_println(cmd);        
+        PRINTTJC(cmd);        
         sprintf_P(cmd, PSTR("settings1.xM201E.val=%d"), planner.settings.max_acceleration_mm_per_s2[E_AXIS]);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
 
         sprintf_P(cmd, PSTR("settings1.xM203X.val=%d"), (uint16_t)planner.settings.max_feedrate_mm_s[X_AXIS]);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings1.xM203Y.val=%d"), (uint16_t)planner.settings.max_feedrate_mm_s[Y_AXIS]);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings1.xM203Z.val=%d"), (uint16_t)planner.settings.max_feedrate_mm_s[Z_AXIS]);
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings1.xM203E.val=%d"), (uint16_t)planner.settings.max_feedrate_mm_s[E_AXIS]);
-        TLSTJC_println(cmd); 
+        PRINTTJC(cmd); 
 
         sprintf_P(cmd, PSTR("settings1.xM301P.val=%d"), (uint32_t)(PID_PARAM(Kp, 0) * 100.0 + 0.5));
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings1.xM301I.val=%d"), (uint32_t)(unscalePID_i(PID_PARAM(Ki, 0)) * 100.0 + 0.5));
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings1.xM301D.val=%d"), (uint32_t)(unscalePID_d(PID_PARAM(Kd, 0)) * 100.0 + 0.5));
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         
         sprintf_P(cmd, PSTR("settings1.xM304P.val=%d"), (uint32_t)(thermalManager.temp_bed.pid.Kp * 100.0 + 0.5));
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings1.xM304I.val=%d"), (uint32_t)(unscalePID_i(thermalManager.temp_bed.pid.Ki) * 100.0 + 0.5));
-        TLSTJC_println(cmd); 
+        PRINTTJC(cmd); 
         sprintf_P(cmd, PSTR("settings1.xM304D.val=%d"), (uint32_t)(unscalePID_d(thermalManager.temp_bed.pid.Kd) * 100.0 + 0.5));
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
 
         sprintf_P(cmd, PSTR("settings2.xM306S.val=%d"), (uint16_t)(tl_E_MAX_TEMP));
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings2.xM204P.val=%d"), (uint16_t)(planner.settings.acceleration));
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings2.xM204T.val=%d"), (uint16_t)(planner.settings.travel_acceleration));
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings2.xM204R.val=%d"), (uint16_t)(planner.settings.retract_acceleration));
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
 
         sprintf_P(cmd, PSTR("settings2.xM205X.val=%d"), (uint16_t)(planner.max_jerk.x * 100.0 + 0.5));
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings2.xM205Y.val=%d"), (uint16_t)(planner.max_jerk.y * 100.0 + 0.5));
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings2.xM205Z.val=%d"), (uint16_t)(planner.max_jerk.z * 100.0 + 0.5));
-        TLSTJC_println(cmd);
+        PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings2.xM205E.val=%d"), (uint16_t)(planner.max_jerk.e * 100.0 + 0.5));
-        TLSTJC_println(cmd);        
+        PRINTTJC(cmd);        
         
     }else if(tl_TouchScreenType == 0){
         DWN_DELAY;
@@ -2120,6 +2121,8 @@ void tenlog_status_update(bool isTJC)
     ln12 = card.flag.sdprinting;
     if(TLPrintingStatus == 2)
         ln12 = TLPrintingStatus;
+    if(file_uploading)
+        ln12 = 0;
 
     ln13 = card.percentDone();
     if(ln12 == 0)
@@ -2148,9 +2151,10 @@ void tenlog_status_update(bool isTJC)
     int8_t ln17 = 0;
     #if ENABLED(SDSUPPORT)
     ln17 = card.isFileOpen();
-    if(ln17 == 0 && TLPrintingStatus == 2){
+    if(ln17 == 0 && TLPrintingStatus == 2)
         ln17 = 1;
-    }
+    if(file_uploading)
+        ln17 = 0;
     #endif
 
 	#if HAS_HOTEND
@@ -2236,6 +2240,7 @@ void tenlog_status_update(bool isTJC)
         wifi_printer_status[32] = tl_print_file_id;
 
         wifi_printer_status[33] =  (uint16_t)ln11 / 0x100; //19 & 33 = feedrate per
+        wifi_printer_status[34] =  sd_OK; //SD OK
         
         WIFI_TX_Handler(0x07);
 
@@ -2245,7 +2250,7 @@ void tenlog_status_update(bool isTJC)
             WIFI_TX_Handler(0x08);
             #endif
             wifi_resent = true;
-            tlInitSetting();
+            tlInitSetting(true);
         }
 
         bool SettingsSent = true;

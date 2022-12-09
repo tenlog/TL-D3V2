@@ -134,7 +134,7 @@ bool MTLSERIAL_available();
 char MTLSERIAL_read();
 
 void initTLScreen();
-void tlInitSetting();
+void tlInitSetting(bool only_wifi);
 void tlResetEEPROM();
 
 void TLFilamentRunout();
@@ -221,5 +221,6 @@ extern float print_from_z_target;
 #endif
 
 extern uint32_t wifi_update_interval;
+extern uint8_t sd_OK;
 
 #endif  //TENLOG_TOUCH_LCD
