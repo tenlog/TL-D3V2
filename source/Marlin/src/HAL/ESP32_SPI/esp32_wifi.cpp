@@ -264,7 +264,9 @@ void SPI_RX_Handler(){
         for(uint8_t i = 0; i<name_length; i++){
             fname[i] = ret[i+1];
         }
-        
+        card.closefile();
+        card.removeFile(fname);
+
         card.openFileWrite(fname);
         if (!card.isFileOpen()) {
             file_writing = false;
@@ -290,12 +292,14 @@ void SPI_RX_Handler(){
     }else if(control_code == 0x0B){
         if(file_writing){
             card.closefile();
+            sprintf_P(cmd, "Writing Done. %d", file_uploading);
+            TLDEBUG_PRINT(cmd);
+            card.closefile();
+            card.tl_ls(true);
         }
         file_writing = false;
         //wifi_update_interval = 500;
         file_uploading = false;
-        //sprintf_P(cmd, "Writing Done. %d", file_uploading);
-        //TLDEBUG_PRINT(cmd);
     }
 }
 
