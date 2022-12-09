@@ -148,64 +148,17 @@
           <Name>UL2CM3(-S0 -C0 -P0 -FD1FFF8000 -FC1000 -FN2 -FF0HC32F460_512K -FS00 -FL080000 -FF1HC32F460_otp -FS13000C00 -FL13FC -FP0($$Device:HC32F460PETB$FlashARM\HC32F460_512K.FLM) -FP1($$Device:HC32F460PETB$FlashARM\HC32F460_otp.FLM))</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint>
-        <Bp>
-          <Number>0</Number>
-          <Type>0</Type>
-          <LineNumber>215</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>102618</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\source\Marlin\src\sd\cardreader.cpp</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\firmware\../source/Marlin/src/sd/cardreader.cpp\215</Expression>
-        </Bp>
-      </Breakpoint>
+      <Breakpoint/>
       <WatchWindow1>
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>spi_rx,0x0A</ItemText>
+          <ItemText>spi_rx1[0]</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>spi_tx</ItemText>
-        </Ww>
-        <Ww>
-          <count>2</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>spi_rx[0],0x10</ItemText>
-        </Ww>
-        <Ww>
-          <count>3</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>spi_rx[1]</ItemText>
-        </Ww>
-        <Ww>
-          <count>4</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>spi_tx[0]</ItemText>
-        </Ww>
-        <Ww>
-          <count>5</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>spi_rx1[0]</ItemText>
-        </Ww>
-        <Ww>
-          <count>6</count>
-          <WinNumber>1</WinNumber>
           <ItemText>spi_rx1[100]</ItemText>
-        </Ww>
-        <Ww>
-          <count>7</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>\\firmware\../source/Marlin/src/HAL/ESP32_SPI/esp32_wifi.cpp\spi_rx[191]</ItemText>
         </Ww>
       </WatchWindow1>
       <MemoryWindow1>

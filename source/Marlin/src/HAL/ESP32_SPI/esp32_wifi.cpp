@@ -270,12 +270,12 @@ void SPI_RX_Handler(){
         card.openFileWrite(fname);
         if (!card.isFileOpen()) {
             file_writing = false;
-            //sprintf_P(cmd, "Failed to open %s to write. length:%d", fname, name_length);
+            sprintf_P(cmd, "Failed to open %s to write. length:%d", fname, name_length);
         }else{
             file_writing = true;
-            //sprintf_P(cmd, "Seccess to open %s to write. length:%d", fname, name_length);
+            sprintf_P(cmd, "Seccess to open %s to write. length:%d", fname, name_length);
         }
-        //TLDEBUG_PRINT(cmd);
+        TLDEBUG_PRINT(cmd);
     }else if(control_code == 0x0A){
         #define WIFI_FILE_DATA_LENGTH WIFI_MSG_LENGTH-2
         if(file_writing){
@@ -287,15 +287,15 @@ void SPI_RX_Handler(){
             }
             card.write(file_data, file_buffer_size);
             //sprintf_P(cmd, "Writing %d bytes.", file_buffer_size);
-            //TLDEBUG_PRINT(cmd);
+            //TLDEBUG_PRINTLN(cmd);
         }
     }else if(control_code == 0x0B){
         if(file_writing){
             card.closefile();
             sprintf_P(cmd, "Writing Done. %d", file_uploading);
             TLDEBUG_PRINT(cmd);
-            card.closefile();
-            card.tl_ls(true);
+            //card.closefile();
+            //card.tl_ls(true);
         }
         file_writing = false;
         //wifi_update_interval = 500;
