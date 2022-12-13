@@ -123,7 +123,7 @@ bool PrintFromZHeightFound = true;
 float print_from_z_target = 0.0;
 #endif
 
-uint32_t wifi_update_interval = 500;
+uint32_t wifi_update_interval = 400;
 
 ///////////////// common functions
 
@@ -2979,7 +2979,9 @@ void tenlog_screen_update()
 void tenlog_wifi_update()
 {   
     if(file_uploading){
+        wifi_upload_write_data();
         WIFI_TX_Handler(0x0C);
+        delay(1);
         return;
     }
     static unsigned long lWLastUpdateTime;

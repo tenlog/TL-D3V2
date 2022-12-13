@@ -55,6 +55,12 @@ uint8_t spi_rx[BUFFER_SIZE]="";
 bool file_uploading = false;
 bool file_writing = false;
 
+uint8_t upload_file_data1[WIFI_FILE_DATA_LENGTH]={0};
+uint8_t upload_file_data2[WIFI_FILE_DATA_LENGTH]={0};
+uint8_t upload_switch_flag = 0;
+uint32_t received_file_block_id = 0;
+uint32_t resend_file_block_id = 0;
+
 /*
 void WIFI_InitDMA(void)
 {
@@ -205,6 +211,30 @@ uint8_t get_control_code(){
 	return 0;
 }
 
+void test_write_file(){
+    card.openFileWrite("test.gco");
+    if (!card.isFileOpen()) {
+        TLDEBUG_PRINTLN("Failed to open test.gco to write.");
+        return;
+    }
+    __attribute__((aligned(sizeof(size_t)))) uint8_t buf[512];
+
+    uint16_t c;
+    for (c = 0; c < COUNT(buf); c++)
+        buf[c] = 'A' + (c % ('Z' - 'A'));
+
+    c = 1024 * 4;
+    while (c--) {
+        TERN_(USE_WATCHDOG, watchdog_refresh());
+        card.write(buf, COUNT(buf));
+    }
+    TLDEBUG_PRINTLN(" done");
+    card.closefile();
+}
+
+uint32_t blockCount = 0;
+uint32_t lostCount = 0;
+uint32_t CRCerrorCount = 0;
 void SPI_RX_Handler(){
     char cmd[64];
 	HAL_watchdog_refresh();
@@ -216,6 +246,11 @@ void SPI_RX_Handler(){
         for(uint16_t i=0; i<WIFI_MSG_LENGTH; i++){
             ret[i] = spi_rx[i+3];
         }
+    }
+
+    if(file_writing){
+        upload_switch_flag++;
+        if(upload_switch_flag > 2) upload_switch_flag -= 2;
     }
 
     if(control_code== 0x06){
@@ -256,50 +291,120 @@ void SPI_RX_Handler(){
             sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tVersion.txt=\"WIFICAM V%d.%d.%d\""), wifi_version[0],wifi_version[1],wifi_version[2]);
         TLSTJC_println(wifi_tjc_cmd);
     }else if(control_code == 0x09){
-        file_uploading = true;
         if (!card.isMounted()) card.mount();
+        file_uploading = true;
+        received_file_block_id = 0;
+        resend_file_block_id = 0;
+
         char fname[27] = "";
         NULLZERO(fname);
         uint8_t name_length = ret[0];
         for(uint8_t i = 0; i<name_length; i++){
             fname[i] = ret[i+1];
         }
-        card.closefile();
-        card.removeFile(fname);
+        
+        card.removeFile(fname); //if exist delete it 
 
         card.openFileWrite(fname);
         if (!card.isFileOpen()) {
             file_writing = false;
-            sprintf_P(cmd, "Failed to open %s to write. length:%d", fname, name_length);
+            sprintf_P(cmd, "Failed to open %s to write. ", fname);
         }else{
             file_writing = true;
-            sprintf_P(cmd, "Seccess to open %s to write. length:%d", fname, name_length);
+            sprintf_P(cmd, "Seccess to open %s to write. ", fname);
+            blockCount = 0;
+            lostCount = 0;
+            CRCerrorCount = 0;
         }
-        TLDEBUG_PRINT(cmd);
-    }else if(control_code == 0x0A){
-        #define WIFI_FILE_DATA_LENGTH WIFI_MSG_LENGTH-2
+        TLDEBUG_PRINTLN(cmd);
+        upload_switch_flag = 0;
+        ZERO(upload_file_data1);
+        ZERO(upload_file_data2);
+    }else if(control_code == 0x0A){        
         if(file_writing){
-            uint8_t file_data[WIFI_FILE_DATA_LENGTH]={0};
-            ZERO(file_data);
-            uint16_t file_buffer_size = ret[0] * 0x100 + ret[1];
-            for(uint16_t i=0; i<file_buffer_size; i++){
-                file_data[i] = ret[i+2];
+            blockCount++;
+            static uint32_t old_block_id;
+            received_file_block_id = ret[0] * 0x10000 + ret[1] * 0x100 + ret[2];
+
+            //Check lost data..
+            if(received_file_block_id > 3 && received_file_block_id - old_block_id != 1){
+                lostCount++;
+                resend_file_block_id = old_block_id + 1; //requir resend.
+            }else{
+                resend_file_block_id = 0;
             }
-            card.write(file_data, file_buffer_size);
-            //sprintf_P(cmd, "Writing %d bytes.", file_buffer_size);
-            //TLDEBUG_PRINTLN(cmd);
+    
+            if(resend_file_block_id == 0){
+                uint8_t received_block[WIFI_FILE_DATA_LENGTH];            
+                for(uint16_t i=0; i<WIFI_FILE_DATA_LENGTH; i++){
+                    received_block[i] = ret[i+4];
+                }
+                if(upload_switch_flag == 1) memcpy(upload_file_data1, received_block, WIFI_FILE_DATA_LENGTH);
+                else if(upload_switch_flag == 2) memcpy(upload_file_data2, received_block, WIFI_FILE_DATA_LENGTH);
+            }
+            old_block_id = received_file_block_id;
         }
     }else if(control_code == 0x0B){
         if(file_writing){
+            sprintf_P(cmd, "Blocks Received: %d", blockCount, lostCount);
+            TLECHO_PRINTLN(cmd);
+            uint32_t delay_time = blockCount / 10;
+            if(delay_time < 50) delay_time = 50;
+            if(delay_time > 1000) delay_time = 1000;
+            uint32_t wait_start = millis();
+            
+            while (millis()-wait_start < delay_time)
+            {
+                watchdog_refresh();
+            }
+            
             card.closefile();
-            sprintf_P(cmd, "Writing Done. %d", file_uploading);
-            TLDEBUG_PRINT(cmd);
-            //card.closefile();
-            //card.tl_ls(true);
+            delay(50);
+            card.release();
+            delay(50);
+            card.tl_ls(true);
+            delay(50);
+            received_file_block_id = 0;
+            resend_file_block_id = 0;
+            lostCount = 0;
+            CRCerrorCount = 0;
         }
         file_writing = false;
-        //wifi_update_interval = 500;
+        //wifi_update_interval = 400;
         file_uploading = false;
+    }
+}
+
+uint16_t check_upload_block_size(uint8_t switch_flag){
+    uint16_t blockSize = WIFI_FILE_DATA_LENGTH;
+    if(switch_flag == 1){
+        for(uint16_t i=WIFI_FILE_DATA_LENGTH-1; i>=0; i--){
+            if(upload_file_data1[i] != 0x00){
+                blockSize = i + 1;
+                return blockSize;
+            }
+        }
+    }else if(switch_flag == 2){
+        for(uint16_t i=WIFI_FILE_DATA_LENGTH-1; i>=0; i--){
+            if(upload_file_data2[i] != 0x00){
+                blockSize = i + 1;
+                return blockSize;
+            }
+        }
+    }else{
+        return WIFI_FILE_DATA_LENGTH;
+    }
+    return WIFI_FILE_DATA_LENGTH;
+}
+
+void wifi_upload_write_data(){    
+    uint16_t blockSize = check_upload_block_size(upload_switch_flag);
+    if(upload_switch_flag == 1 && upload_file_data1[0] != 0x00){
+        card.write(upload_file_data1, blockSize);
+        ZERO(upload_file_data1);
+    }else if(upload_switch_flag == 2  && upload_file_data2[0] != 0x00){
+        card.write(upload_file_data2, blockSize);
+        ZERO(upload_file_data2);
     }
 }
 
@@ -394,6 +499,14 @@ void WIFI_TX_Handler(int8_t control_code){
             }
         }
         break;
+        case 0x0C:  //feed back upload file 3,4,5
+        {
+            spi_tx[3] = resend_file_block_id / 0x10000;
+            spi_tx[4] = resend_file_block_id / 0x100;
+            spi_tx[5] = resend_file_block_id % 0x100;
+            resend_file_block_id = 0;
+        }
+        break;        
     }
 
     for(uint16_t i=0; i<BUFFER_SIZE-1; i++){
