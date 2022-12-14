@@ -907,29 +907,30 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
             TLSTJC_println("reload.vaFromPageID.val=6");
             sprintf_P(cmd, PSTR("reload.sT1T2.txt=\"%d\""), active_extruder + 1);
             TLSTJC_println(cmd);
-						#ifndef ELECTROMAGNETIC_VALUE
+			#ifndef ELECTROMAGNETIC_VALUE
             sprintf_P(cmd, PSTR("reload.vaTargetTemp0.val=%d"), int(thermalManager.degTargetHotend(0) + 0.5f));
             TLSTJC_println(cmd);
             sprintf_P(cmd, PSTR("reload.vaTargetTemp1.val=%d"), int(thermalManager.degTargetHotend(1) + 0.5f));
             TLSTJC_println(cmd);
             sprintf_P(cmd, PSTR("reload.vaTargetBed.val=%d"), int(thermalManager.degTargetBed() + 0.5f));
             TLSTJC_println(cmd);
-						#endif //!ELECTROMAGNETIC_VALUE
-            sprintf_P(cmd, PSTR("reload.vaMode.val=%d"), dual_x_carriage_mode);
+			#endif //!ELECTROMAGNETIC_VALUE
+            #if ENABLED(DUAL_X_CARRIAGE)
+            sprintf_P(cmd, PSTR("reload.vaMode.val=%d"), dual_x_carriage_mode);            
             TLSTJC_println(cmd);
-            
             if (duplicate_extruder_x_offset != DEFAULT_DUPLICATION_X_OFFSET) {
                 sprintf_P(cmd, PSTR("reload.vaMode2Offset.val=%d"), duplicate_extruder_x_offset);
                 TLSTJC_println(cmd);
             } else{
                 TLSTJC_println("reload.vaMode2Offset.val=-1");
             }
+            #endif //DUAL_X_CARRIAGE
 
             if(FilaRunout){
-								#if HAS_FAN
+				#if HAS_FAN
                 thermalManager.setTargetHotend(0,0);
                 thermalManager.setTargetHotend(0,1);
-								#endif
+				#endif
             }            
 
             queue.inject("G27");
@@ -948,11 +949,13 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
         sprintf_P(cmd, PSTR("M1032 T%i H%i I%i"), lT, lH, lI);
         //TLDEBUG_PRINTLN(cmd);
         
+        #if ENABLED(DUAL_X_CARRIAGE)
         if(dual_x_carriage_mode == DXC_DUPLICATION_MODE || DXC_MIRRORED_MODE == 3){
             EXECUTE_GCODE("G28 X");
             delay(100);
             my_sleep(2.5);
         }
+        #endif
 
         if(lT == 0){
             if(lI > 0){
@@ -1979,6 +1982,7 @@ void tenlog_screen_update_dwn()
     static int siCM;
     int iCM;
 
+    #if ENABLED(DUAL_X_CARRIAGE)
     if (dual_x_carriage_mode == 2)
         iCM = 3;
     else if (dual_x_carriage_mode == 3)
@@ -2003,6 +2007,7 @@ void tenlog_screen_update_dwn()
     DWN_Data(0x8801, iMode, 2);
     DWN_Data(0x8804, (dual_x_carriage_mode - 1), 2);
     DWN_DELAY;
+    #endif
 
     int iAN = active_extruder + tl_languageID * 2;
     DWN_Data(0x8802, iAN, 2); // is for UI V1.3.6
@@ -2132,8 +2137,13 @@ void tenlog_status_update(bool isTJC)
     }
     #endif
 
+    #if ENABLED(DUAL_X_CARRIAGE)
     const int8_t ln14 = active_extruder;
     const int8_t ln15 = dual_x_carriage_mode;
+    #else
+    const int8_t ln14 = 0;
+    const int8_t ln15 = 0;
+    #endif
 
     char cTime[10];
     NULLZERO(cTime);
@@ -2554,13 +2564,13 @@ void process_command_gcode(long _tl_command[]) {
                             lX = 32;
                             lY = Y_MAX_POS - 53;
                         }else if(lS == 4){
-                            lX = X2_MAX_POS - 81;
+                            lX = X_BED_SIZE - 28;
                             lY = Y_MAX_POS - 53;
                         }else if(lS == 2){
                             lX = 32;
                             lY = 25;
                         }else if(lS == 3){
-                            lX = X2_MAX_POS - 81;
+                            lX = X_BED_SIZE - 28;
                             lY = 25;
                         }
                         EXECUTE_GCODE("G1 F9000");
@@ -2646,11 +2656,11 @@ void process_command_gcode(long _tl_command[]) {
                         }
                     }
                     #if ENABLED(SDSUPPORT)
-                    if(strlen(cmd)){
+                    if(strlen(cmd)){                        
                         TLPrintingStatus = 1;
                         settings.plr_fn_save(lF-1);
-                        EXECUTE_GCODE(cmd);
                         TLDEBUG_PRINTLN(cmd);
+                        EXECUTE_GCODE(cmd);
                     }
                     #endif
                 }else if(lM == 19){
@@ -3291,10 +3301,16 @@ void plr_outage() {
         }
         if(IS_SD_PRINTING()){
             uint32_t sdPos = card.getIndex();
+            #if ENABLED(DUAL_X_CARRIAGE)
+            uint8_t _dual_x_carriage_mode = dual_x_carriage_mode;
             float _duplicate_extruder_x_offset = duplicate_extruder_x_offset;
             if(_duplicate_extruder_x_offset == DEFAULT_DUPLICATION_X_OFFSET) _duplicate_extruder_x_offset = 0.0;
+            #else
+            float _duplicate_extruder_x_offset = 0.0;
+            uint8_t _dual_x_carriage_mode = 0;
+            #endif
             #ifndef ELECTROMAGNETIC_VALUE
-            settings.plr_pre_save(sdPos, thermalManager.degTargetBed(), thermalManager.degTargetHotend(0), thermalManager.degTargetHotend(1), dual_x_carriage_mode, _duplicate_extruder_x_offset, uint16_t(feedrate_mm_s * 60.0f));
+            settings.plr_pre_save(sdPos, thermalManager.degTargetBed(), thermalManager.degTargetHotend(0), thermalManager.degTargetHotend(1), _dual_x_carriage_mode, _duplicate_extruder_x_offset, uint16_t(feedrate_mm_s * 60.0f));
             #endif
         }
     }

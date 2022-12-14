@@ -341,8 +341,8 @@ void SPI_RX_Handler(){
                 }
                 if(upload_switch_flag == 1) memcpy(upload_file_data1, received_block, WIFI_FILE_DATA_LENGTH);
                 else if(upload_switch_flag == 2) memcpy(upload_file_data2, received_block, WIFI_FILE_DATA_LENGTH);
+                old_block_id = received_file_block_id;
             }
-            old_block_id = received_file_block_id;
         }
     }else if(control_code == 0x0B){
         if(file_writing){
