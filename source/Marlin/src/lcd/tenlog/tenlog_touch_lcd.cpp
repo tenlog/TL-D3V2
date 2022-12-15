@@ -1762,7 +1762,7 @@ void DWN_MessageHandler(const bool ISOK){
                     card.closefile();
                 }
 
-                sprintf_P(cmd, PSTR("M32 %s"), file_name_list[iPrintID]);
+                sprintf_P(cmd, PSTR("M32 !%s"), file_name_list[iPrintID]);
                 TLPrintingStatus = 1;
                 settings.plr_fn_save(iPrintID);
                 EXECUTE_GCODE(cmd);
@@ -2641,9 +2641,16 @@ void process_command_gcode(long _tl_command[]) {
                 }else if(lM == 32){
                     //M32
                     long lF = GCodelng('F', iFrom, _tl_command);
+                    uint8_t cmdLength = 0;
+                    for(uint8_t i=0; i<256; i++){
+                        if(_tl_command[i] == 0x00){
+                            cmdLength = i;
+                            break;
+                        }
+                    }
                     NULLZERO(cmd);
-                    if(lF > 0){
-                        sprintf_P(cmd, PSTR("M%d %s"), lM, file_name_list[lF-1]);
+                    if(lF > 0 && cmdLength < 8){
+                        sprintf_P(cmd, PSTR("M%d !%s"), lM, file_name_list[lF-1]);
                         tl_print_file_id=lF;
                     }else{
                         char fileNameP[13];
@@ -2652,7 +2659,7 @@ void process_command_gcode(long _tl_command[]) {
                             fileNameP[i] = _tl_command[iFrom + 4 + i];
                         }
                         if(strlen(fileNameP) > 4){
-                            sprintf_P(cmd, PSTR("M%d %s"), lM, fileNameP);
+                            sprintf_P(cmd, PSTR("M%d !%s"), lM, fileNameP);
                         }
                     }
                     #if ENABLED(SDSUPPORT)

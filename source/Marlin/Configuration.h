@@ -53,7 +53,11 @@
 *           Bug fixed: chamber fan not run.
 20221124    More settings detail in UI, 
             PWM speed for chamber fan, can be setted in ui.
-*Version    032
+Version     032
+20221215    sdio read sd card in high speed mode.
+            bug fixed: can not print file name start with "F"+number 
+            wifi upload file OK, mainboard in master mode, NO dma, need wifi version 1.2.3
+Version     033
 */
 //TL Medels and version
 //#define TENLOG_H2

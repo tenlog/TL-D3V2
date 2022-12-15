@@ -326,6 +326,7 @@ void CardReader::tl_ls(bool wifi) {
   if(wifi)mount();
   char cmd[96];
   int LastID = 0;
+  TERN_(ESP32_WIFI, ZERO(wifi_file_name));
   if (flag.mounted) {
     
     if(!wifi){
@@ -377,27 +378,49 @@ void CardReader::tl_ls(bool wifi) {
     dir_t p;
 
     int iFileID = 0;    
+    wifi_file_name[0]=fileNum;
+
+    uint16_t wifi_file_name_p = 0;
+
     while (root.readDir(&p, longFilename) > 0) {
       if (is_dir_or_gcode(p, true)) {
-        TERN_(ESP32_WIFI, ZERO(wifi_file_name));
         createFilename(filename, p);
-        iFileID++;
+        iFileID++;      //start form 1
 
-        if(wifi){          
+        if(wifi){
           #if ENABLED(HAS_WIFI)
-          wifi_file_name[0]=fileNum;
-          wifi_file_name[1]=iFileID-1;
-          for(uint8_t i=0; i<13; i++){
-            wifi_file_name[2+i]=filename[i];
+          wifi_file_name_p++;
+          wifi_file_name[wifi_file_name_p]=iFileID; //start form 1
+
+          uint8_t i=0;
+          while (filename[i] != 0x00)
+          {
+            wifi_file_name_p++;
+            wifi_file_name[wifi_file_name_p]=filename[i];
+            i++;
           }
-          for(uint8_t i=0; i<LONG_FILENAME_LENGTH; i++){
-            if(longFilename[0] == 0x00)
-              wifi_file_name[15+i]=filename[i];
-            else
-              wifi_file_name[15+i]=longFilename[i];
+          wifi_file_name_p++;
+          wifi_file_name[wifi_file_name_p]='/';
+
+          if(longFilename[0] == 0x00){
+            i = 0;
+            while (filename[i] != 0x00)
+            {
+              wifi_file_name_p++;
+              wifi_file_name[wifi_file_name_p]=filename[i];
+              i++;
+            }
+          }else{
+            i = 0;
+            while (longFilename[i] != 0x00)
+            {
+              wifi_file_name_p++;
+              wifi_file_name[wifi_file_name_p]=longFilename[i];
+              i++;
+            }
           }
-          delay(10);
-          WIFI_TX_Handler(0x0A);
+          wifi_file_name_p++;
+          wifi_file_name[wifi_file_name_p]='|';
           #endif
         }else{
           if (iFileID <= fileNum - tl_print_page_id * 6 && iFileID >= fileNum - (tl_print_page_id + 1) * 6){
@@ -454,6 +477,7 @@ void CardReader::tl_ls(bool wifi) {
       }
       delay(5);
     }
+
   }else{  //DWIN monitor
     if(tl_TouchScreenType == 0){
         DWN_Data(0x8811, 1, 2);
@@ -462,6 +486,13 @@ void CardReader::tl_ls(bool wifi) {
         delay(5);
     }
   }
+  
+  #if ENABLED(HAS_WIFI)
+    if(wifi){
+      delay(10);
+      WIFI_TX_Handler(0x0A);
+    }
+  #endif
 
   if(!wifi){
     //Clear the empty boxlist

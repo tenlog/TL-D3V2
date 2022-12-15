@@ -282,10 +282,10 @@ void SPI_RX_Handler(){
         }
         process_command_gcode(gcode_wifi);
     }else if(control_code == 0x08){     //wifi version
-    	for(uint8_t i=0; i<3; i++){
+    	for(uint8_t i=0; i<4; i++){
             wifi_version[i] = ret[i];
         }
-        if(wifi_version[1] % 2 == 0)
+        if(wifi_version[3] % 2 == 0)
             sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tVersion.txt=\"WIFI V%d.%d.%d\""), wifi_version[0],wifi_version[1],wifi_version[2]);
         else
             sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tVersion.txt=\"WIFICAM V%d.%d.%d\""), wifi_version[0],wifi_version[1],wifi_version[2]);
