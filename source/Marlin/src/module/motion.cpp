@@ -74,6 +74,10 @@
   #include "../lcd/tenlog/tenlog_touch_lcd.h"
 #endif
 
+#if ENABLED(HWPWM)
+  #include "../HAL/PWM/pwm.h"
+#endif
+
 // Relative Mode. Enable with G91, disable with G90.
 bool relative_mode; // = false;
 
@@ -996,7 +1000,11 @@ FORCE_INLINE void segment_idle(millis_t &next_idle_ms) {
     }
     #endif
 
-    planner.buffer_line(destination, scaled_fr_mm_s, active_extruder);
+    #if ENABLED(HWPWM)
+      if(destination.s >= 0.0)
+        set_pwm_f0((uint8_t)destination.s);
+    #endif
+    planner.buffer_line(destination, scaled_fr_mm_s, active_extruder);    
     return false; // caller will update current_position
   }
 

@@ -69,6 +69,7 @@ Version     033
 
 //#define TL_DEBUG
 
+#define DUAL_X_CARRIAGE
 //TL hardware.
 #define TENLOG_TOUCH_LCD
 //#define ESP8266_WIFI

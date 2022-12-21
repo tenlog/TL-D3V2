@@ -96,7 +96,7 @@
 //
 #define X_ENABLE_PIN       PB2
 #define X_STEP_PIN         PC7
-#define X_DIR_PIN          PD1//PC6 OK
+#define X_DIR_PIN          PC6
 
 #define X2_ENABLE_PIN      X_ENABLE_PIN
 #define X2_STEP_PIN        PA9   //PA9

@@ -165,6 +165,7 @@ void GcodeSuite::get_destination_from_command() {
       destination[i] = current_position[i];
   }
 
+
   // Get new E position, whether absolute or relative
   if ( (seen.e = parser.seenval('E')) ) {
     const float v = parser.value_axis_units(E_AXIS);
@@ -172,6 +173,15 @@ void GcodeSuite::get_destination_from_command() {
   }
   else
     destination.e = current_position.e;
+
+  #if ENABLED(HWPWM)
+    if (parser.seen('S')){
+      destination.s = parser.value_float();
+    }else{
+      destination.s = -1.0;
+    }
+  #endif
+
 
   #if ENABLED(POWER_LOSS_RECOVERY) && !PIN_EXISTS(POWER_LOSS)
     // Only update power loss recovery on moves with E

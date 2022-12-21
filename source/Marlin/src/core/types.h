@@ -407,9 +407,9 @@ struct XYZval {
 template<typename T>
 struct XYZEval {
   union {
-    struct{ T x, y, z, e; };
+    struct{ T x, y, z, e, s; };   //s by zyf
     struct{ T a, b, c; };
-    T pos[4];
+    T pos[5];         // by zyf old is 4
   };
   FI void reset()                                             { x = y = z = e = 0; }
   FI T magnitude()                                      const { return (T)sqrtf(x*x + y*y + z*z + e*e); }
