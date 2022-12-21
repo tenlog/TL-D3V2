@@ -71,6 +71,11 @@
   #include "../sd/cardreader.h"
   #include "../lcd/tenlog/tenlog_touch_lcd.h"
 #endif
+
+#if ENABLED(HWPWM)
+#include "../HAL/PWM/pwm.h"
+#endif
+
 #include "../gcode/parser.h"
 
 #include "../MarlinCore.h"
@@ -1279,7 +1284,11 @@ void Planner::recalculate() {
     #define FAN_SET(F) do{ kickstart_fan(fan_speed, ms, F); _FAN_SET(F); }while(0)
 
     const millis_t ms = millis();
+    #if ENABLED(HWPWM)
+    TERN_(HAS_FAN0, set_pwm_f0(CALC_FAN_SPEED(0)));    //E0 Fan //only E0 has hardware pwm..
+    #else
     TERN_(HAS_FAN0, FAN_SET(0));    //E0 Fan
+    #endif
     TERN_(HAS_FAN1, FAN_SET(1));    //E1 Fan
     TERN_(HAS_FAN2, FAN_SET(2));    //E0 Auto Fan
     TERN_(HAS_FAN3, FAN_SET(3));    //E1 Auto Fan

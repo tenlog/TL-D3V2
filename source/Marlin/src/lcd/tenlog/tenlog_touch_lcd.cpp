@@ -32,6 +32,10 @@
 #include "hc32f46x_efm.h"
 #include "../../MarlinCore.h"
 
+#if ENABLED(HWPWM)
+  #include "../../HAL/PWM/pwm.h"
+#endif
+
 #if HAS_FILAMENT_SENSOR
   #include "../../feature/runout.h"
 #endif
@@ -2625,11 +2629,12 @@ void process_command_gcode(long _tl_command[]) {
                     if(lR == 1){
                         fR = 2.55f;
                     }
+                    uint16_t lS = 0;
                     if(fS > -999.0) {
-                        uint8_t lS = fS * fR;
+                        lS = (uint16_t)((float)(fS * fR) + 0.5);
                         sprintf_P(sS, PSTR("S%d "), lS);                
                     }
-                    sprintf_P(cmd, PSTR("M%d %s"), lM, sS);                
+                    sprintf_P(cmd, PSTR("M%d %s"), lM, sS);
                     EXECUTE_GCODE(cmd);
                 }else if(lM == 107){
                     //M107

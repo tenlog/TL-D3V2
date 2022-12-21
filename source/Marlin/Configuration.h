@@ -58,6 +58,7 @@ Version     032
             bug fixed: can not print file name start with "F"+number 
             wifi upload file OK, mainboard in master mode, NO dma, need wifi version 1.2.3
 Version     033
+20221221    HW PWM Only for Fan0 left head side fan.OK.
 */
 //TL Medels and version
 //#define TENLOG_H2
@@ -66,11 +67,12 @@ Version     033
 //#define TENLOG_D5
 //#define TENLOG_D6
 
-#define TL_DEBUG
+//#define TL_DEBUG
 
 //TL hardware.
 #define TENLOG_TOUCH_LCD
 //#define ESP8266_WIFI
+#define HWPWM
 #define ESP32_WIFI
 
 //TL Functions
@@ -127,6 +129,8 @@ Version     033
 #endif
 
 #ifdef TENLOG_M3
+#define INVERT_X_DIR false
+#elif !defined(DUAL_X_CARRIAGE)
 #define INVERT_X_DIR false
 #else
 #define INVERT_X_DIR true

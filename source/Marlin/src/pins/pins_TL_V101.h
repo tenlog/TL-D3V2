@@ -68,7 +68,6 @@
   #define MARLIN_EEPROM_SIZE               0x800  // 2Kb (24C16)
 #endif
 
-
 //
 // Limit Switches
 //
@@ -97,11 +96,11 @@
 //
 #define X_ENABLE_PIN       PB2
 #define X_STEP_PIN         PC7
-#define X_DIR_PIN          PC6
+#define X_DIR_PIN          PD1//PC6 OK
 
-#define X2_ENABLE_PIN       X_ENABLE_PIN
-#define X2_STEP_PIN         PA9   //PA9
-#define X2_DIR_PIN          PA8   //PA8
+#define X2_ENABLE_PIN      X_ENABLE_PIN
+#define X2_STEP_PIN        PA9   //PA9
+#define X2_DIR_PIN         PA8   //PA8
 
 #define Y_ENABLE_PIN       X_ENABLE_PIN
 #define Y_STEP_PIN         PB15
@@ -141,7 +140,7 @@
   #define FAN2_PIN              -1 
   #define FAN3_PIN              -1   
 #else
-  #define FAN_PIN               PA1   // FAN  FC1
+  #define FAN_PIN               PD0   // FAN  FC1  PA1 OK 
   #define FAN1_PIN              PE8   //FC2
   #define FAN2_PIN              PA0   //FAN2 FZ1 PA0
   #define FAN3_PIN              PE7   //FZ2
@@ -172,7 +171,7 @@
   #define FAN_SOFT_PWM
 #endif
 
-#define REPRINT_PIN         PE11             //PA7
+#define REPRINT_PIN         PE11             
 #define POWEROFF_PIN        PB10
 #define BREAK_PIN           PA15
 

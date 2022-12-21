@@ -135,7 +135,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name>d</Name>
+          <Name></Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -152,25 +152,25 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>2634</LineNumber>
+          <LineNumber>26</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>87346</Address>
+          <Address>0</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\source\Marlin\src\lcd\tenlog\tenlog_touch_lcd.cpp</Filename>
+          <BreakIfRCount>0</BreakIfRCount>
+          <Filename>..\source\Marlin\src\HAL\PWM\pwm.cpp</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\\../source/Marlin/src/lcd/tenlog/tenlog_touch_lcd.cpp\2634</Expression>
+          <Expression></Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
           <LineNumber>49</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>112416</Address>
+          <Address>113780</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -1240,7 +1240,7 @@
 
   <Group>
     <GroupName>marlin_gcode</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -2884,7 +2884,7 @@
 
   <Group>
     <GroupName>marlin_lcd</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -3668,7 +3668,7 @@
 
   <Group>
     <GroupName>esp32_spi</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -3700,7 +3700,7 @@
 
   <Group>
     <GroupName>HC32</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -3797,6 +3797,30 @@
       <bDave2>0</bDave2>
       <PathWithFileName>..\source\compoment\adc\adc.h</PathWithFileName>
       <FilenameWithoutPath>adc.h</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>15</GroupNumber>
+      <FileNumber>286</FileNumber>
+      <FileType>8</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\source\Marlin\src\HAL\PWM\pwm.cpp</PathWithFileName>
+      <FilenameWithoutPath>pwm.cpp</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>15</GroupNumber>
+      <FileNumber>287</FileNumber>
+      <FileType>5</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\source\Marlin\src\HAL\PWM\pwm.h</PathWithFileName>
+      <FilenameWithoutPath>pwm.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

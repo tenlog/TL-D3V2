@@ -75,6 +75,10 @@
   #include "HAL/ESP32_SPI/esp32_wifi.h"
 #endif
 
+#if ENABLED(HWPWM)
+  #include "HAL/PWM/pwm.h"
+#endif
+
 #if HAS_TOUCH_BUTTONS
   #include "lcd/touch/touch_buttons.h"
 #endif
@@ -1586,6 +1590,10 @@ void setup() {
     print_from_z_target = 0.0;
   #endif
   
+  #if ENABLED(HWPWM)
+    pwm_init();
+  #endif
+
   #if ENABLED(HAS_WIFI)
     TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init Tenlog Wifi..."));
     WIFI_Init();
