@@ -58,7 +58,8 @@ Version     032
             bug fixed: can not print file name start with "F"+number 
             wifi upload file OK, mainboard in master mode, NO dma, need wifi version 1.2.3
 Version     033
-20221221    HW PWM Only for Fan0 left head side fan.OK.
+20221220    HW PWM Only for Fan0 left head side fan.OK.
+20221221    Add 'S' value in G0/G1 commands, for laser function.(do not add 'S' value to G0/G1 in normal 3D printing.)
 */
 //TL Medels and version
 //#define TENLOG_H2
