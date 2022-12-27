@@ -63,14 +63,21 @@ Version     033
 */
 //TL Medels and version
 //#define TENLOG_H2
-#define TENLOG_D3
+//#define TENLOG_D3
+//#define TENLOG_S3   //single head
+#define TENLOG_L4     //laser only, corexy
 //#define TENLOG_M3
 //#define TENLOG_D5
 //#define TENLOG_D6
 
 //#define TL_DEBUG
 
+#if (!ENABLED(TENLOG_L4) && !ENABLED(TENLOG_S3))
 #define DUAL_X_CARRIAGE
+#else
+#define SINGLE_HEAD
+#endif
+
 //TL hardware.
 #define TENLOG_TOUCH_LCD
 //#define ESP8266_WIFI
@@ -107,6 +114,16 @@ Version     033
   #define X_BED_SIZE 605
   #define Y_BED_SIZE 610
   #define Z_LENGTH   610
+#elif defined(TENLOG_L4)
+  #define TL_MODEL_STR_0 "L4"
+  #define X_BED_SIZE 410
+  #define Y_BED_SIZE 410
+  #define Z_LENGTH   100
+#elif defined(TENLOG_S3)
+  #define TL_MODEL_STR_0 "S3"
+  #define X_BED_SIZE 310
+  #define Y_BED_SIZE 310
+  #define Z_LENGTH   350
 #endif
 
 #ifdef ELECTROMAGNETIC_VALUE
@@ -133,10 +150,12 @@ Version     033
 #ifdef TENLOG_M3
 #define INVERT_X_DIR false
 #elif !defined(DUAL_X_CARRIAGE)
-#define INVERT_X_DIR false
+#define INVERT_X_DIR true
 #else
 #define INVERT_X_DIR true
 #endif
+
+#define INVERT_Y_DIR false
 
 // Homing speeds (mm/min)
 #define HOMING_FEEDRATE_MM_M {6000, 5000, 300}
@@ -819,7 +838,9 @@ Version     033
 
 // Enable one of the options below for CoreXY, CoreXZ, or CoreYZ kinematics,
 // either in the usual order or reversed
-//#define COREXY
+#ifdef TENLOG_L4
+#define COREXY
+#endif
 //#define COREXZ
 //#define COREYZ
 //#define COREYX
@@ -1344,7 +1365,6 @@ Version     033
 // @section machine
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-#define INVERT_Y_DIR false
 #define INVERT_Z_DIR true
 
 // @section extruder
@@ -1384,6 +1404,7 @@ Version     033
 
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
+//#define X_MIN_POS 0
 #define X_MIN_POS -50
 #define Y_MIN_POS 0
 #define Z_MIN_POS 0
