@@ -20,5 +20,5 @@
 #define IRQ_INDEX_INT_TIMA_CH1          (Int007_IRQn)
 
 void pwm_init();
-void set_pwm_f0(uint16_t pwm_value);
+void set_pwm_f0(uint16_t pwm_value, uint16_t max_value);
 #endif

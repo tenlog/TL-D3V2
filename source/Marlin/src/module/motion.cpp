@@ -1002,7 +1002,7 @@ FORCE_INLINE void segment_idle(millis_t &next_idle_ms) {
 
     #if ENABLED(HWPWM)
       if(destination.s >= 0.0)
-        set_pwm_f0((uint8_t)destination.s);
+        set_pwm_f0((uint8_t)destination.s, 255);
     #endif
     planner.buffer_line(destination, scaled_fr_mm_s, active_extruder);    
     return false; // caller will update current_position

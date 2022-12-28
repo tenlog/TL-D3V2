@@ -63,9 +63,9 @@ Version     033
 */
 //TL Medels and version
 //#define TENLOG_H2
-//#define TENLOG_D3
+#define TENLOG_D3
 //#define TENLOG_S3   //single head
-#define TENLOG_L4     //laser only, corexy
+//#define TENLOG_L4     //laser only, corexy
 //#define TENLOG_M3
 //#define TENLOG_D5
 //#define TENLOG_D6

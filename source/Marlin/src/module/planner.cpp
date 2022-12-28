@@ -1285,7 +1285,7 @@ void Planner::recalculate() {
 
     const millis_t ms = millis();
     #if ENABLED(HWPWM)
-    TERN_(HAS_FAN0, set_pwm_f0(CALC_FAN_SPEED(0)));    //E0 Fan //only E0 has hardware pwm..
+    TERN_(HAS_FAN0, set_pwm_f0(CALC_FAN_SPEED(0), 255));    //E0 Fan //only E0 has hardware pwm..
     #else
     TERN_(HAS_FAN0, FAN_SET(0));    //E0 Fan
     #endif
