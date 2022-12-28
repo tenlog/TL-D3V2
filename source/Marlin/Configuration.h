@@ -148,11 +148,9 @@ Version     033
 #endif
 
 #ifdef TENLOG_M3
-#define INVERT_X_DIR false
-#elif !defined(DUAL_X_CARRIAGE)
-#define INVERT_X_DIR true
+  #define INVERT_X_DIR false
 #else
-#define INVERT_X_DIR true
+  #define INVERT_X_DIR true
 #endif
 
 #define INVERT_Y_DIR false
