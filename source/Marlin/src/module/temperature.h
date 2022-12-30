@@ -545,8 +545,8 @@ class Temperature {
 
     #if HAS_FAN
 
-      static uint8_t common_fan_speed;
-      static uint8_t fan_speed[FAN_COUNT];
+      static uint16_t common_fan_speed;
+      static uint16_t fan_speed[FAN_COUNT];
       #define FANS_LOOP(I) LOOP_L_N(I, FAN_COUNT)
 
       static void set_fan_speed(const uint8_t fan, const uint16_t speed);

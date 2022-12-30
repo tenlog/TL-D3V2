@@ -280,7 +280,7 @@ void SPI_RX_Handler(){
     	for(uint16_t i=0; i<WIFI_MSG_LENGTH; i++){
             gcode_wifi[i] = ret[i];
         }
-        process_command_gcode(gcode_wifi);
+        process_command_gcode(gcode_wifi);        
     }else if(control_code == 0x08){     //wifi version
     	for(uint8_t i=0; i<4; i++){
             wifi_version[i] = ret[i];

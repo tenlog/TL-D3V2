@@ -43,7 +43,7 @@ void ControllerFan::setup() {
   init();
 }
 
-void ControllerFan::set_fan_speed(const uint8_t s) {
+void ControllerFan::set_fan_speed(const uint16_t s) {
   speed = s < (CONTROLLERFAN_SPEED_MIN) ? 0 : s; // Fan OFF below minimum
 }
 

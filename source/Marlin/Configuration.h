@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "033"
+#define TL_SUBVERSION "034"
 
 //update log 
 /*
@@ -65,7 +65,7 @@ Version     033
 //#define TENLOG_H2
 #define TENLOG_D3
 //#define TENLOG_S3   //single head
-//#define TENLOG_L4     //laser only, corexy
+//#define TENLOG_L4     //laser only
 //#define TENLOG_M3
 //#define TENLOG_D5
 //#define TENLOG_D6
@@ -837,7 +837,7 @@ Version     033
 // Enable one of the options below for CoreXY, CoreXZ, or CoreYZ kinematics,
 // either in the usual order or reversed
 #ifdef TENLOG_L4
-#define COREXY
+//#define COREXY
 #endif
 //#define COREXZ
 //#define COREYZ

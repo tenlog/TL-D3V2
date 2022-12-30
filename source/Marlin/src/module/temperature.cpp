@@ -280,8 +280,8 @@ const char str_t_thermal_runaway[] PROGMEM = STR_T_THERMAL_RUNAWAY,
 
 #if HAS_FAN
 
-  uint8_t Temperature::common_fan_speed = 0; // = { 0 }
-  uint8_t Temperature::fan_speed[FAN_COUNT]; // = { 0 }
+  uint16_t Temperature::common_fan_speed = 0; // = { 0 }
+  uint16_t Temperature::fan_speed[FAN_COUNT]; // = { 0 }
 
   #if ENABLED(EXTRA_FAN_SPEED)
 
