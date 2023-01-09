@@ -56,8 +56,8 @@ bool file_uploading = false;
 bool file_writing = false;
 
 uint8_t upload_file_data1[WIFI_FILE_DATA_LENGTH]={0};
-uint8_t upload_file_data2[WIFI_FILE_DATA_LENGTH]={0};
-uint8_t upload_switch_flag = 0;
+//uint8_t upload_file_data2[WIFI_FILE_DATA_LENGTH]={0};
+//uint8_t upload_switch_flag = 0;
 uint32_t received_file_block_id = 0;
 uint32_t resend_file_block_id = 0;
 
@@ -234,7 +234,7 @@ void test_write_file(){
 
 uint32_t blockCount = 0;
 uint32_t lostCount = 0;
-uint32_t CRCerrorCount = 0;
+//uint32_t CRCerrorCount = 0;
 void SPI_RX_Handler(){
     char cmd[64];
 	HAL_watchdog_refresh();
@@ -248,10 +248,12 @@ void SPI_RX_Handler(){
         }
     }
 
+    /*
     if(file_writing){
         upload_switch_flag++;
         if(upload_switch_flag > 2) upload_switch_flag -= 2;
     }
+    */
 
     if(control_code== 0x06){
         if(ret[0] == '1' || ret[0] == '2' || ret[0] == '3' || ret[0] == '4' || ret[0] == '5' || ret[0] == '6' || ret[0] == '7' || ret[0] == '8' || ret[0] == '9' || ret[0] == '0') {
@@ -314,40 +316,57 @@ void SPI_RX_Handler(){
             sprintf_P(cmd, "Seccess to open %s to write. ", fname);
             blockCount = 0;
             lostCount = 0;
-            CRCerrorCount = 0;
+            //CRCerrorCount = 0;
         }
         TLDEBUG_PRINTLN(cmd);
-        upload_switch_flag = 0;
+        //upload_switch_flag = 0;
         ZERO(upload_file_data1);
-        ZERO(upload_file_data2);
-    }else if(control_code == 0x0A){        
+        //ZERO(upload_file_data2);
+    }else if(control_code == 0x0A){
         if(file_writing){
             blockCount++;
             static uint32_t old_block_id;
             received_file_block_id = ret[0] * 0x10000 + ret[1] * 0x100 + ret[2];
 
             //Check lost data..
-            if(received_file_block_id > 3 && received_file_block_id - old_block_id != 1){
-                lostCount++;
+            if(received_file_block_id > 3 && received_file_block_id - old_block_id != 1 && resend_file_block_id == 0){
+                //lostCount++;
                 resend_file_block_id = old_block_id + 1; //requir resend.
-            }else{
+                upload_file_data1[0] = 0x00;
+                #ifdef TL_DEBUG
+                sprintf_P(cmd, "0 Received ID:%d, Lost ID:%d, old ID:%d, count:%d", received_file_block_id, resend_file_block_id, old_block_id, lostCount);
+                TLECHO_PRINTLN(cmd);
+                #endif
+            }else if(received_file_block_id == resend_file_block_id && resend_file_block_id > 0){
+                lostCount++;
+                #ifdef TL_DEBUG
+                sprintf_P(cmd, "1 Received ID:%d, Lost ID:%d, old ID:%d, count:%d", received_file_block_id, resend_file_block_id, old_block_id, lostCount);
+                TLECHO_PRINTLN(cmd);
+                #endif
+                resend_file_block_id = 0;
+            }else if(resend_file_block_id ==0){
+                //sprintf_P(cmd, "2 Received ID:%d, Lost ID:%d, old ID:%d, count:%d", received_file_block_id, resend_file_block_id, old_block_id, lostCount);
+                //TLECHO_PRINTLN(cmd);
                 resend_file_block_id = 0;
             }
     
             if(resend_file_block_id == 0){
-                uint8_t received_block[WIFI_FILE_DATA_LENGTH];            
+                uint8_t received_block[WIFI_FILE_DATA_LENGTH];
                 for(uint16_t i=0; i<WIFI_FILE_DATA_LENGTH; i++){
                     received_block[i] = ret[i+4];
                 }
-                if(upload_switch_flag == 1) memcpy(upload_file_data1, received_block, WIFI_FILE_DATA_LENGTH);
-                else if(upload_switch_flag == 2) memcpy(upload_file_data2, received_block, WIFI_FILE_DATA_LENGTH);
+                 memcpy(upload_file_data1, received_block, WIFI_FILE_DATA_LENGTH);
+                //if(upload_switch_flag == 1) memcpy(upload_file_data1, received_block, WIFI_FILE_DATA_LENGTH);
+                //else if(upload_switch_flag == 2) memcpy(upload_file_data2, received_block, WIFI_FILE_DATA_LENGTH);
                 old_block_id = received_file_block_id;
             }
         }
     }else if(control_code == 0x0B){
         if(file_writing){
-            sprintf_P(cmd, "Blocks Received: %d", blockCount, lostCount);
+            #ifdef TL_DEBUG
+            sprintf_P(cmd, "Blocks Received: %d, Lost:%d", blockCount, lostCount);
             TLECHO_PRINTLN(cmd);
+            #endif
             uint32_t delay_time = blockCount / 10;
             if(delay_time < 50) delay_time = 50;
             if(delay_time > 1000) delay_time = 1000;
@@ -367,7 +386,7 @@ void SPI_RX_Handler(){
             received_file_block_id = 0;
             resend_file_block_id = 0;
             lostCount = 0;
-            CRCerrorCount = 0;
+            //CRCerrorCount = 0;
         }
         file_writing = false;
         //wifi_update_interval = 400;
@@ -375,15 +394,16 @@ void SPI_RX_Handler(){
     }
 }
 
-uint16_t check_upload_block_size(uint8_t switch_flag){
+uint16_t check_upload_block_size(){
     uint16_t blockSize = WIFI_FILE_DATA_LENGTH;
-    if(switch_flag == 1){
+    //if(switch_flag == 1){
         for(uint16_t i=WIFI_FILE_DATA_LENGTH-1; i>=0; i--){
             if(upload_file_data1[i] != 0x00){
                 blockSize = i + 1;
                 return blockSize;
             }
         }
+    /*    
     }else if(switch_flag == 2){
         for(uint16_t i=WIFI_FILE_DATA_LENGTH-1; i>=0; i--){
             if(upload_file_data2[i] != 0x00){
@@ -394,17 +414,20 @@ uint16_t check_upload_block_size(uint8_t switch_flag){
     }else{
         return WIFI_FILE_DATA_LENGTH;
     }
+    */
     return WIFI_FILE_DATA_LENGTH;
 }
 
 void wifi_upload_write_data(){    
-    uint16_t blockSize = check_upload_block_size(upload_switch_flag);
-    if(upload_switch_flag == 1 && upload_file_data1[0] != 0x00){
+    if(upload_file_data1[0] != 0x00){
+        uint16_t blockSize = check_upload_block_size();
+        //if(upload_switch_flag == 1 && upload_file_data1[0] != 0x00){
         card.write(upload_file_data1, blockSize);
         ZERO(upload_file_data1);
-    }else if(upload_switch_flag == 2  && upload_file_data2[0] != 0x00){
-        card.write(upload_file_data2, blockSize);
-        ZERO(upload_file_data2);
+        //}else if(upload_switch_flag == 2  && upload_file_data2[0] != 0x00){
+        //    card.write(upload_file_data2, blockSize);
+        //    ZERO(upload_file_data2);
+        //}
     }
 }
 
@@ -504,7 +527,7 @@ void WIFI_TX_Handler(int8_t control_code){
             spi_tx[3] = resend_file_block_id / 0x10000;
             spi_tx[4] = resend_file_block_id / 0x100;
             spi_tx[5] = resend_file_block_id % 0x100;
-            resend_file_block_id = 0;
+            //resend_file_block_id = 0;
         }
         break;        
     }

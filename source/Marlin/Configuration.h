@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "034"
+#define TL_SUBVERSION "036"
 
 //update log 
 /*
@@ -60,15 +60,19 @@ Version     032
 Version     033
 20221220    HW PWM Only for Fan0 left head side fan.OK.
 20221221    Add 'S' value in G0/G1 commands, for laser function.(do not add 'S' value to G0/G1 in normal 3D printing.)
+20230109    Fixed upload bug (lost package, resend error.)
+            web site ui support "delete gcode file" function.
+            sub version 036
+
 */
 //TL Medels and version
 //#define TENLOG_H2
-#define TENLOG_D3
+//#define TENLOG_D3
 //#define TENLOG_S3   //single head
-//#define TENLOG_L4     //laser only
+//#define TENLOG_L4   //laser only
 //#define TENLOG_M3
 //#define TENLOG_D5
-//#define TENLOG_D6
+#define TENLOG_D6
 
 //#define TL_DEBUG
 

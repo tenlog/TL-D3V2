@@ -951,7 +951,7 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
         long lH = GCodelng('H', FromPos, tl_command);  //Temp 0 
         long lI = GCodelng('I', FromPos, tl_command);  //Temp 1
         sprintf_P(cmd, PSTR("M1032 T%i H%i I%i"), lT, lH, lI);
-        //TLDEBUG_PRINTLN(cmd);
+        TLDEBUG_PRINTLN(cmd);
         
         #if ENABLED(DUAL_X_CARRIAGE)
         if(dual_x_carriage_mode == DXC_DUPLICATION_MODE || DXC_MIRRORED_MODE == 3){
@@ -987,7 +987,7 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
             if(lI > 0){
                 sprintf_P(cmd, PSTR("M109 S%i"), lI);
                 EXECUTE_GCODE(cmd);
-                //TLDEBUG_PRINTLN(cmd);
+                TLDEBUG_PRINTLN(cmd);
                 delay(100);
             }
         }
@@ -2983,11 +2983,28 @@ void process_command_gcode(long _tl_command[]) {
                     sprintf_P(cmd, PSTR("M%d Z%s"), lM, dtostrf(fZ, 1, 3, str_1));                
                     EXECUTE_GCODE(cmd);
                 }
+            }else if(lM == 30){
+                //M30 delete file from sd card.
+                char fileNameP[13];
+                NULLZERO(fileNameP);
+                for(int i=0; i<12; i++){
+                    fileNameP[i] = _tl_command[iFrom + 4 + i];
+                }
+                if(strlen(fileNameP) > 4){
+                    sprintf_P(cmd, PSTR("M%d %s"), lM, fileNameP);
+                }
+                #if ENABLED(SDSUPPORT)
+                if(strlen(cmd)){                        
+                    TLDEBUG_PRINTLN(cmd);
+                    EXECUTE_GCODE(cmd);
+                    card.tl_ls(true);
+                    sd_OK = 2;
+                }
+                #endif
             }
             delay(100);
         }//iLoop //lines in this command group
     }
-
 }
 
 void tenlog_screen_update()
