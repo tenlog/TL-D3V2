@@ -331,15 +331,19 @@ void GcodeSuite::G28() {
 
 
     //for PRINT_FROM_Z_HEIGHT by zyf
-    bool bSkip = false;
+    bool bSkipZ = false;
     #if defined(PRINT_FROM_Z_HEIGHT) && defined(SDSUPPORT)
       if ((home_all || doZ) && !PrintFromZHeightFound && card.flag.sdprinting)
       {
-          bSkip = true;
+          bSkipZ = true;
       }
       bool b_temp_PrintFromZHeightFound = PrintFromZHeightFound;
       PrintFromZHeightFound = true;
     #endif // by zyf
+
+    #if ENABLED(TENLOG_L4)
+      bSkipZ = true;
+    #endif
 
     #if ENABLED(HOME_Z_FIRST)
       if (doZ) homeaxis(Z_AXIS);
@@ -399,7 +403,7 @@ void GcodeSuite::G28() {
 
     // Home Z last if homing towards the bed
     #if DISABLED(HOME_Z_FIRST)
-      if (doZ && !bSkip) {        //skiped by zyf
+      if (doZ && !bSkipZ) {        //skiped by zyf
         #if EITHER(Z_MULTI_ENDSTOPS, Z_STEPPER_AUTO_ALIGN)
           stepper.set_all_z_lock(false);
           stepper.set_separate_multi_axis(false);

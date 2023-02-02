@@ -208,6 +208,16 @@ uint8_t get_control_code(){
 			return code;
 		}
 	}
+    /*
+    char cmd[64];
+    for(int i=0; i<4; i++){
+        sprintf(cmd, " 0x%2X", spi_rx[i]);
+        TLDEBUG_PRINT(cmd);
+    }
+    sprintf(cmd, " 0x%2X", spi_rx[4]);
+    TLDEBUG_PRINTLN(cmd);
+    TLDEBUG_PRINTLN("WIFI Control code failed.");
+    */
 	return 0;
 }
 

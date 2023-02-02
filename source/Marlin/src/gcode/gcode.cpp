@@ -174,7 +174,7 @@ void GcodeSuite::get_destination_from_command() {
   else
     destination.e = current_position.e;
 
-  #if ENABLED(HWPWM)
+  #if ENABLED(TENLOG_L4)
     if (parser.seen('S')){
       destination.s = parser.value_float();
     }else{

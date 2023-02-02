@@ -438,12 +438,13 @@ void tlInitSetting(bool only_wifi){
         PRINTTJC(cmd);
 
         #ifdef FILAMENT_RUNOUT_SENSOR
-        if(runout.enabled)
-            PRINTTJC("settings.cFilaSensor.val=1");
-        else
-            PRINTTJC("settings.cFilaSensor.val=0");
+            if(runout.enabled == 0x00){
+                PRINTTJC("settings.cFilaSensor.val=0");
+            }else{
+                PRINTTJC("settings.cFilaSensor.val=1");
+            }
+            TERN_(ESP32_WIFI, wifi_printer_settings[19] = runout.enabled);
         #endif
-        TERN_(ESP32_WIFI, wifi_printer_settings[19] = runout.enabled);
 
         uint32_t lOffsetX = hotend_offset[1].x * 100;
         TERN_(ESP32_WIFI, wifi_printer_settings[20] = lOffsetX / 0x10000);

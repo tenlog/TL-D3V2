@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "036"
+#define TL_SUBVERSION "037"
 
 //update log 
 /*
@@ -67,12 +67,12 @@ Version     033
 */
 //TL Medels and version
 //#define TENLOG_H2
-//#define TENLOG_D3
+#define TENLOG_D3
 //#define TENLOG_S3   //single head
 //#define TENLOG_L4   //laser only
 //#define TENLOG_M3
 //#define TENLOG_D5
-#define TENLOG_D6
+//#define TENLOG_D6
 
 //#define TL_DEBUG
 
@@ -634,7 +634,7 @@ Version     033
 // Above this temperature the heater will be switched off.
 // This can protect components from overheating, but NOT from shorts and failures.
 // (Use MINTEMP for thermistor short/failure protection.)
-#define HEATER_0_MAXTEMP 330
+#define HEATER_0_MAXTEMP 300
 #define HEATER_1_MAXTEMP HEATER_0_MAXTEMP
 #define HEATER_2_MAXTEMP HEATER_0_MAXTEMP
 #define HEATER_3_MAXTEMP HEATER_0_MAXTEMP

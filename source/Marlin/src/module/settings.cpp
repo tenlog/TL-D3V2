@@ -116,7 +116,7 @@
 #if HAS_FILAMENT_SENSOR
   #include "../feature/runout.h"
   #ifndef FIL_RUNOUT_ENABLED_DEFAULT
-    #define FIL_RUNOUT_ENABLED_DEFAULT true
+    #define FIL_RUNOUT_ENABLED_DEFAULT false
   #endif
 #endif
 
@@ -2486,8 +2486,8 @@ void MarlinSettings::postprocess() {
 
         uint16_t ui_tlEMaxTemp;
         EEPROM_READ(ui_tlEMaxTemp);
-        if(ui_tlEMaxTemp < 0) ui_tlEMaxTemp = 330;
-        if(ui_tlEMaxTemp > 350) ui_tlEMaxTemp = 330;
+        if(ui_tlEMaxTemp < 0) ui_tlEMaxTemp = 300;
+        if(ui_tlEMaxTemp > 360) ui_tlEMaxTemp = 300;
         tl_E_MAX_TEMP = ui_tlEMaxTemp;
         thermalManager.hotend_maxtemp[0] = tl_E_MAX_TEMP;
         thermalManager.hotend_maxtemp[1] = tl_E_MAX_TEMP;
