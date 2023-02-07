@@ -124,6 +124,7 @@
 #define E1_DIR_PIN         PB5
 
 
+
 #ifdef ELECTROMAGNETIC_VALUE
   #define ELECTROMAGNETIC_VALUE_ON            1
   #define ELECTROMAGNETIC_VALUE_OFF           0
@@ -140,7 +141,7 @@
   #define FAN2_PIN              -1 
   #define FAN3_PIN              -1   
 #else
-  #define FAN_PIN               PD0   // FAN  FC1  PA1 OK 
+  #define FAN_PIN               PD0   //FAN  FC1
   #define FAN1_PIN              PE8   //FC2
   #define FAN2_PIN              PA0   //FAN2 FZ1 PA0
   #define FAN3_PIN              PE7   //FZ2

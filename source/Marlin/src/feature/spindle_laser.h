@@ -118,7 +118,7 @@ public:
   static inline bool enabled(const cutter_power_t opwr) { return opwr > 0; }
   static inline bool enabled() { return enabled(power); }
 
-  static void apply_power(const uint8_t inpow);
+  static void apply_power(const uint16_t inpow);
 
   FORCE_INLINE static void refresh() { apply_power(power); }
   FORCE_INLINE static void set_power(const uint8_t upwr) { power = upwr; refresh(); }
@@ -127,12 +127,12 @@ public:
 
     private:
 
-    static void _set_ocr(const uint8_t ocr);
+    static void _set_ocr(const uint16_t ocr);
 
     public:
 
-    static void set_ocr(const uint8_t ocr);
-    static inline void set_ocr_power(const uint8_t ocr) { power = ocr; set_ocr(ocr); }
+    static void set_ocr(const uint16_t ocr);
+    static inline void set_ocr_power(const uint16_t ocr) { power = ocr; set_ocr(ocr); }
     static void ocr_off();
     // Used to update output for power->OCR translation
     static inline uint8_t upower_to_ocr(const cutter_power_t upwr) {

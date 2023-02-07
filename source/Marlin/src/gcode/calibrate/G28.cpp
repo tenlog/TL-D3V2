@@ -341,7 +341,7 @@ void GcodeSuite::G28() {
       PrintFromZHeightFound = true;
     #endif // by zyf
 
-    #if ENABLED(TENLOG_L4)
+    #if ENABLED(TL_LASER)
       bSkipZ = true;
     #endif
 

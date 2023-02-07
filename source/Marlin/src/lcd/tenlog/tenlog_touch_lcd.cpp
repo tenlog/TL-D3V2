@@ -822,12 +822,14 @@ void TLAbortPrinting(){
     queue.clear();
     quickstop_stepper();
     print_job_timer.abort();
-    EXECUTE_GCODE("M107");
+    EXECUTE_GCODE("M106 S0");
     //if(dual_x_carriage_mode == DXC_DUPLICATION_MODE){
         //queue.inject_P(PSTR("G28 XY"));
         //EXECUTE_GCODE("G28 XY");
     //}else{
+        //#if DISABLED(TL_LASER)
         queue.inject_P(PSTR("G28 XY"));
+        //#endif
         queue.enqueue_one_now(PSTR("G92 Y0"));
         //queue.enqueue_one_now(PSTR("M107"));
         queue.enqueue_one_now(PSTR("M84"));

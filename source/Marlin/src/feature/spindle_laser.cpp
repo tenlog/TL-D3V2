@@ -34,6 +34,10 @@
   #include "../module/servo.h"
 #endif
 
+#if ENABLED(TL_LASER)
+  #include "../HAL/PWM/pwm.h"
+#endif
+
 SpindleLaser cutter;
 uint8_t SpindleLaser::power;
 #if ENABLED(LASER_FEATURE)
@@ -54,15 +58,17 @@ cutter_power_t SpindleLaser::menuPower,                               // Power s
 void SpindleLaser::init() {
   #if ENABLED(SPINDLE_SERVO)
     MOVE_SERVO(SPINDLE_SERVO_NR, SPINDLE_SERVO_MIN);
-  #else
+  #elif DISABLED(TL_LASER)
     OUT_WRITE(SPINDLE_LASER_ENA_PIN, !SPINDLE_LASER_ACTIVE_STATE);    // Init spindle to off
   #endif
   #if ENABLED(SPINDLE_CHANGE_DIR)
     OUT_WRITE(SPINDLE_DIR_PIN, SPINDLE_INVERT_DIR ? 255 : 0);         // Init rotation to clockwise (M3)
   #endif
-  #if ENABLED(SPINDLE_LASER_PWM)
+  #if ENABLED(SPINDLE_LASER_PWM) && DISABLED(TL_LASER)
     SET_PWM(SPINDLE_LASER_PWM_PIN);
     analogWrite(pin_t(SPINDLE_LASER_PWM_PIN), SPINDLE_LASER_PWM_OFF); // Set to lowest speed
+  #elif ENABLED(TL_LASER)
+    set_pwm_f0(0, 600);
   #endif
   #if ENABLED(HAL_CAN_SET_PWM_FREQ) && defined(SPINDLE_LASER_FREQUENCY)
     set_pwm_frequency(pin_t(SPINDLE_LASER_PWM_PIN), SPINDLE_LASER_FREQUENCY);
@@ -80,22 +86,39 @@ void SpindleLaser::init() {
   /**
    * Set the cutter PWM directly to the given ocr value
    */
-  void SpindleLaser::_set_ocr(const uint8_t ocr) {
+  void SpindleLaser::_set_ocr(const uint16_t ocr) {
     #if NEEDS_HARDWARE_PWM && SPINDLE_LASER_FREQUENCY
       set_pwm_frequency(pin_t(SPINDLE_LASER_PWM_PIN), TERN(MARLIN_DEV_MODE, frequency, SPINDLE_LASER_FREQUENCY));
       set_pwm_duty(pin_t(SPINDLE_LASER_PWM_PIN), ocr ^ SPINDLE_LASER_PWM_OFF);
+    #elif ENABLED(TL_LASER) //by zyf add tl laser here
+      #define MAXV 1000.0
+      #define MAXVALUE 500.0
+      #define MIDVALUE 50.0
+      float gtValue = (float)ocr / (float) MAXVALUE * 100.0; //good teacher..
+      if(gtValue < MIDVALUE){
+        gtValue = SQRT(100*gtValue-gtValue*gtValue)*0.7;
+      }else{
+        gtValue = (gtValue-MIDVALUE)*(gtValue-MIDVALUE)/MIDVALUE*0.77+MIDVALUE*0.7; 
+      }
+      gtValue = gtValue / 100.0;
+      uint16_t oocr = gtValue * MAXVALUE;
+      set_pwm_f0(oocr, MAXV);
     #else
       analogWrite(pin_t(SPINDLE_LASER_PWM_PIN), ocr ^ SPINDLE_LASER_PWM_OFF);
     #endif
   }
 
-  void SpindleLaser::set_ocr(const uint8_t ocr) {
+  void SpindleLaser::set_ocr(const uint16_t ocr) {
+    #if DISABLED(TL_LASER)
     WRITE(SPINDLE_LASER_ENA_PIN,  SPINDLE_LASER_ACTIVE_STATE); // Cutter ON
+    #endif
     _set_ocr(ocr);
   }
 
   void SpindleLaser::ocr_off() {
+    #if DISABLED(TL_LASER)
     WRITE(SPINDLE_LASER_ENA_PIN, !SPINDLE_LASER_ACTIVE_STATE); // Cutter OFF
+    #endif
     _set_ocr(0);
   }
 #endif
@@ -103,7 +126,7 @@ void SpindleLaser::init() {
 //
 // Set cutter ON/OFF state (and PWM) to the given cutter power value
 //
-void SpindleLaser::apply_power(const uint8_t opwr) {
+void SpindleLaser::apply_power(const uint16_t opwr) {
   static uint8_t last_power_applied = 0;
   if (opwr == last_power_applied) return;
   last_power_applied = opwr;

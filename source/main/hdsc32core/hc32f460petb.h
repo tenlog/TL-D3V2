@@ -842,12 +842,13 @@ typedef enum en_int_src
     /* CAN */
     INT_CAN_INT             = 486u,
     
+	/*BOF Modify by zyf*/
     #ifdef INT_MAX
     INT_MAX_HC              = 511u,
     #else
     INT_MAX              = 511u,
     #endif
-		/*Modify by zyf*/
+	/*EOF Modify by zyf*/
 }en_int_src_t;
 
 /******************************************************************************/

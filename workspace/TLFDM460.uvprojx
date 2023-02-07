@@ -793,6 +793,16 @@
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\feature\pause.cpp</FilePath>
             </File>
+            <File>
+              <FileName>spindle_laser.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\feature\spindle_laser.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>spindle_laser.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\source\Marlin\src\feature\spindle_laser.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1222,6 +1232,11 @@
               <FileName>M1501-1510.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\gcode\config\M1501-1510.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>M3-M5.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\gcode\control\M3-M5.cpp</FilePath>
             </File>
           </Files>
         </Group>

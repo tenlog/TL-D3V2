@@ -1285,8 +1285,8 @@ void Planner::recalculate() {
 
     const millis_t ms = millis();
     #if ENABLED(HWPWM)
-      #if ENABLED(TENLOG_L4)
-      TERN_(HAS_FAN0, set_pwm_f0(CALC_FAN_SPEED(0), 2000));    //E0 Fan //only E0 has hardware pwm..
+      #if ENABLED(TL_LASER)
+      TERN_(HAS_FAN0, set_pwm_f0(CALC_FAN_SPEED(0), 1000));    //E0 Fan //only E0 has hardware pwm..
       #else
       TERN_(HAS_FAN0, set_pwm_f0(CALC_FAN_SPEED(0), 255));
       #endif  

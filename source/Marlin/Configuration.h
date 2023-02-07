@@ -59,7 +59,7 @@ Version     032
             wifi upload file OK, mainboard in master mode, NO dma, need wifi version 1.2.3
 Version     033
 20221220    HW PWM Only for Fan0 left head side fan.OK.
-20221221    Add 'S' value in G0/G1 commands, for laser function.(do not add 'S' value to G0/G1 in normal 3D printing.)
+20221221    Add 'S' value in G0/G1 commands, for laser function.(do not add 'S' value to G0/G1 in normal 3D printing.) //Canceled at 20230206
 20230109    Fixed upload bug (lost package, resend error.)
             web site ui support "delete gcode file" function.
             sub version 036
@@ -67,9 +67,9 @@ Version     033
 */
 //TL Medels and version
 //#define TENLOG_H2
-#define TENLOG_D3
+//#define TENLOG_D3
 //#define TENLOG_S3   //single head
-//#define TENLOG_L4   //laser only
+#define TENLOG_L4   //laser only
 //#define TENLOG_M3
 //#define TENLOG_D5
 //#define TENLOG_D6
@@ -91,6 +91,10 @@ Version     033
 //TL Functions
 //#define ELECTROMAGNETIC_VALUE
 #define PRINT_FROM_Z_HEIGHT
+
+#ifdef TENLOG_L4
+#define TL_LASER
+#endif
 
 // The size of the printable area
 #if defined(TENLOG_D3) 

@@ -49,7 +49,7 @@ static void Tim_Config(void)
 
     stcTimeraInit.enCntDir = TimeraCountDirUp;
     stcTimeraInit.enSyncStartupEn = Disable;
-	  stcTimeraInit.u16PeriodVal = TIMERA_COUNT_OVERFLOW; // //freq: 5000Hz -> 100 000 000 /4/5000HZ/2 = 6250(period val)
+	  stcTimeraInit.u16PeriodVal = TIMERA_COUNT_OVERFLOW; // //freq: 5000Hz -> 100 000 000 /4/10000HZ/4 = 1250(period val)
     TIMERA_BaseInit(TIMERA_UNIT2, &stcTimeraInit);
 		
     /* Configuration timera unit 1 compare structure */
@@ -103,7 +103,7 @@ void set_duty_cycle(uint16_t duty)
 				MEM_ZERO_STRUCT(stcTimerCompareInit);
 			
 				 /* Configuration timera unit 1 compare structure */
-				stcTimerCompareInit.u16CompareVal = duty;   //500		
+				stcTimerCompareInit.u16CompareVal = duty;   //1250		
 				stcTimerCompareInit.enStartCountOutput = TimeraCountStartOutputHigh;
 				stcTimerCompareInit.enStopCountOutput = TimeraCountStopOutputLow;
 			
@@ -133,14 +133,19 @@ void set_steering_gear_dutyfactor(uint16_t dutyfactor)
 
 void set_pwm_f0(uint16_t pwm_value, uint16_t max_value)  //0-255
 {
-  pwm_value = uint16_t((float)pwm_value / (float)max_value * (float)TIMERA_COUNT_OVERFLOW);    // 占空比
+  //"good teacher" algorithm
+  float gtValue = (float)pwm_value / (float) max_value;// * 100.0;
+  //gtValue = SQRT(gtValue) * 10.0;
+  //gtValue = gtValue / 100.0;
+
+  pwm_value = uint16_t(gtValue * (float)TIMERA_COUNT_OVERFLOW);    // 占空比
   set_steering_gear_dutyfactor(pwm_value);    // 设置占空比
 }
 
 void pwm_init()
 {
-		Port_Init();
-		Tim_Config();
-    set_pwm_f0(0, 255);
+  Port_Init();
+	Tim_Config();
+  set_pwm_f0(0, 255);
 }
 #endif    //HWPWM

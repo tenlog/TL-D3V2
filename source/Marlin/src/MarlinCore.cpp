@@ -458,7 +458,7 @@ inline void manage_inactivity(const bool ignore_stepper_queue=false) {
     if (planner.has_blocks_queued())
       gcode.reset_stepper_timeout(ms);
     else if (!parked_or_ignoring && gcode.stepper_inactive_timeout()) {
-      //if (!already_shutdown_steppers) //By zyf do not disable steppers when pause. 
+      //if (!already_shutdown_steppers) //By zyf do not disable steppers when printing pause. 
       if (!already_shutdown_steppers && !IS_SD_FILE_OPEN()) 
       {
         already_shutdown_steppers = true;  // L6470 SPI will consume 99% of free time without this
@@ -1102,6 +1102,10 @@ inline void tmc_standby_setup() {
  */
 void setup() {
 
+  #if ENABLED(HWPWM)
+    pwm_init();
+  #endif
+
   #ifdef BOARD_PREINIT
     BOARD_PREINIT(); // Low-level init (before serial init)
   #endif
@@ -1590,10 +1594,6 @@ void setup() {
     print_from_z_target = 0.0;
   #endif
   
-  #if ENABLED(HWPWM)
-    pwm_init();
-  #endif
-
   #if ENABLED(HAS_WIFI)
     TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init Tenlog Wifi..."));
     WIFI_Init();

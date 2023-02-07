@@ -249,7 +249,7 @@
 #endif
 
 // Add features that need hardware PWM here
-#if ANY(FAST_PWM_FAN, SPINDLE_LASER_PWM)
+#if ANY(FAST_PWM_FAN, SPINDLE_LASER_PWM) && DISABLED(TL_LASER)
   #define NEEDS_HARDWARE_PWM 1
 #endif
 
@@ -392,7 +392,7 @@
 #endif
 
 #ifndef HOMING_BUMP_MM
-  #define HOMING_BUMP_MM { 0, 0, 0 }
+  #define HOMING_BUMP_MM { 5, 5, 2 }
 #endif
 
 #if ENABLED(USB_FLASH_DRIVE_SUPPORT) && NONE(USE_OTG_USB_HOST, USE_UHS3_USB)

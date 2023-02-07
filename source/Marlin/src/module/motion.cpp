@@ -962,13 +962,6 @@ FORCE_INLINE void segment_idle(millis_t &next_idle_ms) {
    */
   inline bool line_to_destination_cartesian() {
 
-    #if ENABLED(TENLOG_L4)
-      if(destination.s >= 0.0){
-        set_pwm_f0((uint8_t)destination.s, 1000);
-        TLDEBUG_PRINTLNPAIR("Set laser power ", destination.s);
-      }
-    #endif
-
     const float scaled_fr_mm_s = MMS_SCALED(feedrate_mm_s);
     #if HAS_MESH
       if (planner.leveling_active && planner.leveling_active_at_z(destination.z)) {
@@ -1666,6 +1659,7 @@ void prepare_line_to_destination() {
     if (bump) {
       // Move away from the endstop by the axis HOMING_BUMP_MM
       if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("Move Away: ", -bump, "mm");
+      TLDEBUG_PRINTLNPAIR("Move Away: ", -bump, "mm"); //check do not move back when single head.
       do_homing_move(axis, -bump, TERN(HOMING_Z_WITH_PROBE, (axis == Z_AXIS ? z_probe_fast_mm_s : 0), 0), false);
 
       #if ENABLED(DETECT_BROKEN_ENDSTOP)
