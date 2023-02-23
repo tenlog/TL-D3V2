@@ -45,7 +45,42 @@
   #define SPEED_POWER_INTERCEPT 0
 #endif
 
+#define MAXPOWER 2000.0
+#define MAXVALUE 1000.0
+
+typedef struct { uint16_t value; uint16_t power; } power_entry_t;
+
+
+#define POWER_LEN 11
+const power_entry_t power_table[] PROGMEM = {
+{	  0	,	  0	},
+{	100	,	100	}
+};
 // #define _MAP(N,S1,S2,D1,D2) ((N)*_MAX((D2)-(D1),0)/_MAX((S2)-(S1),1)+(D1))
+
+static float get_color_power(float colorValue){
+  const uint8_t p_len = sizeof(power_table);
+  uint8_t l = 0, r = p_len, m;
+  for (;;) {
+    m = (l + r) >> 1;
+    if (!m) {
+      return float(pgm_read_word(&power_table[0].power));
+    }
+    if (m == l || m == r){
+      return float(pgm_read_word(&power_table[p_len-1].power));
+    }
+    float v00 =(float)pgm_read_word(&power_table[m-1].value),
+          v10 =(float)pgm_read_word(&power_table[m-0].value);
+    if (colorValue < v00) r = m;
+    else if (colorValue > v10) l = m;
+    else {
+      const float v01 = (float)(pgm_read_word(&power_table[m-1].power)),
+                  v11 =(float)(pgm_read_word(&power_table[m-0].power));
+      return (float)(v01 + (colorValue - v00) * float(v11 - v01) / float(v10 - v00));
+    }
+  }
+  return 1;
+}
 
 class SpindleLaser {
 public:
@@ -53,7 +88,7 @@ public:
     min_pct = TERN(CUTTER_POWER_RELATIVE, 0, TERN(SPINDLE_FEATURE, round(100.0f * (SPEED_POWER_MIN) / (SPEED_POWER_MAX)), SPEED_POWER_MIN)),
     max_pct = TERN(SPINDLE_FEATURE, 100, SPEED_POWER_MAX);
 
-  static const inline uint8_t pct_to_ocr(const_float_t pct) { return uint8_t(PCT_TO_PWM(pct)); }
+  static const inline uint16_t pct_to_ocr(const_float_t pct) { return uint16_t(PCT_TO_PWM(pct)); } //by zyf uint8_t
 
   // cpower = configured values (e.g., SPEED_POWER_MAX)
 
@@ -99,7 +134,7 @@ public:
   #endif
 
   static bool isReady;                    // Ready to apply power setting from the UI to OCR
-  static uint8_t power;
+  static uint16_t power;    //by zyf uint8_t
 
   #if ENABLED(MARLIN_DEV_MODE)
     static cutter_frequency_t frequency;  // Set PWM frequency; range: 2K-50K
@@ -135,10 +170,12 @@ public:
     static inline void set_ocr_power(const uint16_t ocr) { power = ocr; set_ocr(ocr); }
     static void ocr_off();
     // Used to update output for power->OCR translation
-    static inline uint8_t upower_to_ocr(const cutter_power_t upwr) {
+    static inline uint16_t upower_to_ocr(const cutter_power_t upwr) { //by zyf uint8_t
       return (
         #if CUTTER_UNIT_IS(PWM255)
-          uint8_t(upwr)
+          uint8_t(upwr) 
+        #elif CUTTER_UNIT_IS(PWM1000) //by zyf uint8_t
+          uint16_t(upwr)
         #elif CUTTER_UNIT_IS(PERCENT)
           pct_to_ocr(upwr)
         #else
@@ -152,6 +189,8 @@ public:
       return power_to_range(pwr, (
         #if CUTTER_UNIT_IS(PWM255)
           0
+        #elif CUTTER_UNIT_IS(PWM1000) //by zyf uint8_t
+          3
         #elif CUTTER_UNIT_IS(PERCENT)
           1
         #elif CUTTER_UNIT_IS(RPM)
@@ -166,6 +205,13 @@ public:
       cutter_power_t upwr;
       switch (pwrUnit) {
         case 0:                                                 // PWM
+          upwr = cutter_power_t(
+              (pwr < pct_to_ocr(min_pct)) ? pct_to_ocr(min_pct) // Use minimum if set below
+            : (pwr > pct_to_ocr(max_pct)) ? pct_to_ocr(max_pct) // Use maximum if set above
+            :  pwr
+          );
+          break;
+        case 3:                                                 // PWM1000 //by zyf uint8_t
           upwr = cutter_power_t(
               (pwr < pct_to_ocr(min_pct)) ? pct_to_ocr(min_pct) // Use minimum if set below
             : (pwr > pct_to_ocr(max_pct)) ? pct_to_ocr(max_pct) // Use maximum if set above
@@ -319,7 +365,7 @@ public:
     static inline void inline_direction(const bool) { /* never */ }
 
     #if ENABLED(SPINDLE_LASER_PWM)
-      static inline void inline_ocr_power(const uint8_t ocrpwr) {
+      static inline void inline_ocr_power(const uint16_t ocrpwr) {  //by zyf uint8_t
         isReady = ocrpwr > 0;
         planner.laser_inline.status.isEnabled = ocrpwr > 0;
         planner.laser_inline.power = ocrpwr;

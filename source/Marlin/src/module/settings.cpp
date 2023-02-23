@@ -1502,7 +1502,11 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(tl_E_FAN_START_TEMP);
       EEPROM_WRITE(tl_E_FAN_SPEED);
       EEPROM_WRITE(tl_C_FAN_SPEED);
+      #if ENABLED(TL_LASER)
+      EEPROM_WRITE(tl_LASER_MAX_VALUE);
+      #else
       EEPROM_WRITE(tl_E_MAX_TEMP);
+      #endif
     #endif
 
     #if ENABLED(HAS_WIFI)
@@ -2484,6 +2488,14 @@ void MarlinSettings::postprocess() {
         if(ui_tlCFanSpeed > 100) ui_tlCFanSpeed = 80;
         tl_C_FAN_SPEED = ui_tlCFanSpeed;
 
+
+        #if ENABLED(TL_LASER)
+        uint16_t ui_tlLASERMAXV;
+        EEPROM_READ(ui_tlLASERMAXV);
+        if(ui_tlLASERMAXV < 0) ui_tlLASERMAXV = 1000;
+        if(ui_tlLASERMAXV > 5000) ui_tlLASERMAXV = 1000;
+        tl_LASER_MAX_VALUE = ui_tlLASERMAXV;
+        #else
         uint16_t ui_tlEMaxTemp;
         EEPROM_READ(ui_tlEMaxTemp);
         if(ui_tlEMaxTemp < 0) ui_tlEMaxTemp = 300;
@@ -2491,6 +2503,7 @@ void MarlinSettings::postprocess() {
         tl_E_MAX_TEMP = ui_tlEMaxTemp;
         thermalManager.hotend_maxtemp[0] = tl_E_MAX_TEMP;
         thermalManager.hotend_maxtemp[1] = tl_E_MAX_TEMP;
+        #endif
       #endif
       
       #if ENABLED(HAS_WIFI)
@@ -4104,7 +4117,11 @@ void MarlinSettings::reset() {
       TLDEBUG_PRINTLNPAIR("TL E Fan Temp:", tl_E_FAN_START_TEMP);
       TLDEBUG_PRINTLNPAIR("TL E Fan Speed:", tl_E_FAN_SPEED);
       TLDEBUG_PRINTLNPAIR("TL C Fan Speed:", tl_C_FAN_SPEED);
+      #if ENABLED(TL_LASER)
+      TLDEBUG_PRINTLNPAIR("TL Laser Max Value:", tl_LASER_MAX_VALUE);
+      #else
       TLDEBUG_PRINTLNPAIR("TL E Max Temp:", tl_E_MAX_TEMP);
+      #endif
     #endif
 
     #if ENABLED(HAS_WIFI)

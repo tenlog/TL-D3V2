@@ -64,7 +64,11 @@ int8_t tl_C_FAN_SPEED = 80;
 bool tl_E_FAN_CHANGED = false;
 bool tl_C_FAN_CHANGED = false;
 int8_t tl_E_FAN_START_TEMP = 80;
+#if ENABLED(TL_LASER)
+int16_t tl_LASER_MAX_VALUE = 1000;
+#else
 int16_t tl_E_MAX_TEMP = HEATER_0_MAXTEMP;
+#endif
 int8_t tl_ECO_MODE = 0;
 int8_t tl_THEME_ID = 0;
 int8_t tl_Light = 0;
@@ -357,7 +361,11 @@ void tlResetEEPROM(){
     tl_E_FAN_SPEED = 80;
     tl_C_FAN_SPEED = 80;
     tl_E_FAN_START_TEMP = 80;
+    #if ENABLED(TL_LASER)
+    tl_LASER_MAX_VALUE = 1000;
+    #else
     tl_E_MAX_TEMP = HEATER_0_MAXTEMP;
+    #endif
     tl_ECO_MODE = 0;
     tl_THEME_ID = 0;
     tl_Light = 0;
@@ -486,7 +494,7 @@ void tlInitSetting(bool only_wifi){
         PRINTTJC(cmd);
         #endif
         
-        #ifndef ELECTROMAGNETIC_VALUE
+        #if DISABLED(ELECTROMAGNETIC_VALUE) && DISABLED(TL_LASER)  
         sprintf_P(cmd, PSTR("main.vTempMax.val=%d"), tl_E_MAX_TEMP - HOTEND_OVERSHOOT);
         PRINTTJC(cmd);
         TERN_(ESP32_WIFI, wifi_printer_settings[28] = (HEATER_0_MAXTEMP-HOTEND_OVERSHOOT) / 0x100);
@@ -540,8 +548,11 @@ void tlInitSetting(bool only_wifi){
         PRINTTJC(cmd); 
         sprintf_P(cmd, PSTR("settings1.xM304D.val=%d"), (uint32_t)(unscalePID_d(thermalManager.temp_bed.pid.Kd) * 100.0 + 0.5));
         PRINTTJC(cmd);
-
+        #if ENABLED(TL_LASER)
+        sprintf_P(cmd, PSTR("settings2.xM306S.val=%d"), (uint16_t)(tl_LASER_MAX_VALUE));
+        #else
         sprintf_P(cmd, PSTR("settings2.xM306S.val=%d"), (uint16_t)(tl_E_MAX_TEMP));
+        #endif
         PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings2.xM204P.val=%d"), (uint16_t)(planner.settings.acceleration));
         PRINTTJC(cmd);
@@ -2728,11 +2739,15 @@ void process_command_gcode(long _tl_command[]) {
                 #endif
             }else if(lM == 1018){
                 //M1018
+                #if ENABLED(TL_LASER)
+                tl_LASER_MAX_VALUE= GCodelng('S', iFrom, _tl_command);
+                #else
                 tl_E_MAX_TEMP = GCodelng('S', iFrom, _tl_command);
                 thermalManager.hotend_maxtemp[0] = tl_E_MAX_TEMP;
                 thermalManager.hotend_maxtemp[1] = tl_E_MAX_TEMP;
                 sprintf_P(cmd, PSTR("main.vTempMax.val=%d"), tl_E_MAX_TEMP - HOTEND_OVERSHOOT);
                 TLSTJC_println(cmd);
+                #endif
                 EXECUTE_GCODE(PSTR("M500"));
             }else if(lM == 1016){
                 //M1016

@@ -174,16 +174,7 @@ void GcodeSuite::get_destination_from_command() {
   else
     destination.e = current_position.e;
 
-  /*
-  #if ENABLED(TENLOG_L4)
-    if (parser.seen('S')){
-      destination.s = parser.value_float();
-    }else{
-      destination.s = -1.0;
-    }
-  #endif
-  */
-
+  
   #if ENABLED(POWER_LOSS_RECOVERY) && !PIN_EXISTS(POWER_LOSS)
     // Only update power loss recovery on moves with E
     if (recovery.enabled && IS_SD_PRINTING() && seen.e && (seen.x || seen.y))

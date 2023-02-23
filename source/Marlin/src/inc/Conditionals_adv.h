@@ -242,6 +242,7 @@
 #if EITHER(SPINDLE_FEATURE, LASER_FEATURE)
   #define HAS_CUTTER 1
   #define _CUTTER_POWER_PWM255  1
+  #define _CUTTER_POWER_PWM1000  4
   #define _CUTTER_POWER_PERCENT 2
   #define _CUTTER_POWER_RPM     3
   #define _CUTTER_POWER(V)      _CAT(_CUTTER_POWER_, V)
@@ -250,7 +251,7 @@
 
 // Add features that need hardware PWM here
 #if ANY(FAST_PWM_FAN, SPINDLE_LASER_PWM) && DISABLED(TL_LASER)
-  #define NEEDS_HARDWARE_PWM 1
+  //#define NEEDS_HARDWARE_PWM 1
 #endif
 
 #if !defined(__AVR__) || !defined(USBCON)

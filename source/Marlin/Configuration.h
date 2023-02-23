@@ -63,13 +63,13 @@ Version     033
 20230109    Fixed upload bug (lost package, resend error.)
             web site ui support "delete gcode file" function.
             sub version 036
-
+20230219    Enabled "Inline" laser function.
 */
 //TL Medels and version
 //#define TENLOG_H2
-//#define TENLOG_D3
+#define TENLOG_D3
 //#define TENLOG_S3   //single head
-#define TENLOG_L4   //laser only
+//#define TENLOG_L4   //laser only
 //#define TENLOG_M3
 //#define TENLOG_D5
 //#define TENLOG_D6

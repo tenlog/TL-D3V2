@@ -1797,6 +1797,242 @@ void set_vcap(void){
     DISABLE_PWR_REG_WRITE();
 }
 
+
+
+/**
+ *******************************************************************************
+ ** \brief  Switch MCU from low_speed (HCLK < 8MHz) to high-speed (HCLK > 8MHz) mode.
+ **
+ ** \param  None
+ **
+ ** \retval Ok:     Mode switch sucessfully.
+ **
+ ** \note   Called after clock is ready.
+ ******************************************************************************/
+en_result_t PWC_HS2LS(void)
+{
+    uint32_t u32To = 10000ul;
+
+    if(0ul == M4_EFM->FAPRT)
+    {
+        M4_EFM->FAPRT = 0x0123ul;
+        M4_EFM->FAPRT = 0x3210ul;
+        M4_EFM->FRMC_f.LVM = 1u;
+        M4_EFM->FAPRT = 0x0123ul;
+        M4_EFM->FAPRT = 0x0123ul;
+    }
+    else
+    {
+        M4_EFM->FRMC_f.LVM = 1u;
+    }
+
+    ENABLE_PWR_REG_WRITE();
+    M4_SYSREG->PWR_RAMOPM = 0x9062u;
+    while((0x9062 != M4_SYSREG->PWR_RAMOPM) || (1u != M4_EFM->FRMC_f.LVM))
+    {
+        if (0ul == u32To--)
+        {
+            return Error;
+        }
+    }
+    M4_SYSREG->PWR_PWRC2 = 0xE1U;
+    M4_SYSREG->PWR_MDSWCR = 0x10U;
+    DISABLE_PWR_REG_WRITE();
+
+    Ddl_Delay1ms(1ul);
+
+    return Ok;
+}
+
+/**
+ *******************************************************************************
+ ** \brief  Switch MCU from high-speed (HCLK > 8MHz) to low_speed (HCLK < 8MHz) mode.
+ **
+ ** \param  None
+ **
+ ** \retval Ok:     Mode switch sucessfully.
+ **         Error:  Mode switch failure.
+ **
+ ** \note   Called before clock is ready.
+ ******************************************************************************/
+en_result_t PWC_LS2HS(void)
+{
+    uint32_t u32To = 10000ul;
+
+    ENABLE_PWR_REG_WRITE();
+    M4_SYSREG->PWR_PWRC2 = 0xFFU;
+    M4_SYSREG->PWR_MDSWCR = 0x10U;
+
+    Ddl_Delay1ms(1ul);
+
+    if(0ul == M4_EFM->FAPRT)
+    {
+        M4_EFM->FAPRT = 0x0123ul;
+        M4_EFM->FAPRT = 0x3210ul;
+        M4_EFM->FRMC_f.LVM = 0u;
+        M4_EFM->FAPRT = 0x0123ul;
+        M4_EFM->FAPRT = 0x0123ul;
+    }
+    else
+    {
+        M4_EFM->FRMC_f.LVM = 0u;
+    }
+
+    M4_SYSREG->PWR_RAMOPM = 0x8043u;
+    while((0x8043 != M4_SYSREG->PWR_RAMOPM) || (0u != M4_EFM->FRMC_f.LVM))
+    {
+        if (0ul == u32To--)
+        {
+            return Error;
+        }
+    }
+
+    DISABLE_PWR_REG_WRITE();
+
+    return Ok;
+}
+
+/**
+ *******************************************************************************
+ ** \brief  Switch MCU from high-speed (HCLK > 8MHz) to high-performance mode.
+ **
+ ** \param  None
+ **
+ ** \retval Ok:     Mode switch sucessfully.
+ **         Error:  Mode switch failure.
+ **
+ ** \note   Called before clock is ready.
+ ******************************************************************************/
+en_result_t PWC_HS2HP(void)
+{
+    ENABLE_PWR_REG_WRITE();
+    M4_SYSREG->PWR_PWRC2 = 0xCFU;
+    M4_SYSREG->PWR_MDSWCR = 0x10U;
+    DISABLE_PWR_REG_WRITE();
+    Ddl_Delay1ms(1ul);
+
+    return Ok;
+}
+
+/**
+ *******************************************************************************
+ ** \brief  Switch MCU from high-performance to high-speed (HCLK > 8MHz) mode.
+ **
+ ** \param  None
+ **
+ ** \retval Ok:     Mode switch sucessfully.
+ **         Error:  Mode switch failure.
+ **
+ ** \note   Called after clock is ready.
+ ******************************************************************************/
+en_result_t PWC_HP2HS(void)
+{
+    ENABLE_PWR_REG_WRITE();
+    M4_SYSREG->PWR_PWRC2 = 0xFFU;
+    M4_SYSREG->PWR_MDSWCR = 0x10U;
+    DISABLE_PWR_REG_WRITE();
+    Ddl_Delay1ms(1ul);
+
+    return Ok;
+}
+
+/**
+ *******************************************************************************
+ ** \brief  Switch MCU from low-speed (HCLK <= 8MHz) to high-performance mode.
+ **
+ ** \param  None
+ **
+ ** \retval Ok:     Mode switch sucessfully.
+ **         Error:  Mode switch failure.
+ **
+ ** \note   Called before clock is ready.
+ ******************************************************************************/
+en_result_t PWC_LS2HP(void)
+{
+    uint32_t u32To = 10000ul;
+
+    ENABLE_PWR_REG_WRITE();
+    M4_SYSREG->PWR_PWRC2 = 0xCFU;
+    M4_SYSREG->PWR_MDSWCR = 0x10U;
+
+    Ddl_Delay1ms(1);
+
+    if(0ul == M4_EFM->FAPRT)
+    {
+        M4_EFM->FAPRT = 0x0123ul;
+        M4_EFM->FAPRT = 0x3210ul;
+        M4_EFM->FRMC_f.LVM = 0u;
+        M4_EFM->FAPRT = 0x0123ul;
+        M4_EFM->FAPRT = 0x0123ul;
+    }
+    else
+    {
+        M4_EFM->FRMC_f.LVM = 0u;
+    }
+
+    M4_SYSREG->PWR_RAMOPM = 0x8043u;
+    while((0x8043 != M4_SYSREG->PWR_RAMOPM) || (0u != M4_EFM->FRMC_f.LVM))
+    {
+        if (0ul == u32To--)
+        {
+            return Error;
+        }
+    }
+
+    DISABLE_PWR_REG_WRITE();
+
+    return Ok;
+}
+
+/**
+ *******************************************************************************
+ ** \brief  Switch MCU from high-performance to low-speed (HCLK <= 8MHz) mode.
+ **
+ ** \param  None
+ **
+ ** \retval Ok:     Mode switch sucessfully.
+ **         Error:  Mode switch failure.
+ **
+ ** \note   Called after clock is ready.
+ ******************************************************************************/
+en_result_t PWC_HP2LS(void)
+{
+    uint32_t u32To = 10000ul;
+
+    if(0ul == M4_EFM->FAPRT)
+    {
+        M4_EFM->FAPRT = 0x0123ul;
+        M4_EFM->FAPRT = 0x3210ul;
+        M4_EFM->FRMC_f.LVM = 1u;
+        M4_EFM->FAPRT = 0x0123ul;
+        M4_EFM->FAPRT = 0x0123ul;
+    }
+    else
+    {
+        M4_EFM->FRMC_f.LVM = 1u;
+    }
+
+    ENABLE_PWR_REG_WRITE();
+    M4_SYSREG->PWR_RAMOPM = 0x9062u;
+    u32To = 10000ul;
+    while((0x9062 != M4_SYSREG->PWR_RAMOPM) || (1u != M4_EFM->FRMC_f.LVM))
+    {
+        if (0ul == u32To--)
+        {
+            return Error;
+        }
+    }
+
+    M4_SYSREG->PWR_PWRC2 = 0xD1U;
+    M4_SYSREG->PWR_MDSWCR = 0x10U;
+
+    DISABLE_PWR_REG_WRITE();
+
+    Ddl_Delay1ms(1);
+
+    return Ok;
+}
+
 //@} // PwcGroup
 
 

@@ -606,6 +606,12 @@ void PWC_IrqClkBackup(void);
 void PWC_IrqClkRecover(void);
 void set_vcap(void);
 
+en_result_t PWC_HS2LS(void);
+en_result_t PWC_LS2HS(void);
+en_result_t PWC_HS2HP(void);
+en_result_t PWC_HP2HS(void);
+en_result_t PWC_LS2HP(void);
+en_result_t PWC_HP2LS(void);
 
 //@} // PwcGroup
 

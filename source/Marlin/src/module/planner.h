@@ -137,9 +137,9 @@ enum BlockFlag : char {
     power_status_t status;    // See planner settings for meaning
     uint16_t power;            // Ditto; When in trapezoid mode this is nominal power
     #if ENABLED(LASER_POWER_INLINE_TRAPEZOID)
-      uint8_t   power_entry;  // Entry power for the laser
+      uint16_t   power_entry;  // Entry power for the laser //by zyf uint8_t
       #if DISABLED(LASER_POWER_INLINE_TRAPEZOID_CONT)
-        uint8_t   power_exit; // Exit power for the laser
+        uint16_t   power_exit; // Exit power for the laser //by zyf uint8_t
         uint32_t  entry_per,  // Steps per power increment (to avoid floats in stepper calcs)
                   exit_per;   // Steps per power decrement
       #endif

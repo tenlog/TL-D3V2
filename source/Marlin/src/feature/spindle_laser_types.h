@@ -47,14 +47,14 @@ typedef IF<(SPEED_POWER_MAX > 255), uint16_t, uint8_t>::type cutter_cpower_t;
     #define CUTTER_MENU_POWER_TYPE percent_3
     #define cutter_power2str       pcttostrpctrj
   #else
-    #define CUTTER_MENU_POWER_TYPE uint8
-    #define cutter_power2str       ui8tostr3rj
+    #define CUTTER_MENU_POWER_TYPE uint16_5   //by zyf
+    #define cutter_power2str       ui16tostr5rj //by zyf
   #endif
 #endif
 
 #if ENABLED(LASER_FEATURE)
   typedef uint16_t cutter_test_pulse_t;
-  #define CUTTER_MENU_PULSE_TYPE uint16_3
+  #define CUTTER_MENU_PULSE_TYPE uint16_5 //by zyf
 #endif
 
 #if ENABLED(MARLIN_DEV_MODE)

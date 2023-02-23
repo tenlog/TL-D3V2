@@ -618,6 +618,16 @@
               <FileType>1</FileType>
               <FilePath>..\source\main\hdsc32core\system_hc32f460petb.c</FilePath>
             </File>
+            <File>
+              <FileName>startup.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\drivers\board\startup.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>startup.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\source\drivers\board\startup.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
