@@ -93,8 +93,9 @@ Version     033
 #define PRINT_FROM_Z_HEIGHT
 
 #ifdef TENLOG_L4
-#define TL_LASER
+#define TL_LASER_ONLY
 #endif
+#define TL_LASER
 
 // The size of the printable area
 #if defined(TENLOG_D3) 

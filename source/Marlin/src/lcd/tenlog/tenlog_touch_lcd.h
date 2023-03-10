@@ -191,11 +191,8 @@ extern int8_t tl_C_FAN_SPEED;
 extern bool tl_E_FAN_CHANGED;
 extern bool tl_C_FAN_CHANGED;
 extern int8_t tl_E_FAN_START_TEMP;
-#if ENABLED(TL_LASER)
 extern int16_t tl_LASER_MAX_VALUE;
-#else
 extern int16_t tl_E_MAX_TEMP;
-#endif
 extern int8_t tl_ECO_MODE;
 extern int8_t tl_THEME_ID;
 extern int8_t tl_Light;
