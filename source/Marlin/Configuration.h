@@ -64,6 +64,8 @@ Version     033
             web site ui support "delete gcode file" function.
             sub version 036
 20230219    Enabled "Inline" laser function.
+20230311    add adjust nozzle offset by video function, need ui v2.2.22
+            sub version 037
 */
 //TL Medels and version
 //#define TENLOG_H2
