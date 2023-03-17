@@ -114,7 +114,7 @@ char tl_tjc_sn[18] = {""};
 bool dwn_is_last_page = false;
 bool hotendOffsetChanged = false;
 
-char cmd[64], str_1[32];
+char cmd[128], str_1[32];
 
 int TLPrintingStatus = 0;
 bool plr1stZ = false;
@@ -2907,8 +2907,14 @@ void process_command_gcode(long _tl_command[]) {
             }else if (lM == 1050){
                 //M1050
                 int8_t KillFlag = GCodelng('S',iFrom, _tl_command);
-            }else if(lM > 1499 && lM < 1511){
+            }else if(lM > 1499 && lM < 1599){
                 //1500-1510
+                if(lM == 1550){//M1550
+                    delay(100);
+                    sprintf_P(cmd, "tUID.txt=\"UID:%s\"", tl_hc_sn);
+                    TLSTJC_println(cmd);
+                    TLDEBUG_PRINTLN(cmd);
+                }
                 #if ENABLED(HAS_WIFI)
                     if(lM == 1501){
                         //M1501

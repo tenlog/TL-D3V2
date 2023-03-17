@@ -1964,7 +1964,7 @@
 #endif
 
 // Moves (or segments) with fewer steps than this will be joined with the next move
-#define MIN_STEPS_PER_SEGMENT 6
+#define MIN_STEPS_PER_SEGMENT 1 //6 //by zyf 0.0125
 
 /**
  * Minimum delay before and after setting the stepper DIR (in ns)
@@ -1979,8 +1979,8 @@
  *
  * Override the default value based on the driver type set in Configuration.h.
  */
-//#define MINIMUM_STEPPER_POST_DIR_DELAY 650
-//#define MINIMUM_STEPPER_PRE_DIR_DELAY 650
+//#define MINIMUM_STEPPER_POST_DIR_DELAY 1500
+//#define MINIMUM_STEPPER_PRE_DIR_DELAY 1500
 
 /**
  * Minimum stepper driver pulse width (in µs)
@@ -1993,7 +1993,7 @@
  *
  * Override the default value based on the driver type set in Configuration.h.
  */
-//#define MINIMUM_STEPPER_PULSE 2
+//#define MINIMUM_STEPPER_PULSE 3
 
 /**
  * Maximum stepping rate (in Hz) the stepper driver allows
@@ -2007,7 +2007,7 @@
  *
  * Override the default value based on the driver type set in Configuration.h.
  */
-//#define MAXIMUM_STEPPER_RATE 250000
+//#define MAXIMUM_STEPPER_RATE 150000
 
 // @section temperature
 
@@ -3186,7 +3186,9 @@
      * This allows the laser to keep in perfect sync with the planner and removes
      * the powerup/down delay since lasers require negligible time.
      */
+    #ifdef TL_LASER_ONLY
     #define LASER_POWER_INLINE
+    #endif
 
     #if ENABLED(LASER_POWER_INLINE)
       /**
