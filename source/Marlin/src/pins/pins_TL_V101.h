@@ -63,8 +63,13 @@
 //#define SDCARD_EEPROM_EMULATION
 
 #ifdef IIC_BL24CXX_EEPROM
+  #ifdef TENLOG_LW
+  #define IIC_EEPROM_SDA       PD13
+  #define IIC_EEPROM_SCL       PD12
+  #else
   #define IIC_EEPROM_SDA       PA12
   #define IIC_EEPROM_SCL       PA11
+  #endif
   #define MARLIN_EEPROM_SIZE               0x800  // 2Kb (24C16)
 #endif
 
@@ -72,24 +77,33 @@
 // Limit Switches
 //
 #define X_STOP_PIN         PC13// x-
-#define X_MAX_PIN          PH2// X+
 
-#define Y_STOP_PIN         PC3// y-
+#ifdef TENLOG_LW
+  #define X_MAX_PIN          PE5// X+
+  #define Y_STOP_PIN         PH2// y-
+#else
+  #define X_MAX_PIN          PH2// X+
+  #define Y_STOP_PIN         PC3// y-
+#endif
 
-#define Z_STOP_PIN         PC15// Z-
+#define Z_STOP_PIN         PC15// Z- LW-采样
 #ifdef TENLOG_M3
   #define Z_MAX_PIN          PC15// Z+ PC14
 #else
-  #define Z_MAX_PIN          PC14// Z+ PC14
+  #define Z_MAX_PIN          PC14// Z+ PC14 //LW-吐舌头
 #endif
 
 //
 // Filament Runout Sensor
 //
 #ifndef FIL_RUNOUT_PIN
-  #define FIL_RUNOUT_PIN                    PA15   // "Pulled-high"
+  #ifdef TENLOG_LW
+    #define FIL_RUNOUT_PIN                    PD0   // "Pulled-high"
+    //#define FIL_RUNOUT2_PIN                   PE6   // "Pulled-high"
+  #else
+    #define FIL_RUNOUT_PIN                    PA15   // "Pulled-high" 
+  #endif
 #endif
-
 
 //
 // Steppers
@@ -141,19 +155,28 @@
   #define FAN2_PIN              -1 
   #define FAN3_PIN              -1   
 #else
-  #define FAN_PIN               PD0   //FAN  FC1
+  #ifdef TENLOG_LW
+    //#define FAN_PIN               PD0   //FAN  FC1
+    #define FAN2_PIN              PD3   //FAN2 FZ1
+  #else
+    //#define FAN_PIN               PD0   //FAN HWPWM FC1 PA1
+    #define FAN2_PIN              PA0   //FAN2 FZ1
+  #endif
+
   #define FAN1_PIN              PE8   //FC2
-  #define FAN2_PIN              PA0   //FAN2 FZ1 PA0
   #define FAN3_PIN              PE7   //FZ2
   #define HEATER_0_PIN          PA5   // HEATER0
   #define HEATER_1_PIN          PA4   // HEATER1
 #endif
 
-#define FAN4_PIN                PE3   //FZ2
-#define CHAMEBER_PIN            FAN4_PIN   //机箱风扇口
 #define LED_PIN                 PE2   //LED 控制管脚
-
-
+#ifdef TENLOG_LW
+  #define FAN4_PIN                PC3   
+  #define CHAMEBER_PIN            FAN4_PIN   //机箱风扇口
+#else
+  #define FAN4_PIN                PE3   
+  #define CHAMEBER_PIN            FAN4_PIN   //机箱风扇口
+#endif
 //
 // Temperature Sensors
 //
@@ -167,8 +190,7 @@
 // Heaters / Fans
 //
 
-
-#if PIN_EXISTS(FAN)
+#if PIN_EXISTS(FAN1)
   #define FAN_SOFT_PWM
 #endif
 

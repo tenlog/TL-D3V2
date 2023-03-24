@@ -4292,6 +4292,7 @@ void MarlinSettings::reset() {
       gcode.process_subcommands_now(cmd);
       
       //handling headers
+      #if (EXTRUDERS == 2)
       if(iT01 == 1){
           if(iTPos0 > 0){
               sprintf_P(cmd, PSTR("M104 T0 S%i"), iTPos0);
@@ -4321,6 +4322,8 @@ void MarlinSettings::reset() {
           gcode.process_subcommands_now(PSTR("T0"));
       }
       //handling fan
+      #endif //(EXTRUDERS == 2)
+      
       sprintf_P(cmd, PSTR("M106 S%i"), iFan);
       gcode.process_subcommands_now(cmd);
       

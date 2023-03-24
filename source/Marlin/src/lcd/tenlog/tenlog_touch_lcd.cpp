@@ -2861,27 +2861,29 @@ void process_command_gcode(long _tl_command[]) {
                 }
                 #endif
             }else if(lM == 1011 || lM == 1012 || lM == 1013){
-                //hoten offset 1 M1011 M1012 M1013
-                uint32_t lR = GCodelng('R',iFrom, _tl_command);
-                uint32_t lS = GCodelng('S',iFrom, _tl_command);
-                
-                if(lR == 100 && lS > 0 ){
+                #if (EXTRUDERS==2)
+                    //hoten offset 1 M1011 M1012 M1013
+                    uint32_t lR = GCodelng('R',iFrom, _tl_command);
+                    uint32_t lS = GCodelng('S',iFrom, _tl_command);
                     
-                    long lAxis = lM - 1011;
-                    float fOffset = (float)lS / (float)lR;
-                    if(lAxis == X_AXIS)
-                        hotend_offset[1].x = fOffset;
-                    else if(lAxis == Y_AXIS){
-                        fOffset = fOffset - 5.0f;
-                        hotend_offset[1].y = fOffset;
+                    if(lR == 100 && lS > 0 ){
+                        
+                        long lAxis = lM - 1011;
+                        float fOffset = (float)lS / (float)lR;
+                        if(lAxis == X_AXIS)
+                            hotend_offset[1].x = fOffset;
+                        else if(lAxis == Y_AXIS){
+                            fOffset = fOffset - 5.0f;
+                            hotend_offset[1].y = fOffset;
+                        }
+                        else if(lAxis == Z_AXIS){
+                            fOffset = fOffset;
+                            hotend_offset[1].z = fOffset;
+                        }
+                        EXECUTE_GCODE(PSTR("M500"));
+                        hotendOffsetChanged = true;
                     }
-                    else if(lAxis == Z_AXIS){
-                        fOffset = fOffset;
-                        hotend_offset[1].z = fOffset;
-                    }
-                    EXECUTE_GCODE(PSTR("M500"));
-                    hotendOffsetChanged = true;
-                }
+                #endif //(EXTRUDERS==2)
             }else if(lM == 1004){
                 #if ENABLED(SDSUPPORT)
                 //M1004

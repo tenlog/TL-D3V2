@@ -30,7 +30,7 @@
 #if HAS_PRUSA_MMU2
   #include "../../feature/mmu/mmu2.h"
 #endif
-#if BOTH(TENLOG_TOUCH_LCD, DUAL_X_CARRIAGE)
+#if ENABLED(TENLOG_TOUCH_LCD)
   #include "../../lcd/tenlog/tenlog_touch_lcd.h"
   #include "../../sd/cardreader.h"
 #endif

@@ -72,17 +72,22 @@ Version     033
 //#define TENLOG_H2
 //#define TENLOG_D3
 //#define TENLOG_S3   //single head
-#define TENLOG_L4   //laser only
+//#define TENLOG_L4   //laser only
 //#define TENLOG_M3
-//#define TENLOG_D5
+#define TENLOG_D5
 //#define TENLOG_D6
+//#define TENLOG_LW     //发光字
 
 //#define TL_DEBUG
-
-#if (!ENABLED(TENLOG_L4) && !ENABLED(TENLOG_S3))
-#define DUAL_X_CARRIAGE
+#if (ENABLED(TENLOG_L4) || ENABLED(TENLOG_S3))
+  #define SINGLE_HEAD
+  #define EXTRUDERS 1
+#elif(ENABLED(TENLOG_LW))
+  #define MIXING_EXTRUDER
+  //#define EXTRUDERS 1
 #else
-#define SINGLE_HEAD
+  #define DUAL_X_CARRIAGE
+  #define EXTRUDERS 2
 #endif
 
 //TL hardware.
@@ -136,6 +141,11 @@ Version     033
   #define X_BED_SIZE 310
   #define Y_BED_SIZE 310
   #define Z_LENGTH   350
+#elif defined(TENLOG_LW)
+  #define TL_MODEL_STR_0 "LW"
+  #define X_BED_SIZE 600
+  #define Y_BED_SIZE 600
+  #define Z_LENGTH   200
 #endif
 
 #ifdef ELECTROMAGNETIC_VALUE
@@ -311,7 +321,6 @@ Version     033
 
 // This defines the number of extruders
 // :[0, 1, 2, 3, 4, 5, 6, 7, 8]
-#define EXTRUDERS 2
 
 // Generally expected filament diameter (1.75, 2.85, 3.0, ...). Used for Volumetric, Filament Width Sensor, etc.
 #define DEFAULT_NOMINAL_FILAMENT_DIA 1.75
@@ -594,7 +603,9 @@ Version     033
   #define TEMP_SENSOR_COOLER 0
 #else
   #define TEMP_SENSOR_0 1
+  #if(EXTRUDERS == 2)
   #define TEMP_SENSOR_1 1
+  #endif
   #define TEMP_SENSOR_BED 1
 #endif
 
@@ -1470,7 +1481,7 @@ Version     033
  */
 #define FILAMENT_RUNOUT_SENSOR
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
-  #define FIL_RUNOUT_ENABLED_DEFAULT false // Enable the sensor on startup. Override with M412 followed by M500.
+  #define FIL_RUNOUT_ENABLED_DEFAULT false // Enable the sensor on startup. Override with M412 followed by M500.  
   #define NUM_RUNOUT_SENSORS   1          // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.
 
   #define FIL_RUNOUT_STATE     LOW        // Pin state indicating that filament is NOT present.
