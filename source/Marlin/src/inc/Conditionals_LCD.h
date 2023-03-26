@@ -241,7 +241,7 @@
 
   #define IS_RRD_SC 1
   #define U8GLIB_SSD1309
-
+EXTRUDERS
 #endif
 
 // ST7920-based graphical displays
@@ -583,7 +583,6 @@
 #if HAS_MMU
   #define SINGLENOZZLE
 #endif
-
 #if EITHER(SINGLENOZZLE, MIXING_EXTRUDER)         // One hotend, one thermistor, no XY offset
   #undef HOTENDS
   #define HOTENDS       1

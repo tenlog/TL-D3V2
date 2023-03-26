@@ -3322,8 +3322,8 @@ static_assert(   _ARR_TEST(3,0) && _ARR_TEST(3,1) && _ARR_TEST(3,2)
 #if ENABLED(MIXING_EXTRUDER) && (HOTENDS!=1)
   #error "Need 1 Hotend."
 #endif
-#if ENABLED(MIXING_EXTRUDER) && (HAS_HOTEND!=1)
-  #error "Need has hotend."
+#if ENABLED(MIXING_EXTRUDER && HAS_HOTEND != 1)
+  #error "MIXING_EXTRUDER need 1 hotend"
 #endif
 
 

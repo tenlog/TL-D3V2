@@ -337,7 +337,7 @@ class Planner {
       static xyze_bool_t last_page_dir;             // Last page direction given
     #endif
 
-    #if EXTRUDERS
+    #if (EXTRUDERS || MIXING_STEPPERS)
       static int16_t flow_percentage[EXTRUDERS];    // Extrusion factor for each extruder
       static float e_factor[EXTRUDERS];             // The flow percentage and volumetric multiplier combine to scale E movement
     #endif

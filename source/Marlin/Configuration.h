@@ -71,10 +71,10 @@ Version     033
 //TL Medels and version
 //#define TENLOG_H2
 //#define TENLOG_D3
-//#define TENLOG_S3   //single head
+#define TENLOG_S3   //single head
 //#define TENLOG_L4   //laser only
 //#define TENLOG_M3
-#define TENLOG_D5
+//#define TENLOG_D5
 //#define TENLOG_D6
 //#define TENLOG_LW     //发光字
 
@@ -84,11 +84,13 @@ Version     033
   #define EXTRUDERS 1
 #elif(ENABLED(TENLOG_LW))
   #define MIXING_EXTRUDER
-  //#define EXTRUDERS 1
+  //#define AUTO_BED_LEVELING_UBL
+  #define EXTRUDERS 1
 #else
   #define DUAL_X_CARRIAGE
   #define EXTRUDERS 2
 #endif
+
 
 //TL hardware.
 #define TENLOG_TOUCH_LCD
@@ -1582,7 +1584,6 @@ Version     033
 //#define AUTO_BED_LEVELING_3POINT
 //#define AUTO_BED_LEVELING_LINEAR
 // #define AUTO_BED_LEVELING_BILINEAR
-//#define AUTO_BED_LEVELING_UBL
 //#define MESH_BED_LEVELING
 
 /**
