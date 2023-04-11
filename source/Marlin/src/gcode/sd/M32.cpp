@@ -23,7 +23,7 @@
 #include "../../inc/MarlinConfig.h"
 
 #if HAS_MEDIA_SUBCALLS
-
+//#include "../../module/endstops.h"
 #include "../gcode.h"
 #include "../../sd/cardreader.h"
 #include "../../module/planner.h" // for synchronize()
@@ -43,15 +43,21 @@
  *    M32 S60 !PATH/TO/FILE.GCO#  ; Start FILE.GCO at byte 60
  */
 void GcodeSuite::M32() {
+  //#if ENABLED(TL_LASER_ONLY)
+  //ZERO(pre_print_file_name);
+  //#endif
   if (IS_SD_PRINTING()) planner.synchronize();
 
   if (card.isMounted()) {
     const uint8_t call_procedure = parser.boolval('P');
-
+    
     card.openFileRead(parser.string_arg, call_procedure);
+    
+    #if ENABLED(TL_LASER_ONLY)
+    sprintf(pre_print_file_name, "%s", parser.string_arg);
+    #endif
 
     if (parser.seenval('S')) card.setIndex(parser.value_long());
-
     card.startFileprint();
     TERN_(TENLOG_TOUCH_LCD, startPrintTime=millis());
 
@@ -60,4 +66,24 @@ void GcodeSuite::M32() {
   }
 }
 
+#if BOTH(TENLOG_TOUCH_LCD, TL_LASER_ONLY)
+void GcodeSuite::M320() {
+  static uint32_t lastClick;
+  start_beeper(0, 0);
+  char cmd[256];
+  if(millis() - lastClick < 2000) return;
+  if(!card.isFileOpen()){
+    if(strlen(pre_print_file_name)>2){
+      sprintf(cmd, "M32 %s", pre_print_file_name);
+      ZERO(pre_print_file_name);
+      EXECUTE_GCODE(cmd);
+      start_beeper(2, 1);
+    }
+  }else{
+    start_beeper(2, 1);
+    tlAbortPrinting();
+  }
+  lastClick = millis();
+}
+#endif
 #endif // HAS_MEDIA_SUBCALLS

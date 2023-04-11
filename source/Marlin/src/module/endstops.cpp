@@ -30,6 +30,10 @@
 #include "../sd/cardreader.h"
 #include "temperature.h"
 
+#if ENABLED(TENLOG_TOUCH_LDE)
+#include "../lcd/tenlog/tenlog_touch_lcd.h"
+#endif
+
 #if ENABLED(ENDSTOP_INTERRUPTS_FEATURE)
   #include HAL_PATH(../HAL, endstop_interrupts.h)
 #endif
@@ -359,12 +363,12 @@ void Endstops::event_handler() {
   if (hit_state == prev_hit_state) return;
   prev_hit_state = hit_state;
   if (hit_state) {
-    #if HAS_STATUS_MESSAGE
+    //#if HAS_STATUS_MESSAGE
       char chrX = ' ', chrY = ' ', chrZ = ' ', chrP = ' ';
       #define _SET_STOP_CHAR(A,C) (chr## A = C)
-    #else
-      #define _SET_STOP_CHAR(A,C) ;
-    #endif
+    //#else
+    //  #define _SET_STOP_CHAR(A,C) ;
+    //#endif
 
     #define _ENDSTOP_HIT_ECHO(A,C) do{ \
       SERIAL_ECHOPAIR(" " STRINGIFY(A) ":", planner.triggered_position_mm(_AXIS(A))); \
@@ -390,14 +394,28 @@ void Endstops::event_handler() {
     #endif
     SERIAL_EOL();
 
-    TERN_(HAS_STATUS_MESSAGE, ui.status_printf_P(0, PSTR(S_FMT " %c %c %c %c"), GET_TEXT(MSG_LCD_ENDSTOPS), chrX, chrY, chrZ, chrP));
+    char cmd[256];
+    sprintf(cmd, "%s %c %c %c %c", "Endstops:", chrX, chrY, chrZ, chrP);
+    TLDEBUG_PRINTLN(cmd);
+
+    //TERN_(HAS_STATUS_MESSAGE, ui.status_printf_P(0, PSTR(S_FMT " %c %c %c %c"), GET_TEXT(MSG_LCD_ENDSTOPS), chrX, chrY, chrZ, chrP));
 
     #if BOTH(SD_ABORT_ON_ENDSTOP_HIT, SDSUPPORT)
       if (planner.abort_on_endstop_hit) {
+        TLDEBUG_PRINTLN("EndStop Hited!!"); //by zyf
+        tlAbortPrinting();
+        /*        
         card.endFilePrint();
         quickstop_stepper();
         thermalManager.disable_all_heaters();
         print_job_timer.stop();
+        #if ENABLED(HWPWM)
+        set_pwm_f0(0, 1000);
+        #endif
+        */
+        #if ENABLED(TL_BEEPER)
+        start_beeper(32, 0);
+        #endif
       }
     #endif
   }

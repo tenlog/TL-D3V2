@@ -142,7 +142,7 @@
   #include "feature/joystick.h"
 #endif
 
-#if HAS_SERVOS
+#if HAS_SERVOS && 0 //by zyf
   #include "module/servo.h"
 #endif
 
@@ -525,16 +525,15 @@ inline void manage_inactivity(const bool ignore_stepper_queue=false) {
     const bool printer_not_busy = !printingIsActive();
     #define HAS_CUSTOM_USER_BUTTON(N) (PIN_EXISTS(BUTTON##N) && defined(BUTTON##N##_HIT_STATE) && defined(BUTTON##N##_GCODE) && defined(BUTTON##N##_DESC))
     #define CHECK_CUSTOM_USER_BUTTON(N) do{                            \
-      constexpr millis_t CUB_DEBOUNCE_DELAY_##N = 250UL;               \
+      constexpr millis_t CUB_DEBOUNCE_DELAY_##N = 1000UL;              \
       static millis_t next_cub_ms_##N;                                 \
       if (BUTTON##N##_HIT_STATE == READ(BUTTON##N##_PIN)               \
         && (ENABLED(BUTTON##N##_WHEN_PRINTING) || printer_not_busy)) { \
         const millis_t ms = millis();                                  \
         if (ELAPSED(ms, next_cub_ms_##N)) {                            \
           next_cub_ms_##N = ms + CUB_DEBOUNCE_DELAY_##N;               \
-          if (strlen(BUTTON##N##_DESC))                                \
-            LCD_MESSAGEPGM_P(PSTR(BUTTON##N##_DESC));                  \
-          queue.inject_P(PSTR(BUTTON##N##_GCODE));                     \
+          TLDEBUG_PRINTLN(PSTR(BUTTON##N##_DESC));                     \
+          EXECUTE_GCODE(PSTR(BUTTON##N##_GCODE));                      \
         }                                                              \
       }                                                                \
     }while(0)
@@ -1329,7 +1328,7 @@ void setup() {
   SETUP_RUN(stepper.init());          // Init stepper. This enables interrupts!
 
   #if HAS_SERVOS
-    SETUP_RUN(servo_init());
+    //SETUP_RUN(servo_init());  //by zyf
   #endif
 
   #if HAS_Z_SERVO_PROBE
@@ -1603,20 +1602,21 @@ void setup() {
 	SERIAL_ECHOLNPGM("=============SETUP FINISH=============\n");
 
   #if ENABLED(POWER_LOSS_RECOVERY_TL)
+    uint8_t lastPageID = TLTJC_GetLastPage();
     if(plr_enabled){
-      uint32_t isplr = settings.plr_is_pl();
-      if(isplr > 2048){
-        TLDEBUG_PRINTLNPAIR("Power loss found! Point=", isplr);
-        TlIsPLR();
-      }else{
-        if(tl_TouchScreenType == 1){
-          uint8_t lastPageID = TLTJC_GetLastPage();
-          if(lastPageID != 8)
-            TlPageMain();
+      if(tl_TouchScreenType == 1){
+        uint32_t isplr = settings.plr_is_pl();
+        if(isplr > 2048){
+          TLDEBUG_PRINTLNPAIR("Power loss found! Point=", isplr);
+          TlIsPLR();
+        }else{
+            if(lastPageID != 8)
+              TlPageMain();
         }
-        }
+      }
     }else{
-      TlPageMain();
+      if(lastPageID != 8)
+        TlPageMain();
     }
   #endif
 

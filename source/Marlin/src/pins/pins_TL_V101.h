@@ -50,11 +50,15 @@
 #define BOARD_USART2_TX_PIN     PA2// debug
 #define BOARD_USART2_RX_PIN     PA3
 
-#define BOARD_USART1_TX_PIN     PC4// LCD
+#if ENABLED(TL_LASER_ONLY)
+#define BOARD_USART1_TX_PIN     PB8// LCD PC4
+#else
+#define BOARD_USART1_TX_PIN     PC4// LCD PC4
+#endif
 #define BOARD_USART1_RX_PIN     PC5
 
-#define BOARD_USART3_TX_PIN     PB8// WIFI
-#define BOARD_USART3_RX_PIN     PB9
+//#define BOARD_USART3_TX_PIN     PB8// WIFI
+//#define BOARD_USART3_RX_PIN     PB9
 
 //
 // EEPROM
@@ -64,11 +68,14 @@
 
 #ifdef IIC_BL24CXX_EEPROM
   #ifdef TENLOG_LW
-  #define IIC_EEPROM_SDA       PD13
-  #define IIC_EEPROM_SCL       PD12
+    #define IIC_EEPROM_SDA       PD13
+    #define IIC_EEPROM_SCL       PD12
+  #elif defined(TL_LASER_ONLY)
+    #define IIC_EEPROM_SDA       PD12
+    #define IIC_EEPROM_SCL       PD13
   #else
-  #define IIC_EEPROM_SDA       PA12
-  #define IIC_EEPROM_SCL       PA11
+    #define IIC_EEPROM_SDA       PA12
+    #define IIC_EEPROM_SCL       PA11
   #endif
   #define MARLIN_EEPROM_SIZE               0x800  // 2Kb (24C16)
 #endif
@@ -78,8 +85,8 @@
 //
 #define X_STOP_PIN         PC13// x-
 
-#ifdef TENLOG_LW
-  #define X_MAX_PIN          PE5// X+
+#if defined(TENLOG_LW) || defined(TL_LASER_ONLY)
+  //#define X_MAX_PIN          PE5// X+
   #define Y_STOP_PIN         PH2// y-
 #else
   #define X_MAX_PIN          PH2// X+
@@ -87,10 +94,23 @@
 #endif
 
 #define Z_STOP_PIN         PC15// Z- LW-采样
-#ifdef TENLOG_M3
+
+#if defined(TENLOG_M3) || defined(TENLOG_LW) || defined(TL_LASER_ONLY)
   #define Z_MAX_PIN          PC15// Z+ PC14
 #else
   #define Z_MAX_PIN          PC14// Z+ PC14 //LW-吐舌头
+#endif
+
+#if ENABLED(TL_LASER_ONLY)
+  #define RESET_PIN           PC14
+#endif
+
+#if ENABLED(BLTOUCH)
+  #define SERVO0_PIN Z_MAX_PIN
+#endif
+
+#if ENABLED(TL_BEEPER)
+  #define TL_BEEPER_PIN PC3
 #endif
 
 //

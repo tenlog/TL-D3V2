@@ -213,7 +213,10 @@ bool CardReader::is_dir_or_gcode(const dir_t &p, bool onlyGcode) {
 
   return (
     flag.filenameIsDir && !onlyGcode                    // All Directories are ok  //by zyf only gcode
-    || (p.name[8] == 'G' && p.name[9] != '~' )           // Non-backup *.G* files are accepted
+    || (p.name[8] == 'G' && p.name[9] != '~')            // Non-backup *.G* files are accepted
+    #if ENABLED(TL_LASER_ONLY)
+    || (p.name[8] == 'N' && p.name[9] == 'C')            // *.NC files are accepted
+    #endif      
   );
 }
 

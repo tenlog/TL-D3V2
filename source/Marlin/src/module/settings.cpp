@@ -2518,7 +2518,7 @@ void MarlinSettings::postprocess() {
         EEPROM_READ(wifi_ip_settings);
       #endif
       #if ENABLED(TENLOG_TOUCH_LCD)
-        tlInitSetting(false);  //Show in ui
+        tlInitSetting(false);  //Show in ui //resend to wifi
       #endif
       //
       // Validate Final Size and CRC
@@ -3182,6 +3182,10 @@ void MarlinSettings::reset() {
   DEBUG_ECHOLNPGM("Hardcoded Default Settings Loaded");
 
   TERN_(EXTENSIBLE_UI, ExtUI::onFactoryReset());
+  save();
+  load();
+  //delay(200);
+  //SPI_RestartWIFI();
 }
 
 #if DISABLED(DISABLE_M503)

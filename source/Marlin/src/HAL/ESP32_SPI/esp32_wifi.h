@@ -126,6 +126,7 @@ uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data);
 void WIFI_Init(void);
 void SPI_ConnectWIFI();
 void SPI_RestartWIFI();
+void SPI_resent_wifi_info();
 
 void WIFI_TX_Handler(int8_t control_code);
 

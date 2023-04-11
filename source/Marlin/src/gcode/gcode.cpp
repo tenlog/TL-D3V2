@@ -69,6 +69,10 @@ GcodeSuite gcode;
 #include "../lcd/tenlog/tenlog_touch_lcd.h"
 #endif
 
+#if ENABLED(HWPWM)
+#include "../HAL/PWM/pwm.h"
+#endif
+
 #include "../MarlinCore.h" // for idle, kill
 
 // Inactivity shutdown
@@ -481,6 +485,9 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
 
         #if HAS_MEDIA_SUBCALLS
           case 32: M32(); break;                                  // M32: Select file and start SD print
+          #if ENABLED(TL_LASER_ONLY)
+          case 320: M320(); break;                                // M32: print a pre selected file.
+          #endif
         #endif
 
         #if ENABLED(LONG_FILENAME_HOST_SUPPORT)
@@ -1021,6 +1028,17 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
       case 'D': D(parser.codenum); break;                         // Dn: Debug codes
     #endif
 
+    /*
+    #if ENABLED(TL_LASER_ONLY)
+      case 'S':
+      {
+        uint8_t sV = parser.codenum;
+        if(sV == 0)
+          set_pwm_f0(0, 1000);
+      }
+      break;
+    #endif
+    */
     #if ENABLED(REALTIME_REPORTING_COMMANDS)
       case 'S': case 'P': case 'R': break;                        // Invalid S, P, R commands already filtered
     #endif

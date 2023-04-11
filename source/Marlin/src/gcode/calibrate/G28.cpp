@@ -154,7 +154,7 @@
       homeaxis(Z_AXIS);
     }
     else {
-      LCD_MESSAGEPGM(MSG_ZPROBE_OUT);
+      //LCD_MESSAGEPGM(MSG_ZPROBE_OUT); //must shou in lcd by zyf
       SERIAL_ECHO_MSG(STR_ZPROBE_OUT_SER);
     }
   }

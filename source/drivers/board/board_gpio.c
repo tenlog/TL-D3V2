@@ -118,7 +118,7 @@ extern void setup_gpio(void )
 }
 
 DEFINE_HWSERIAL(Serial2, 2);
-DEFINE_HWSERIAL(Serial3, 3);
+//DEFINE_HWSERIAL(Serial3, 3);
 DEFINE_HWSERIAL(Serial1, 1);
 #undef _BOARD_GPIO_C_
 /************end of file********************/

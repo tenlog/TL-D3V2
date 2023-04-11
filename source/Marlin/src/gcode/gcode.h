@@ -602,6 +602,9 @@ private:
   #if ENABLED(SDSUPPORT)
     #if ENABLED(HAS_MEDIA_SUBCALLS)
       static void M32();
+      #if ENABLED(TL_LASER_ONLY)
+      static void M320();
+      #endif
     #endif
     #if ENABLED(LONG_FILENAME_HOST_SUPPORT)
       static void M33();

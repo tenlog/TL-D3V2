@@ -600,7 +600,7 @@
 
 // If you want endstops to stay on (by default) even when not homing
 // enable this option. Override at any time with M120, M121.
-//#define ENDSTOPS_ALWAYS_ON_DEFAULT
+#define ENDSTOPS_ALWAYS_ON_DEFAULT
 
 // @section extras
 
@@ -659,7 +659,9 @@
   //#define INVERT_Z3_VS_Z_DIR
   //#define INVERT_Z4_VS_Z_DIR
 
-  #define Z_MULTI_ENDSTOPS
+  #ifndef BLTOUCH
+    #define Z_MULTI_ENDSTOPS
+  #endif
   #if ENABLED(Z_MULTI_ENDSTOPS)
     #define Z2_USE_ENDSTOP          _ZMAX_
     #define Z2_ENDSTOP_ADJUSTMENT   0
@@ -768,7 +770,7 @@
 
   // Safety: The probe needs time to recognize the command.
   //         Minimum command delay (ms). Enable and increase if needed.
-  //#define BLTOUCH_DELAY 500
+  #define BLTOUCH_DELAY 500
 
   /**
    * Settings for BLTOUCH Classic 1.2, 1.3 or BLTouch Smart 1.0, 2.0, 2.2, 3.0, 3.1, and most clones:
@@ -927,7 +929,11 @@
  * Set DISABLE_INACTIVE_? 'true' to shut down axis steppers after an idle period.
  * The Deactive Time can be overridden with M18 and M84. Set to 0 for No Timeout.
  */
+#if defined(TENLOG_LW) || defined(TL_LASER_ONLY)
+#define DEFAULT_STEPPER_DEACTIVE_TIME 5 //by zyf .. 120 //Release stepper time
+#else
 #define DEFAULT_STEPPER_DEACTIVE_TIME 120 //by zyf .. 120 //Release stepper time
+#endif
 #define DISABLE_INACTIVE_X true
 #define DISABLE_INACTIVE_Y true
 #define DISABLE_INACTIVE_Z true  // Set 'false' if the nozzle could fall onto your printed part!
@@ -1399,7 +1405,10 @@
    * This feature must be enabled with "M540 S1" or from the LCD menu.
    * To have any effect, endstops must be enabled during SD printing.
    */
-  //#define SD_ABORT_ON_ENDSTOP_HIT
+  
+  #if ENABLED(TL_LASER_ONLY)
+    #define SD_ABORT_ON_ENDSTOP_HIT
+  #endif
 
   /**
    * This option makes it easier to print the same SD Card file again.
@@ -2095,7 +2104,7 @@
  *
  * Adds support for commands:
  *  S000 : Report State and Position while moving.
- *  P000 : Instant Pause / Hold while moving.
+ *  P000 :  
  *  R000 : Resume from Pause / Hold.
  *
  * - During Hold all Emergency Parser commands are available, as usual.
@@ -3255,7 +3264,7 @@
 
     #endif
   #endif
-#endif
+#endif //SPINDLE_FEATURE || LASER_FEATURE
 
 /**
  * Synchronous Laser Control with M106/M107
@@ -3454,7 +3463,9 @@
  * High feedrates may cause ringing and harm print quality.
  */
 //#define PAREN_COMMENTS      // Support for parentheses-delimited comments
-//#define GCODE_MOTION_MODES  // Remember the motion mode (G0 G1 G2 G3 G5 G38.X) and apply for X Y Z E F, etc.
+#ifdef TL_LASER_ONLY
+#define GCODE_MOTION_MODES  // Remember the motion mode (G0 G1 G2 G3 G5 G38.X) and apply for X Y Z E F, etc.
+#endif
 
 // Enable and set a (default) feedrate for all G0 moves
 //#define G0_FEEDRATE 3000 // (mm/min)
@@ -3550,22 +3561,24 @@
  * User-defined buttons to run custom G-code.
  * Up to 25 may be defined.
  */
-//#define CUSTOM_USER_BUTTONS
+#define CUSTOM_USER_BUTTONS
 #if ENABLED(CUSTOM_USER_BUTTONS)
-  //#define BUTTON1_PIN -1
-  #if PIN_EXISTS(BUTTON1)
-    #define BUTTON1_HIT_STATE     LOW       // State of the triggered button. NC=LOW. NO=HIGH.
-    #define BUTTON1_WHEN_PRINTING false     // Button allowed to trigger during printing?
-    #define BUTTON1_GCODE         "G28"
-    #define BUTTON1_DESC          "Homing"  // Optional string to set the LCD status
-  #endif
+  #if ENABLED(TL_LASER_ONLY)
+    #define BUTTON1_PIN RESET_PIN
+    #if PIN_EXISTS(BUTTON1)
+      #define BUTTON1_HIT_STATE     LOW       // State of the triggered button. NC=LOW. NO=HIGH.
+      #define BUTTON1_WHEN_PRINTING false     // Button allowed to trigger during printing?
+      #define BUTTON1_GCODE         "M502"
+      #define BUTTON1_DESC          "Reset default"  // Optional string to set the LCD status
+    #endif
 
-  //#define BUTTON2_PIN -1
-  #if PIN_EXISTS(BUTTON2)
-    #define BUTTON2_HIT_STATE     LOW
-    #define BUTTON2_WHEN_PRINTING false
-    #define BUTTON2_GCODE         "M140 S" STRINGIFY(PREHEAT_1_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_1_TEMP_HOTEND)
-    #define BUTTON2_DESC          "Preheat for " PREHEAT_1_LABEL
+    #define BUTTON2_PIN PC4 //use lcd usart tx for test
+    #if PIN_EXISTS(BUTTON2)
+      #define BUTTON2_HIT_STATE     LOW
+      #define BUTTON2_WHEN_PRINTING true
+      #define BUTTON2_GCODE         "M320"  //Print a pre selected file.
+      #define BUTTON2_DESC          "Print a pre selected file."
+    #endif
   #endif
 
   //#define BUTTON3_PIN -1

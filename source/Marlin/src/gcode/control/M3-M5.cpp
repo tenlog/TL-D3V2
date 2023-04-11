@@ -28,6 +28,11 @@
 #include "../../feature/spindle_laser.h"
 #include "../../module/stepper.h"
 
+#if ENABLED(HWPWM)
+#include "../../HAL/PWM/pwm.h"
+#endif
+
+
 /**
  * Laser:
  *  M3 - Laser ON/Power (Ramped power)
@@ -135,6 +140,9 @@ void GcodeSuite::M5() {
   planner.synchronize();
   cutter.set_enabled(false);
   cutter.menuPower = cutter.unitPower;
+  #if ENABLED(HWPWM)
+  set_pwm_f0(0, 1000);
+  #endif
 }
 
 #endif // HAS_CUTTER

@@ -129,6 +129,8 @@ void TlLoadingMessage(const char Message[], const int ShowType=-1, const int Del
 void TlPageMain();
 void TlIsPLR();
 
+void tlAbortPrinting();
+
 //void process_commands();
 bool MTLSERIAL_available();
 char MTLSERIAL_read();
@@ -173,6 +175,16 @@ extern char m117_str[15];
 extern char tl_hc_sn[25];
 extern char tl_tjc_sn[18];
 extern long tl_command[256];
+
+#if ENABLED(TL_BEEPER)
+extern char pre_print_file_name[13];
+extern uint8_t beeper_count;
+extern uint8_t beeper_type;
+#define BEEPER_ON WRITE(TL_BEEPER_PIN, 1)
+#define BEEPER_OFF WRITE(TL_BEEPER_PIN, 0)
+void start_beeper(uint8_t count, uint8_t type);
+
+#endif
 
 extern bool hotendOffsetChanged;
 extern bool plr1stZ;

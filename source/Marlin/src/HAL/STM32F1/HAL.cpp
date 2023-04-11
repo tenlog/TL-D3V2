@@ -66,6 +66,9 @@ void HAL_init() {
   #if PIN_EXISTS(LED)
     OUT_WRITE(LED_PIN, LOW);
   #endif
+  #if PIN_EXISTS(TL_BEEPER)
+    OUT_WRITE(TL_BEEPER_PIN, LOW);
+  #endif
 }
 
 // HAL idle task

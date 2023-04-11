@@ -25,6 +25,14 @@
 #include "../../core/serial.h"
 #include "../../inc/MarlinConfig.h"
 
+#if ENABLED(ESP32_WIFI)
+#include "../../HAL/ESP32_SPI/esp32_wifi.h"
+#endif
+
+#if ENABLED(TENLOG_TOUCH_LCD)
+#include "../../lcd/tenlog/tenlog_touch_lcd.h"
+#endif
+
 /**
  * M500: Store settings in EEPROM
  */
@@ -44,6 +52,10 @@ void GcodeSuite::M501() {
  */
 void GcodeSuite::M502() {
   (void)settings.reset();
+  SPI_RestartWIFI();
+  #if ENABLED(TL_BEEPER)
+    start_beeper(4, 1);
+  #endif
 }
 
 #if DISABLED(DISABLE_M503)

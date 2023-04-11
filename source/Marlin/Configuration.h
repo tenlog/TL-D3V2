@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "038"
+#define TL_SUBVERSION "039"
 
 //update log 
 /*
@@ -68,21 +68,27 @@ Version     033
             sub version 037
 20230316    Disabled inline laser function in normal 3d print mode.            
 */
+
 //TL Medels and version
 //#define TENLOG_H2
 //#define TENLOG_D3
-#define TENLOG_S3   //single head
-//#define TENLOG_L4   //laser only
+//#define TENLOG_S3   //single head
 //#define TENLOG_M3
+#define TENLOG_L4   //laser only
 //#define TENLOG_D5
 //#define TENLOG_D6
-//#define TENLOG_LW     //发光字
+//#define TENLOG_LW8     //发光字 Luminous words
+
+#if ENABLED(TENLOG_LW8)
+#define TENLOG_LW
+#endif
 
 //#define TL_DEBUG
 #if (ENABLED(TENLOG_L4) || ENABLED(TENLOG_S3))
   #define SINGLE_HEAD
   #define EXTRUDERS 1
 #elif(ENABLED(TENLOG_LW))
+  //#define BLTOUCH
   #define MIXING_EXTRUDER
   //#define AUTO_BED_LEVELING_UBL
   #define EXTRUDERS 1
@@ -90,7 +96,6 @@ Version     033
   #define DUAL_X_CARRIAGE
   #define EXTRUDERS 2
 #endif
-
 
 //TL hardware.
 #define TENLOG_TOUCH_LCD
@@ -103,8 +108,14 @@ Version     033
 #define PRINT_FROM_Z_HEIGHT
 
 #ifdef TENLOG_L4
-#define TL_LASER_ONLY
+  #define TL_LASER_ONLY
 #endif
+
+#ifdef TL_LASER_ONLY
+  #define TL_NO_SCREEN
+  #define TL_BEEPER
+#endif
+
 #define TL_LASER
 
 // The size of the printable area
@@ -143,10 +154,10 @@ Version     033
   #define X_BED_SIZE 310
   #define Y_BED_SIZE 310
   #define Z_LENGTH   350
-#elif defined(TENLOG_LW)
-  #define TL_MODEL_STR_0 "LW"
-  #define X_BED_SIZE 600
-  #define Y_BED_SIZE 600
+#elif defined(TENLOG_LW8)
+  #define TL_MODEL_STR_0 "LW8"
+  #define X_BED_SIZE 820
+  #define Y_BED_SIZE 820
   #define Z_LENGTH   200
 #endif
 
@@ -171,7 +182,7 @@ Version     033
   #define WIFI_DEFAULT_IP_SETTINGS {192,168,0,1,255,255,255,0,192,168,0,88}
 #endif
 
-#ifdef TENLOG_M3
+#if defined(TENLOG_M3) || defined(TL_LASER_ONLY) 
   #define INVERT_X_DIR false
 #else
   #define INVERT_X_DIR true
@@ -861,9 +872,7 @@ Version     033
 
 // Enable one of the options below for CoreXY, CoreXZ, or CoreYZ kinematics,
 // either in the usual order or reversed
-#ifdef TENLOG_L4
 //#define COREXY
-#endif
 //#define COREXZ
 //#define COREYZ
 //#define COREYX
@@ -1108,10 +1117,11 @@ Version     033
  * The probe replaces the Z-MIN endstop and is used for Z homing.
  * (Automatically enables USE_PROBE_FOR_Z_HOMING.)
  */
+#if ENABLED(BLTOUCH)
 #define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
-
 // Force the use of the probe for Z-axis homing
-//#define USE_PROBE_FOR_Z_HOMING
+#define USE_PROBE_FOR_Z_HOMING
+#endif
 
 /**
  * Z_MIN_PROBE_PIN
@@ -1165,7 +1175,6 @@ Version     033
 /**
  * The BLTouch probe uses a Hall effect sensor and emulates a servo.
  */
-// #define BLTOUCH
 
 /**
  * Touch-MI Probe by hotends.fr
@@ -1591,7 +1600,9 @@ Version     033
  * these options to restore the prior leveling state or to always enable
  * leveling immediately after G28.
  */
-//#define RESTORE_LEVELING_AFTER_G28
+#ifdef AUTO_BED_LEVELING_UBL
+#define RESTORE_LEVELING_AFTER_G28
+#endif
 //#define ENABLE_LEVELING_AFTER_G28
 
 /**
@@ -1633,7 +1644,7 @@ Version     033
   /**
    * Enable the G26 Mesh Validation Pattern tool.
    */
-  //#define G26_MESH_VALIDATION
+  #define G26_MESH_VALIDATION
   #if ENABLED(G26_MESH_VALIDATION)
     #define MESH_TEST_NOZZLE_SIZE    0.4  // (mm) Diameter of primary nozzle.
     #define MESH_TEST_LAYER_HEIGHT   0.2  // (mm) Default layer height for G26.
@@ -1780,8 +1791,9 @@ Version     033
 // - Move the Z probe (or nozzle) to a defined XY point before Z Homing.
 // - Prevent Z homing when the Z probe is outside bed area.
 //
-//#define Z_SAFE_HOMING
-
+#if ENABLED(BLTOUCH)
+#define Z_SAFE_HOMING
+#endif
 #if ENABLED(Z_SAFE_HOMING)
   #define Z_SAFE_HOMING_X_POINT X_CENTER  // X point for Z homing
   #define Z_SAFE_HOMING_Y_POINT Y_CENTER  // Y point for Z homing

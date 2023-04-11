@@ -55,7 +55,8 @@
 #define  FORCE_INLINE  __attribute__((always_inline)) inline
 #define NO_INLINE      __attribute__((noinline))
 #define _UNUSED      __attribute__((unused))
-#define _O0          __attribute__((optimize("O0")))
+//#define _O0          __attribute__((optimize("O0")))
+#define _O0 //Do nothing by zyf
 #define _Os          __attribute__((optimize("Os")))
 #define _O1          __attribute__((optimize("O1")))
 #define _O2          __attribute__((optimize("O2")))

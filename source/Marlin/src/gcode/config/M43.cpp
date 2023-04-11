@@ -30,8 +30,8 @@
 #include "../../module/endstops.h"
 
 #if HAS_Z_SERVO_PROBE
-  #include "../../module/probe.h"
-  #include "../../module/servo.h"
+  //#include "../../module/probe.h" //by zyf
+  //#include "../../module/servo.h"
 #endif
 
 #if ENABLED(BLTOUCH)

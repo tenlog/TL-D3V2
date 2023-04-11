@@ -52,9 +52,9 @@
           <OutputName>firmware</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
-          <CreateHexFile>0</CreateHexFile>
-          <DebugInformation>0</DebugInformation>
-          <BrowseInformation>0</BrowseInformation>
+          <CreateHexFile>1</CreateHexFile>
+          <DebugInformation>1</DebugInformation>
+          <BrowseInformation>1</BrowseInformation>
           <ListingPath>.\list\</ListingPath>
           <HexFormatSelection>1</HexFormatSelection>
           <Merge32K>0</Merge32K>
@@ -1273,6 +1273,16 @@
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\gcode\feature\mixing\M166.cpp</FilePath>
             </File>
+            <File>
+              <FileName>G80.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\gcode\motion\G80.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>M540.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\gcode\config\M540.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1937,6 +1947,21 @@
               <FileName>pwm.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\source\Marlin\src\HAL\PWM\pwm.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>marlin_ubl</GroupName>
+          <Files>
+            <File>
+              <FileName>bedlevel.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\source\Marlin\src\feature\bedlevel\bedlevel.h</FilePath>
+            </File>
+            <File>
+              <FileName>ubl.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\source\Marlin\src\feature\bedlevel\ubl\ubl.h</FilePath>
             </File>
           </Files>
         </Group>

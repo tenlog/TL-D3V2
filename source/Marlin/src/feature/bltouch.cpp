@@ -30,8 +30,8 @@ BLTouch bltouch;
 
 bool BLTouch::last_written_mode; // Initialized by settings.load, 0 = Open Drain; 1 = 5V Drain
 
-#include "../module/servo.h"
-#include "../module/probe.h"
+//#include "../module/servo.h"  //by zyf
+//#include "../module/probe.h"  //by zyf
 
 void stop();
 

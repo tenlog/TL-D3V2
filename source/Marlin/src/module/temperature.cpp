@@ -202,7 +202,7 @@
   #include "../libs/buzzer.h"
 #endif
 
-#if HAS_SERVOS
+#if HAS_SERVOS && #defined(CHAMBER_VENT)
   #include "servo.h"
 #endif
 

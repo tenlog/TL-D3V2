@@ -32,6 +32,9 @@
 #include "hc32f46x_efm.h"
 #include "../../MarlinCore.h"
 
+#include "../../module/endstops.h"
+
+
 #if ENABLED(HWPWM)
   #include "../../HAL/PWM/pwm.h"
 #endif
@@ -126,6 +129,12 @@ uint8_t sd_OK = 0;
 #ifdef PRINT_FROM_Z_HEIGHT
 bool PrintFromZHeightFound = true;
 float print_from_z_target = 0.0;
+#endif
+
+#if ENABLED(TL_BEEPER)
+uint8_t beeper_count = 0;
+uint8_t beeper_type = 0;
+char pre_print_file_name[13]={""};
 #endif
 
 uint32_t wifi_update_interval = 400;
@@ -236,9 +245,11 @@ int DETECT_TLS(){
                 bool Ok16 = true;
                 uint8_t total = 0;
                 for(uint8_t i=0; i<16; i++){
-                    if(tl_tjc_sn[i]>='A' && tl_tjc_sn[i]<='F') total = total + tl_tjc_sn[i] - 'A' + 10;
-                    else if(tl_tjc_sn[i]>='0' && tl_tjc_sn[i]<='9') total = total + tl_tjc_sn[i] - '0' + 0;
-                    else {
+                    if(tl_tjc_sn[i]>='A' && tl_tjc_sn[i]<='F'){
+                         total = total + tl_tjc_sn[i] - 'A' + 10;
+                    }else if(tl_tjc_sn[i]>='0' && tl_tjc_sn[i]<='9'){
+                         total = total + tl_tjc_sn[i] - '0' + 0;
+                    }else {
                         Ok16 = false;
                         break;
                     }
@@ -277,7 +288,6 @@ int DETECT_TLS(){
                     }
                 }
             }
-
         }else if(TryType == 0){
             if(CanTry){
                 TLDEBUG_PRINTLNPAIR("Trying DWN... ", iTryCount);
@@ -472,11 +482,10 @@ void tlInitSetting(bool only_wifi){
         #if ENABLED(HAS_WIFI)
         sprintf_P(cmd, PSTR("wifisetting.vMode.val=%d"), wifi_mode);
         PRINTTJC(cmd);
+        //wifi_printer_settings[39] = (http_port)/0x100;
         sprintf_P(cmd, PSTR("wifisetting.tSSID.txt=\"%s\""), wifi_ssid);
         PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("wifisetting.tPwd.txt=\"%s\""), wifi_pswd);
-        PRINTTJC(cmd);
-        sprintf_P(cmd, PSTR("wifisetting.nPort.val=%d"), http_port);
         PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("wifisetting.tAccessCode.txt=\"%s\""), wifi_acce_code);
         PRINTTJC(cmd);
@@ -486,6 +495,10 @@ void tlInitSetting(bool only_wifi){
         PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("wifisetting.tLIP.txt=\"%d.%d.%d.%d\""), wifi_ip_settings[8],wifi_ip_settings[9],wifi_ip_settings[10],wifi_ip_settings[11]);
         PRINTTJC(cmd);
+        sprintf_P(cmd, PSTR("wifisetting.nPort.val=%d"), http_port);
+        PRINTTJC(cmd);
+        //wifi_printer_settings[37] = (http_port)/0x100;
+        //wifi_printer_settings[38] = (http_port)%0x100;
         #endif
         
         #if DISABLED(ELECTROMAGNETIC_VALUE) && DISABLED(TL_LASER_ONLY)
@@ -511,6 +524,7 @@ void tlInitSetting(bool only_wifi){
         TERN_(ESP32_WIFI, wifi_printer_settings[35] = (Z_MAX_POS*10)/0x100);
         TERN_(ESP32_WIFI, wifi_printer_settings[36] = (Z_MAX_POS*10)%0x100);
 
+        
         sprintf_P(cmd, PSTR("settings1.xM201X.val=%d"), planner.settings.max_acceleration_mm_per_s2[X_AXIS]);
         PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings1.xM201Y.val=%d"), planner.settings.max_acceleration_mm_per_s2[Y_AXIS]);
@@ -562,7 +576,7 @@ void tlInitSetting(bool only_wifi){
         sprintf_P(cmd, PSTR("settings2.xM205Z.val=%d"), (uint16_t)(planner.max_jerk.z * 100.0 + 0.5));
         PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings2.xM205E.val=%d"), (uint16_t)(planner.max_jerk.e * 100.0 + 0.5));
-        PRINTTJC(cmd);        
+        PRINTTJC(cmd);
         
     }else if(tl_TouchScreenType == 0){
         DWN_DELAY;
@@ -611,6 +625,7 @@ void tlInitSetting(bool only_wifi){
         delay(200);
     }
     TLVersion();
+    //start_beeper(1,1);
 }
 
 void TlPageMain(){
@@ -702,7 +717,12 @@ void initTLScreen(){
         flash_write(flash_sn_data_w);
     }
 
+    #if ENABLED(TL_NO_SCREEN)
+    tl_TouchScreenType = 1;
+    #else
     tl_TouchScreenType = DETECT_TLS(); // check if it is tjc screen
+    #endif
+
     if(tl_TouchScreenType == 1){
 	    TLSTJC_printEmptyend();
         delay(100);
@@ -813,7 +833,7 @@ float GCodelng(const char Header, const long FromPostion, long _command[], const
     return -999.0;
 }
 
-void TLAbortPrinting(){
+void tlAbortPrinting(){
     #if ENABLED(SDSUPPORT)
     EXECUTE_GCODE("M107");
     #ifdef PRINT_FROM_Z_HEIGHT
@@ -827,14 +847,21 @@ void TLAbortPrinting(){
     quickstop_stepper();
     print_job_timer.abort();
     EXECUTE_GCODE("M106 S0");
-    //if(dual_x_carriage_mode == DXC_DUPLICATION_MODE){
-        //queue.inject_P(PSTR("G28 XY"));
-        //EXECUTE_GCODE("G28 XY");
-    //}else{
+    
+    #if ENABLED(TL_LASER_ONLY)
+        set_pwm_f0(0, 1000);
+        //endstops.enable(true);
+        queue.inject_P(PSTR("G28 X"));
+        queue.enqueue_one_now(PSTR("G4 P1"));
+        queue.enqueue_one_now(PSTR("M84"));
+        queue.enqueue_one_now(PSTR("G4 P1"));
+        queue.enqueue_one_now(PSTR("G4 P1"));
+    #else
         queue.inject_P(PSTR("G28 XY"));
         queue.enqueue_one_now(PSTR("G92 Y0"));
         queue.enqueue_one_now(PSTR("M84"));
-    //}
+    #endif
+
     IF_DISABLED(SD_ABORT_NO_COOLDOWN, thermalManager.disable_all_heaters());
     EXECUTE_GCODE("M107");
 
@@ -1026,6 +1053,9 @@ void TLSDPrintFinished(){
     #endif
 
     TERN_(POWER_LOSS_RECOVERY_TL, if(plr_enabled) settings.plr_reset());
+    #if ENABLED(HWPWM)
+    set_pwm_f0(0, 1000);
+    #endif
     my_sleep(1.5);
 
     unsigned long stoptime = millis();
@@ -1045,7 +1075,9 @@ void TLSDPrintFinished(){
     }else if(tl_TouchScreenType == 0){
 
     }
-    //if(dual_x_carriage_mode == DXC_DUPLICATION_MODE) kill("ND ");
+    #if ENABLED(TL_BEEPER)
+    start_beeper(16, 1);
+    #endif
 }
 
 void load_filament(int LoadUnload, int TValue)
@@ -1797,7 +1829,7 @@ void DWN_MessageHandler(const bool ISOK){
         if (ISOK)
         {
             DWN_Text(0x7000, 32, " Stopping, Pls wait...");
-            TLAbortPrinting();
+            tlAbortPrinting();
             //quickStop();
             //bHeatingStop = true;
             //enquecommand_P(PSTR("M1033"));
@@ -1813,7 +1845,7 @@ void DWN_MessageHandler(const bool ISOK){
     case MSG_NOZZLE_LOW_TEMP_ERROR:
     case MSG_BED_HIGH_TEMP_ERROR:
     case MSG_BED_LOW_TEMP_ERROR:
-        TLAbortPrinting();
+        tlAbortPrinting();
         break;
     case MSG_FILAMENT_RUNOUT:
     /*
@@ -2075,6 +2107,7 @@ void tenlog_screen_update_dwn()
         }
     }
 
+    /*
     if (iBeepCount >= 0)
     {
     #if (BEEPER > 0)
@@ -2094,6 +2127,7 @@ void tenlog_screen_update_dwn()
         //Init_TLScreen_dwn();
         bInited = true;
     }
+    */
 #endif //support dwn
 }
 
@@ -2666,17 +2700,19 @@ void process_command_gcode(long _tl_command[]) {
                         break;
                     }
                 }
-                NULLZERO(cmd);
+                NULLZERO(cmd); 
                 if(lF > 0 && cmdLength < 8){
+                    //print from lcd
                     sprintf_P(cmd, PSTR("M%d !%s"), lM, file_name_list[lF-1]);
                     tl_print_file_id=lF;
                 }else{
+                    //print from wifi
                     char fileNameP[13];
                     NULLZERO(fileNameP);
                     for(int i=0; i<12; i++){
                         fileNameP[i] = _tl_command[iFrom + 4 + i];
                     }
-                    if(strlen(fileNameP) > 4){
+                    if(strlen(fileNameP) > 2){
                         sprintf_P(cmd, PSTR("M%d !%s"), lM, fileNameP);
                     }
                 }
@@ -2686,6 +2722,19 @@ void process_command_gcode(long _tl_command[]) {
                     settings.plr_fn_save(lF-1);
                     TLDEBUG_PRINTLN(cmd);
                     EXECUTE_GCODE(cmd);
+                }
+                #endif
+            }else if(lM == 321){
+                #if ENABLED(TL_LASER_ONLY)
+                //M321 pre select print file name
+                //print from wifi
+                NULLZERO(pre_print_file_name);
+                for(int i=0; i<12; i++){
+                    pre_print_file_name[i] = _tl_command[iFrom + 4 + i];
+                }
+                if(strlen(pre_print_file_name) > 2){
+                    start_beeper(100,0);
+                    //sprintf_P(cmd, PSTR("M%d !%s"), lM, fileNameP);
                 }
                 #endif
             }else if(lM == 19){
@@ -2832,7 +2881,7 @@ void process_command_gcode(long _tl_command[]) {
             }else if(lM == 1033){
                 //M1033
                 //abortSDPrinting
-                TLAbortPrinting();
+                tlAbortPrinting();
             }else if(lM == 1035){
                                     #if ENABLED(ESP32_WIFI)
                 //M1035
@@ -2924,12 +2973,14 @@ void process_command_gcode(long _tl_command[]) {
                         if(_wifi_mode != wifi_mode){
                             wifi_mode = GCodelng('S', iFrom, _tl_command);
                             EXECUTE_GCODE(PSTR("M500"));
+                            SPI_resent_wifi_info();
                         }
                     }else if(lM == 1504){
                         //M1504
                         http_port = GCodelng('S', iFrom, _tl_command);
                         sprintf_P(cmd, PSTR("M%d S%d"), lM, http_port);                        
                         EXECUTE_GCODE(PSTR("M500"));
+                        SPI_resent_wifi_info();
                     }else if(lM == 1502){
                         //M1502
                         NULLZERO(wifi_ssid);
@@ -2942,6 +2993,7 @@ void process_command_gcode(long _tl_command[]) {
                         }
                         sprintf_P(cmd, PSTR("M%d %s"), lM, wifi_ssid);
                         EXECUTE_GCODE(PSTR("M500"));
+                        SPI_resent_wifi_info();
                     }else if(lM == 1503){
                         //M1503
                         NULLZERO(wifi_pswd);
@@ -2954,6 +3006,7 @@ void process_command_gcode(long _tl_command[]) {
                         }
                         sprintf_P(cmd, PSTR("M%d %s"), lM, wifi_pswd);                        
                         EXECUTE_GCODE(PSTR("M500"));
+                        SPI_resent_wifi_info();
                     }else if(lM == 1505){
                         //M1505 access code
                         NULLZERO(wifi_acce_code);
@@ -2964,10 +3017,11 @@ void process_command_gcode(long _tl_command[]) {
                                 break;
                             }
                         }
-                        sprintf_P(cmd, PSTR("M%d %s"), lM, wifi_acce_code);                        
+                        sprintf_P(cmd, PSTR("M%d %s"), lM, wifi_acce_code); 
                         EXECUTE_GCODE(PSTR("M500"));
+                        SPI_resent_wifi_info();
                     }else if(lM == 1506 || lM == 1507 || lM == 1508){
-                        //M1506 wifi_gateway
+                        //M1506 wifi_gateway //M1506 M1507 M1508
                         for(int i=0; i<4; i++){
                             wifi_ip_settings[4* (lM - 1506) + i] = 0x00;
                         }
@@ -2986,6 +3040,7 @@ void process_command_gcode(long _tl_command[]) {
                         sprintf_P(cmd, PSTR("M%d %d.%d.%d.%d"), lM, wifi_ip_settings[4* (lM - 1506) + 0],wifi_ip_settings[4* (lM - 1506) + 1],wifi_ip_settings[4* (lM - 1506) + 2],wifi_ip_settings[4* (lM - 1506) + 3]);
                         TLDEBUG_PRINTLN(cmd);
                         EXECUTE_GCODE(PSTR("M500"));
+                        SPI_resent_wifi_info();
                     }else if(lM == 1510){
                         //M1510
                         SPI_RestartWIFI();
@@ -3070,7 +3125,43 @@ void tenlog_command_handler()
     }
 }
 
+#if ENABLED(TL_BEEPER)
+void tl_beeper_handler(){
+    static bool beeper_state;
+    static uint32_t lastBeeperTime;
+    uint16_t beeper_time = 250;
+    if(beeper_type == 1) beeper_time = 500;
+    if(millis() - lastBeeperTime < beeper_time ){
+        return;
+    }
+    if(beeper_count==0 && beeper_state) {
+        //TLDEBUG_PRINTLN("Beeper off");
+        BEEPER_OFF;
+        beeper_state = false;
+    }
+    if(beeper_count >0){
+        if(beeper_count % 2 == 1 && !beeper_state){
+            //TLDEBUG_PRINTLN("Beeper on");
+            BEEPER_ON;
+            beeper_state = true;
+        } 
+        else if(beeper_count % 2 == 0 && beeper_state){
+            //TLDEBUG_PRINTLN("Beeper off");
+            BEEPER_OFF;
+            beeper_state = false;
+        }
+        beeper_count--;
+        lastBeeperTime = millis();
+    }
+}   
+void start_beeper(uint8_t count, uint8_t type){
+    beeper_count=count;
+    beeper_type=type;
+}
+#endif
+
 void TL_idle(){
+    TERN_(TL_BEEPER, tl_beeper_handler()); 
     tenlog_command_handler();
     tenlog_screen_update();
     #if ENABLED(HAS_WIFI)
@@ -3465,5 +3556,7 @@ void flash_earea(){
 void command_M1521(int8_t Status){
     if(Status) WRITE(LED_PIN, 1); else WRITE(LED_PIN, 0);
 }
+
+
 
 #endif  //TENLOG_TOUCH_LCD

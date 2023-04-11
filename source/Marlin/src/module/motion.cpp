@@ -74,10 +74,6 @@
   #include "../lcd/tenlog/tenlog_touch_lcd.h"
 #endif
 
-#if ENABLED(HWPWM)
-  #include "../HAL/PWM/pwm.h"
-#endif
-
 // Relative Mode. Enable with G91, disable with G90.
 bool relative_mode; // = false;
 

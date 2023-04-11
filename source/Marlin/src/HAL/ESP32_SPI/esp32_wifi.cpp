@@ -31,6 +31,7 @@
 #ifdef ESP32_WIFI
 #include "esp32_wifi.h"
 
+
 char wifi_ssid[20] = WIFI_DEFAULT_SSID;
 char wifi_pswd[20] = WIFI_DEFAULT_PSWD;
 char wifi_acce_code[20] = WIFI_DEFAULT_ACCE_CODE;
@@ -316,7 +317,7 @@ void SPI_RX_Handler(){
         }
         
         card.removeFile(fname); //if exist delete it 
-
+        
         card.openFileWrite(fname);
         if (!card.isFileOpen()) {
             file_writing = false;
@@ -327,6 +328,10 @@ void SPI_RX_Handler(){
             blockCount = 0;
             lostCount = 0;
             //CRCerrorCount = 0;
+            #if ENABLED(TL_LASER_ONLY)
+            ZERO(pre_print_file_name);
+            sprintf(pre_print_file_name, "%s", fname);
+            #endif
         }
         TLDEBUG_PRINTLN(cmd);
         //upload_switch_flag = 0;
@@ -396,6 +401,9 @@ void SPI_RX_Handler(){
             received_file_block_id = 0;
             resend_file_block_id = 0;
             lostCount = 0;
+            #if ENABLED(TL_BEEPER)
+            start_beeper(32, 0);
+            #endif
             //CRCerrorCount = 0;
         }
         file_writing = false;
@@ -495,12 +503,29 @@ void WIFI_TX_Handler(int8_t control_code){
                 send[i+25]=tl_tjc_sn[i];
             }
             char str[20];
-            sprintf_P(str, PSTR("%s V%s.%s"), TL_MODEL_STR, SHORT_BUILD_VERSION, TL_SUBVERSION);
+            sprintf_P(str, PSTR("%s V%s.%s"), TL_MODEL_STR, SHORT_BUILD_VERSION, TL_SUBVERSION); //HANDS2 V2.0.8.038
 
             //42-59 VERSION
             for(uint8_t i=0; i<17; i++){
                 send[i+42]=str[i];
             }
+
+            uint8_t singleHead=0;
+            #ifdef SINGLE_HEAD
+                singleHead = 1;
+            #endif
+            uint8_t laser_only=0;
+            #ifdef TL_LASER_ONLY
+                laser_only=1;
+            #endif
+            uint8_t mixing_extruder=0;
+            #ifdef MIXING_EXTRUDER
+            mixing_extruder=1;
+            #endif
+            send[59]=singleHead;
+            send[60]=laser_only;
+            send[61]=mixing_extruder;
+            
         }
         break;
     }
@@ -540,6 +565,7 @@ void WIFI_TX_Handler(int8_t control_code){
             //resend_file_block_id = 0;
         }
         break;        
+        //0x0B //=reboot
     }
 
     for(uint16_t i=0; i<BUFFER_SIZE-1; i++){
@@ -557,6 +583,14 @@ void SPI_ConnectWIFI(){
     wifi_connected = false;
     wifiFirstSend = 0;
     for(uint8_t i=0; i<7; i++){
+        delay(5);
+        WIFI_TX_Handler(i);
+    }
+}
+
+void SPI_resent_wifi_info(){
+    wifiFirstSend = 0;
+    for(uint8_t i=0; i<6; i++){
         delay(5);
         WIFI_TX_Handler(i);
     }

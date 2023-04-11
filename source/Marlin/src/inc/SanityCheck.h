@@ -3320,12 +3320,8 @@ static_assert(   _ARR_TEST(3,0) && _ARR_TEST(3,1) && _ARR_TEST(3,2)
   #error "MIXING_EXTRUDER can't be used with DISTINCT_E_FACTORS. But you may use SINGLENOZZLE with DISTINCT_E_FACTORS."
 #endif
 #if ENABLED(MIXING_EXTRUDER) && (HOTENDS!=1)
-  #error "Need 1 Hotend."
+  #error "MIXING_EXTRUDER Need 1 Hotend."
 #endif
-#if ENABLED(MIXING_EXTRUDER && HAS_HOTEND != 1)
-  #error "MIXING_EXTRUDER need 1 hotend"
-#endif
-
 
 /**
  * Sanity check for valid stepper driver types
