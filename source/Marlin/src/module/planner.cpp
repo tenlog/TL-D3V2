@@ -160,9 +160,7 @@ float Planner::steps_to_mm[XYZE_N];             // (mm) Millimeters per step
   TERN(HAS_LINEAR_E_JERK, xyz_pos_t, xyze_pos_t) Planner::max_jerk;
 #endif
 
-#if BOTH(SD_ABORT_ON_ENDSTOP_HIT, TL_LASER_ONLY)
-  bool Planner::abort_on_endstop_hit = true;
-#elif ENABLED(SD_ABORT_ON_ENDSTOP_HIT)
+#if ENABLED(SD_ABORT_ON_ENDSTOP_HIT)
   bool Planner::abort_on_endstop_hit = false;
 #endif
 
@@ -1287,7 +1285,6 @@ void Planner::recalculate() {
 
     const millis_t ms = millis();
     #if ENABLED(HWPWM)
-    //TERN_(HAS_FAN0, set_pwm_f0(CALC_FAN_SPEED(0), 255));
       set_pwm_f0(CALC_FAN_SPEED(0), 255);
     #else
     TERN_(HAS_FAN0, FAN_SET(0));    //E0 Fan

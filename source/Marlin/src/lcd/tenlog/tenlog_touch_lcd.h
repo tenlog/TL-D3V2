@@ -117,7 +117,7 @@ void DWN_Get_Ver();
 
 void TL_idle();
 void process_command_gcode(long _tl_command[]);
-void get_command(int ScreenType=1);
+void get_lcd_command(int ScreenType=1);
 
 void TLSTJC_println(const char s[]);
 void TLSTJC_print(const char s[]);

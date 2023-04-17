@@ -50,7 +50,7 @@
 			0x08 = wifi version
 			0x09 = start send file data
 			0x0A = file data.
-			0x0B = sned file end.
+			0x0B = send file end.
 */
 
 #pragma once

@@ -600,7 +600,7 @@
 
 // If you want endstops to stay on (by default) even when not homing
 // enable this option. Override at any time with M120, M121.
-#define ENDSTOPS_ALWAYS_ON_DEFAULT
+//#define ENDSTOPS_ALWAYS_ON_DEFAULT
 
 // @section extras
 
@@ -1407,7 +1407,8 @@
    */
   
   #if ENABLED(TL_LASER_ONLY)
-    #define SD_ABORT_ON_ENDSTOP_HIT
+    //#define SD_ABORT_ON_ENDSTOP_HIT //不知道为什么Y轴不生效，试了2天放弃了，自己写一个还快。
+    #define TL_SD_ABORT_ON_ENDSTOP_HIT
   #endif
 
   /**
@@ -3218,14 +3219,19 @@
        * board isn't able to generate steps fast enough (and you are using LASER_POWER_INLINE_TRAPEZOID_CONT), increase this.
        * Note that when this is zero it means it occurs every cycle; 1 means a delay wait one cycle then run, etc.
        */
-      //#define LASER_POWER_INLINE_TRAPEZOID_CONT
+      #if ENABLED(TL_LASER_ONLY)
+      #define LASER_POWER_INLINE_TRAPEZOID_CONT
+      #endif
 
       /**
        * Stepper iterations between power updates. Increase this value if the board
        * can't keep up with the processing demands of LASER_POWER_INLINE_TRAPEZOID_CONT.
        * Disable (or set to 0) to recalculate power on every stepper iteration.
        */
-      //#define LASER_POWER_INLINE_TRAPEZOID_CONT_PER 10
+      #if ENABLED(LASER_POWER_INLINE_TRAPEZOID_CONT)
+      #define LASER_POWER_INLINE_TRAPEZOID_CONT_PER 10
+      #endif
+    
 
       /**
        * Include laser power in G0/G1/G2/G3/G5 commands with the 'S' parameter
@@ -3572,7 +3578,7 @@
       #define BUTTON1_DESC          "Reset default"  // Optional string to set the LCD status
     #endif
 
-    #define BUTTON2_PIN PC4 //use lcd usart tx for test
+    #define BUTTON2_PIN TL_BUTTON_PIN //use lcd usart tx for test
     #if PIN_EXISTS(BUTTON2)
       #define BUTTON2_HIT_STATE     LOW
       #define BUTTON2_WHEN_PRINTING true

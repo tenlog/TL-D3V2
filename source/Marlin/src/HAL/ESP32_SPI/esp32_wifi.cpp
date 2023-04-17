@@ -402,7 +402,7 @@ void SPI_RX_Handler(){
             resend_file_block_id = 0;
             lostCount = 0;
             #if ENABLED(TL_BEEPER)
-            start_beeper(32, 0);
+            start_beeper(16, 1);
             #endif
             //CRCerrorCount = 0;
         }

@@ -50,11 +50,7 @@
 #define BOARD_USART2_TX_PIN     PA2// debug
 #define BOARD_USART2_RX_PIN     PA3
 
-#if ENABLED(TL_LASER_ONLY)
-#define BOARD_USART1_TX_PIN     PB8// LCD PC4
-#else
 #define BOARD_USART1_TX_PIN     PC4// LCD PC4
-#endif
 #define BOARD_USART1_RX_PIN     PC5
 
 //#define BOARD_USART3_TX_PIN     PB8// WIFI
@@ -86,7 +82,7 @@
 #define X_STOP_PIN         PC13// x-
 
 #if defined(TENLOG_LW) || defined(TL_LASER_ONLY)
-  //#define X_MAX_PIN          PE5// X+
+  //#define X_MAX_PIN        PE5// X+
   #define Y_STOP_PIN         PH2// y-
 #else
   #define X_MAX_PIN          PH2// X+
@@ -102,7 +98,9 @@
 #endif
 
 #if ENABLED(TL_LASER_ONLY)
-  #define RESET_PIN           PC14
+  #define RESET_PIN           PA15
+  #define TL_BUTTON_PIN       PC14
+  #define TL_BUTTON_LIGHT_PIN PD8
 #endif
 
 #if ENABLED(BLTOUCH)
@@ -117,7 +115,7 @@
 // Filament Runout Sensor
 //
 #ifndef FIL_RUNOUT_PIN
-  #ifdef TENLOG_LW
+  #if defined(TENLOG_LW) || defined(TENLOG_LASER_ONLY)
     #define FIL_RUNOUT_PIN                    PD0   // "Pulled-high"
     //#define FIL_RUNOUT2_PIN                   PE6   // "Pulled-high"
   #else
@@ -216,7 +214,7 @@
 
 #define REPRINT_PIN         PE11             
 #define POWEROFF_PIN        PB10
-#define BREAK_PIN           PA15
+//#define BREAK_PIN           PA15
 
 //
 // SD Card

@@ -326,6 +326,7 @@ void CardReader::ls() {
 //
 
 void CardReader::tl_ls(bool wifi) {
+  ZERO(pre_print_file_name);
   if(wifi)mount();
   char cmd[96];
   int LastID = 0;
@@ -389,8 +390,12 @@ void CardReader::tl_ls(bool wifi) {
       if (is_dir_or_gcode(p, true)) {
         createFilename(filename, p);
         iFileID++;      //start form 1
+        sprintf(pre_print_file_name, "%s", filename);
 
         if(wifi){
+          tl_print_page_id = pageNum;
+          tl_print_file_id = fileNum - ((pageNum-1)*6) + 1;
+          
           #if ENABLED(HAS_WIFI)
           wifi_file_name_p++;
           wifi_file_name[wifi_file_name_p]=iFileID; //start form 1
@@ -459,7 +464,7 @@ void CardReader::tl_ls(bool wifi) {
             for(int i = 0; i<13; i++){
               file_name_list[SelectFileID-1][i] = filename[i];
             }
-            delay(5);          
+            delay(5);
           }
         }
       }
@@ -490,7 +495,8 @@ void CardReader::tl_ls(bool wifi) {
       delay(5);
     }
 
-  }else{  //DWIN monitor
+  }else{  
+    //DWIN monitor
     if(tl_TouchScreenType == 0){
         DWN_Data(0x8811, 1, 2);
         delay(5);

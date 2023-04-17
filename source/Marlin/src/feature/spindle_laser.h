@@ -100,7 +100,7 @@ public:
   static const inline uint8_t cpwr_to_pct(const cutter_cpower_t cpwr) {
     constexpr cutter_cpower_t power_floor = TERN(CUTTER_POWER_RELATIVE, SPEED_POWER_MIN, 0),
                               power_range = SPEED_POWER_MAX - power_floor;
-    return cpwr ? round(100.0f * (cpwr - power_floor) / power_range) : 0;
+    return cpwr ? round(100.0f * (cpwr - power_floor) / power_range) : 0.0f;
   }
 
   // Convert a cpower (e.g., SPEED_POWER_STARTUP) to unit power (upwr, upower),

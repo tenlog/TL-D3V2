@@ -1296,8 +1296,9 @@ void setup() {
     SETUP_RUN(probe.tare_init());
   #endif
 
-  TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init SD Reader..."));
   #if BOTH(SDSUPPORT, SDCARD_EEPROM_EMULATION)
+    TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init SD Reader..."));
+    TLDEBUG_PRINTLN("Init SD Reader...");
     SETUP_RUN(card.mount());          // Mount media with settings before first_load
   #endif
 

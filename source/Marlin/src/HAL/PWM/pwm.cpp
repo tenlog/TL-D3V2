@@ -1,6 +1,9 @@
 #include "hc32_ddl.h"
 #include "../../MarlinCore.h"
 #include "../../inc/MarlinConfig.h"
+#include "../../gcode/gcode.h"
+
+
 
 #ifdef HWPWM
 #include "pwm.h"
@@ -49,7 +52,7 @@ static void Tim_Config(void)
 
     stcTimeraInit.enCntDir = TimeraCountDirUp;
     stcTimeraInit.enSyncStartupEn = Disable;
-	  stcTimeraInit.u16PeriodVal = TIMERA_COUNT_OVERFLOW; // //freq: 5000Hz -> 100 000 000 /4/10000HZ/4 = 1250(period val)
+	  stcTimeraInit.u16PeriodVal = TIMERA_COUNT_OVERFLOW; // //freq: 5000Hz -> 100 000 000 /4/5000HZ/4 = 1250(period val)
     TIMERA_BaseInit(TIMERA_UNIT2, &stcTimeraInit);
 		
     /* Configuration timera unit 1 compare structure */

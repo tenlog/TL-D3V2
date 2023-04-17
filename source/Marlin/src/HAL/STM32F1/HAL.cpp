@@ -68,6 +68,7 @@ void HAL_init() {
   #endif
   #if PIN_EXISTS(TL_BEEPER)
     OUT_WRITE(TL_BEEPER_PIN, LOW);
+    OUT_WRITE(TL_BUTTON_LIGHT_PIN, LOW);
   #endif
 }
 
