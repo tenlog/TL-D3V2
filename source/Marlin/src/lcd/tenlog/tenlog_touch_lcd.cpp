@@ -856,7 +856,9 @@ void tlAbortPrinting(){
         //queue.inject_P(PSTR("G28 X"));
         //queue.enqueue_one_now(PSTR("G4 P10"));
         queue.enqueue_one_now(PSTR("M84"));
-        queue.enqueue_one_now(PSTR("G4 P10"));
+        queue.enqueue_one_now(PSTR("G4 P1"));
+        queue.enqueue_one_now(PSTR("G4 P1"));
+        queue.enqueue_one_now(PSTR("M5"));
         set_pwm_f0(0, 1000);
     #else
         queue.inject_P(PSTR("G28 XY"));
@@ -2196,13 +2198,16 @@ void tenlog_status_update(bool isTJC)
     char cTime[10];
     NULLZERO(cTime);
     uint16_t ln16 = 0;
+    uint8_t lnSeconds = 0;
     if(ln12 == 0)
     {
         sprintf_P(cTime, "%s", "00:00");
     }else{
-        ln16 = millis() / 60000 - startPrintTime / 60000;
+        ln16 = (millis() - startPrintTime) / 60000;//分钟数
+        lnSeconds = ((millis() - startPrintTime) / 1000) - ln16 * 60;//秒钟数
         uint16_t time_h = ln16/60;
         uint16_t time_m = ln16%60;
+        
         sprintf_P(cTime, PSTR("%02d:%02d"), time_h, time_m);
     }
 
@@ -2286,7 +2291,7 @@ void tenlog_status_update(bool isTJC)
         wifi_printer_status[22] = ln14;
         wifi_printer_status[23] = ln15;
 
-        wifi_printer_status[24] = ln16 / 0x100;
+        wifi_printer_status[24] = ln16 / 0x100; //分钟数
         wifi_printer_status[25] = ln16 % 0x100;
         
         wifi_printer_status[26] = ln17;
@@ -2299,6 +2304,7 @@ void tenlog_status_update(bool isTJC)
 
         wifi_printer_status[33] =  (uint16_t)ln11 / 0x100; //19 & 33 = feedrate per
         wifi_printer_status[34] =  sd_OK; //SD OK
+        wifi_printer_status[35] =  lnSeconds; //SD OK
         
         WIFI_TX_Handler(0x07);
 
@@ -2728,24 +2734,24 @@ void process_command_gcode(long _tl_command[]) {
                     settings.plr_fn_save(lF-1);
                     TLDEBUG_PRINTLN(cmd);
                     #if ENABLED(TL_LASER_ONLY)
-                    EXECUTE_GCODE("G92 X-12 Y2");
+                    EXECUTE_GCODE("G92 X-20 Y5");
                     #endif
                     EXECUTE_GCODE(cmd);
                 }
                 #endif
             }else if(lM == 321){
                 #if ENABLED(TL_LASER_ONLY)
-                //M321 pre select print file name
-                //print from wifi
-                NULLZERO(pre_print_file_name);
-                for(int i=0; i<12; i++){
-                    pre_print_file_name[i] = _tl_command[iFrom + 4 + i];
-                }
-                if(strlen(pre_print_file_name) > 2){
-                    start_beeper(100,0);
-                    //sprintf_P(cmd, PSTR("M%d !%s"), lM, fileNameP);
-                }
-                #endif
+                    //M321 pre select print file name
+                    //print from wifi
+                    NULLZERO(pre_print_file_name);
+                    for(int i=0; i<12; i++){
+                        pre_print_file_name[i] = _tl_command[iFrom + 4 + i];
+                    }
+                    if(strlen(pre_print_file_name) > 2){
+                        start_beeper(100,0);
+                        //sprintf_P(cmd, PSTR("M%d !%s"), lM, fileNameP);
+                    }
+                #endif  //TL_LASER_ONLY
             }else if(lM == 19){
                 //M19
                 tl_print_page_id = GCodelng('S', iFrom, _tl_command);
@@ -3077,6 +3083,11 @@ void process_command_gcode(long _tl_command[]) {
                 if(strlen(cmd)){                        
                     TLDEBUG_PRINTLN(cmd);
                     EXECUTE_GCODE(cmd);
+                    uint32_t wait_start = millis();
+                    while (millis()-wait_start < 300) //delay 300ms
+                    {
+                        watchdog_refresh();
+                    }
                     card.tl_ls(true);
                     sd_OK = 2;
                 }
@@ -3217,8 +3228,10 @@ void tl_sd_abort_on_endstop_hit(){  //only for x & y
 }
 
 void TL_idle(){
-    button_light_handler();
-    TERN_(TL_BEEPER, tl_beeper_handler()); 
+    #if ENABLED(TL_BEEPER)
+        button_light_handler();
+        tl_beeper_handler(); 
+    #endif
     tenlog_command_handler();
     tenlog_screen_update();
     #if ENABLED(HAS_WIFI)

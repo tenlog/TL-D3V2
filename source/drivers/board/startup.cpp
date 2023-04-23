@@ -50,19 +50,21 @@ static void setup_SysClk(void){
 	/* Switch system clock source to MPLL. */
 	/* Use Xtal as MPLL source. */
 	stcXtalCfg.enMode = ClkXtalModeOsc;
-	stcXtalCfg.enDrv = ClkXtalLowDrv;
+	stcXtalCfg.enDrv = ClkXtalHighDrv; //ClkXtalLowDrv;	//by zyf
 	stcXtalCfg.enFastStartup = Enable;
 	CLK_XtalConfig(&stcXtalCfg);
 	CLK_XtalCmd(Enable);
 
 	/* MPLL config. */
+	/* MPLL config (XTAL / pllmDiv * plln / PllpDiv = 200M)，*/
 	stcMpllCfg.pllmDiv = 1ul;
 	stcMpllCfg.plln = 50ul;
-	stcMpllCfg.PllpDiv = 4ul;
-	stcMpllCfg.PllqDiv = 4ul;
-	stcMpllCfg.PllrDiv = 4ul;
+	stcMpllCfg.PllpDiv = 2ul;
+	stcMpllCfg.PllqDiv = 2ul;
+	stcMpllCfg.PllrDiv = 2ul;
 	CLK_SetPllSource(ClkPllSrcXTAL);
 	CLK_MpllConfig(&stcMpllCfg);
+	SystemCoreClock = 200000000;	//by zyf
 
 	/* flash read wait cycle setting */
 	EFM_Unlock();

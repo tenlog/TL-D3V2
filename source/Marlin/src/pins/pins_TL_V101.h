@@ -67,8 +67,8 @@
     #define IIC_EEPROM_SDA       PD13
     #define IIC_EEPROM_SCL       PD12
   #elif defined(TL_LASER_ONLY)
-    #define IIC_EEPROM_SDA       PD12
-    #define IIC_EEPROM_SCL       PD13
+    #define IIC_EEPROM_SDA       PD12 
+    #define IIC_EEPROM_SCL       PD13 
   #else
     #define IIC_EEPROM_SDA       PA12
     #define IIC_EEPROM_SCL       PA11
@@ -98,7 +98,7 @@
 #endif
 
 #if ENABLED(TL_LASER_ONLY)
-  #define RESET_PIN           PA15
+  #define RESET_PIN           PA15 
   #define TL_BUTTON_PIN       PC14
   #define TL_BUTTON_LIGHT_PIN PD8
 #endif

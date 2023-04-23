@@ -60,6 +60,7 @@
 #define BUFFER_SIZE 1024
 #define WIFI_MSG_LENGTH BUFFER_SIZE-4
 #define WIFI_FILE_DATA_LENGTH WIFI_MSG_LENGTH-4
+#define ESP_SPI_CLK_DIV SpiClkDiv16
 
 extern char wifi_ssid[20];
 extern char wifi_pswd[20];

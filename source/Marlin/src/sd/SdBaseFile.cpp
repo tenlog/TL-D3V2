@@ -1128,7 +1128,7 @@ int8_t SdBaseFile::readDir(dir_t *dir, char *longFilename) {
                 longFilename[idx + 1] = (utf16_ch >> 8) & 0xFF;
               #else
                 // Replace all multibyte characters to '_'
-                longFilename[n + i] = (utf16_ch > 0xFF) ? '_' : (utf16_ch & 0xFF);
+                longFilename[n + i] = (utf16_ch > 0xFF) ? '~' : (utf16_ch & 0xFF);
               #endif
             }
             // If this VFAT entry is the last one, add a NUL terminator at the end of the string
@@ -1159,7 +1159,7 @@ int8_t SdBaseFile::readDir(dir_t *dir, char *longFilename) {
           for (uint16_t idx = 0; idx < (LONG_FILENAME_LENGTH) / 2; idx += 2) {    // idx is fixed since FAT LFN always contains UTF-16LE encoding
             const uint16_t utf16_ch = longFilename[idx] | (longFilename[idx + 1] << 8);
             if (0xD800 == (utf16_ch & 0xF800))                                    // Surrogate pair - encode as '_'
-              longFilename[n++] = '_';
+              longFilename[n++] = '~';
             else if (0 == (utf16_ch & 0xFF80))                                    // Encode as 1-byte UTF-8 char
               longFilename[n++] = utf16_ch & 0x007F;
             else if (0 == (utf16_ch & 0xF800)) {                                  // Encode as 2-byte UTF-8 char
@@ -1172,7 +1172,7 @@ int8_t SdBaseFile::readDir(dir_t *dir, char *longFilename) {
                 longFilename[n++] = 0xC0 | ((utf16_ch >>  6) & 0x3F);
                 longFilename[n++] = 0xC0 | ( utf16_ch        & 0x3F);
               #else                                                               // Encode as '_'
-                longFilename[n++] = '_';
+                longFilename[n++] = '~';
               #endif
             }
             if (0 == utf16_ch) break; // End of filename

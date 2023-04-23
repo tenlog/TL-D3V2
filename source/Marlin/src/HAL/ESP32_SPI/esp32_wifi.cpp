@@ -144,7 +144,7 @@ void WIFI_InitSPI1(void)
     PORT_SetFunc(SPI1_MISO_PORT, SPI1_MISO_PIN, SPI1_MISO_FUNC, Disable);
 
     /* Configuration SPI structure */
-    stcSpiInit.enClkDiv                 = SpiClkDiv8;
+    stcSpiInit.enClkDiv                 = ESP_SPI_CLK_DIV;
     stcSpiInit.enFrameNumber            = SpiFrameNumber1;
     stcSpiInit.enDataLength             = SpiDataLengthBit8;
     stcSpiInit.enFirstBitPosition       = SpiFirstBitPositionMSB;
@@ -222,6 +222,7 @@ uint8_t get_control_code(){
 	return 0;
 }
 
+/*
 void test_write_file(){
     card.openFileWrite("test.gco");
     if (!card.isFileOpen()) {
@@ -242,6 +243,7 @@ void test_write_file(){
     TLDEBUG_PRINTLN(" done");
     card.closefile();
 }
+*/
 
 uint32_t blockCount = 0;
 uint32_t lostCount = 0;

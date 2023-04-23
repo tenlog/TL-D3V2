@@ -210,7 +210,7 @@ struct XYval {
   FI operator T* ()                                     { return pos; }
   FI operator bool()                                    { return x || y; }
   FI XYval<T>           copy()                    const { return *this; }
-  FI XYval<T>            ABS()                    const { return { T(_ABS(x)), T(_ABS(y)) }; }
+  FI XYval<T>            ABS()                    const { return {{{ T(_ABS(x)), T(_ABS(y)) }}}; }
   FI XYval<int16_t>    asInt()                          { return { int16_t(x), int16_t(y) }; }
   FI XYval<int16_t>    asInt()                    const { return { int16_t(x), int16_t(y) }; }
   FI XYval<int32_t>   asLong()                          { return { int32_t(x), int32_t(y) }; }

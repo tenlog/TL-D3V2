@@ -823,6 +823,16 @@
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\feature\mixing.cpp</FilePath>
             </File>
+            <File>
+              <FileName>bltouch.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\feature\bltouch.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>bltouch.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\source\Marlin\src\feature\bltouch.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1282,6 +1292,36 @@
               <FileName>M540.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\gcode\config\M540.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>G30.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\gcode\probe\G30.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>G26.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\gcode\bedlevel\G26.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>G42.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\gcode\bedlevel\G42.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>M420.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\gcode\bedlevel\M420.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>M421.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\gcode\bedlevel\ubl\M421.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>G29.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\gcode\bedlevel\ubl\G29.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -1753,6 +1793,11 @@
               <FileType>5</FileType>
               <FilePath>..\source\Marlin\src\module\tool_change.h</FilePath>
             </File>
+            <File>
+              <FileName>probe.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\probe.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1951,7 +1996,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>marlin_ubl</GroupName>
+          <GroupName>marlin_leveling</GroupName>
           <Files>
             <File>
               <FileName>bedlevel.h</FileName>
@@ -1962,6 +2007,36 @@
               <FileName>ubl.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\source\Marlin\src\feature\bedlevel\ubl\ubl.h</FilePath>
+            </File>
+            <File>
+              <FileName>ubl.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\feature\bedlevel\ubl\ubl.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>ubl_G29.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\feature\bedlevel\ubl\ubl_G29.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>ubl_motion.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\feature\bedlevel\ubl\ubl_motion.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>bedlevel.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\feature\bedlevel\bedlevel.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>abl.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\feature\bedlevel\abl\abl.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>abl.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\source\Marlin\src\feature\bedlevel\abl\abl.h</FilePath>
             </File>
           </Files>
         </Group>

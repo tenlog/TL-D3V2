@@ -142,8 +142,8 @@
   #include "feature/joystick.h"
 #endif
 
-#if HAS_SERVOS && 0 //by zyf
-  #include "module/servo.h"
+#if HAS_SERVOS
+  //#include "module/servo.h"
 #endif
 
 #if ENABLED(HAS_MOTOR_CURRENT_DAC)
@@ -394,11 +394,11 @@ void startOrResumeJob() {
     TERN_(POWER_LOSS_RECOVERY, recovery.purge());
     TERN_(POWER_LOSS_RECOVERY_TL, settings.plr_reset());
 
-    #ifdef EVENT_GCODE_SD_ABORT
-      queue.inject_P(PSTR(EVENT_GCODE_SD_ABORT));
+    //#ifdef EVENT_GCODE_SD_ABORT
+      queue.inject_P(PSTR("G28 X"));
       queue.enqueue_one_now(PSTR("G92 Y0"));
       queue.enqueue_one_now(PSTR("M84"));
-    #endif
+    //#endif
 
     TERN_(PASSWORD_AFTER_SD_PRINT_ABORT, password.lock_machine());
     TLPrintingStatus = 0;
@@ -796,7 +796,7 @@ void idle(TERN_(ADVANCED_PAUSE_FEATURE, bool no_stepper_sleep/*=false*/)) {
   TERN_(USE_BEEPER, buzzer.tick());
 
   // Handle UI input / draw events
-  TERN_(TENLOG_TOUCH_LCD, TL_idle());  //BY ZYF ui.update();
+  TERN_(TENLOG_TOUCH_LCD, TL_idle()); 
 
   // Handle WIFI
   TERN_(ESP8266_WIFI, esp_wifi_idle()); 
@@ -954,7 +954,7 @@ void stop() {
 
   if (IsRunning()) {
     SERIAL_ERROR_MSG(STR_ERR_STOPPED);
-    //LCD_MESSAGEPGM(MSG_STOPPED);  //By zyf
+   
     safe_delay(350);       // allow enough time for messages to get out before stopping
     marlin_state = MF_STOPPED;
   }
@@ -1333,7 +1333,7 @@ void setup() {
   #endif
 
   #if HAS_Z_SERVO_PROBE
-    SETUP_RUN(probe.servo_probe_init());
+    //SETUP_RUN(probe.servo_probe_init());
   #endif
 
   #if HAS_PHOTOGRAPH

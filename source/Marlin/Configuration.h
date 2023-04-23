@@ -71,32 +71,43 @@ Version     033
 
 //TL Medels and version
 //#define TENLOG_H2
-//#define TENLOG_D3
+#define TENLOG_D3
 //#define TENLOG_S3   //single head
 //#define TENLOG_M3
-#define TENLOG_L4   //laser only
+//#define TENLOG_L4   //laser only
 //#define TENLOG_D5
 //#define TENLOG_D6
+//#define TENLOG_D8
 //#define TENLOG_LW8     //发光字 Luminous words
 
 #if ENABLED(TENLOG_LW8)
 #define TENLOG_LW
 #endif
 
-#define TL_DEBUG
-#if (ENABLED(TENLOG_L4) || ENABLED(TENLOG_S3))
+#ifdef TENLOG_L4
+  #define TL_LASER_ONLY
+#endif
+
+//Headers
+#if ANY(TL_LASER_ONLY,TENLOG_S3)
   #define SINGLE_HEAD
   #define EXTRUDERS 1
 #elif(ENABLED(TENLOG_LW))
-  //#define BLTOUCH
   #define MIXING_EXTRUDER
-  //#define AUTO_BED_LEVELING_UBL
   #define EXTRUDERS 1
 #else
   #define DUAL_X_CARRIAGE
   #define EXTRUDERS 2
 #endif
 
+//Auto leveling.
+#if ANY(TENLOG_S3, TENLOG_LW)
+  #define BLTOUCH
+  //#define MESH_BED_LEVELING
+  #define AUTO_BED_LEVELING_UBL
+#endif
+
+#define TL_DEBUG
 //TL hardware.
 #define TENLOG_TOUCH_LCD
 //#define ESP8266_WIFI
@@ -106,10 +117,6 @@ Version     033
 //TL Functions
 //#define ELECTROMAGNETIC_VALUE
 #define PRINT_FROM_Z_HEIGHT
-
-#ifdef TENLOG_L4
-  #define TL_LASER_ONLY
-#endif
 
 #ifdef TL_LASER_ONLY
   #define TL_NO_SCREEN
@@ -133,11 +140,16 @@ Version     033
   #define TL_MODEL_STR_0 "Hands2"
   #define X_BED_SIZE 235
   #define Y_BED_SIZE 240
-  #define Z_LENGTH   260
+  #define Z_LENGTH   260ww
 #elif defined(TENLOG_D5)
   #define TL_MODEL_STR_0 "D5"
   #define X_BED_SIZE 505
   #define Y_BED_SIZE 510
+  #define Z_LENGTH   610
+#elif defined(TENLOG_D8)
+  #define TL_MODEL_STR_0 "D8"
+  #define X_BED_SIZE 805
+  #define Y_BED_SIZE 810
   #define Z_LENGTH   610
 #elif defined(TENLOG_D6)
   #define TL_MODEL_STR_0 "D6"
@@ -1052,9 +1064,9 @@ Version     033
  *   M204 R    Retract Acceleration
  *   M204 T    Travel Acceleration
  */
-#define DEFAULT_ACCELERATION          300    // X, Y, Z and E acceleration for printing moves
-#define DEFAULT_RETRACT_ACCELERATION  300    // E acceleration for retracts
-#define DEFAULT_TRAVEL_ACCELERATION   300    // X, Y, Z acceleration for travel (non printing) moves
+#define DEFAULT_ACCELERATION          800    // X, Y, Z and E acceleration for printing moves
+#define DEFAULT_RETRACT_ACCELERATION  500    // E acceleration for retracts
+#define DEFAULT_TRAVEL_ACCELERATION   800    // X, Y, Z acceleration for travel (non printing) moves
 
 /**
  * Default Jerk limits (mm/s)
@@ -1266,7 +1278,9 @@ Version     033
  *     |    [-]    |
  *     O-- FRONT --+
  */
+#if ENABLED(BLTOUCH)
 #define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
+#endif
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
@@ -1440,8 +1454,11 @@ Version     033
 
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
-//#define X_MIN_POS 0
+#if ENABLED(SINGLE_HEAD)
+#define X_MIN_POS 0
+#else
 #define X_MIN_POS -50
+#endif
 #define Y_MIN_POS 0
 #define Z_MIN_POS 0
 #define X_MAX_POS X_BED_SIZE
@@ -1593,7 +1610,6 @@ Version     033
 //#define AUTO_BED_LEVELING_3POINT
 //#define AUTO_BED_LEVELING_LINEAR
 // #define AUTO_BED_LEVELING_BILINEAR
-//#define MESH_BED_LEVELING
 
 /**
  * Normally G28 leaves leveling disabled on completion. Enable one of
@@ -1692,7 +1708,7 @@ Version     033
 
   //#define MESH_EDIT_GFX_OVERLAY   // Display a graphics overlay while editing the mesh
 
-  #define MESH_INSET 1              // Set Mesh bounds as an inset region of the bed
+  #define MESH_INSET 10              // Set Mesh bounds as an inset region of the bed
   #define GRID_MAX_POINTS_X 10      // Don't use more than 15 points per axis, implementation limited.
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
@@ -1930,7 +1946,9 @@ Version     033
  *    P1  Raise the nozzle always to Z-park height.
  *    P2  Raise the nozzle by Z-park amount, limited to Z_MAX_POS.
  */
+#if ENABLED(DUAL_X_CARRIAGE)
 #define NOZZLE_PARK_FEATURE
+#endif
 
 #if ENABLED(NOZZLE_PARK_FEATURE)
   // Specify a park position as { X, Y, Z_raise }

@@ -271,7 +271,7 @@ typedef struct SettingsDataStruct {
   //
   // SERVO_ANGLES
   //
-  uint16_t servo_angles[EEPROM_NUM_SERVOS][2];          // M281 P L U
+  //uint16_t servo_angles[EEPROM_NUM_SERVOS][2];          // M281 P L U
 
   //
   // Temperature first layer compensation values
@@ -856,12 +856,14 @@ void MarlinSettings::postprocess() {
     // Servo Angles
     //
     {
+		/*
       _FIELD_TEST(servo_angles);
       #if !HAS_SERVO_ANGLES
         uint16_t servo_angles[EEPROM_NUM_SERVOS][2] = { { 0, 0 } };
       #endif
       EEPROM_WRITE(servo_angles);
-    }
+		*/
+		}
 
     //
     // Thermal first layer compensation values
@@ -880,9 +882,11 @@ void MarlinSettings::postprocess() {
     // BLTOUCH
     //
     {
+      /*
       _FIELD_TEST(bltouch_last_written_mode);
       const bool bltouch_last_written_mode = TERN(BLTOUCH, bltouch.last_written_mode, false);
       EEPROM_WRITE(bltouch_last_written_mode);
+      */
     }
 
     //
@@ -1770,6 +1774,7 @@ void MarlinSettings::postprocess() {
       // SERVO_ANGLES
       //
       {
+			/*
         _FIELD_TEST(servo_angles);
         #if ENABLED(EDITABLE_SERVO_ANGLES)
           uint16_t (&servo_angles_arr)[EEPROM_NUM_SERVOS][2] = servo_angles;
@@ -1777,6 +1782,7 @@ void MarlinSettings::postprocess() {
           uint16_t servo_angles_arr[EEPROM_NUM_SERVOS][2];
         #endif
         EEPROM_READ(servo_angles_arr);
+				*/
       }
 
       //
@@ -1797,6 +1803,7 @@ void MarlinSettings::postprocess() {
       // BLTOUCH
       //
       {
+        /*
         _FIELD_TEST(bltouch_last_written_mode);
         #if ENABLED(BLTOUCH)
           const bool &bltouch_last_written_mode = bltouch.last_written_mode;
@@ -1804,6 +1811,7 @@ void MarlinSettings::postprocess() {
           bool bltouch_last_written_mode;
         #endif
         EEPROM_READ(bltouch_last_written_mode);
+        */
       }
 
       //

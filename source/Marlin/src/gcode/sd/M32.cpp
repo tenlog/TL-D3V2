@@ -74,7 +74,7 @@ void GcodeSuite::M320() {
   if(millis() - lastClick < 2000) return;
   if(!card.isFileOpen()){
     if(strlen(pre_print_file_name)>2){
-      EXECUTE_GCODE("G92 X-12 Y2");
+      EXECUTE_GCODE("G92 X-20 Y5");
       delay(500);
       sprintf(cmd, "M32 !%s", pre_print_file_name);
       ZERO(pre_print_file_name);
