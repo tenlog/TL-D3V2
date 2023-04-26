@@ -84,17 +84,25 @@
 #if defined(TENLOG_LW) || defined(TL_LASER_ONLY)
   //#define X_MAX_PIN        PE5// X+
   #define Y_STOP_PIN         PH2// y-
+#elif defined(TLTOUCH)
+  #define Y_STOP_PIN         PC14// y-
 #else
   #define X_MAX_PIN          PH2// X+
   #define Y_STOP_PIN         PC3// y-
 #endif
 
+
+
 #define Z_STOP_PIN         PC15// Z- LW-采样
 
-#if defined(TENLOG_M3) || defined(TENLOG_LW) || defined(TL_LASER_ONLY)
+#if defined(TENLOG_M3) || defined(TENLOG_LW) || defined(TL_LASER_ONLY) ||  defined(TLTOUCH)
   #define Z_MAX_PIN          PC15// Z+ PC14
 #else
-  #define Z_MAX_PIN          PC14// Z+ PC14 //LW-吐舌头
+  #define Z_MAX_PIN          PC14// Z+ PC3 //LW-吐舌头
+#endif
+
+#if defined(TLTOUCH)
+  #define TLTOUCH_PIN        PC14
 #endif
 
 #if ENABLED(TL_LASER_ONLY)

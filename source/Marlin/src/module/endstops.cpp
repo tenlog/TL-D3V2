@@ -410,7 +410,7 @@ void Endstops::event_handler() {
         thermalManager.disable_all_heaters();
         print_job_timer.stop();
         #if ENABLED(HWPWM)
-        set_pwm_f0(0, 1000);
+        set_pwm_hw(0, 1000);
         #endif
         */
         #if ENABLED(TL_BEEPER)

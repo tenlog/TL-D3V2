@@ -69,7 +69,7 @@ void SpindleLaser::init() {
     //SET_PWM(SPINDLE_LASER_PWM_PIN);
     //analogWrite(pin_t(SPINDLE_LASER_PWM_PIN), SPINDLE_LASER_PWM_OFF); // Set to lowest speed
   #elif ENABLED(TL_LASER)
-    set_pwm_f0(0, 1000);
+    set_pwm_hw(0, 1000);
   #endif
   #if ENABLED(HAL_CAN_SET_PWM_FREQ) && defined(SPINDLE_LASER_FREQUENCY)
     set_pwm_frequency(pin_t(SPINDLE_LASER_PWM_PIN), SPINDLE_LASER_FREQUENCY);
@@ -96,7 +96,7 @@ void SpindleLaser::init() {
       //gtValue = get_color_power(gtValue);
       //gtValue = gtValue / 100.0;
       //uint16_t oocr = gtValue * MAXVALUE;
-      set_pwm_f0(ocr, tl_LASER_MAX_VALUE);
+      set_pwm_hw(ocr, tl_LASER_MAX_VALUE);
     #else
       //analogWrite(pin_t(SPINDLE_LASER_PWM_PIN), ocr ^ SPINDLE_LASER_PWM_OFF);
     #endif

@@ -25,30 +25,27 @@
 #if HAS_SERVOS
 
 #include "../gcode.h"
-#include "../../module/servo.h"
+#include "../../HAL/PWM/pwm.h"
+//#include "../../module/servo.h"
 
 /**
  * M280: Get or set servo position. P<index> [S<angle>]
  */
 void GcodeSuite::M280() {
 
-  if (!parser.seen('P')) return;
+  //if (!parser.seen('P')) return;
 
   const int servo_index = parser.value_int();
-  if (WITHIN(servo_index, 0, NUM_SERVOS - 1)) {
+  //if (WITHIN(servo_index, 0, NUM_SERVOS - 1)) {
     if (parser.seen('S')) {
       const int a = parser.value_int();
-      if (a == -1)
-        servo[servo_index].detach();
-      else
-        MOVE_SERVO(servo_index, a);
+      if (a == -1){
+        //servo[servo_index].detach();
+        set_pwm_hw(0, 1000);
+      }else{
+        set_pwm_hw(a, 1000, 3);
+      }
     }
-    else
-      SERIAL_ECHO_MSG(" Servo ", servo_index, ": ", servo[servo_index].read());
-  }
-  else
-    SERIAL_ERROR_MSG("Servo ", servo_index, " out of range");
-
 }
 
 #endif // HAS_SERVOS

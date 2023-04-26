@@ -230,7 +230,7 @@ void GcodeSuite::G34() {
           const float z_probed_height = probe.probe_at_point(z_stepper_align.xy[iprobe], raise_after, 0, true, false);
           if (isnan(z_probed_height)) {
             SERIAL_ECHOLNPGM("Probing failed");
-            LCD_MESSAGEPGM(MSG_LCD_PROBING_FAILED);
+            //LCD_MESSAGEPGM(MSG_LCD_PROBING_FAILED);
             err_break = true;
             break;
           }

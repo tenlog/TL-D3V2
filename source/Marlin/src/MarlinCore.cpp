@@ -1333,7 +1333,7 @@ void setup() {
   #endif
 
   #if HAS_Z_SERVO_PROBE
-    //SETUP_RUN(probe.servo_probe_init());
+    SETUP_RUN(probe.servo_probe_init());
   #endif
 
   #if HAS_PHOTOGRAPH

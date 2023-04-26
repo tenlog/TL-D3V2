@@ -882,11 +882,9 @@ void MarlinSettings::postprocess() {
     // BLTOUCH
     //
     {
-      /*
       _FIELD_TEST(bltouch_last_written_mode);
       const bool bltouch_last_written_mode = TERN(BLTOUCH, bltouch.last_written_mode, false);
       EEPROM_WRITE(bltouch_last_written_mode);
-      */
     }
 
     //
@@ -1802,8 +1800,7 @@ void MarlinSettings::postprocess() {
       //
       // BLTOUCH
       //
-      {
-        /*
+      {        
         _FIELD_TEST(bltouch_last_written_mode);
         #if ENABLED(BLTOUCH)
           const bool &bltouch_last_written_mode = bltouch.last_written_mode;
@@ -1811,7 +1808,6 @@ void MarlinSettings::postprocess() {
           bool bltouch_last_written_mode;
         #endif
         EEPROM_READ(bltouch_last_written_mode);
-        */
       }
 
       //

@@ -754,11 +754,6 @@
               <FilePath>..\source\Marlin\src\feature\babystep.cpp</FilePath>
             </File>
             <File>
-              <FileName>babystep.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\feature\babystep.h</FilePath>
-            </File>
-            <File>
               <FileName>controllerfan.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\source\Marlin\src\feature\controllerfan.h</FilePath>
@@ -827,11 +822,6 @@
               <FileName>bltouch.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\feature\bltouch.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>bltouch.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\feature\bltouch.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1323,6 +1313,21 @@
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\gcode\bedlevel\ubl\G29.cpp</FilePath>
             </File>
+            <File>
+              <FileName>M280.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\gcode\control\M280.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>M401_M402.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\gcode\probe\M401_M402.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>M851.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\gcode\probe\M851.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1698,6 +1703,11 @@
               <FileType>5</FileType>
               <FilePath>..\source\Marlin\src\libs\vector_3.h</FilePath>
             </File>
+            <File>
+              <FileName>least_squares_fit.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\libs\least_squares_fit.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1747,11 +1757,6 @@
               <FileName>printcounter.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\source\Marlin\src\module\printcounter.h</FilePath>
-            </File>
-            <File>
-              <FileName>probe.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\module\probe.h</FilePath>
             </File>
             <File>
               <FileName>settings.cpp</FileName>
@@ -1999,16 +2004,6 @@
           <GroupName>marlin_leveling</GroupName>
           <Files>
             <File>
-              <FileName>bedlevel.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\feature\bedlevel\bedlevel.h</FilePath>
-            </File>
-            <File>
-              <FileName>ubl.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\feature\bedlevel\ubl\ubl.h</FilePath>
-            </File>
-            <File>
               <FileName>ubl.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\feature\bedlevel\ubl\ubl.cpp</FilePath>
@@ -2029,14 +2024,14 @@
               <FilePath>..\source\Marlin\src\feature\bedlevel\bedlevel.cpp</FilePath>
             </File>
             <File>
-              <FileName>abl.cpp</FileName>
+              <FileName>mesh_bed_leveling.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\source\Marlin\src\feature\bedlevel\abl\abl.cpp</FilePath>
+              <FilePath>..\source\Marlin\src\feature\bedlevel\mbl\mesh_bed_leveling.cpp</FilePath>
             </File>
             <File>
-              <FileName>abl.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\feature\bedlevel\abl\abl.h</FilePath>
+              <FileName>hilbert_curve.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\feature\bedlevel\hilbert_curve.cpp</FilePath>
             </File>
           </Files>
         </Group>

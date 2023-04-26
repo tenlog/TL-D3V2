@@ -805,7 +805,7 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
     #ifndef ELECTROMAGNETIC_VALUE
 
       for(uint8_t e=0; e<2; e++){
-        if (temp_hotend[e].celsius >= tl_E_FAN_START_TEMP && (!eFanOn[e] || tl_E_FAN_CHANGED) ){
+        if (temp_hotend[e].celsius >= tl_E_FAN_START_TEMP && (!eFanOn[e] || tl_E_FAN_CHANGED) ){ //Front fan 正面风扇
           thermalManager.set_fan_speed(e+2, (uint8_t)((float)tl_E_FAN_SPEED * 2.55f));
           //SBI(fanState, pgm_read_byte(&fanBit[e]));
           #if ENABLED(LASER_SYNCHRONOUS_M106_M107)
@@ -850,7 +850,7 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
       bool isHeating =  isHeatingHotend(0) && degTargetHotend(0) > 20 || isHeatingHotend(1) && degTargetHotend(1) > 20 || isHeatingBed() && degTargetBed() > 5 ;
       static uint32_t LastChamberFanRun;
       if(millis() - LastChamberFanRun < TLCHAMBER_FAN_TURN_OFF_DELAY && LastChamberFanRun > 0 && (!cFanOn || tl_C_FAN_CHANGED)){
-        thermalManager.set_fan_speed(4, (uint8_t)((float)tl_C_FAN_SPEED * 2.55f));
+        thermalManager.set_fan_speed(4, (uint8_t)((float)tl_C_FAN_SPEED * 2.55f));  //by zyf Chamber fan 机箱风扇
         #if ENABLED(LASER_SYNCHRONOUS_M106_M107)
           planner.buffer_sync_block(BLOCK_FLAG_SYNC_FANS);
         #endif        

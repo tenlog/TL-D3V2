@@ -1284,15 +1284,16 @@ void Planner::recalculate() {
     #define FAN_SET(F) do{ kickstart_fan(fan_speed, ms, F); _FAN_SET(F); }while(0)
 
     const millis_t ms = millis();
+    
     #if ENABLED(HWPWM)
-      set_pwm_f0(CALC_FAN_SPEED(0), 255);
+      set_pwm_hw(CALC_FAN_SPEED(0), 255); ///set e side fan 侧面风扇
     #else
     TERN_(HAS_FAN0, FAN_SET(0));    //E0 Fan
     #endif
     TERN_(HAS_FAN1, FAN_SET(1));    //E1 Fan
-    TERN_(HAS_FAN2, FAN_SET(2));    //E0 Auto Fan
-    TERN_(HAS_FAN3, FAN_SET(3));    //E1 Auto Fan
-    TERN_(HAS_FAN4, FAN_SET(4));    //Chamber fan
+    TERN_(HAS_FAN2, FAN_SET(2));    //E0 Auto Fan front fan //正面风扇
+    TERN_(HAS_FAN3, FAN_SET(3));    //E1 Auto Fan front fan //正面风扇
+    TERN_(HAS_FAN4, FAN_SET(4));    //Chamber fan           //机箱风扇
     TERN_(HAS_FAN5, FAN_SET(5));
     TERN_(HAS_FAN6, FAN_SET(6));
     TERN_(HAS_FAN7, FAN_SET(7));

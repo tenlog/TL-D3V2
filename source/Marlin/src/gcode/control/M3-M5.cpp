@@ -141,7 +141,7 @@ void GcodeSuite::M5() {
   cutter.set_enabled(false);
   cutter.menuPower = cutter.unitPower;
   #if ENABLED(HWPWM)
-  set_pwm_f0(0, 1000);
+  set_pwm_hw(0, 1000);
   #endif
 }
 

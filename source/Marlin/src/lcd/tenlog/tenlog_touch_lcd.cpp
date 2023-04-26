@@ -851,7 +851,7 @@ void tlAbortPrinting(){
     EXECUTE_GCODE("M106 S0");
     
     #if ENABLED(TL_LASER_ONLY)
-        set_pwm_f0(0, 1000);
+        set_pwm_hw(0, 1000);
         //endstops.enable(true);
         //queue.inject_P(PSTR("G28 X"));
         //queue.enqueue_one_now(PSTR("G4 P10"));
@@ -859,7 +859,7 @@ void tlAbortPrinting(){
         queue.enqueue_one_now(PSTR("G4 P1"));
         queue.enqueue_one_now(PSTR("G4 P1"));
         queue.enqueue_one_now(PSTR("M5"));
-        set_pwm_f0(0, 1000);
+        set_pwm_hw(0, 1000);
     #else
         queue.inject_P(PSTR("G28 XY"));
         queue.enqueue_one_now(PSTR("G92 Y0"));
@@ -1058,7 +1058,7 @@ void TLSDPrintFinished(){
 
     TERN_(POWER_LOSS_RECOVERY_TL, if(plr_enabled) settings.plr_reset());
     #if ENABLED(HWPWM)
-    set_pwm_f0(0, 1000);
+    set_pwm_hw(0, 1000);
     #endif
     my_sleep(1.5);
 
@@ -3155,7 +3155,7 @@ void button_light_handler(){
     }
     lastLightTime = millis();
     if(!card.flag.sdprinting){
-        set_pwm_f0(0, 1000);
+        set_pwm_hw(0, 1000);
     }
     btLight = ! btLight;
     if(pre_print_file_name[0] == 0x00){
@@ -3227,7 +3227,19 @@ void tl_sd_abort_on_endstop_hit(){  //only for x & y
     #endif
 }
 
-void TL_idle(){
+/*
+void read_blt(){
+    static uint32_t temp ;
+    if(millis() - temp < 500)return;
+    temp = millis();
+    uint8_t r = READ(Z_STOP_PIN);
+    char cmd[32];
+    sprintf(cmd, "BLTouch: %d", r);
+    TLDEBUG_PRINTLN(cmd);
+}
+*/
+
+void TL_idle(){    
     #if ENABLED(TL_BEEPER)
         button_light_handler();
         tl_beeper_handler(); 
