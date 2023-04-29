@@ -8,6 +8,11 @@
 #ifdef HWPWM
 #include "pwm.h"
 
+//#define ENA_CH2
+
+#ifdef TLTOUCH
+//#define ENA_CH8
+#endif
 
 static void TimeraUnit2_IrqCallback(void)
 {
@@ -32,16 +37,26 @@ static void Tim_Config(void)
 		stcPortInit.enPullUp = Disable;
 		stcPortInit.enExInt = Enable;
 	
-    // Initialize servo motor pin 
+    // Initialize pwm pin 
+    #ifdef ENA_CH2
 		PORT_Init(TIMERA_UNIT2_CH2_PORT, TIMERA_UNIT2_CH2_PIN, &stcPortInit);
 		PORT_ResetBits(TIMERA_UNIT2_CH2_PORT, TIMERA_UNIT2_CH2_PIN);
+    #endif
+    #ifdef ENA_CH8
+		PORT_Init(TIMERA_UNIT2_CH8_PORT, TIMERA_UNIT2_CH8_PIN, &stcPortInit);
+		PORT_ResetBits(TIMERA_UNIT2_CH8_PORT, TIMERA_UNIT2_CH8_PIN);
+    #endif
 
     /* Configuration peripheral clock */
     PWC_Fcg2PeriphClockCmd(TIMERA_UNIT2_CLOCK, Enable);
 
     /* Configuration TIMERA compare pin */
+    #ifdef ENA_CH2
     PORT_SetFunc(TIMERA_UNIT2_CH2_PORT, TIMERA_UNIT2_CH2_PIN, TIMERA_UNIT2_CH2_FUNC, Disable);
-    PORT_SetFunc(TIMERA_UNIT2_CH3_PORT, TIMERA_UNIT2_CH3_PIN, TIMERA_UNIT2_CH3_FUNC, Disable);
+    #endif
+    #ifdef ENA_CH8
+    PORT_SetFunc(TIMERA_UNIT2_CH8_PORT, TIMERA_UNIT2_CH8_PIN, TIMERA_UNIT2_CH8_FUNC, Disable);
+    #endif
 
     /* Configuration timera unit 1 base structure */
     stcTimeraInit.enClkDiv = TimeraPclkDiv32;  //100 000 000 /4 //by zyf temp
@@ -62,15 +77,18 @@ static void Tim_Config(void)
     stcTimerCompareInit.enTriangularTroughTransEn = Disable;
     stcTimerCompareInit.enTriangularCrestTransEn = Disable;
     stcTimerCompareInit.u16CompareCacheVal = stcTimerCompareInit.u16CompareVal;
-    /* Configure Channel 1 */
+    /* Configure Channel 2 */
+    #ifdef ENA_CH2
     TIMERA_CompareInit(TIMERA_UNIT2, TIMERA_UNIT2_CH2, &stcTimerCompareInit);
     TIMERA_CompareCmd(TIMERA_UNIT2, TIMERA_UNIT2_CH2, Enable);
-    
-    /* Configure channel 3 */
+    #endif    
+    #ifdef ENA_CH8
+    /* Configure channel 8 */
     stcTimerCompareInit.enStartCountOutput = TimeraCountStartOutputHigh;
     stcTimerCompareInit.enStopCountOutput = TimeraCountStopOutputHigh;
-    TIMERA_CompareInit(TIMERA_UNIT2, TIMERA_UNIT2_CH3, &stcTimerCompareInit);
-    TIMERA_CompareCmd(TIMERA_UNIT2, TIMERA_UNIT2_CH3, Enable);
+    TIMERA_CompareInit(TIMERA_UNIT2, TIMERA_UNIT2_CH8, &stcTimerCompareInit);
+    TIMERA_CompareCmd(TIMERA_UNIT2, TIMERA_UNIT2_CH8, Enable);
+    #endif
 
     /* Enable period count interrupt */
     TIMERA_IrqCmd(TIMERA_UNIT2, TimeraIrqOverflow, Enable);
@@ -83,9 +101,15 @@ static void Tim_Config(void)
     NVIC_SetPriority(stcIrqRegiConf.enIRQn, DDL_IRQ_PRIORITY_DEFAULT);
     NVIC_EnableIRQ(stcIrqRegiConf.enIRQn);
 		
-    //TIMERA_Cmd(TIMERA_UNIT2,Enable);	
-    //TIMERA_SetCompareValue( TIMERA_UNIT2,TIMERA_UNIT2_CH2, TIMERA_COUNT_OVERFLOW*0.1);
-    //TIMERA_SpecifyOutputSta(TIMERA_UNIT2,TIMERA_UNIT2_CH,TimeraSpecifyOutputInvalid);	
+    TIMERA_Cmd(TIMERA_UNIT2,Enable);	
+    #ifdef ENA_CH2
+    TIMERA_SetCompareValue( TIMERA_UNIT2,TIMERA_UNIT2_CH2, TIMERA_COUNT_OVERFLOW*0.1);
+    TIMERA_SpecifyOutputSta(TIMERA_UNIT2,TIMERA_UNIT2_CH2,TimeraSpecifyOutputInvalid);	
+    #endif
+    #ifdef ENA_CH8
+    TIMERA_SetCompareValue( TIMERA_UNIT2,TIMERA_UNIT2_CH8, TIMERA_COUNT_OVERFLOW*0.1);
+    TIMERA_SpecifyOutputSta(TIMERA_UNIT2,TIMERA_UNIT2_CH8,TimeraSpecifyOutputInvalid);	
+    #endif
 }
 
 void set_duty_cycle(uint16_t duty, uint8_t CH)
@@ -93,18 +117,26 @@ void set_duty_cycle(uint16_t duty, uint8_t CH)
 		if(duty == 0)
 		{
         if(CH == 2){
+          #ifdef ENA_CH2
           TIMERA_SpecifyOutputSta(TIMERA_UNIT2, TIMERA_UNIT2_CH2, TimeraSpecifyOutputLow);
-        }else if(CH == 3){
-          TIMERA_SpecifyOutputSta(TIMERA_UNIT2, TIMERA_UNIT2_CH3, TimeraSpecifyOutputLow);
+          #endif
+        }else if(CH == 8){
+          #ifdef ENA_CH8
+          TIMERA_SpecifyOutputSta(TIMERA_UNIT2, TIMERA_UNIT2_CH8, TimeraSpecifyOutputLow);
+          #endif
         }
 			  TIMERA_Cmd(TIMERA_UNIT2,Enable);
 		}
     else if(duty >= TIMERA_COUNT_OVERFLOW)
 		{
         if(CH == 2){
+          #ifdef ENA_CH2
           TIMERA_SpecifyOutputSta(TIMERA_UNIT2, TIMERA_UNIT2_CH2, TimeraSpecifyOutputHigh);
-        }else if(CH == 3){
-          TIMERA_SpecifyOutputSta(TIMERA_UNIT2, TIMERA_UNIT2_CH3, TimeraSpecifyOutputHigh);
+          #endif
+        }else if(CH == 8){
+          #ifdef ENA_CH8
+          TIMERA_SpecifyOutputSta(TIMERA_UNIT2, TIMERA_UNIT2_CH8, TimeraSpecifyOutputHigh);
+          #endif
         }
 				TIMERA_Cmd(TIMERA_UNIT2,Enable);
 		}
@@ -128,11 +160,15 @@ void set_duty_cycle(uint16_t duty, uint8_t CH)
 				stcTimerCompareInit.u16CompareCacheVal = stcTimerCompareInit.u16CompareVal;
 				/* Configure Channel 1 */
         if(CH == 2){
+          #ifdef ENA_CH2
           TIMERA_CompareInit(TIMERA_UNIT2, TIMERA_UNIT2_CH2, &stcTimerCompareInit);
           TIMERA_CompareCmd(TIMERA_UNIT2, TIMERA_UNIT2_CH2, Enable);
-        }else if(CH == 3){
-          TIMERA_CompareInit(TIMERA_UNIT2, TIMERA_UNIT2_CH3, &stcTimerCompareInit);
-          TIMERA_CompareCmd(TIMERA_UNIT2, TIMERA_UNIT2_CH3, Enable);
+          #endif
+        }else if(CH == 8){
+          #ifdef ENA_CH8
+          TIMERA_CompareInit(TIMERA_UNIT2, TIMERA_UNIT2_CH8, &stcTimerCompareInit);
+          TIMERA_CompareCmd(TIMERA_UNIT2, TIMERA_UNIT2_CH8, Enable);
+          #endif
         }
 			  TIMERA_Cmd(TIMERA_UNIT2,Enable);
 		}		
@@ -151,8 +187,6 @@ void set_pwm_hw(uint16_t pwm_value, uint16_t max_value, uint8_t CH)  //0-255
 {
   //"good teacher" algorithm
   float gtValue = (float)pwm_value / (float) max_value;// * 100.0;
-  //gtValue = SQRT(gtValue) * 10.0;
-  //gtValue = gtValue / 100.0;
 
   pwm_value = uint16_t(gtValue * (float)TIMERA_COUNT_OVERFLOW);    // 占空比
   set_steering_gear_dutyfactor(pwm_value, CH);    // 设置占空比

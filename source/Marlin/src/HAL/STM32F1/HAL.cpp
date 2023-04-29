@@ -70,10 +70,6 @@ void HAL_init() {
     OUT_WRITE(TL_BEEPER_PIN, LOW);
     OUT_WRITE(TL_BUTTON_LIGHT_PIN, LOW);
   #endif
-
-  #if PIN_EXISTS(TLTOUCH)
-    //OUT_WRITE(TLTOUCH_PIN, LOW);
-  #endif
 }
 
 // HAL idle task

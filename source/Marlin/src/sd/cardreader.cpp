@@ -688,11 +688,11 @@ void CardReader::manage_media() {
   //auto reflush lcd file name list...
   #if ENABLED(TENLOG_TOUCH_LCD)
     if(prev_stat<2){
-      if(tl_TouchScreenType == 1){
-        if(TLTJC_GetLastPage()==5){
-          TLSTJC_println("page select_file"); 
-        }
-      }
+      //if(tl_TouchScreenType == 1){
+      //  if(TLTJC_GetLastPage()==5){
+      //    TLSTJC_println("page select_file"); 
+      //  }
+      //}
       tl_ls(true);
     }
   #endif //TENLOG_TOUCH_LCD

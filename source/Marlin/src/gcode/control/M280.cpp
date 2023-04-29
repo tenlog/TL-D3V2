@@ -43,7 +43,7 @@ void GcodeSuite::M280() {
         //servo[servo_index].detach();
         set_pwm_hw(0, 1000);
       }else{
-        set_pwm_hw(a, 1000, 3);
+        set_pwm_hw(a, 1000, 8);
       }
     }
 }

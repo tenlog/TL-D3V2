@@ -1934,11 +1934,6 @@
           <GroupName>esp32_spi</GroupName>
           <Files>
             <File>
-              <FileName>esp32_wifi.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\HAL\ESP32_SPI\esp32_wifi.h</FilePath>
-            </File>
-            <File>
               <FileName>esp32_wifi.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\HAL\ESP32_SPI\esp32_wifi.cpp</FilePath>
@@ -1992,11 +1987,6 @@
               <FileName>pwm.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\HAL\PWM\pwm.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>pwm.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\HAL\PWM\pwm.h</FilePath>
             </File>
           </Files>
         </Group>

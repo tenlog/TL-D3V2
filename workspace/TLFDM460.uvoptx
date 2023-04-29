@@ -1279,7 +1279,7 @@
 
   <Group>
     <GroupName>marlin_gcode</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -3383,7 +3383,7 @@
 
   <Group>
     <GroupName>marlin_module</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -3906,20 +3906,8 @@
     <File>
       <GroupNumber>14</GroupNumber>
       <FileNumber>298</FileNumber>
-      <FileType>5</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\source\Marlin\src\HAL\ESP32_SPI\esp32_wifi.h</PathWithFileName>
-      <FilenameWithoutPath>esp32_wifi.h</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>14</GroupNumber>
-      <FileNumber>299</FileNumber>
       <FileType>8</FileType>
-      <tvExp>1</tvExp>
+      <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>..\source\Marlin\src\HAL\ESP32_SPI\esp32_wifi.cpp</PathWithFileName>
@@ -3931,13 +3919,13 @@
 
   <Group>
     <GroupName>HC32</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>15</GroupNumber>
-      <FileNumber>300</FileNumber>
+      <FileNumber>299</FileNumber>
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3949,7 +3937,7 @@
     </File>
     <File>
       <GroupNumber>15</GroupNumber>
-      <FileNumber>301</FileNumber>
+      <FileNumber>300</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3961,7 +3949,7 @@
     </File>
     <File>
       <GroupNumber>15</GroupNumber>
-      <FileNumber>302</FileNumber>
+      <FileNumber>301</FileNumber>
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3973,7 +3961,7 @@
     </File>
     <File>
       <GroupNumber>15</GroupNumber>
-      <FileNumber>303</FileNumber>
+      <FileNumber>302</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3985,7 +3973,7 @@
     </File>
     <File>
       <GroupNumber>15</GroupNumber>
-      <FileNumber>304</FileNumber>
+      <FileNumber>303</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3997,7 +3985,7 @@
     </File>
     <File>
       <GroupNumber>15</GroupNumber>
-      <FileNumber>305</FileNumber>
+      <FileNumber>304</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4009,7 +3997,7 @@
     </File>
     <File>
       <GroupNumber>15</GroupNumber>
-      <FileNumber>306</FileNumber>
+      <FileNumber>305</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4021,7 +4009,7 @@
     </File>
     <File>
       <GroupNumber>15</GroupNumber>
-      <FileNumber>307</FileNumber>
+      <FileNumber>306</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4033,7 +4021,7 @@
     </File>
     <File>
       <GroupNumber>15</GroupNumber>
-      <FileNumber>308</FileNumber>
+      <FileNumber>307</FileNumber>
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4043,29 +4031,17 @@
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
-    <File>
-      <GroupNumber>15</GroupNumber>
-      <FileNumber>309</FileNumber>
-      <FileType>5</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\source\Marlin\src\HAL\PWM\pwm.h</PathWithFileName>
-      <FilenameWithoutPath>pwm.h</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
   </Group>
 
   <Group>
     <GroupName>marlin_leveling</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>16</GroupNumber>
-      <FileNumber>310</FileNumber>
+      <FileNumber>308</FileNumber>
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4077,7 +4053,7 @@
     </File>
     <File>
       <GroupNumber>16</GroupNumber>
-      <FileNumber>311</FileNumber>
+      <FileNumber>309</FileNumber>
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4089,7 +4065,7 @@
     </File>
     <File>
       <GroupNumber>16</GroupNumber>
-      <FileNumber>312</FileNumber>
+      <FileNumber>310</FileNumber>
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4101,7 +4077,7 @@
     </File>
     <File>
       <GroupNumber>16</GroupNumber>
-      <FileNumber>313</FileNumber>
+      <FileNumber>311</FileNumber>
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4113,7 +4089,7 @@
     </File>
     <File>
       <GroupNumber>16</GroupNumber>
-      <FileNumber>314</FileNumber>
+      <FileNumber>312</FileNumber>
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -4125,7 +4101,7 @@
     </File>
     <File>
       <GroupNumber>16</GroupNumber>
-      <FileNumber>315</FileNumber>
+      <FileNumber>313</FileNumber>
       <FileType>8</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>

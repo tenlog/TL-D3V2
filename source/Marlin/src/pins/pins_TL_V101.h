@@ -18,8 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
- */
-
+*/
 
 #ifndef HC32F46x
   #error "Oops! Select an HC32F46x board in 'options > c/c++->defines.'"
@@ -53,8 +52,8 @@
 #define BOARD_USART1_TX_PIN     PC4// LCD PC4
 #define BOARD_USART1_RX_PIN     PC5
 
-//#define BOARD_USART3_TX_PIN     PB8// WIFI
-//#define BOARD_USART3_RX_PIN     PB9
+//#define BOARD_USART3_TX_PIN   PB8// WIFI
+//#define BOARD_USART3_RX_PIN   PB9
 
 //
 // EEPROM
@@ -81,38 +80,27 @@
 //
 #define X_STOP_PIN         PC13// x-
 
-#if defined(TENLOG_LW) || defined(TL_LASER_ONLY)
-  //#define X_MAX_PIN        PE5// X+
+#if defined(TLTOUCH)
+  #define Y_STOP_PIN         PC14//
+#elif defined(TENLOG_LW) || defined(TL_LASER_ONLY)
   #define Y_STOP_PIN         PH2// y-
-#elif defined(TLTOUCH)
-  #define Y_STOP_PIN         PC14// y-
 #else
   #define X_MAX_PIN          PH2// X+
   #define Y_STOP_PIN         PC3// y-
 #endif
 
+#define Z_STOP_PIN            PC15// Z-
 
-
-#define Z_STOP_PIN         PC15// Z- LW-采样
-
-#if defined(TENLOG_M3) || defined(TENLOG_LW) || defined(TL_LASER_ONLY) ||  defined(TLTOUCH)
-  #define Z_MAX_PIN          PC15// Z+ PC14
+#if defined(TENLOG_M3) || defined(TENLOG_LW) || defined(TL_LASER_ONLY) || defined(TLTOUCH)
+  #define Z_MAX_PIN          PC15// Z+
 #else
-  #define Z_MAX_PIN          PC14// Z+ PC3 //LW-吐舌头
-#endif
-
-#if defined(TLTOUCH)
-  #define TLTOUCH_PIN        PC14
+  #define Z_MAX_PIN          PC14// Z+
 #endif
 
 #if ENABLED(TL_LASER_ONLY)
   #define RESET_PIN           PA15 
   #define TL_BUTTON_PIN       PC14
   #define TL_BUTTON_LIGHT_PIN PD8
-#endif
-
-#if ENABLED(BLTOUCH)
-  #define SERVO0_PIN Z_MAX_PIN
 #endif
 
 #if ENABLED(TL_BEEPER)
@@ -207,7 +195,7 @@
 // Temperature Sensors
 //
 #define TEMP_0_PIN		     PC1
-#define TEMP_1_PIN		     PC2
+#define TEMP_1_PIN		     PC2    //PC2
 #define TEMP_BED_PIN       PC0
 
 #define  ADC_CHANNEL_COUNT 3u

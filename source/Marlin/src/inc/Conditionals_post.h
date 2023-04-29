@@ -2318,7 +2318,7 @@
 #if PIN_EXISTS(SERVO3) && NUM_SERVOS > 3
   #define HAS_SERVO_3 1
 #endif
-#if NUM_SERVOS > 0
+#if NUM_SERVOS > 0 //by zyf
   #define HAS_SERVOS 1
 #endif
 #if HAS_SERVOS && defined(PAUSE_SERVO_OUTPUT) && defined(RESUME_SERVO_OUTPUT)

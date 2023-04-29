@@ -31,6 +31,13 @@
   #include "../../module/tool_change.h"
 #endif
 
+#if ENABLED(TENLOG_TOUCH_LCD)
+  #include "../../lcd/tenlog/tenlog_touch_lcd.h"
+  #if ENABLED(HWPWM)
+  #include "../../HAL/PWM/pwm.h"
+  #endif
+#endif
+
 #if HAS_LEVELING
   #include "../../feature/bedlevel/bedlevel.h"
 #endif
@@ -354,7 +361,9 @@ void GcodeSuite::G28() {
     if (z_homing_height && (doX || doY || TERN0(Z_SAFE_HOMING, doZ))) {
       // Raise Z before homing any other axes and z is not already high enough (never lower z)
       if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("Raise Z (before homing) by ", z_homing_height);
+      TLDEBUG_PRINTLNPAIR("Raise Z (before homing) by ", z_homing_height);
       do_z_clearance(z_homing_height);
+      //set_pwm_hw(30, 1000, 8); //by zyf
       TERN_(BLTOUCH, bltouch.init());
     }
 

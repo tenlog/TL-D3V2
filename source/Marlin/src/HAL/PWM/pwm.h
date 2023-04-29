@@ -17,16 +17,15 @@
 #define TIMERA_UNIT2_CH2_PIN            (Pin01)
 #define TIMERA_UNIT2_CH2_FUNC           (Func_Tima0) //0
 
-/* TIMERA 4 channel 3 Port/Pin definition */
-#define TIMERA_UNIT2_CH3                (TimeraCh8)
-#define TIMERA_UNIT2_CH3_PORT           (PortC)     //PC3
-#define TIMERA_UNIT2_CH3_PIN            (Pin03)
-#define TIMERA_UNIT2_CH3_FUNC           (Func_Tima0)
+/* TIMERA 4 channel 8 Port/Pin definition */
+#define TIMERA_UNIT2_CH8                (TimeraCh8)
+#define TIMERA_UNIT2_CH8_PORT           (PortC)     //PC3
+#define TIMERA_UNIT2_CH8_PIN            (Pin03)
+#define TIMERA_UNIT2_CH8_FUNC           (Func_Tima0)
 
-//#define TIMERA_COUNT_OVERFLOW         (1250)  //5000 Hz
-#define TIMERA_COUNT_OVERFLOW           (30000)  //500 Hz
+//#define TIMERA_COUNT_OVERFLOW_F       (1250)  //5000 Hz
+#define TIMERA_COUNT_OVERFLOW           (30000)  //50 Hz
 #define IRQ_INDEX_INT_TIMA_CH1          (Int007_IRQn)
-
 
 void pwm_init();
 void set_pwm_hw(uint16_t pwm_value, uint16_t max_value, uint8_t CH=2);
