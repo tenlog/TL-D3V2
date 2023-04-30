@@ -8,7 +8,7 @@
 #ifdef HWPWM
 #include "pwm.h"
 
-//#define ENA_CH2
+#define ENA_CH2
 
 #ifdef TLTOUCH
 //#define ENA_CH8

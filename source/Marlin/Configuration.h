@@ -103,7 +103,7 @@ Version     033
 //Auto leveling.
 #if ANY(TENLOG_S3, TENLOG_LW)
   //#define BLTOUCH
-  //#define TLTOUCH
+  #define TLTOUCH
   //#define MESH_BED_LEVELING
   //#define AUTO_BED_LEVELING_UBL
 #endif
