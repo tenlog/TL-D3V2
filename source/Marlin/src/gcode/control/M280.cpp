@@ -22,7 +22,7 @@
 
 #include "../../inc/MarlinConfig.h"
 
-#if HAS_SERVOS
+#ifdef TLTOUCH
 
 #include "../gcode.h"
 #include "../../HAL/PWM/pwm.h"
@@ -41,11 +41,11 @@ void GcodeSuite::M280() {
       const int a = parser.value_int();
       if (a == -1){
         //servo[servo_index].detach();
-        set_pwm_hw(0, 1000);
+        set_pwm_hw(0, 255, 1);
       }else{
-        set_pwm_hw(a, 1000, 8);
+        set_pwm_hw(a, 255, 1);
       }
     }
 }
 
-#endif // HAS_SERVOS
+#endif // TLTOUCH

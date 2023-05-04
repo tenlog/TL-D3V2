@@ -141,7 +141,7 @@ Version     033
   #define TL_MODEL_STR_0 "Hands2"
   #define X_BED_SIZE 235
   #define Y_BED_SIZE 240
-  #define Z_LENGTH   260ww
+  #define Z_LENGTH   260
 #elif defined(TENLOG_D5)
   #define TL_MODEL_STR_0 "D5"
   #define X_BED_SIZE 505
@@ -872,8 +872,8 @@ Version     033
  * details can be tuned in Configuration_adv.h
  */
 
-#define THERMAL_PROTECTION_HOTENDS // Enable thermal protection for all extruders
-#define THERMAL_PROTECTION_BED     // Enable thermal protection for the heated bed
+//#define THERMAL_PROTECTION_HOTENDS // Enable thermal protection for all extruders
+//#define THERMAL_PROTECTION_BED     // Enable thermal protection for the heated bed
 #define THERMAL_PROTECTION_CHAMBER // Enable thermal protection for the heated chamber
 #define THERMAL_PROTECTION_COOLER  // Enable thermal protection for the laser cooling
 

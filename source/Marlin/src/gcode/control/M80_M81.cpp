@@ -102,6 +102,10 @@ void GcodeSuite::M81() {
 
   safe_delay(1000); // Wait 1 second before switching off
 
+  #if ENABLED(TENLOG_TOUCH_LCD)
+    kill("reboot...", "");
+  #endif
+
   #if HAS_SUICIDE
     suicide();
   #elif ENABLED(PSU_CONTROL)

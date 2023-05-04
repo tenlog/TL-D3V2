@@ -80,9 +80,7 @@
 //
 #define X_STOP_PIN         PC13// x-
 
-#if defined(TLTOUCH)
-  #define Y_STOP_PIN         PC14//
-#elif defined(TENLOG_LW) || defined(TL_LASER_ONLY)
+#if defined(TENLOG_LW) || defined(TL_LASER_ONLY)
   #define Y_STOP_PIN         PH2// y-
 #else
   #define X_MAX_PIN          PH2// X+

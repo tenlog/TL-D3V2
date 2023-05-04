@@ -691,7 +691,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 226: M226(); break;                                  // M226: Wait until a pin reaches a state
       #endif
 
-      #if HAS_SERVOS
+      #ifdef TLTOUCH
         case 280: M280(); break;                                  // M280: Set servo position absolute
         #if ENABLED(EDITABLE_SERVO_ANGLES)
           case 281: M281(); break;                                // M281: Set servo angles

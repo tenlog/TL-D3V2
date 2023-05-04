@@ -800,7 +800,7 @@ private:
     static void M261();
   #endif
 
-  #if HAS_SERVOS
+  #ifdef TLTOUCH
     static void M280();
     #if ENABLED(EDITABLE_SERVO_ANGLES)
       static void M281();
