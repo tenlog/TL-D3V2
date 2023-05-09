@@ -1027,16 +1027,20 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
             }
         }
 
-        sprintf_P(cmd, PSTR("G1 Z%f F4500"), zPos_Pause);
-        EXECUTE_GCODE(cmd);
-        delay(100);
-        //TLDEBUG_PRINTLN(cmd);
+        if(zPos_Pause > 0.0f){
+            sprintf_P(cmd, PSTR("G1 Z%f F4500"), zPos_Pause);
+            EXECUTE_GCODE(cmd);
+            delay(100);
+            //TLDEBUG_PRINTLN(cmd);
+        }
 
-        sprintf_P(cmd, PSTR("G92 E%f"), ePos_Pause);
-        EXECUTE_GCODE(cmd);
-        //TLDEBUG_PRINTLN(cmd);
-        feedrate_mm_s = feed_rate_Pause;
-        delay(100);
+        if(ePos_Pause > 0.0f){
+            sprintf_P(cmd, PSTR("G92 E%f"), ePos_Pause);
+            EXECUTE_GCODE(cmd);
+            //TLDEBUG_PRINTLN(cmd);
+            feedrate_mm_s = feed_rate_Pause;
+            delay(100);
+        }
 
         runout.reset();
 

@@ -5,7 +5,7 @@
 #include "sdio_hal.h"
 
 static stc_sd_handle_t stcSdhandle;
-stc_sdcard_init_t stcCardInitCfg = {SdiocBusWidth4Bit, SdiocClk2M, SdiocHighSpeedMode, NULL,}; //SdiocHighSpeedMode SdiocNormalSpeedMode Normal speed will cause mainboard reboot when print speed > 200;
+stc_sdcard_init_t stcCardInitCfg = {SdiocBusWidth4Bit, SdiocClk2M, SdiocNormalSpeedMode, NULL,}; //SdiocHighSpeedMode SdiocNormalSpeedMode Normal speed will cause mainboard reboot when print speed > 200;
 stc_sdcard_dma_init_t stcDmaInitCfg = {M4_DMA2, DmaCh0,};//M4_DMA2 DmaCh0 //by zyf dma2 ch2 is woriking...
 Sdioc_Class::Sdioc_Class(M4_SDIOC_TypeDef *SDIOCx){
 	MEM_ZERO_STRUCT(stcSdhandle);

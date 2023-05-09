@@ -41,9 +41,9 @@ void GcodeSuite::M280() {
       const int a = parser.value_int();
       if (a == -1){
         //servo[servo_index].detach();
-        set_pwm_hw(0, 255, 1);
+        set_pwm_hw(0, 255, UN_TLT);
       }else{
-        set_pwm_hw(a, 255, 1);
+        set_pwm_hw(a, 255, UN_TLT);
       }
     }
 }

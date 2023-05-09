@@ -1286,11 +1286,12 @@ void Planner::recalculate() {
     const millis_t ms = millis();
     
     #if ENABLED(HWPWM)
-      set_pwm_hw(CALC_FAN_SPEED(0), 255); ///set e side fan 侧面风扇
+      set_pwm_hw(CALC_FAN_SPEED(0), 255, UN_F0); ///set e0 side fan 侧面风扇
+      set_pwm_hw(CALC_FAN_SPEED(1), 255, UN_F1); ///set e1 side fan 侧面风扇
     #else
-    TERN_(HAS_FAN0, FAN_SET(0));    //E0 Fan
+      TERN_(HAS_FAN0, FAN_SET(0));    //E0 Fan
+      TERN_(HAS_FAN1, FAN_SET(1));    //E1 Fan
     #endif
-    TERN_(HAS_FAN1, FAN_SET(1));    //E1 Fan
     TERN_(HAS_FAN2, FAN_SET(2));    //E0 Auto Fan front fan //正面风扇
     TERN_(HAS_FAN3, FAN_SET(3));    //E1 Auto Fan front fan //正面风扇
     TERN_(HAS_FAN4, FAN_SET(4));    //Chamber fan           //机箱风扇

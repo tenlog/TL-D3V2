@@ -363,7 +363,9 @@ void GcodeSuite::G28() {
       if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("Raise Z (before homing) by ", z_homing_height);
       TLDEBUG_PRINTLNPAIR("Raise Z (before homing) by ", z_homing_height);
       do_z_clearance(z_homing_height);
-      //set_pwm_hw(30, 1000, 8); //by zyf
+      #ifdef TLTOUCH
+      //set_pwm_hw(65, 255, UN_TLT); //by zyf
+      #endif
       TERN_(BLTOUCH, bltouch.init());
     }
 

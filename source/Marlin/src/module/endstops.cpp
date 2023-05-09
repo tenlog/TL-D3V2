@@ -404,15 +404,6 @@ void Endstops::event_handler() {
       if (planner.abort_on_endstop_hit) {
         TLDEBUG_PRINTLN("EndStop Hited!!"); //by zyf
         tlAbortPrinting();
-        /*        
-        card.endFilePrint();
-        quickstop_stepper();
-        thermalManager.disable_all_heaters();
-        print_job_timer.stop();
-        #if ENABLED(HWPWM)
-        set_pwm_hw(0, 1000);
-        #endif
-        */
         #if ENABLED(TL_BEEPER)
         start_beeper(32, 0);
         #endif

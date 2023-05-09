@@ -7,14 +7,19 @@
 #ifdef HWPWM
 #include "pwm.h"
 
-static void TimeraUnit_IrqCallback_1(void)
+static void TimeraUnit_IrqCallback_tlt(void)
 {
-    TIMERA_ClearFlag(TIMERA_UNIT1, TimeraFlagOverflow);
+    TIMERA_ClearFlag(TAUNIT_TLT, TimeraFlagOverflow);
 }
 
-static void TimeraUnit_IrqCallback_2(void)
+static void TimeraUnit_IrqCallback_f0(void)
 {
-    TIMERA_ClearFlag(TIMERA_UNIT2, TimeraFlagOverflow);
+    TIMERA_ClearFlag(TAUNIT_F0, TimeraFlagOverflow);
+}
+
+static void TimeraUnit_IrqCallback_f1(void)
+{
+    TIMERA_ClearFlag(TAUNIT_F1, TimeraFlagOverflow);
 }
 
 static void Tim_Config(const uint8_t UN){
@@ -38,24 +43,23 @@ static void Tim_Config(const uint8_t UN){
 		stcPortInit.enExInt = Enable;
     
     /* Initialize servo motor pin */
-    if(UN == 2){
-      PORT_Init(TIMERA_UNIT2_CH2_PORT, TIMERA_UNIT2_CH2_PIN, &stcPortInit);
-      PORT_ResetBits(TIMERA_UNIT2_CH2_PORT, TIMERA_UNIT2_CH2_PIN);
-    }else if(UN == 1){
-      PORT_Init(TIMERA_UNIT1_CH4_PORT, TIMERA_UNIT1_CH4_PIN, &stcPortInit);
-      PORT_ResetBits(TIMERA_UNIT1_CH4_PORT, TIMERA_UNIT1_CH4_PIN);
-    }
-
-    if(UN == 2){
+    if(UN == UN_F0){
+      PORT_Init(TAUNIT_F0_CH_PORT, TAUNIT_F0_CH_PIN, &stcPortInit);
+      PORT_ResetBits(TAUNIT_F0_CH_PORT, TAUNIT_F0_CH_PIN);
       /* Configuration peripheral clock */
-      PWC_Fcg2PeriphClockCmd(TIMERA_UNIT2_CLOCK, Enable);
+      PWC_Fcg2PeriphClockCmd(TAUNIT_F0_CLOCK, Enable);
       /* Configuration TIMERA compare pin */
-      PORT_SetFunc(TIMERA_UNIT2_CH2_PORT, TIMERA_UNIT2_CH2_PIN, TIMERA_UNIT2_CH2_FUNC, Disable);
-    }else if(UN == 1){
-      /* Configuration peripheral clock */
-      PWC_Fcg2PeriphClockCmd(TIMERA_UNIT1_CLOCK, Enable);
-      /* Configuration TIMERA compare pin */
-      PORT_SetFunc(TIMERA_UNIT1_CH4_PORT, TIMERA_UNIT1_CH4_PIN, TIMERA_UNIT1_CH4_FUNC, Disable);
+      PORT_SetFunc(TAUNIT_F0_CH_PORT, TAUNIT_F0_CH_PIN, TAUNIT_F0_CH_FUNC, Disable);
+    }else if(UN == UN_F1){
+      PORT_Init(TAUNIT_F1_CH_PORT, TAUNIT_F1_CH_PIN, &stcPortInit);
+      PORT_ResetBits(TAUNIT_F1_CH_PORT, TAUNIT_F1_CH_PIN);
+      PWC_Fcg2PeriphClockCmd(TAUNIT_F1_CLOCK, Enable);
+      PORT_SetFunc(TAUNIT_F1_CH_PORT, TAUNIT_F1_CH_PIN, TAUNIT_F1_CH_FUNC, Disable);
+    }else if(UN == UN_TLT){
+      PORT_Init(TAUNIT_TLT_CH_PORT, TAUNIT_TLT_CH_PIN, &stcPortInit);
+      PORT_ResetBits(TAUNIT_TLT_CH_PORT, TAUNIT_TLT_CH_PIN);
+      PWC_Fcg2PeriphClockCmd(TAUNIT_TLT_CLOCK, Enable);
+      PORT_SetFunc(TAUNIT_TLT_CH_PORT, TAUNIT_TLT_CH_PIN, TAUNIT_TLT_CH_FUNC, Disable);
     }
 
     /* Configuration timera unit 1 base structure */
@@ -64,12 +68,15 @@ static void Tim_Config(const uint8_t UN){
 
     stcTimeraInit.enCntDir = TimeraCountDirUp;
     stcTimeraInit.enSyncStartupEn = Disable;
-    if(UN == 2){
-      stcTimeraInit.u16PeriodVal = TIMERA_COUNT_OVERFLOW_2; // //freq: 5000Hz -> 200 000 000 /4/5000HZ/4 = 2500(period val)
-      TIMERA_BaseInit(TIMERA_UNIT2, &stcTimeraInit);
-    }else if(UN == 1){
-      stcTimeraInit.u16PeriodVal = TIMERA_COUNT_OVERFLOW_1; // 
-      TIMERA_BaseInit(TIMERA_UNIT1, &stcTimeraInit);
+    if(UN == UN_F0){
+      stcTimeraInit.u16PeriodVal = TIMERA_COUNT_OVERFLOW_F0; // //freq: 5000Hz -> 200 000 000 /4/5000HZ/4 = 2500(period val)
+      TIMERA_BaseInit(TAUNIT_F0, &stcTimeraInit);
+    }else if(UN == UN_F1){
+      stcTimeraInit.u16PeriodVal = TIMERA_COUNT_OVERFLOW_F1; // //freq: 5000Hz -> 200 000 000 /4/5000HZ/4 = 2500(period val)
+      TIMERA_BaseInit(TAUNIT_F1, &stcTimeraInit);
+    }else if(UN == UN_TLT){
+      stcTimeraInit.u16PeriodVal = TIMERA_COUNT_OVERFLOW_TLT; // 
+      TIMERA_BaseInit(TAUNIT_TLT, &stcTimeraInit);
     }
 		
     /* Configuration timera unit 1 compare structure */
@@ -85,26 +92,33 @@ static void Tim_Config(const uint8_t UN){
     stcTimerCompareInit.enTriangularCrestTransEn = Disable;
     stcTimerCompareInit.u16CompareCacheVal = stcTimerCompareInit.u16CompareVal;
     
-    if(UN == 2){
+    if(UN == UN_F0){
       /* Configure Channel 1 */
-      TIMERA_CompareInit(TIMERA_UNIT2, TIMERA_UNIT2_CH2, &stcTimerCompareInit);
-      TIMERA_CompareCmd(TIMERA_UNIT2, TIMERA_UNIT2_CH2, Enable);
+      TIMERA_CompareInit(TAUNIT_F0, TAUNIT_F0_CH, &stcTimerCompareInit);
+      TIMERA_CompareCmd(TAUNIT_F0, TAUNIT_F0_CH, Enable);
       /* Enable period count interrupt */
-      TIMERA_IrqCmd(TIMERA_UNIT2, TimeraIrqOverflow, Enable);
+      TIMERA_IrqCmd(TAUNIT_F0, TimeraIrqOverflow, Enable);
      /* Interrupt of timera unit 1 */
-      stcIrqRegiConf.enIntSrc = TIMERA_UNIT2_OVERFLOW_INT;
-      stcIrqRegiConf.enIRQn = IRQ_INDEX_INT_TIMA_CH_2;
-      stcIrqRegiConf.pfnCallback = &TimeraUnit_IrqCallback_2;
-    }else if(UN == 1){
+      stcIrqRegiConf.enIntSrc = TAUNIT_F0_OVERFLOW_INT;
+      stcIrqRegiConf.enIRQn = IRQ_INDEX_INT_TIMA_CH_F0;
+      stcIrqRegiConf.pfnCallback = &TimeraUnit_IrqCallback_f0;
+    }else if(UN == UN_F1){
+      TIMERA_CompareInit(TAUNIT_F1, TAUNIT_F1_CH, &stcTimerCompareInit);
+      TIMERA_CompareCmd(TAUNIT_F1, TAUNIT_F1_CH, Enable);
+      TIMERA_IrqCmd(TAUNIT_F1, TimeraIrqOverflow, Enable);
+      stcIrqRegiConf.enIntSrc = TAUNIT_F1_OVERFLOW_INT;
+      stcIrqRegiConf.enIRQn = IRQ_INDEX_INT_TIMA_CH_F1;
+      stcIrqRegiConf.pfnCallback = &TimeraUnit_IrqCallback_f1;
+    }else if(UN == UN_TLT){
       /* Configure Channel 1 */
-      TIMERA_CompareInit(TIMERA_UNIT1, TIMERA_UNIT1_CH4, &stcTimerCompareInit);
-      TIMERA_CompareCmd(TIMERA_UNIT1, TIMERA_UNIT1_CH4, Enable);
+      TIMERA_CompareInit(TAUNIT_TLT, TAUNIT_TLT_CH, &stcTimerCompareInit);
+      TIMERA_CompareCmd(TAUNIT_TLT, TAUNIT_TLT_CH, Enable);
       /* Enable period count interrupt */
-      TIMERA_IrqCmd(TIMERA_UNIT1, TimeraIrqOverflow, Enable);
+      TIMERA_IrqCmd(TAUNIT_TLT, TimeraIrqOverflow, Enable);
      /* Interrupt of timera unit 1 */
-      stcIrqRegiConf.enIntSrc = TIMERA_UNIT1_OVERFLOW_INT;
-      stcIrqRegiConf.enIRQn = IRQ_INDEX_INT_TIMA_CH_1;
-      stcIrqRegiConf.pfnCallback = &TimeraUnit_IrqCallback_1;
+      stcIrqRegiConf.enIntSrc = TAUNIT_TLT_OVERFLOW_INT;
+      stcIrqRegiConf.enIRQn = IRQ_INDEX_INT_TIMA_CH_TLT;
+      stcIrqRegiConf.pfnCallback = &TimeraUnit_IrqCallback_tlt;
     }
 
     enIrqRegistration(&stcIrqRegiConf);
@@ -112,35 +126,45 @@ static void Tim_Config(const uint8_t UN){
     NVIC_SetPriority(stcIrqRegiConf.enIRQn, DDL_IRQ_PRIORITY_DEFAULT);
     NVIC_EnableIRQ(stcIrqRegiConf.enIRQn);
 		
-    if(UN == 2){
-      TIMERA_Cmd(TIMERA_UNIT2,Enable);	
-      TIMERA_SetCompareValue( TIMERA_UNIT2,TIMERA_UNIT2_CH2, TIMERA_COUNT_OVERFLOW_2*0.1);
-      TIMERA_SpecifyOutputSta(TIMERA_UNIT2,TIMERA_UNIT2_CH2,TimeraSpecifyOutputInvalid);	
-    }else if(UN == 1){
-      TIMERA_Cmd(TIMERA_UNIT2,Enable);	
-      TIMERA_SetCompareValue( TIMERA_UNIT1,TIMERA_UNIT1_CH4, TIMERA_COUNT_OVERFLOW_1*0.1);
-      TIMERA_SpecifyOutputSta(TIMERA_UNIT1,TIMERA_UNIT1_CH4, TimeraSpecifyOutputInvalid);	
+    if(UN == UN_F0){
+      TIMERA_Cmd(TAUNIT_F0,Enable);	
+      TIMERA_SetCompareValue( TAUNIT_F0,TAUNIT_F0_CH, TIMERA_COUNT_OVERFLOW_F0*0.1);
+      TIMERA_SpecifyOutputSta(TAUNIT_F0,TAUNIT_F0_CH,TimeraSpecifyOutputInvalid);	
+    }else if(UN == UN_F1){
+      TIMERA_Cmd(TAUNIT_F1,Enable);	
+      TIMERA_SetCompareValue( TAUNIT_F1,TAUNIT_F1_CH, TIMERA_COUNT_OVERFLOW_F1*0.1);
+      TIMERA_SpecifyOutputSta(TAUNIT_F1,TAUNIT_F1_CH,TimeraSpecifyOutputInvalid);	
+    }else if(UN == UN_TLT){
+      TIMERA_Cmd(TAUNIT_F0,Enable);	
+      TIMERA_SetCompareValue( TAUNIT_TLT,TAUNIT_TLT_CH, TIMERA_COUNT_OVERFLOW_TLT*0.1);
+      TIMERA_SpecifyOutputSta(TAUNIT_TLT,TAUNIT_TLT_CH, TimeraSpecifyOutputInvalid);	
     } 
 }
 
 void set_duty_cycle(uint16_t duty, uint8_t UN){
 
-    char temp[31];
-    sprintf(temp, "duty: %d", duty);
-    TLDEBUG_PRINTLN(temp);
+    //char temp[31];
+    //sprintf(temp, "duty: %d", duty);
+    //TLDEBUG_PRINTLN(temp);
 
-		if(duty == 0 && UN == 2){
-        TIMERA_SpecifyOutputSta(TIMERA_UNIT2, TIMERA_UNIT2_CH2, TimeraSpecifyOutputLow);
-				TIMERA_Cmd(TIMERA_UNIT2,Enable);
-		} else if(duty >= TIMERA_COUNT_OVERFLOW_2 && UN == 2){
-        TIMERA_SpecifyOutputSta(TIMERA_UNIT2, TIMERA_UNIT2_CH2, TimeraSpecifyOutputHigh);
-				TIMERA_Cmd(TIMERA_UNIT2,Enable);
-		}else if(duty == 0 && UN == 1){
-        TIMERA_SpecifyOutputSta(TIMERA_UNIT1, TIMERA_UNIT1_CH4, TimeraSpecifyOutputLow);
-				TIMERA_Cmd(TIMERA_UNIT1,Enable);
-		}else if(duty >= TIMERA_COUNT_OVERFLOW_1 && UN == 1){
-        TIMERA_SpecifyOutputSta(TIMERA_UNIT1, TIMERA_UNIT1_CH4, TimeraSpecifyOutputHigh);
-				TIMERA_Cmd(TIMERA_UNIT1,Enable);
+		if(duty == 0 && UN == UN_F0){
+        TIMERA_SpecifyOutputSta(TAUNIT_F0, TAUNIT_F0_CH, TimeraSpecifyOutputLow);
+				TIMERA_Cmd(TAUNIT_F0,Enable);
+		} else if(duty >= TIMERA_COUNT_OVERFLOW_F0 && UN == UN_F0){
+        TIMERA_SpecifyOutputSta(TAUNIT_F0, TAUNIT_F0_CH, TimeraSpecifyOutputHigh);
+				TIMERA_Cmd(TAUNIT_F0,Enable);
+		}else if(duty == 0 && UN == UN_F1){
+        TIMERA_SpecifyOutputSta(TAUNIT_F1, TAUNIT_F1_CH, TimeraSpecifyOutputLow);
+				TIMERA_Cmd(TAUNIT_F1,Enable);
+		} else if(duty >= TIMERA_COUNT_OVERFLOW_F1 && UN == UN_F1){
+        TIMERA_SpecifyOutputSta(TAUNIT_F1, TAUNIT_F1_CH, TimeraSpecifyOutputHigh);
+				TIMERA_Cmd(TAUNIT_F1,Enable);
+		}else if(duty == 0 && UN == UN_TLT){
+        TIMERA_SpecifyOutputSta(TAUNIT_TLT, TAUNIT_TLT_CH, TimeraSpecifyOutputLow);
+				TIMERA_Cmd(TAUNIT_TLT,Enable);
+		}else if(duty >= TIMERA_COUNT_OVERFLOW_TLT && UN == UN_TLT){
+        TIMERA_SpecifyOutputSta(TAUNIT_TLT, TAUNIT_TLT_CH, TimeraSpecifyOutputHigh);
+				TIMERA_Cmd(TAUNIT_TLT,Enable);
 		}else{
 
 				stc_timera_compare_init_t stcTimerCompareInit;
@@ -160,16 +184,21 @@ void set_duty_cycle(uint16_t duty, uint8_t UN){
 				stcTimerCompareInit.enTriangularCrestTransEn = Disable;
 				stcTimerCompareInit.u16CompareCacheVal = stcTimerCompareInit.u16CompareVal;
 
-        if(UN == 2){
+        if(UN == UN_F0){
           /* Configure Channel 2 */
-          TIMERA_CompareInit(TIMERA_UNIT2, TIMERA_UNIT2_CH2, &stcTimerCompareInit);
-          TIMERA_CompareCmd(TIMERA_UNIT2, TIMERA_UNIT2_CH2, Enable);
-          TIMERA_Cmd(TIMERA_UNIT2,Enable);
-        }else if(UN == 1){
+          TIMERA_CompareInit(TAUNIT_F0, TAUNIT_F0_CH, &stcTimerCompareInit);
+          TIMERA_CompareCmd(TAUNIT_F0, TAUNIT_F0_CH, Enable);
+          TIMERA_Cmd(TAUNIT_F0,Enable);
+        }else if(UN == UN_F0){
+          /* Configure Channel 2 */
+          TIMERA_CompareInit(TAUNIT_F1, TAUNIT_F1_CH, &stcTimerCompareInit);
+          TIMERA_CompareCmd(TAUNIT_F1, TAUNIT_F1_CH, Enable);
+          TIMERA_Cmd(TAUNIT_F1,Enable);
+        }else if(UN == UN_TLT){
           /* Configure Channel 4 */
-          TIMERA_CompareInit(TIMERA_UNIT1, TIMERA_UNIT1_CH4, &stcTimerCompareInit);
-          TIMERA_CompareCmd(TIMERA_UNIT1, TIMERA_UNIT1_CH4, Enable);
-          TIMERA_Cmd(TIMERA_UNIT1,Enable);
+          TIMERA_CompareInit(TAUNIT_TLT, TAUNIT_TLT_CH, &stcTimerCompareInit);
+          TIMERA_CompareCmd(TAUNIT_TLT, TAUNIT_TLT_CH, Enable);
+          TIMERA_Cmd(TAUNIT_TLT,Enable);
         }
 		}
 }
@@ -182,10 +211,12 @@ void set_steering_gear_dutyfactor(uint16_t dutyfactor, uint8_t UN)
 
 	/* 对超过范围的占空比进行边界处理 */
 	dutyfactor = 0 > dutyfactor ? 0 : dutyfactor;
-  if(UN == 2){
-  	dutyfactor = TIMERA_COUNT_OVERFLOW_2 < dutyfactor ? TIMERA_COUNT_OVERFLOW_2 : dutyfactor;
-  }else if(UN == 1){
-  	dutyfactor = TIMERA_COUNT_OVERFLOW_1 < dutyfactor ? TIMERA_COUNT_OVERFLOW_1 : dutyfactor;
+  if(UN == UN_F0){
+  	dutyfactor = TIMERA_COUNT_OVERFLOW_F0 < dutyfactor ? TIMERA_COUNT_OVERFLOW_F0 : dutyfactor;
+  }else if(UN == UN_F1){
+  	dutyfactor = TIMERA_COUNT_OVERFLOW_F1 < dutyfactor ? TIMERA_COUNT_OVERFLOW_F1 : dutyfactor;
+  }else if(UN == UN_TLT){
+  	dutyfactor = TIMERA_COUNT_OVERFLOW_TLT < dutyfactor ? TIMERA_COUNT_OVERFLOW_TLT : dutyfactor;
   }
 
   set_duty_cycle(dutyfactor, UN);
@@ -196,21 +227,25 @@ void set_pwm_hw(uint16_t pwm_value, uint16_t max_value, uint8_t unitNo)  //0-255
   uint16_t pwm_value_V = 0;
   float gtValue = (float)pwm_value / (float) max_value;// * 100.0;
 
-  if(unitNo == 2){
-    pwm_value_V = uint16_t(gtValue * (float)TIMERA_COUNT_OVERFLOW_2);    // 占空比
-  }else if(unitNo == 1) {
-    pwm_value_V = uint16_t(gtValue * (float)TIMERA_COUNT_OVERFLOW_1);    // 占空比
+  if(unitNo == UN_F0){
+    pwm_value_V = uint16_t(gtValue * (float)TIMERA_COUNT_OVERFLOW_F0);    // 占空比
+  }else if(unitNo == UN_F1){
+    pwm_value_V = uint16_t(gtValue * (float)TIMERA_COUNT_OVERFLOW_F1);    // 占空比
+  }else if(unitNo == UN_TLT) {
+    pwm_value_V = uint16_t(gtValue * (float)TIMERA_COUNT_OVERFLOW_TLT);    // 占空比
   }
   set_steering_gear_dutyfactor(pwm_value_V, unitNo);    // 设置占空比
 }
 
 void pwm_init()
 {
-	Tim_Config(2);
-  set_pwm_hw(0, 255, 2);
+	Tim_Config(UN_F0);
+  set_pwm_hw(0, 255, UN_F0);
+	Tim_Config(UN_F1);
+  set_pwm_hw(0, 255, UN_F1);
   #ifdef TLTOUCH
- 	Tim_Config(1);
-  set_pwm_hw(0, 255, 1);
+ 	Tim_Config(UN_TLT);
+  set_pwm_hw(0, 255, UN_TLT);
   #endif
 }
 #endif    //HWPWM

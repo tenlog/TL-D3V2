@@ -168,14 +168,14 @@
   #define FAN3_PIN              -1   
 #else
   #ifdef TENLOG_LW
-    //#define FAN_PIN               PD0   //FAN  FC1
+    //#define FAN_PIN               PD0   //FAN  FC1 now use hw pwm
     #define FAN2_PIN              PD3   //FAN2 FZ1
   #else
     //#define FAN_PIN               PD0   //FAN HWPWM FC1 PA1
     #define FAN2_PIN              PA0   //FAN2 FZ1
   #endif
 
-  #define FAN1_PIN              PE8   //FC2
+  //#define FAN1_PIN              PE8   //FC2 use hw pwm
   #define FAN3_PIN              PE7   //FZ2
   #define HEATER_0_PIN          PA5   // HEATER0
   #define HEATER_1_PIN          PA4   // HEATER1
@@ -202,7 +202,7 @@
 // Heaters / Fans
 //
 
-#if PIN_EXISTS(FAN1)
+#if PIN_EXISTS(FAN2)
   #define FAN_SOFT_PWM
 #endif
 

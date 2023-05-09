@@ -1803,6 +1803,11 @@
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\module\probe.cpp</FilePath>
             </File>
+            <File>
+              <FileName>probe.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\source\Marlin\src\module\probe.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -67,12 +67,15 @@ Version     033
 20230311    add adjust nozzle offset by video function, need ui v2.2.22
             sub version 037
 20230316    Disabled inline laser function in normal 3d print mode.            
+20230509    Test high speed.
+            sub version 039            
 */
 
 //TL Medels and version
 //#define TENLOG_H2
+#define TENLOG_D3HS   //High Speed
 //#define TENLOG_D3
-#define TENLOG_S3   //single head
+//#define TENLOG_S3   //single head
 //#define TENLOG_M3
 //#define TENLOG_L4   //laser only
 //#define TENLOG_D5
@@ -102,13 +105,13 @@ Version     033
 
 //Auto leveling.
 #if ANY(TENLOG_S3, TENLOG_LW)
-  //#define BLTOUCH
+  #define BLTOUCH
   #define TLTOUCH
   //#define MESH_BED_LEVELING
-  //#define AUTO_BED_LEVELING_UBL
+  #define AUTO_BED_LEVELING_UBL
 #endif
 
-#define TL_DEBUG
+//#define TL_DEBUG
 //TL hardware.
 #define TENLOG_TOUCH_LCD
 //#define ESP8266_WIFI
@@ -129,6 +132,11 @@ Version     033
 // The size of the printable area
 #if defined(TENLOG_D3) 
   #define TL_MODEL_STR_0 "D3"
+  #define X_BED_SIZE 310
+  #define Y_BED_SIZE 310
+  #define Z_LENGTH   350
+#elif defined(TENLOG_D3HS) 
+  #define TL_MODEL_STR_0 "D3HS"
   #define X_BED_SIZE 310
   #define Y_BED_SIZE 310
   #define Z_LENGTH   350
@@ -1130,7 +1138,7 @@ Version     033
  * The probe replaces the Z-MIN endstop and is used for Z homing.
  * (Automatically enables USE_PROBE_FOR_Z_HOMING.)
  */
-#if ENABLED(BLTOUCH)
+#if ENABLED(TLTOUCH)
 #define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
 // Force the use of the probe for Z-axis homing
 #define USE_PROBE_FOR_Z_HOMING

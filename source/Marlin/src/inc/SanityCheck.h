@@ -1325,7 +1325,7 @@ static_assert(Y_MAX_LENGTH >= Y_BED_SIZE, "Movement bounds (Y_MIN_POS, Y_MAX_POS
     #elif Z_PROBE_SERVO_NR >= NUM_SERVOS
       #error "Z_PROBE_SERVO_NR must be smaller than NUM_SERVOS."
     #elif Z_PROBE_SERVO_NR == 0 && !PIN_EXISTS(SERVO0)
-      #error "SERVO0_PIN must be defined for your servo or BLTOUCH probe."
+      //#error "SERVO0_PIN must be defined for your servo or BLTOUCH probe." by zyf
     #elif Z_PROBE_SERVO_NR == 1 && !PIN_EXISTS(SERVO1)
       #error "SERVO1_PIN must be defined for your servo or BLTOUCH probe."
     #elif Z_PROBE_SERVO_NR == 2 && !PIN_EXISTS(SERVO2)
