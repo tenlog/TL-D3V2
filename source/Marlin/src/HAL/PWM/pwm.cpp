@@ -205,9 +205,9 @@ void set_duty_cycle(uint16_t duty, uint8_t UN){
 
 void set_steering_gear_dutyfactor(uint16_t dutyfactor, uint8_t UN)
 {
-  char temp[31];
-  sprintf(temp, "dutyfactor: %d", dutyfactor);
-  TLDEBUG_PRINTLN(temp);
+  //char temp[31];
+  //sprintf(temp, "dutyfactor: %d", dutyfactor);
+  //TLDEBUG_PRINTLN(temp);
 
 	/* 对超过范围的占空比进行边界处理 */
 	dutyfactor = 0 > dutyfactor ? 0 : dutyfactor;

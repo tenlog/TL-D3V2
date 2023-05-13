@@ -68,13 +68,15 @@ Version     033
             sub version 037
 20230316    Disabled inline laser function in normal 3d print mode.            
 20230509    Test high speed.
+            LIN_ADVANCE enabled.
             sub version 039            
 */
 
 //TL Medels and version
 //#define TENLOG_H2
-#define TENLOG_D3HS   //High Speed
+//#define TENLOG_D3HS   //High Speed
 //#define TENLOG_D3
+#define TENLOG_S2   //single head
 //#define TENLOG_S3   //single head
 //#define TENLOG_M3
 //#define TENLOG_L4   //laser only
@@ -92,7 +94,7 @@ Version     033
 #endif
 
 //Headers
-#if ANY(TL_LASER_ONLY,TENLOG_S3)
+#if ANY(TL_LASER_ONLY,TENLOG_S3,TENLOG_S2)
   #define SINGLE_HEAD
   #define EXTRUDERS 1
 #elif(ENABLED(TENLOG_LW))
@@ -104,14 +106,14 @@ Version     033
 #endif
 
 //Auto leveling.
-#if ANY(TENLOG_S3, TENLOG_LW)
+#if ANY(TENLOG_S3, TENLOG_S2, TENLOG_LW)
   #define BLTOUCH
   #define TLTOUCH
   //#define MESH_BED_LEVELING
-  #define AUTO_BED_LEVELING_UBL
+  //#define AUTO_BED_LEVELING_UBL
 #endif
 
-//#define TL_DEBUG
+#define TL_DEBUG
 //TL hardware.
 #define TENLOG_TOUCH_LCD
 //#define ESP8266_WIFI
@@ -136,6 +138,7 @@ Version     033
   #define Y_BED_SIZE 310
   #define Z_LENGTH   350
 #elif defined(TENLOG_D3HS) 
+  #define TL_HIGH_SPEED 1
   #define TL_MODEL_STR_0 "D3HS"
   #define X_BED_SIZE 310
   #define Y_BED_SIZE 310
@@ -175,7 +178,13 @@ Version     033
   #define X_BED_SIZE 310
   #define Y_BED_SIZE 310
   #define Z_LENGTH   350
+#elif defined(TENLOG_S2)
+  #define TL_MODEL_STR_0 "S2"
+  #define X_BED_SIZE 220
+  #define Y_BED_SIZE 220
+  #define Z_LENGTH   250
 #elif defined(TENLOG_LW8)
+  #define TL_HIGH_SPEED 1
   #define TL_MODEL_STR_0 "LW8"
   #define X_BED_SIZE 820
   #define Y_BED_SIZE 820
@@ -212,7 +221,7 @@ Version     033
 #define INVERT_Y_DIR false
 
 // Homing speeds (mm/min)
-#define HOMING_FEEDRATE_MM_M {6000, 5000, 300}
+#define HOMING_FEEDRATE_MM_M {6000, 5000, 500}
 
 #ifdef redefined
 #define __STM32F1__
@@ -1045,7 +1054,11 @@ Version     033
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
+#if TL_HIGH_SPEED
+#define DEFAULT_MAX_FEEDRATE          { 500, 500, 5, 25 }
+#else
 #define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 25 }
+#endif
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -1058,8 +1071,11 @@ Version     033
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      {800, 800, 100, 1000}
-
+#if TL_HIGH_SPEED
+  #define DEFAULT_MAX_ACCELERATION      {4000, 4000, 100, 1000}
+#else
+  #define DEFAULT_MAX_ACCELERATION      {800, 800, 100, 1000}
+#endif
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
   #define MAX_ACCEL_EDIT_VALUES       { 6000, 6000, 200, 20000 } // ...or, set your own edit limits
@@ -1073,10 +1089,15 @@ Version     033
  *   M204 R    Retract Acceleration
  *   M204 T    Travel Acceleration
  */
-#define DEFAULT_ACCELERATION          800    // X, Y, Z and E acceleration for printing moves
-#define DEFAULT_RETRACT_ACCELERATION  500    // E acceleration for retracts
-#define DEFAULT_TRAVEL_ACCELERATION   800    // X, Y, Z acceleration for travel (non printing) moves
-
+#if TL_HIGH_SPEED
+  #define DEFAULT_ACCELERATION          3000    // X, Y, Z and E acceleration for printing moves
+  #define DEFAULT_RETRACT_ACCELERATION  1000    // E acceleration for retracts
+  #define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
+#else
+  #define DEFAULT_ACCELERATION          800    // X, Y, Z and E acceleration for printing moves
+  #define DEFAULT_RETRACT_ACCELERATION  500    // E acceleration for retracts
+  #define DEFAULT_TRAVEL_ACCELERATION   800    // X, Y, Z acceleration for travel (non printing) moves
+#endif
 /**
  * Default Jerk limits (mm/s)
  * Override with M205 X Y Z E
@@ -1087,9 +1108,15 @@ Version     033
  */
 #define CLASSIC_JERK
 #if ENABLED(CLASSIC_JERK)
-  #define DEFAULT_XJERK 10.0
-  #define DEFAULT_YJERK 10.0
-  #define DEFAULT_ZJERK  0.3
+  #if TL_HIGH_SPEED
+    #define DEFAULT_XJERK 20.0
+    #define DEFAULT_YJERK 20.0
+    #define DEFAULT_ZJERK  0.6
+  #else
+    #define DEFAULT_XJERK 10.0
+    #define DEFAULT_YJERK 10.0
+    #define DEFAULT_ZJERK  0.3
+  #endif
 
   //#define TRAVEL_EXTRA_XYJERK 0.0     // Additional jerk allowance for all travel moves
 
@@ -1288,7 +1315,7 @@ Version     033
  *     O-- FRONT --+
  */
 #if ENABLED(BLTOUCH)
-#define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
+#define NOZZLE_TO_PROBE_OFFSET { 25, 2, 0 }
 #endif
 
 // Most probes should stay away from the edges of the bed, but

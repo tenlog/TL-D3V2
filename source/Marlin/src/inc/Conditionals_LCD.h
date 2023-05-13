@@ -677,7 +677,7 @@ EXTRUDERS
  */
 #if ENABLED(BLTOUCH)
   #ifndef Z_PROBE_SERVO_NR
-    #define Z_PROBE_SERVO_NR 0  //by zyf 
+    #define Z_PROBE_SERVO_NR 0
   #endif
   #undef DEACTIVATE_SERVOS_AFTER_MOVE
 
