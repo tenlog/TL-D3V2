@@ -272,7 +272,7 @@ void SPI_RX_Handler(){
         if(ret[0] == '1' || ret[0] == '2' || ret[0] == '3' || ret[0] == '4' || ret[0] == '5' || ret[0] == '6' || ret[0] == '7' || ret[0] == '8' || ret[0] == '9' || ret[0] == '0') {
             wifi_connected = true;
             wifi_resent = false;
-            tlInitSetting(false);
+            tlSendSettings(false);
         }
         if(ret[0]){
             TJC_DELAY;

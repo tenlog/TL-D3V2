@@ -125,11 +125,13 @@
 #if ENABLED(Z_SAFE_HOMING)
 
   inline void home_z_safely() {
+    //TLDEBUG_PRINTLN("home_z_safely");
     DEBUG_SECTION(log_G28, "home_z_safely", DEBUGGING(LEVELING));
 
     // Disallow Z homing if X or Y homing is needed
     if (homing_needed_error(_BV(X_AXIS) | _BV(Y_AXIS))) return;
 
+    //TLDEBUG_PRINTLN("sync_plan_position");
     sync_plan_position();
 
     /**
@@ -364,9 +366,7 @@ void GcodeSuite::G28() {
       if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("Raise Z (before homing) by ", z_homing_height);
       TLDEBUG_PRINTLNPAIR("Raise Z (before homing) by ", z_homing_height);
       do_z_clearance(z_homing_height);
-      #ifdef TLTOUCH
-      //set_pwm_hw(65, 255, UN_TLT); //by zyf
-      #endif
+
       TERN_(BLTOUCH, bltouch.init());
     }
 

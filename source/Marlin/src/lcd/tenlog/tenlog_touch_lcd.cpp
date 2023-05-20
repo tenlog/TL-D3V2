@@ -88,6 +88,7 @@ char gsM117[30] = "";
 char gsPrinting[30] = "";
 
 long tl_command[256] = {0};
+char tl_tjc_ver[10] = "";
 bool bLogoGot = false;
 
 int tenlogScreenUpdate;
@@ -138,6 +139,9 @@ char pre_print_file_name[13]={""};
 
 uint32_t wifi_update_interval = 400;
 
+#if ENABLED(TL_LASER_ONLY)
+uint32_t last_laser_time = 0;
+#endif
 ///////////////// common functions
 
 long ConvertHexLong(long command[], int Len)
@@ -388,7 +392,7 @@ void TLVersion(){
     }
 }
 
-void tlInitSetting(bool only_wifi){
+void tlSendSettings(bool only_wifi){
     #define PRINTTJC(a) if(!only_wifi)TLSTJC_println(a)
 
     if(tl_TouchScreenType == 1)
@@ -730,6 +734,7 @@ void initTLScreen(){
         TLSTJC_println("sleep=0");
         delay(100);
         TLDEBUG_PRINTLN("TL TJC Touch Screen Detected!");
+
     }else if(tl_TouchScreenType == 0){
         sprintf_P(cmd, "SN:%s", tl_hc_sn);
         DWN_Text(0x7280, 28, cmd);
@@ -1798,11 +1803,12 @@ void DWN_MessageHandler(const bool ISOK){
             #if ENABLED(SDSUPPORT)
             if (file_name_list[iPrintID][0] != '\0')
             {
-
-                if (print_from_z_target > 0)
-                    PrintFromZHeightFound = false;
-                else
-                    PrintFromZHeightFound = true;
+                #if ENABLED(PRINT_FROM_Z_HEIGHT)
+                    if (print_from_z_target > 0)
+                        PrintFromZHeightFound = false;
+                    else
+                        PrintFromZHeightFound = true;
+                #endif
 
                 if (card.flag.sdprinting)
                 {
@@ -1824,10 +1830,12 @@ void DWN_MessageHandler(const bool ISOK){
         }
         else
         {
-            if (print_from_z_target > 0)
-                DWN_Page(DWN_P_SEL_Z_FILE);
-            else
-                DWN_Page(DWN_P_SEL_FILE);
+            #if ENABLED(PRINT_FROM_Z_HEIGHT)
+                if (print_from_z_target > 0)
+                    DWN_Page(DWN_P_SEL_Z_FILE);
+                else
+                    DWN_Page(DWN_P_SEL_FILE);
+            #endif
         }
         break;
     case MSG_PRINT_FINISHED:
@@ -2134,7 +2142,8 @@ void tenlog_screen_update_dwn()
     {
         //Init_TLScreen_dwn();
         bInited = true;
-    }
+    }733
+
     */
 #endif //support dwn
 }
@@ -2233,7 +2242,19 @@ void tenlog_status_update(bool isTJC)
     const int8_t ln19 = 0;
     const int8_t ln20 = 0;
 	#endif
-    
+
+
+    uint8_t e0_flow = planner.flow_percentage[0];
+    #if ENABLED(SINGLE_HEAD)
+        uint8_t e1_flow = 0;
+    #else
+        uint8_t e1_flow = planner.flow_percentage[1];
+    #endif
+
+    if(e0_flow < 0 || e0_flow > 250) e0_flow = 100;
+    if(e1_flow < 0 || e1_flow > 250) e1_flow = 100;
+    //TLDEBUG_PRINTLNPAIR("E0 Flow", e0_flow, "E1 Flow", e1_flow);    
+
     #if ENABLED(HAS_WIFI)
     if((wifi_connected || wifiFirstSend < 2000) && !isTJC){
         wifiFirstSend ++;
@@ -2318,7 +2339,7 @@ void tenlog_status_update(bool isTJC)
             WIFI_TX_Handler(0x08);
             #endif
             wifi_resent = true;
-            tlInitSetting(true);
+            tlSendSettings(true);
         }
 
         bool SettingsSent = true;
@@ -2337,10 +2358,22 @@ void tenlog_status_update(bool isTJC)
     #endif //HAS_WIFI
 
     if(isTJC){
-        lnAll = ln0+ln1+ln2+ln3+ln4+ln5+ln6+ln7+ln8+ln9+ln10+ln11+ln12+ln13+ln14+ln15+ln17+ln18+ln19+ln20;
         char printerStatus[100];
-        sprintf_P(printerStatus, PSTR("%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%s|%d|%d|%d|%d|%d|"), 
-            ln0, ln1, ln2, ln3, ln4, ln5, ln6, ln7, ln8, ln9, ln10, ln11, ln12, ln13, ln14, ln15, cTime, ln17, ln18, ln19, ln20, lnAll%0xFF);
+        char V25[9] = "V:2.2.25";
+        if(strlen(tl_tjc_ver)<8){
+            TLTJC_GetTJCVersion();
+        }
+        if(strcmp_P(tl_tjc_ver,V25)>0) {       
+            lnAll = ln0+ln1+ln2+ln3+ln4+ln5+ln6+ln7+ln8+ln9+ln10+ln11+ln12+ln13+ln14+ln15+ln17+ln18+ln19+ln20+e0_flow+e1_flow;
+            sprintf_P(printerStatus, PSTR("%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%s|%d|%d|%d|%d|%d|%d|%d|"), 
+                ln0, ln1, ln2, ln3, ln4, ln5, ln6, ln7, ln8, ln9, ln10, ln11, ln12, ln13, ln14, ln15, cTime, ln17, ln18, ln19, ln20, e0_flow, e1_flow, lnAll%0xFF);
+            //TLDEBUG_PRINTLN("V2226");
+        }else{
+            lnAll = ln0+ln1+ln2+ln3+ln4+ln5+ln6+ln7+ln8+ln9+ln10+ln11+ln12+ln13+ln14+ln15+ln17+ln18+ln19+ln20;
+            sprintf_P(printerStatus, PSTR("%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%s|%d|%d|%d|%d|%d|"), 
+                ln0, ln1, ln2, ln3, ln4, ln5, ln6, ln7, ln8, ln9, ln10, ln11, ln12, ln13, ln14, ln15, cTime, ln17, ln18, ln19, ln20, lnAll%0xFF);
+            //TLDEBUG_PRINTLN("V2225");
+        }
         TLSTJC_print("main.sStatus.txt=\"");
         TLSTJC_print(printerStatus);
         TLSTJC_println("\"");
@@ -2656,8 +2689,8 @@ void process_command_gcode(long _tl_command[]) {
                     //my_sleep(1.0);
                 }
                 SetBusyMoving(false);
-            }else if(lM == 104){
-                //M104
+            }else if(lM == 104 || lM == 221){
+                //M104 //M221
                 long lTT = GCodelng('T', iFrom, _tl_command);
                 long lS = GCodelng('S', iFrom, _tl_command);
                 char sT[10],sS[10];
@@ -2671,8 +2704,8 @@ void process_command_gcode(long _tl_command[]) {
                 }
                 sprintf_P(cmd, PSTR("M%d %s%s"), lM, sT, sS);
                 EXECUTE_GCODE(cmd);
-            }else if(lM == 140 || lM == 220){
-                //M220 //M140
+            }else if(lM == 140 || lM == 220 || lM == 18){
+                //M220 //M140 //M18
                 long lS = GCodelng('S', iFrom, _tl_command);
                 char sS[10];
                 NULLZERO(sS);
@@ -3590,6 +3623,17 @@ uint8_t TLTJC_GetLastPage(){
     //TLDEBUG_PRINTLNPAIR("Page=", lastPageID);
     }
     return lastPageID;
+}
+
+void TLTJC_GetTJCVersion(){
+    ZERO(tl_tjc_ver);
+    TLSTJC_println("prints loading.tUIVer.txt,0");
+    delay(200);
+    get_lcd_command(1);
+    for(int i=0;i<10;i++){
+        tl_tjc_ver[i]=tl_command[i];
+    }
+    TLDEBUG_PRINTLNPAIR("TJC Ver=", tl_tjc_ver);
 }
 
 void SyncFanSpeed(){

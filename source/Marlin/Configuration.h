@@ -68,7 +68,8 @@ Version     033
             sub version 037
 20230316    Disabled inline laser function in normal 3d print mode.            
 20230509    Test high speed.
-            LIN_ADVANCE enabled.
+            LIN_ADVANCE enabled
+20230516    Flow adjestment for e0 & e1 when printing ,need UI V:2.2.26
             sub version 039            
 */
 
@@ -76,8 +77,8 @@ Version     033
 //#define TENLOG_H2
 //#define TENLOG_D3HS   //High Speed
 //#define TENLOG_D3
-#define TENLOG_S2   //single head
-//#define TENLOG_S3   //single head
+//#define TENLOG_S2   //single head
+#define TENLOG_S3   //single head
 //#define TENLOG_M3
 //#define TENLOG_L4   //laser only
 //#define TENLOG_D5
@@ -107,13 +108,13 @@ Version     033
 
 //Auto leveling.
 #if ANY(TENLOG_S3, TENLOG_S2, TENLOG_LW)
-  #define BLTOUCH
-  #define TLTOUCH
+  //#define BLTOUCH
+  //#define TLTOUCH
   //#define MESH_BED_LEVELING
   //#define AUTO_BED_LEVELING_UBL
 #endif
 
-#define TL_DEBUG
+//#define TL_DEBUG
 //TL hardware.
 #define TENLOG_TOUCH_LCD
 //#define ESP8266_WIFI
@@ -666,19 +667,21 @@ Version     033
 // Use temp sensor 1 as a redundant sensor with sensor 0. If the readings
 // from the two sensors differ too much the print will be aborted.
 //#define TEMP_SENSOR_1_AS_REDUNDANT
+#ifdef TEMP_SENSOR_1_AS_REDUNDANT
 #define MAX_REDUNDANT_TEMP_SENSOR_DIFF 10
+#endif
 
-#define TEMP_RESIDENCY_TIME         5  // (seconds) Time to wait for hotend to "settle" in M109
-#define TEMP_WINDOW                  1  // (��C) Temperature proximity for the ".temperature reached" timer
-#define TEMP_HYSTERESIS              3  // (��C) Temperature proximity considered "close enough" to the target
+#define TEMP_RESIDENCY_TIME           3//5  // (seconds) Time to wait for hotend to "settle" in M109
+#define TEMP_WINDOW                   1  // (��C) Temperature proximity for the "temperature reached" timer
+#define TEMP_HYSTERESIS               3  // (��C) Temperature proximity considered "close enough" to the target
 
-#define TEMP_BED_RESIDENCY_TIME     5  // (seconds) Time to wait for bed to "settle" in M190
-#define TEMP_BED_WINDOW              1  // (��C) Temperature proximity for the "temperature reached" timer
-#define TEMP_BED_HYSTERESIS          3  // (��C) Temperature proximity considered "close enough" to the target
+#define TEMP_BED_RESIDENCY_TIME       3//5  // (seconds) Time to wait for bed to "settle" in M190
+#define TEMP_BED_WINDOW               1  // (��C) Temperature proximity for the "temperature reached" timer
+#define TEMP_BED_HYSTERESIS           3  // (��C) Temperature proximity considered "close enough" to the target
 
-#define TEMP_CHAMBER_RESIDENCY_TIME 10  // (seconds) Time to wait for chamber to "settle" in M191
-#define TEMP_CHAMBER_WINDOW          1  // (��C) Temperature proximity for the "temperature reached" timer
-#define TEMP_CHAMBER_HYSTERESIS      3  // (��C) Temperature proximity considered "close enough" to the target
+#define TEMP_CHAMBER_RESIDENCY_TIME   10  // (seconds) Time to wait for chamber to "settle" in M191
+#define TEMP_CHAMBER_WINDOW           1  // (��C) Temperature proximity for the "temperature reached" timer
+#define TEMP_CHAMBER_HYSTERESIS       3  // (��C) Temperature proximity considered "close enough" to the target
 
 // Below this temperature the heater will be switched off
 // because it probably indicates a broken thermistor wire.
@@ -1055,7 +1058,7 @@ Version     033
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
 #if TL_HIGH_SPEED
-#define DEFAULT_MAX_FEEDRATE          { 500, 500, 5, 25 }
+#define DEFAULT_MAX_FEEDRATE          { 500, 500, 10, 30 }
 #else
 #define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 25 }
 #endif
@@ -1072,9 +1075,9 @@ Version     033
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
 #if TL_HIGH_SPEED
-  #define DEFAULT_MAX_ACCELERATION      {4000, 4000, 100, 1000}
+  #define DEFAULT_MAX_ACCELERATION      {5000, 5000, 100, 1000}
 #else
-  #define DEFAULT_MAX_ACCELERATION      {800, 800, 100, 1000}
+  #define DEFAULT_MAX_ACCELERATION      {800, 800, 100, 800}
 #endif
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -1109,8 +1112,8 @@ Version     033
 #define CLASSIC_JERK
 #if ENABLED(CLASSIC_JERK)
   #if TL_HIGH_SPEED
-    #define DEFAULT_XJERK 20.0
-    #define DEFAULT_YJERK 20.0
+    #define DEFAULT_XJERK 30.0
+    #define DEFAULT_YJERK 30.0
     #define DEFAULT_ZJERK  0.6
   #else
     #define DEFAULT_XJERK 10.0
@@ -1315,7 +1318,7 @@ Version     033
  *     O-- FRONT --+
  */
 #if ENABLED(BLTOUCH)
-#define NOZZLE_TO_PROBE_OFFSET { 25, 2, 0 }
+#define NOZZLE_TO_PROBE_OFFSET { 25, 10, 5 }
 #endif
 
 // Most probes should stay away from the edges of the bed, but
@@ -1385,9 +1388,9 @@ Version     033
  *     But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
  */
 #define Z_CLEARANCE_DEPLOY_PROBE   10 // Z Clearance for Deploy/Stow
-#define Z_CLEARANCE_BETWEEN_PROBES  5 // Z Clearance between probe points
-#define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
-//#define Z_AFTER_PROBING           5 // Z position after probing is done
+#define Z_CLEARANCE_BETWEEN_PROBES 8  // Z Clearance between probe points
+#define Z_CLEARANCE_MULTI_PROBE    8 // Z Clearance between multiple probes
+#define Z_AFTER_PROBING            8 // Z position after probing is done
 
 #define Z_PROBE_LOW_POINT          -2 // Farthest distance below the trigger-point to go before stopping
 
@@ -1418,7 +1421,7 @@ Version     033
 #endif
 //#define PROBING_FANS_OFF          // Turn fans off when probing
 //#define PROBING_STEPPERS_OFF      // Turn steppers off (unless needed to hold position) when probing
-//#define DELAY_BEFORE_PROBING 200  // (ms) To prevent vibrations from triggering piezo sensors
+#define DELAY_BEFORE_PROBING 200  // (ms) To prevent vibrations from triggering piezo sensors
 
 // Require minimum nozzle and/or bed temperature for probing
 //#define PREHEAT_BEFORE_PROBING
@@ -1477,8 +1480,13 @@ Version     033
  */
 //#define Z_IDLE_HEIGHT Z_HOME_POS
 
-#define Z_HOMING_HEIGHT  4      // (mm) Minimal Z height before homing (G28) for Z clearance above the bed, clamps, ...
-                                  // Be sure to have this much clearance over your Z_MAX_POS to prevent grinding.
+// (mm) Minimal Z height before homing (G28) for Z clearance above the bed, clamps, ...
+// Be sure to have this much clearance over your Z_MAX_POS to prevent grinding.
+#if ENABLED(BLTOUCH)
+  #define Z_HOMING_HEIGHT  8
+#else
+  #define Z_HOMING_HEIGHT  4
+#endif
 
 //#define Z_AFTER_HOMING  10      // (mm) Height to move to after homing Z
 
@@ -2882,7 +2890,7 @@ Version     033
 // However, control resolution will be halved for each increment;
 // at zero value, there are 128 effective control positions.
 // :[0,1,2,3,4,5,6,7]
-#define SOFT_PWM_SCALE 5
+#define SOFT_PWM_SCALE 2
 
 // If SOFT_PWM_SCALE is set to a value higher than 0, dithering can
 // be used to mitigate the associated resolution loss. If enabled,

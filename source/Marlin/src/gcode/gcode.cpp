@@ -486,7 +486,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         #if HAS_MEDIA_SUBCALLS
           case 32: M32(); break;                                  // M32: Select file and start SD print
           #if ENABLED(TL_LASER_ONLY)
-          case 320: M320(); break;                                // M32: print a pre selected file.
+          case 320: M320(); break;                                // M320: print a pre selected file.
           #endif
         #endif
 

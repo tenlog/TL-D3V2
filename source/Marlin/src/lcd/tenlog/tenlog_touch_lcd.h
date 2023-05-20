@@ -79,12 +79,16 @@
 
 #ifdef TL_DEBUG
 #define TLDEBUG_PRINTLNPAIR      SERIAL_ECHOLNPAIR
+#define TLDEBUG_PRINTPAIR       SERIAL_ECHOPAIR
 #define TLDEBUG_PRINT         SERIAL_ECHOPGM_P
 #define TLDEBUG_PRINTLN       SERIAL_ECHOLNPGM_P
+#define TLDEBUG_ECHO         SERIAL_ECHO
 #else
+#define TLDEBUG_PRINTPAIR(...)    NOOP
 #define TLDEBUG_PRINTLNPAIR(...)      NOOP
 #define TLDEBUG_PRINT(...)         NOOP
 #define TLDEBUG_PRINTLN(...)       NOOP
+#define TLDEBUG_ECHO(...)         NOOP
 #endif
 #define TL_ECHO SERIAL_CHAR
 #define TLECHO_PRINTLNPAIR      SERIAL_ECHOLNPAIR
@@ -136,7 +140,7 @@ bool MTLSERIAL_available();
 char MTLSERIAL_read();
 
 void initTLScreen();
-void tlInitSetting(bool only_wifi);
+void tlSendSettings(bool only_wifi);
 void tlResetEEPROM();
 
 void TLFilamentRunout();
@@ -149,6 +153,7 @@ void tenlog_status_update(bool isTJC);
 void command_M1521(int8_t Status);
 void my_sleep(float time);
 void SyncFanSpeed();
+void TLTJC_GetTJCVersion();
 
 //flash read write
 #define FLASH_READ_ADDRESS 0x00070000
@@ -174,6 +179,7 @@ extern char long_file_name_list[7][27];
 extern char m117_str[15];
 extern char tl_hc_sn[25];
 extern char tl_tjc_sn[18];
+extern char tl_tjc_ver[10];
 extern long tl_command[256];
 
 #if ENABLED(TL_BEEPER)
@@ -235,5 +241,10 @@ extern float print_from_z_target;
 
 extern uint32_t wifi_update_interval;
 extern uint8_t sd_OK;
+
+#if ENABLED(TL_LASER_ONLY)
+    extern uint32_t last_laser_time;
+    #define LASER_FAN_DELAY 30
+#endif
 
 #endif  //TENLOG_TOUCH_LCD

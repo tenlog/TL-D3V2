@@ -258,7 +258,7 @@
    * and/or decrease WATCH_TEMP_INCREASE. WATCH_TEMP_INCREASE should not be set
    * below 2.
    */
-  #define WATCH_TEMP_PERIOD  20               // Seconds
+  #define WATCH_TEMP_PERIOD  40               // Seconds
   #define WATCH_TEMP_INCREASE 2               // Degrees Celsius
 #endif
 
@@ -266,9 +266,8 @@
  * Thermal Protection parameters for the bed are just as above for hotends.
  */
 #if ENABLED(THERMAL_PROTECTION_BED)
-  #define THERMAL_PROTECTION_BED_PERIOD        20 // Seconds
+  #define THERMAL_PROTECTION_BED_PERIOD        40 // Seconds
   #define THERMAL_PROTECTION_BED_HYSTERESIS     2 // Degrees Celsius
-
   /**
    * As described above, except for the bed (M140/M190/M303).
    */
@@ -549,7 +548,11 @@
 #define E6_AUTO_FAN_PIN -1
 #define E7_AUTO_FAN_PIN -1
 #define CHAMBER_AUTO_FAN_PIN -1
+
+#if DISABLED(TL_LASER_ONLY)
 #define TLCHAMBER_AUTO_FAN_PIN CHAMEBER_PIN
+#endif
+
 #define COOLER_AUTO_FAN_PIN -1
 #define COOLER_FAN_PIN -1
 
@@ -770,7 +773,7 @@
 
   // Safety: The probe needs time to recognize the command.
   //         Minimum command delay (ms). Enable and increase if needed.
-  #define BLTOUCH_DELAY 500
+  #define BLTOUCH_DELAY 300
 
   /**
    * Settings for BLTOUCH Classic 1.2, 1.3 or BLTouch Smart 1.0, 2.0, 2.2, 3.0, 3.1, and most clones:
@@ -929,11 +932,11 @@
  * Set DISABLE_INACTIVE_? 'true' to shut down axis steppers after an idle period.
  * The Deactive Time can be overridden with M18 and M84. Set to 0 for No Timeout.
  */
-#if defined(TENLOG_LW) || defined(TL_LASER_ONLY)
+//#if defined(TENLOG_LW) || defined(TL_LASER_ONLY)
 #define DEFAULT_STEPPER_DEACTIVE_TIME 5 //by zyf .. 120 //Release stepper time
-#else
-#define DEFAULT_STEPPER_DEACTIVE_TIME 120 //by zyf .. 120 //Release stepper time
-#endif
+//#else
+//#define DEFAULT_STEPPER_DEACTIVE_TIME 120 //by zyf .. 120 //Release stepper time
+//#endif
 #define DISABLE_INACTIVE_X true
 #define DISABLE_INACTIVE_Y true
 #define DISABLE_INACTIVE_Z true  // Set 'false' if the nozzle could fall onto your printed part!
@@ -1790,7 +1793,7 @@
  *
  * See https://marlinfw.org/docs/features/lin_advance.html for full instructions.
  */
-//#define LIN_ADVANCE
+#define LIN_ADVANCE
 #if ENABLED(LIN_ADVANCE)
   //#define EXTRA_LIN_ADVANCE_K // Enable for second linear advance constants
   #define LIN_ADVANCE_K 0.22    // Unit: mm compression per 1mm/s extruder speed
@@ -3470,7 +3473,7 @@
  */
 //#define PAREN_COMMENTS      // Support for parentheses-delimited comments
 #ifdef TL_LASER_ONLY
-#define GCODE_MOTION_MODES  // Remember the motion mode (G0 G1 G2 G3 G5 G38.X) and apply for X Y Z E F, etc.
+  #define GCODE_MOTION_MODES  // Remember the motion mode (G0 G1 G2 G3 G5 G38.X) and apply for X Y Z E F, etc.
 #endif
 
 // Enable and set a (default) feedrate for all G0 moves

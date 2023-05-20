@@ -566,7 +566,11 @@ void do_blocking_move_to_xy_z(const xy_pos_t &raw, const_float_t z, const_feedRa
 
 void do_z_clearance(const_float_t zclear, const bool lower_allowed/*=false*/) {
   float zdest = zclear;
+  TLDEBUG_PRINTLNPAIR("ZDest0:", zdest);
   if (!lower_allowed) NOLESS(zdest, current_position.z);
+  TLDEBUG_PRINTLNPAIR("ZDest1:", zdest);
+  TLDEBUG_PRINTLNPAIR("current_position.z:", current_position.z);
+  //TLDEBUG_PRINTLNPAIR("z_probe_fast_mm_s:", z_probe_fast_mm_s);
   do_blocking_move_to_z(_MIN(zdest, Z_MAX_POS), TERN(HAS_BED_PROBE, z_probe_fast_mm_s, homing_feedrate(Z_AXIS)));
 }
 
@@ -1385,29 +1389,41 @@ void prepare_line_to_destination() {
    */
   void do_homing_move(const AxisEnum axis, const float distance, const feedRate_t fr_mm_s=0.0, const bool final_approach=true) {
     DEBUG_SECTION(log_move, "do_homing_move", DEBUGGING(LEVELING));
-
+    TLDEBUG_PRINT("do_homing_move");
     const feedRate_t home_fr_mm_s = fr_mm_s ?: homing_feedrate(axis);
 
     if (DEBUGGING(LEVELING)) {
       DEBUG_ECHOPAIR("...(", AS_CHAR(axis_codes[axis]), ", ", distance, ", ");
+      TLDEBUG_PRINTPAIR("...(", AS_CHAR(axis_codes[axis]), ", ", distance, ", ");
       if (fr_mm_s)
         DEBUG_ECHO(fr_mm_s);
       else
         DEBUG_ECHOPAIR("[", home_fr_mm_s, "]");
       DEBUG_ECHOLNPGM(")");
     }
-
+    
+    TLDEBUG_PRINTPAIR("...(", AS_CHAR(axis_codes[axis]), ", ", distance, ", ");
+    if (fr_mm_s)
+      TLDEBUG_ECHO(fr_mm_s);
+    else
+      TLDEBUG_PRINTPAIR("[", home_fr_mm_s, "]");
+    TLDEBUG_PRINTLN(")");
+    
     // Only do some things when moving towards an endstop
     const int8_t axis_home_dir = TERN0(DUAL_X_CARRIAGE, axis == X_AXIS)
                   ? x_home_dir(active_extruder) : home_dir(axis);
     const bool is_home_dir = (axis_home_dir > 0) == (distance > 0);
 
+    #if ENABLED(BLTOUCH)
+      if(axis==Z_AXIS && !is_home_dir)safe_delay(500);
+    #endif
+
     #if ENABLED(SENSORLESS_HOMING)
       sensorless_t stealth_states;
     #endif
 
-    if (is_home_dir) {
-
+    if (is_home_dir) {      
+      TLDEBUG_PRINTLN("is_home_dir 0");
       if (TERN0(HOMING_Z_WITH_PROBE, axis == Z_AXIS)) {
         #if BOTH(HAS_HEATED_BED, WAIT_FOR_BED_HEATER)
           // Wait for bed to heat back up between probing points
@@ -1442,7 +1458,6 @@ void prepare_line_to_destination() {
       #if HAS_DIST_MM_ARG
         const xyze_float_t cart_dist_mm{0};
       #endif
-
       // Set delta/cartesian axes directly
       target[axis] = distance;                  // The move will be towards the endstop
       planner.buffer_segment(target
@@ -1451,12 +1466,18 @@ void prepare_line_to_destination() {
         #endif
         , home_fr_mm_s, active_extruder
       );
+      
+      if(axis==Z_AXIS && !is_home_dir){      
+        safe_delay(500);
+        TLDEBUG_PRINT("planner.buffer_segment: ");
+        TLDEBUG_PRINTLNPAIR("target X ",target[0]," target Y ",target[1]," target Z ",target[2]," home_fr_mm_s ",home_fr_mm_s);
+      }
     #endif
 
     planner.synchronize();
 
     if (is_home_dir) {
-
+      TLDEBUG_PRINTLN("is_home_dir 1");
       #if HOMING_Z_WITH_PROBE && HAS_QUIET_PROBING
         if (axis == Z_AXIS && final_approach) probe.set_probing_paused(false);
       #endif

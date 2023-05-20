@@ -78,11 +78,12 @@
 //
 // Limit Switches
 //
-#define X_STOP_PIN         PC13// x-
 
-#if defined(TENLOG_LW) || defined(TL_LASER_ONLY)
+#if (defined(TENLOG_LW) || defined(TL_LASER_ONLY))
+  #define X_STOP_PIN         PC13// x-
   #define Y_STOP_PIN         PH2// y-
 #else
+  #define X_STOP_PIN         PC13// x-
   #define X_MAX_PIN          PH2// X+
   #define Y_STOP_PIN         PC3// y-
 #endif
@@ -92,7 +93,7 @@
 #if defined(TENLOG_M3) || defined(TENLOG_LW) || defined(TL_LASER_ONLY) || defined(TLTOUCH)
   #define Z_MAX_PIN          PC15// Z+
 #else
-  #define Z_MAX_PIN          PC14// Z+
+  #define Z_MAX_PIN          PC14// 14Z+
 #endif
 
 #if ENABLED(TL_LASER_ONLY)
@@ -125,8 +126,8 @@
 #define X_DIR_PIN          PC6
 
 #define X2_ENABLE_PIN      X_ENABLE_PIN
-#define X2_STEP_PIN        PA9   //PA9
-#define X2_DIR_PIN         PA8   //PA8
+#define X2_STEP_PIN        PA9
+#define X2_DIR_PIN         PA8
 
 #define Y_ENABLE_PIN       X_ENABLE_PIN
 #define Y_STEP_PIN         PB15
@@ -167,16 +168,18 @@
   #define FAN2_PIN              -1 
   #define FAN3_PIN              -1   
 #else
-  #ifdef TENLOG_LW
-    //#define FAN_PIN               PD0   //FAN  FC1 now use hw pwm
-    #define FAN2_PIN              PD3   //FAN2 FZ1
-  #else
-    //#define FAN_PIN               PD0   //FAN HWPWM FC1 PA1
-    #define FAN2_PIN              PA0   //FAN2 FZ1
-  #endif
-
+  //#define FAN_PIN               PD0   //FAN  FC1 now use hw pwm
   //#define FAN1_PIN              PE8   //FC2 use hw pwm
-  #define FAN3_PIN              PE7   //FZ2
+
+  #if defined(TENLOG_LW)
+    #define FAN2_PIN              PD3   //FAN2 FZ1
+    #define FAN3_PIN              PE7   //FZ2
+  #elif defined(TL_LASER_ONLY)
+    #define FAN_LASER_PIN         PD3   //FAN2 For laser
+  #else
+    #define FAN2_PIN              PA0   //FAN2 FZ1
+    #define FAN3_PIN              PE7   //FZ2
+  #endif
   #define HEATER_0_PIN          PA5   // HEATER0
   #define HEATER_1_PIN          PA4   // HEATER1
 #endif
@@ -185,6 +188,8 @@
 #ifdef TENLOG_LW
   #define FAN4_PIN                PC3   
   #define CHAMEBER_PIN            FAN4_PIN   //机箱风扇口
+#elif ENABLED(TL_LASER_ONLY)
+
 #else
   #define FAN4_PIN                PE3   
   #define CHAMEBER_PIN            FAN4_PIN   //机箱风扇口
@@ -202,7 +207,7 @@
 // Heaters / Fans
 //
 
-#if PIN_EXISTS(FAN2)
+#if PIN_EXISTS(FAN2) || PIN_EXISTS(FAN_LASER_PIN)
   #define FAN_SOFT_PWM
 #endif
 
