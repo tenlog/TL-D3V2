@@ -1290,8 +1290,8 @@ void Temperature::manage_heater() {
 
   #if DISABLED(IGNORE_THERMOCOUPLE_ERRORS)
     #if TEMP_SENSOR_0_IS_MAX_TC
-      if (degHotend(0) > _MIN(HEATER_0_MAXTEMP, TEMP_SENSOR_0_MAX_TC_TMAX - 1.0)) max_temp_error(H_E0);
-      if (degHotend(0) < _MAX(HEATER_0_MINTEMP, TEMP_SENSOR_0_MAX_TC_TMIN + .01)) min_temp_error(H_E0);
+      if (degHotend(0) > _MIN(tl_E_MAX_TEMP, TEMP_SENSOR_0_MAX_TC_TMAX - 1.0)) max_temp_error(H_E0);
+      if (degHotend(0) < _MAX(tl_E_MAX_TEMP, TEMP_SENSOR_0_MAX_TC_TMIN + .01)) min_temp_error(H_E0);
     #endif
     #if TEMP_SENSOR_1_IS_MAX_TC
       if (TERN(TEMP_SENSOR_1_AS_REDUNDANT, degHotendRedundant(), degHotend(1)) > _MIN(HEATER_1_MAXTEMP, TEMP_SENSOR_1_MAX_TC_TMAX - 1.0)) max_temp_error(H_E1);

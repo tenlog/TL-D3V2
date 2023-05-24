@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "039"
+#define TL_SUBVERSION "040"
 
 //update log 
 /*
@@ -75,10 +75,10 @@ Version     033
 
 //TL Medels and version
 //#define TENLOG_H2
-//#define TENLOG_D3HS   //High Speed
+#define TENLOG_D3HS   //High Speed
 //#define TENLOG_D3
 //#define TENLOG_S2   //single head
-#define TENLOG_S3   //single head
+//#define TENLOG_S3   //single head
 //#define TENLOG_M3
 //#define TENLOG_L4   //laser only
 //#define TENLOG_D5
@@ -108,13 +108,13 @@ Version     033
 
 //Auto leveling.
 #if ANY(TENLOG_S3, TENLOG_S2, TENLOG_LW)
-  //#define BLTOUCH
-  //#define TLTOUCH
+  #define BLTOUCH
+  #define TLTOUCH
   //#define MESH_BED_LEVELING
   //#define AUTO_BED_LEVELING_UBL
 #endif
 
-//#define TL_DEBUG
+#define TL_DEBUG
 //TL hardware.
 #define TENLOG_TOUCH_LCD
 //#define ESP8266_WIFI
@@ -699,6 +699,7 @@ Version     033
 // Above this temperature the heater will be switched off.
 // This can protect components from overheating, but NOT from shorts and failures.
 // (Use MINTEMP for thermistor short/failure protection.)
+#define HEATER_0_MAXTEMP_MATRII3D 350
 #define HEATER_0_MAXTEMP 300
 #define HEATER_1_MAXTEMP HEATER_0_MAXTEMP
 #define HEATER_2_MAXTEMP HEATER_0_MAXTEMP
@@ -749,15 +750,9 @@ Version     033
     #define DEFAULT_Kp  22.23
     #define DEFAULT_Ki  1.61
     #define DEFAULT_Kd  76.95
-      /*
-      #define DEFAULT_Kp 28.72
-      #define DEFAULT_Ki 2.62
-      #define DEFAULT_Kd 78.81
-
-      #define DEFAULT_Kp 22.23
-      #define DEFAULT_Ki 1.61
-      #define DEFAULT_Kd 76.95
-      */
+    #define DEFAULT_Kp_MATRII3D  15.86
+    #define DEFAULT_Ki_MATRII3D  0.85
+    #define DEFAULT_Kd_MATRII3D  74.21
   #endif
 #endif // PIDTEMP
 
@@ -962,7 +957,7 @@ Version     033
 #define X_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
 //#define Y_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
 #define Z_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
-//#define Z_MIN_PROBE_ENDSTOP_INVERTING false // Set to true to invert the logic of the probe.
+#define Z_MIN_PROBE_ENDSTOP_INVERTING false // Set to true to invert the logic of the probe.
 
 /**
  * Stepper Drivers
@@ -1051,6 +1046,7 @@ Version     033
  */
 // #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 500 }
 #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 395 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT_MATRII3D   { 80, 80, 800, 415 }
 
 /**
  * Default Max Feed Rate (mm/s)
@@ -1168,10 +1164,10 @@ Version     033
  * The probe replaces the Z-MIN endstop and is used for Z homing.
  * (Automatically enables USE_PROBE_FOR_Z_HOMING.)
  */
-#if ENABLED(TLTOUCH)
-#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+#if ENABLED(BLTOUCH)
+//#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
 // Force the use of the probe for Z-axis homing
-#define USE_PROBE_FOR_Z_HOMING
+//#define USE_PROBE_FOR_Z_HOMING
 #endif
 
 /**
@@ -1189,7 +1185,7 @@ Version     033
  *      - normally-closed switches to GND and D32.
  *      - normally-open switches to 5V and D32.
  */
-//#define Z_MIN_PROBE_PIN 32 // Pin 32 is the RAMPS default
+#define Z_MIN_PROBE_PIN 32 // Pin 32 is the RAMPS default
 
 /**
  * Probe Type
@@ -1326,10 +1322,10 @@ Version     033
 #define PROBING_MARGIN 10
 
 // X and Y axis travel speed (mm/min) between probes
-#define XY_PROBE_FEEDRATE (133*60)
+#define XY_PROBE_FEEDRATE (60*60)
 
 // Feedrate (mm/min) for the first approach when double-probing (MULTIPLE_PROBING == 2)
-#define Z_PROBE_FEEDRATE_FAST (4*60)
+#define Z_PROBE_FEEDRATE_FAST (4*30)
 
 // Feedrate (mm/min) for the "accurate" probe of each point
 #define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 4)

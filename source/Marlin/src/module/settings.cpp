@@ -193,6 +193,7 @@ typedef struct {     bool X, Y, Z, X2, Y2, Z2, Z3, Z4, E0, E1, E2, E3, E4, E5, E
 // Defaults for reset / fill in on load
 static const uint32_t   _DMA[] PROGMEM = DEFAULT_MAX_ACCELERATION;
 static const float     _DASU[] PROGMEM = DEFAULT_AXIS_STEPS_PER_UNIT;
+static const float     _DASU_MT[] PROGMEM = DEFAULT_AXIS_STEPS_PER_UNIT_MATRII3D;
 static const feedRate_t _DMF[] PROGMEM = DEFAULT_MAX_FEEDRATE;
 
 /**
@@ -1603,7 +1604,11 @@ void MarlinSettings::postprocess() {
         if (!validating) LOOP_XYZE_N(i) {
           const bool in = (i < esteppers + XYZ);
           planner.settings.max_acceleration_mm_per_s2[i] = in ? tmp1[i] : pgm_read_dword(&_DMA[ALIM(i, _DMA)]);
-          planner.settings.axis_steps_per_mm[i]          = in ? tmp2[i] : pgm_read_float(&_DASU[ALIM(i, _DASU)]);
+          if(tl_com_ID==107){
+            planner.settings.axis_steps_per_mm[i]          = in ? tmp2[i] : pgm_read_float(&_DASU_MT[ALIM(i, _DASU_MT)]);
+          }else{
+            planner.settings.axis_steps_per_mm[i]          = in ? tmp2[i] : pgm_read_float(&_DASU[ALIM(i, _DASU)]);
+          }
           planner.settings.max_feedrate_mm_s[i]          = in ? tmp3[i] : pgm_read_float(&_DMF[ALIM(i, _DMF)]);
         }
 
@@ -2757,7 +2762,11 @@ void MarlinSettings::postprocess() {
 void MarlinSettings::reset() {
   LOOP_XYZE_N(i) {
     planner.settings.max_acceleration_mm_per_s2[i] = pgm_read_dword(&_DMA[ALIM(i, _DMA)]);
-    planner.settings.axis_steps_per_mm[i]          = pgm_read_float(&_DASU[ALIM(i, _DASU)]);
+    if(tl_com_ID==107){
+      planner.settings.axis_steps_per_mm[i]          = pgm_read_float(&_DASU_MT[ALIM(i, _DASU_MT)]);
+    }else{
+      planner.settings.axis_steps_per_mm[i]          = pgm_read_float(&_DASU[ALIM(i, _DASU)]);
+    }
     planner.settings.max_feedrate_mm_s[i]          = pgm_read_float(&_DMF[ALIM(i, _DMF)]);
   }
 
@@ -2981,19 +2990,19 @@ void MarlinSettings::reset() {
         #ifdef DEFAULT_Kp_LIST
           DEFAULT_Kp_LIST
         #else
-          ARRAY_BY_HOTENDS1(DEFAULT_Kp)
+            ARRAY_BY_HOTENDS1(DEFAULT_Kp)
         #endif
       , defKi[] =
         #ifdef DEFAULT_Ki_LIST
           DEFAULT_Ki_LIST
         #else
-          ARRAY_BY_HOTENDS1(DEFAULT_Ki)
+            ARRAY_BY_HOTENDS1(DEFAULT_Ki)
         #endif
       , defKd[] =
         #ifdef DEFAULT_Kd_LIST
           DEFAULT_Kd_LIST
         #else
-          ARRAY_BY_HOTENDS1(DEFAULT_Kd)
+            ARRAY_BY_HOTENDS1(DEFAULT_Kd)
         #endif
       ;
       static_assert(WITHIN(COUNT(defKp), 1, HOTENDS), "DEFAULT_Kp_LIST must have between 1 and HOTENDS items.");
@@ -3024,9 +3033,18 @@ void MarlinSettings::reset() {
       #define PID_DEFAULT(N,E) DEFAULT_##N
     #endif
     HOTEND_LOOP() {
-      PID_PARAM(Kp, e) =      float(PID_DEFAULT(Kp, ALIM(e, defKp)));
-      PID_PARAM(Ki, e) = scalePID_i(PID_DEFAULT(Ki, ALIM(e, defKi)));
-      PID_PARAM(Kd, e) = scalePID_d(PID_DEFAULT(Kd, ALIM(e, defKd)));
+      //PID_PARAM(Kp, e) =      float(PID_DEFAULT(Kp, ALIM(e, defKp)));
+      //PID_PARAM(Ki, e) = scalePID_i(PID_DEFAULT(Ki, ALIM(e, defKi)));
+      //PID_PARAM(Kd, e) = scalePID_d(PID_DEFAULT(Kd, ALIM(e, defKd)));
+      if(tl_com_ID==107){
+        PID_PARAM(Kp, e)=DEFAULT_Kp_MATRII3D;
+        PID_PARAM(Ki, e)=scalePID_i(DEFAULT_Ki_MATRII3D);
+        PID_PARAM(Kd, e)=scalePID_d(DEFAULT_Kd_MATRII3D);
+      }else{
+        PID_PARAM(Kp, e)=DEFAULT_Kp;
+        PID_PARAM(Ki, e)=scalePID_i(DEFAULT_Ki);
+        PID_PARAM(Kd, e)=scalePID_d(DEFAULT_Kd);
+      }
       TERN_(PID_EXTRUSION_SCALING, PID_PARAM(Kc, e) = float(PID_DEFAULT(Kc, ALIM(e, defKc))));
       TERN_(PID_FAN_SCALING, PID_PARAM(Kf, e) = float(PID_DEFAULT(Kf, ALIM(e, defKf))));
     }

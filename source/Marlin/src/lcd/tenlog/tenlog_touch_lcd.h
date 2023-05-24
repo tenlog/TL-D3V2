@@ -74,7 +74,7 @@
 
 #define NULLZERO(a) memset(a,'\0',sizeof(a))
 
-#define TJC_DELAY delay(10)
+#define TJC_DELAY delay(50)
 #define DWN_DELAY delay(5)
 
 #ifdef TL_DEBUG
@@ -246,5 +246,7 @@ extern uint8_t sd_OK;
     extern uint32_t last_laser_time;
     #define LASER_FAN_DELAY 30
 #endif
+
+extern uint8_t tl_com_ID;
 
 #endif  //TENLOG_TOUCH_LCD

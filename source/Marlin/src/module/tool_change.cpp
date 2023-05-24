@@ -860,7 +860,7 @@ void fast_line_to_current(const AxisEnum fr_axis) { _line_to_current(fr_axis, 0.
     ) {
       DEBUG_ECHOLNPAIR("MoveX to ", xhome);
       current_position.x = xhome;
-      line_to_current_position(planner.settings.max_feedrate_mm_s[X_AXIS]*0.35f);   // Park the current head // *0.35 zyf
+      line_to_current_position(planner.settings.max_feedrate_mm_s[X_AXIS]);   // Park the current head // *0.35 zyf
       planner.synchronize();
     }
 

@@ -142,6 +142,7 @@ uint32_t wifi_update_interval = 400;
 #if ENABLED(TL_LASER_ONLY)
 uint32_t last_laser_time = 0;
 #endif
+uint8_t tl_com_ID = 0;
 ///////////////// common functions
 
 long ConvertHexLong(long command[], int Len)
@@ -200,19 +201,21 @@ int DETECT_TLS(){
         if(TryType == 1){
             
             if(CanTry){
-                TLDEBUG_PRINTLNPAIR("Trying TJC... ", iTryCount);
+                TLDEBUG_PRINTLNPAIR("Trying TJC...", iTryCount, " baud:", lBaud);
                 TJC_DELAY;
-                TLSTJC_println("sleep=0");
                 TenlogScreen_end();
+                if(lBaud==9600) delay(500); else delay(10);
                 TenlogScreen_begin(lBaud);
-                TJC_DELAY;
+                if(lBaud==9600) delay(500); else delay(10);
                 TLSTJC_printEmptyend();
-                TJC_DELAY;
+                if(lBaud==9600) delay(500); else delay(10);
+                TLSTJC_println("sleep=0");
+                if(lBaud==9600) delay(500); else delay(10);
                 sprintf_P(cmd, PSTR("tStatus.txt=\"Shake hands... %d\""), (iTryCount+1)/2);
                 TLSTJC_println(cmd);                
                 TLSTJC_println("connect");
                 lScreenStart = millis();
-                delay(100);
+                if(lBaud==9600) delay(500); else delay(200);
                 CanTry = false;
             }
 
@@ -245,10 +248,13 @@ int DETECT_TLS(){
                 }
             }
             TJC_DELAY;
+            TLDEBUG_PRINTLNPAIR("TLTJC SN:", tl_tjc_sn);
 
             if (strlen(tl_tjc_sn) == 16){
+                //
+                TLDEBUG_PRINTLN("LEN16");
                 bool Ok16 = true;
-                uint8_t total = 0;
+                uint8_t total = 0;  
                 for(uint8_t i=0; i<16; i++){
                     if(tl_tjc_sn[i]>='A' && tl_tjc_sn[i]<='F'){
                          total = total + tl_tjc_sn[i] - 'A' + 10;
@@ -260,6 +266,7 @@ int DETECT_TLS(){
                     }
                 }
                 if(Ok16){
+                    TLDEBUG_PRINTLN("OK16");
                     total = total % 16;
                     sprintf_P(cmd, "loading.sDI.txt=\"%s%X\"", tl_tjc_sn, total);
                     TLSTJC_println(cmd);
@@ -280,6 +287,7 @@ int DETECT_TLS(){
                             if(lBaud == 9600){
                                 delay(50);
                                 TLSTJC_println("bauds=115200");
+                                TLDEBUG_PRINTLN("bauds=115200");
                                 lBaud = 115200;
                                 iTryCount--;
                             }else {
@@ -326,9 +334,10 @@ int DETECT_TLS(){
             //SERIAL_ECHOLNPAIR("Tring.. ", lScreenStart);
         }
 
-        if(iTryCount == 9 && TryType == 1){
+        if(iTryCount == 7 && TryType == 1){
             if(lBaud == TJC_BAUD){
                 lBaud = 9600;
+                TLDEBUG_PRINTLN("baud:9600");
             }
         }
         else if(iTryCount > 10)
@@ -374,7 +383,11 @@ void tlResetEEPROM(){
     tl_C_FAN_SPEED = 80;
     tl_E_FAN_START_TEMP = 80;
     tl_LASER_MAX_VALUE = 1000;
-    tl_E_MAX_TEMP = HEATER_0_MAXTEMP;
+    if(tl_com_ID==107){
+        tl_E_MAX_TEMP = HEATER_0_MAXTEMP_MATRII3D;
+    }else{
+        tl_E_MAX_TEMP = HEATER_0_MAXTEMP;
+    }
     tl_ECO_MODE = 0;
     tl_THEME_ID = 0;
     tl_Light = 0;
@@ -509,8 +522,8 @@ void tlSendSettings(bool only_wifi){
         #if DISABLED(ELECTROMAGNETIC_VALUE) && DISABLED(TL_LASER_ONLY)
         sprintf_P(cmd, PSTR("main.vTempMax.val=%d"), tl_E_MAX_TEMP - HOTEND_OVERSHOOT);
         PRINTTJC(cmd);
-        TERN_(ESP32_WIFI, wifi_printer_settings[28] = (HEATER_0_MAXTEMP-HOTEND_OVERSHOOT) / 0x100);
-        TERN_(ESP32_WIFI, wifi_printer_settings[29] = (HEATER_0_MAXTEMP-HOTEND_OVERSHOOT) % 0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[28] = (tl_E_MAX_TEMP-HOTEND_OVERSHOOT) / 0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[29] = (tl_E_MAX_TEMP-HOTEND_OVERSHOOT) % 0x100);
         TERN_(ESP32_WIFI, wifi_printer_settings[30] = (BED_MAXTEMP - BED_OVERSHOOT));
         sprintf_P(cmd, PSTR("main.vBedMax.val=%d"), BED_MAXTEMP - BED_OVERSHOOT);
         PRINTTJC(cmd);
@@ -2856,7 +2869,10 @@ void process_command_gcode(long _tl_command[]) {
                 tl_E_FAN_CHANGED = true;
                 EXECUTE_GCODE(PSTR("M500"));
             }else if(lM == 502){
-                //M502
+                //M502 reset EEPROM
+                //TLTJC_GetTJCVersion();
+                //printf(cmd, "Company ID:%d", tl_com_ID);
+                //TLDEBUG_PRINTLN(cmd);
                 EXECUTE_GCODE(PSTR("M502"));
                 delay(5);
                 EXECUTE_GCODE(PSTR("M500"));
@@ -3620,7 +3636,7 @@ uint8_t TLTJC_GetLastPage(){
     get_lcd_command(1);
     if(tl_command[0]==0x66 && tl_command[2]==0xFF && tl_command[3]==0xFF && tl_command[4]==0xFF){
     lastPageID = tl_command[1];
-    //TLDEBUG_PRINTLNPAIR("Page=", lastPageID);
+    TLDEBUG_PRINTLNPAIR("Page=", lastPageID);
     }
     return lastPageID;
 }
@@ -3633,7 +3649,14 @@ void TLTJC_GetTJCVersion(){
     for(int i=0;i<10;i++){
         tl_tjc_ver[i]=tl_command[i];
     }
-    TLDEBUG_PRINTLNPAIR("TJC Ver=", tl_tjc_ver);
+
+    TLSTJC_println("prints main.vComID.val,0");
+    delay(200);
+    get_lcd_command(1);
+    if(tl_command[1]==0x00 && tl_command[2]==0x00)
+    {
+        tl_com_ID = tl_command[0];
+    }
 }
 
 void SyncFanSpeed(){

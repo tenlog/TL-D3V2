@@ -41,7 +41,7 @@ void stop();
 
 bool BLTouch::command(const BLTCommand cmd, const millis_t &ms) {
   if (DEBUGGING(LEVELING)) SERIAL_ECHOLNPAIR("BLTouch Command :", cmd);
-  TLDEBUG_PRINTLNPAIR("BLTouch Command :", cmd);
+  //TLDEBUG_PRINTLNPAIR("BLTouch Command :", cmd);
   set_pwm_hw(cmd, 255, UN_TLT);
   //MOVE_SERVO(Z_PROBE_SERVO_NR, cmd);  //by zyf
   safe_delay(_MAX(ms, (uint32_t)BLTOUCH_DELAY)); // BLTOUCH_DELAY is also the *minimum* delay

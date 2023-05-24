@@ -88,9 +88,14 @@
   #define Y_STOP_PIN         PC3// y-
 #endif
 
-#define Z_STOP_PIN            PC15// Z-
+#if ENABLED(BLTOUCH)
+  #define Z_STOP_PIN           PH2// Z-
+#else
+  #define Z_STOP_PIN           PC15// Z-
+#endif
 
-#if defined(TENLOG_M3) || defined(TENLOG_LW) || defined(TL_LASER_ONLY) || defined(TLTOUCH)
+
+#if defined(TENLOG_M3) || defined(TENLOG_LW) || defined(TL_LASER_ONLY) || defined(BLTOUCH)
   #define Z_MAX_PIN          PC15// Z+
 #else
   #define Z_MAX_PIN          PC14// 14Z+

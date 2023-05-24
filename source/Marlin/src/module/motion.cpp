@@ -448,8 +448,8 @@ void _internal_move_to_destination(const_feedRate_t fr_mm_s/*=0.0f*/
  * - Before returning, wait for the planner buffer to empty.
  */
 void do_blocking_move_to(const float rx, const float ry, const float rz, const_feedRate_t fr_mm_s/*=0.0*/) {
-  DEBUG_SECTION(log_move, "do_blocking_move_to", DEBUGGING(LEVELING));
-  if (DEBUGGING(LEVELING)) DEBUG_XYZ("> ", rx, ry, rz);
+  //DEBUG_SECTION(log_move, "do_blocking_move_to", DEBUGGING(LEVELING));
+  //if (DEBUGGING(LEVELING)) DEBUG_XYZ("> ", rx, ry, rz);
 
   const feedRate_t z_feedrate = fr_mm_s ?: homing_feedrate(Z_AXIS),
                   xy_feedrate = fr_mm_s ?: feedRate_t(XY_PROBE_FEEDRATE_MM_S);
@@ -513,6 +513,7 @@ void do_blocking_move_to(const float rx, const float ry, const float rz, const_f
 
   #else
 
+    TLDEBUG_PRINTLNPAIR("do_blocking_move_to x:", rx, ", y:", ry, " z:", rz, ", zfeedrate:", z_feedrate);
     // If Z needs to raise, do it before moving XY
     if (current_position.z < rz) {
       current_position.z = rz;
@@ -529,8 +530,8 @@ void do_blocking_move_to(const float rx, const float ry, const float rz, const_f
     }
 
   #endif
-
   planner.synchronize();
+
 }
 
 void do_blocking_move_to(const xy_pos_t &raw, const_feedRate_t fr_mm_s/*=0.0f*/) {
