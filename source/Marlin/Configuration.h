@@ -75,9 +75,9 @@ Version     033
 
 //TL Medels and version
 //#define TENLOG_H2
-#define TENLOG_D3HS   //High Speed
+//#define TENLOG_D3HS   //High Speed
 //#define TENLOG_D3
-//#define TENLOG_S2   //single head
+#define TENLOG_S2   //single head
 //#define TENLOG_S3   //single head
 //#define TENLOG_M3
 //#define TENLOG_L4   //laser only
@@ -114,7 +114,7 @@ Version     033
   //#define AUTO_BED_LEVELING_UBL
 #endif
 
-#define TL_DEBUG
+//#define TL_DEBUG
 //TL hardware.
 #define TENLOG_TOUCH_LCD
 //#define ESP8266_WIFI
@@ -1185,7 +1185,7 @@ Version     033
  *      - normally-closed switches to GND and D32.
  *      - normally-open switches to 5V and D32.
  */
-#define Z_MIN_PROBE_PIN 32 // Pin 32 is the RAMPS default
+//#define Z_MIN_PROBE_PIN 32 // Pin 32 is the RAMPS default
 
 /**
  * Probe Type

@@ -201,21 +201,19 @@ int DETECT_TLS(){
         if(TryType == 1){
             
             if(CanTry){
-                TLDEBUG_PRINTLNPAIR("Trying TJC...", iTryCount, " baud:", lBaud);
+                TLDEBUG_PRINTLNPAIR("Trying TJC... ", iTryCount);
                 TJC_DELAY;
-                TenlogScreen_end();
-                if(lBaud==9600) delay(500); else delay(10);
-                TenlogScreen_begin(lBaud);
-                if(lBaud==9600) delay(500); else delay(10);
-                TLSTJC_printEmptyend();
-                if(lBaud==9600) delay(500); else delay(10);
                 TLSTJC_println("sleep=0");
-                if(lBaud==9600) delay(500); else delay(10);
+                TenlogScreen_end();
+                TenlogScreen_begin(lBaud);
+                TJC_DELAY;
+                TLSTJC_printEmptyend();
+                TJC_DELAY;
                 sprintf_P(cmd, PSTR("tStatus.txt=\"Shake hands... %d\""), (iTryCount+1)/2);
                 TLSTJC_println(cmd);                
                 TLSTJC_println("connect");
                 lScreenStart = millis();
-                if(lBaud==9600) delay(500); else delay(200);
+                delay(100);
                 CanTry = false;
             }
 
@@ -248,25 +246,19 @@ int DETECT_TLS(){
                 }
             }
             TJC_DELAY;
-            TLDEBUG_PRINTLNPAIR("TLTJC SN:", tl_tjc_sn);
 
             if (strlen(tl_tjc_sn) == 16){
-                //
-                TLDEBUG_PRINTLN("LEN16");
                 bool Ok16 = true;
-                uint8_t total = 0;  
+                uint8_t total = 0;
                 for(uint8_t i=0; i<16; i++){
-                    if(tl_tjc_sn[i]>='A' && tl_tjc_sn[i]<='F'){
-                         total = total + tl_tjc_sn[i] - 'A' + 10;
-                    }else if(tl_tjc_sn[i]>='0' && tl_tjc_sn[i]<='9'){
-                         total = total + tl_tjc_sn[i] - '0' + 0;
-                    }else {
+                    if(tl_tjc_sn[i]>='A' && tl_tjc_sn[i]<='F') total = total + tl_tjc_sn[i] - 'A' + 10;
+                    else if(tl_tjc_sn[i]>='0' && tl_tjc_sn[i]<='9') total = total + tl_tjc_sn[i] - '0' + 0;
+                    else {
                         Ok16 = false;
                         break;
                     }
                 }
                 if(Ok16){
-                    TLDEBUG_PRINTLN("OK16");
                     total = total % 16;
                     sprintf_P(cmd, "loading.sDI.txt=\"%s%X\"", tl_tjc_sn, total);
                     TLSTJC_println(cmd);
@@ -286,8 +278,7 @@ int DETECT_TLS(){
                             TLSTJC_println("bkcmd=0");
                             if(lBaud == 9600){
                                 delay(50);
-                                TLSTJC_println("bauds=115200");
-                                TLDEBUG_PRINTLN("bauds=115200");
+                                //TLSTJC_println("bauds=115200");
                                 lBaud = 115200;
                                 iTryCount--;
                             }else {
@@ -301,6 +292,7 @@ int DETECT_TLS(){
                     }
                 }
             }
+
         }else if(TryType == 0){
             if(CanTry){
                 TLDEBUG_PRINTLNPAIR("Trying DWN... ", iTryCount);
@@ -334,10 +326,9 @@ int DETECT_TLS(){
             //SERIAL_ECHOLNPAIR("Tring.. ", lScreenStart);
         }
 
-        if(iTryCount == 7 && TryType == 1){
+        if(iTryCount == 9 && TryType == 1){
             if(lBaud == TJC_BAUD){
                 lBaud = 9600;
-                TLDEBUG_PRINTLN("baud:9600");
             }
         }
         else if(iTryCount > 10)
@@ -904,6 +895,7 @@ void tlAbortPrinting(){
 
 void TLFilamentRunout(){
     queue.inject_P(PSTR(FILAMENT_RUNOUT_SCRIPT));
+    my_sleep(1.5);
     //EXECUTE_GCODE("M25");
     //while(queue.has_commands_queued() || planner.movesplanned() > 1){
     //    idle();
@@ -911,6 +903,8 @@ void TLFilamentRunout(){
     if(tl_TouchScreenType == 1){
         iBeepCount = 10;
         TLSTJC_println("main.vCC.val=1");
+        //EXECUTE_GCODE("M25");
+        my_sleep(1.5);
         TJCMessage(15, 15, 6, "G28 X", "G28 X", "M1031 O1", "");
     }
 }
@@ -936,6 +930,7 @@ int feed_rate_Pause = 0;
 float zPos_Pause = 0.0;
 float ePos_Pause = 0.0;
 
+//M1031
 void TJCPauseResumePrinting(bool PR, int FromPos){
     #ifdef PRINT_FROM_Z_HEIGHT
     if (!PrintFromZHeightFound)
@@ -948,13 +943,14 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
         if(lO == -999){
             //click pause from lcd
             EXECUTE_GCODE("M25");
+            my_sleep(2.0);
             SetBusyMoving(true);
             TJC_DELAY;
         } 
         if(lO == 0 || lO == 1 || lO == -999){
 
             bool FilaRunout = false;
-            if(lO == 1) FilaRunout = true;  //runout from lcd
+            if(lO == 1) FilaRunout = true;  //runout from lcd message box
             
             zPos_Pause = current_position[Z_AXIS];
             ePos_Pause = current_position[E_AXIS];
@@ -984,13 +980,23 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
             #endif //DUAL_X_CARRIAGE
 
             if(FilaRunout){
+                //planner.syn
 				#if HAS_FAN
                 thermalManager.setTargetHotend(0,0);
                 thermalManager.setTargetHotend(0,1);
 				#endif
             }            
+            
+            my_sleep(5.0);
+            float RaiseZ = zPos_Pause+30;
+            if(RaiseZ > Z_LENGTH) RaiseZ = Z_LENGTH;
+            sprintf_P(cmd, PSTR("G0 F6000 Z%f"), RaiseZ);
+            EXECUTE_GCODE(cmd);
+            my_sleep(2.0);
+            EXECUTE_GCODE("G0 X10");
+            my_sleep(3.0);
 
-            queue.inject("G27");
+            //queue.inject("G27");
             SetBusyMoving(false);
         }
     }else{

@@ -82,21 +82,26 @@
 #if (defined(TENLOG_LW) || defined(TL_LASER_ONLY))
   #define X_STOP_PIN         PC13// x-
   #define Y_STOP_PIN         PH2// y-
-#else
+#elif defined(DUAL_X_CARRIAGE)
   #define X_STOP_PIN         PC13// x-
   #define X_MAX_PIN          PH2// X+
+  #define Y_STOP_PIN         PC3// y-
+#else
+  #define X_STOP_PIN         PC13// x-
   #define Y_STOP_PIN         PC3// y-
 #endif
 
 #if ENABLED(BLTOUCH)
-  #define Z_STOP_PIN           PH2// Z-
+  #define Z_STOP_PIN           PH2// Z- 
+  #define Z_MIN_PROBE_PIN      PC15 
 #else
   #define Z_STOP_PIN           PC15// Z-
 #endif
 
-
-#if defined(TENLOG_M3) || defined(TENLOG_LW) || defined(TL_LASER_ONLY) || defined(BLTOUCH)
+#if defined(TENLOG_M3) || defined(TENLOG_LW) || defined(TL_LASER_ONLY) 
   #define Z_MAX_PIN          PC15// Z+
+#elif defined(BLTOUCH)
+  #define Z_MAX_PIN          PH2// Z+
 #else
   #define Z_MAX_PIN          PC14// 14Z+
 #endif
@@ -149,8 +154,8 @@
 #define Z2_DIR_PIN          PB12
 
 #define E0_ENABLE_PIN      X_ENABLE_PIN
-#define E0_STEP_PIN        PB4  //PB4
-#define E0_DIR_PIN         PB3  //PB3
+#define E0_STEP_PIN        PB4
+#define E0_DIR_PIN         PB3
 #define E1_ENABLE_PIN      X_ENABLE_PIN
 #define E1_STEP_PIN        PB6
 #define E1_DIR_PIN         PB5
