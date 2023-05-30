@@ -79,41 +79,40 @@
 // Limit Switches
 //
 
-#if (defined(TENLOG_LW) || defined(TL_LASER_ONLY))
-  #define X_STOP_PIN         PC13// x-
-  #define Y_STOP_PIN         PH2// y-
-#elif defined(DUAL_X_CARRIAGE)
-  #define X_STOP_PIN         PC13// x-
+#if defined(DUAL_X_CARRIAGE)
   #define X_MAX_PIN          PH2// X+
   #define Y_STOP_PIN         PC3// y-
-#else
+  #define X_STOP_PIN         PC13// x-
+  #define Z_STOP_PIN         PC15// Z-
+  #ifdef TENLOG_M3
+    #define Z_MAX_PIN          PC15// 14Z+
+  #else
+    #define Z_MAX_PIN          PC14// 14Z+1
+  #endif
+
+#elif (defined(TENLOG_LW) || defined(TL_LASER_ONLY))
   #define X_STOP_PIN         PC13// x-
   #define Y_STOP_PIN         PC3// y-
-#endif
-
-#if ENABLED(BLTOUCH)
-  #define Z_STOP_PIN           PH2// Z- 
-  #define Z_MIN_PROBE_PIN      PC15 
-#else
-  #define Z_STOP_PIN           PC15// Z-
-#endif
-
-#if defined(TENLOG_M3) || defined(TENLOG_LW) || defined(TL_LASER_ONLY) 
-  #define Z_MAX_PIN          PC15// Z+
+  #define Z_STOP_PIN         PC15// Z-
+  #define Z_MAX_PIN          PC15// Z-
 #elif defined(BLTOUCH)
-  #define Z_MAX_PIN          PH2// Z+
-#else
-  #define Z_MAX_PIN          PC14// 14Z+
+  #define X_STOP_PIN         PC13// x-
+  #define Y_STOP_PIN         PC3// y-
+  #define Z_STOP_PIN         PH2// Z- 
+  #ifndef Z_MIN_PROBE_PIN
+    //#define Z_MIN_PROBE_PIN  PH2//PC15 
+  #endif
 #endif
 
 #if ENABLED(TL_LASER_ONLY)
+  #define LASER_FAN_PIN       PD3
   #define RESET_PIN           PA15 
   #define TL_BUTTON_PIN       PC14
   #define TL_BUTTON_LIGHT_PIN PD8
 #endif
 
 #if ENABLED(TL_BEEPER)
-  #define TL_BEEPER_PIN PC3
+  #define TL_BEEPER_PIN   PE3//PC3
 #endif
 
 //
@@ -122,7 +121,6 @@
 #ifndef FIL_RUNOUT_PIN
   #if defined(TENLOG_LW) || defined(TENLOG_LASER_ONLY)
     #define FIL_RUNOUT_PIN                    PD0   // "Pulled-high"
-    //#define FIL_RUNOUT2_PIN                   PE6   // "Pulled-high"
   #else
     #define FIL_RUNOUT_PIN                    PA15   // "Pulled-high" 
   #endif
@@ -159,8 +157,6 @@
 #define E1_ENABLE_PIN      X_ENABLE_PIN
 #define E1_STEP_PIN        PB6
 #define E1_DIR_PIN         PB5
-
-
 
 #ifdef ELECTROMAGNETIC_VALUE
   #define ELECTROMAGNETIC_VALUE_ON            1

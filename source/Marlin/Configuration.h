@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "040"
+#define TL_SUBVERSION "041"
 
 //update log 
 /*
@@ -70,14 +70,17 @@ Version     033
 20230509    Test high speed.
             LIN_ADVANCE enabled
 20230516    Flow adjestment for e0 & e1 when printing ,need UI V:2.2.26
-            sub version 039            
+            sub version 039
+20230528    Improved algorithm of "Pring from any z height".
+            added laser auto fan function. 
+            Sub version 041
 */
 
 //TL Medels and version
 //#define TENLOG_H2
 //#define TENLOG_D3HS   //High Speed
-//#define TENLOG_D3
-#define TENLOG_S2   //single head
+#define TENLOG_D3
+//#define TENLOG_S2   //single head
 //#define TENLOG_S3   //single head
 //#define TENLOG_M3
 //#define TENLOG_L4   //laser only
@@ -85,6 +88,8 @@ Version     033
 //#define TENLOG_D6
 //#define TENLOG_D8
 //#define TENLOG_LW8     //发光字 Luminous words
+
+#define TL_STEPTEST   //给老范做的挤出机拉力测试
 
 #if ENABLED(TENLOG_LW8)
 #define TENLOG_LW
@@ -114,7 +119,7 @@ Version     033
   //#define AUTO_BED_LEVELING_UBL
 #endif
 
-//#define TL_DEBUG
+#define TL_DEBUG
 //TL hardware.
 #define TENLOG_TOUCH_LCD
 //#define ESP8266_WIFI
@@ -1165,9 +1170,9 @@ Version     033
  * (Automatically enables USE_PROBE_FOR_Z_HOMING.)
  */
 #if ENABLED(BLTOUCH)
-//#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
 // Force the use of the probe for Z-axis homing
-//#define USE_PROBE_FOR_Z_HOMING
+#define USE_PROBE_FOR_Z_HOMING
 #endif
 
 /**
@@ -1185,7 +1190,7 @@ Version     033
  *      - normally-closed switches to GND and D32.
  *      - normally-open switches to 5V and D32.
  */
-//#define Z_MIN_PROBE_PIN 32 // Pin 32 is the RAMPS default
+//#define Z_MIN_PROBE_PIN PC15
 
 /**
  * Probe Type
@@ -1848,8 +1853,9 @@ Version     033
 // - Prevent Z homing when the Z probe is outside bed area.
 //
 #if ENABLED(BLTOUCH)
-#define Z_SAFE_HOMING
+  #define Z_SAFE_HOMING
 #endif
+
 #if ENABLED(Z_SAFE_HOMING)
   #define Z_SAFE_HOMING_X_POINT X_CENTER  // X point for Z homing
   #define Z_SAFE_HOMING_Y_POINT Y_CENTER  // Y point for Z homing

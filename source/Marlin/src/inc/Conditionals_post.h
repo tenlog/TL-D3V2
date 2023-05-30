@@ -2022,6 +2022,9 @@
 #if PIN_EXISTS(Z4_MAX)
   #define HAS_Z4_MAX 1
 #endif
+#if (ENABLED(BLTOUCH) && !(PIN_EXISTS(Z_MIN_PROBE)))
+  //#error "Z Min Probe not exist!"
+#endif
 #if HAS_CUSTOM_PROBE_PIN && PIN_EXISTS(Z_MIN_PROBE)
   #define HAS_Z_MIN_PROBE_PIN 1
 #endif

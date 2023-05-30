@@ -623,40 +623,15 @@
               <FileType>8</FileType>
               <FilePath>..\source\drivers\board\startup.cpp</FilePath>
             </File>
-            <File>
-              <FileName>startup.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\drivers\board\startup.h</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>marlin</GroupName>
           <Files>
             <File>
-              <FileName>Configuration.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\Configuration.h</FilePath>
-            </File>
-            <File>
-              <FileName>Configuration_adv.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\Configuration_adv.h</FilePath>
-            </File>
-            <File>
-              <FileName>Version.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\Version.h</FilePath>
-            </File>
-            <File>
               <FileName>MarlinCore.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\MarlinCore.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>MarlinCore.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\MarlinCore.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -664,84 +639,14 @@
           <GroupName>marlin_cores</GroupName>
           <Files>
             <File>
-              <FileName>boards.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\core\boards.h</FilePath>
-            </File>
-            <File>
-              <FileName>bug_on.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\core\bug_on.h</FilePath>
-            </File>
-            <File>
-              <FileName>debug_out.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\core\debug_out.h</FilePath>
-            </File>
-            <File>
-              <FileName>debug_section.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\core\debug_section.h</FilePath>
-            </File>
-            <File>
-              <FileName>drivers.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\core\drivers.h</FilePath>
-            </File>
-            <File>
-              <FileName>language.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\core\language.h</FilePath>
-            </File>
-            <File>
-              <FileName>macros.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\core\macros.h</FilePath>
-            </File>
-            <File>
-              <FileName>millis_t.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\core\millis_t.h</FilePath>
-            </File>
-            <File>
-              <FileName>multi_language.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\core\multi_language.h</FilePath>
-            </File>
-            <File>
               <FileName>serial.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\core\serial.cpp</FilePath>
             </File>
             <File>
-              <FileName>serial.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\core\serial.h</FilePath>
-            </File>
-            <File>
-              <FileName>serial_base.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\core\serial_base.h</FilePath>
-            </File>
-            <File>
-              <FileName>serial_hook.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\core\serial_hook.h</FilePath>
-            </File>
-            <File>
-              <FileName>types.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\core\types.h</FilePath>
-            </File>
-            <File>
               <FileName>utility.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\core\utility.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>utility.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\core\utility.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -754,44 +659,14 @@
               <FilePath>..\source\Marlin\src\feature\babystep.cpp</FilePath>
             </File>
             <File>
-              <FileName>controllerfan.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\feature\controllerfan.h</FilePath>
-            </File>
-            <File>
-              <FileName>fwretract.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\feature\fwretract.h</FilePath>
-            </File>
-            <File>
-              <FileName>pause.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\feature\pause.h</FilePath>
-            </File>
-            <File>
               <FileName>powerloss.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\feature\powerloss.cpp</FilePath>
             </File>
             <File>
-              <FileName>powerloss.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\feature\powerloss.h</FilePath>
-            </File>
-            <File>
-              <FileName>twibus.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\feature\twibus.h</FilePath>
-            </File>
-            <File>
               <FileName>runout.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\feature\runout.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>runout.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\feature\runout.h</FilePath>
             </File>
             <File>
               <FileName>pause.cpp</FileName>
@@ -802,16 +677,6 @@
               <FileName>spindle_laser.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\feature\spindle_laser.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>spindle_laser.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\feature\spindle_laser.h</FilePath>
-            </File>
-            <File>
-              <FileName>mixing.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\feature\mixing.h</FilePath>
             </File>
             <File>
               <FileName>mixing.cpp</FileName>
@@ -1594,19 +1459,9 @@
           <GroupName>marlin_lcd</GroupName>
           <Files>
             <File>
-              <FileName>language_en.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\lcd\language\language_en.h</FilePath>
-            </File>
-            <File>
               <FileName>tenlog_touch_lcd.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\lcd\tenlog\tenlog_touch_lcd.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>tenlog_touch_lcd.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\lcd\tenlog\tenlog_touch_lcd.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1614,19 +1469,9 @@
           <GroupName>marlin_libs</GroupName>
           <Files>
             <File>
-              <FileName>autoreport.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\libs\autoreport.h</FilePath>
-            </File>
-            <File>
               <FileName>BL24CXX.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\libs\BL24CXX.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>BL24CXX.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\libs\BL24CXX.h</FilePath>
             </File>
             <File>
               <FileName>buzzer.cpp</FileName>
@@ -1634,34 +1479,9 @@
               <FilePath>..\source\Marlin\src\libs\buzzer.cpp</FilePath>
             </File>
             <File>
-              <FileName>buzzer.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\libs\buzzer.h</FilePath>
-            </File>
-            <File>
-              <FileName>circularqueue.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\libs\circularqueue.h</FilePath>
-            </File>
-            <File>
               <FileName>crc16.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\libs\crc16.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>crc16.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\libs\crc16.h</FilePath>
-            </File>
-            <File>
-              <FileName>duration_t.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\libs\duration_t.h</FilePath>
-            </File>
-            <File>
-              <FileName>hex_print.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\libs\hex_print.h</FilePath>
             </File>
             <File>
               <FileName>nozzle.cpp</FileName>
@@ -1669,19 +1489,9 @@
               <FilePath>..\source\Marlin\src\libs\nozzle.cpp</FilePath>
             </File>
             <File>
-              <FileName>nozzle.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\libs\nozzle.h</FilePath>
-            </File>
-            <File>
               <FileName>numtostr.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\libs\numtostr.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>numtostr.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\libs\numtostr.h</FilePath>
             </File>
             <File>
               <FileName>stopwatch.cpp</FileName>
@@ -1689,19 +1499,9 @@
               <FilePath>..\source\Marlin\src\libs\stopwatch.cpp</FilePath>
             </File>
             <File>
-              <FileName>stopwatch.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\libs\stopwatch.h</FilePath>
-            </File>
-            <File>
               <FileName>vector_3.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\libs\vector_3.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>vector_3.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\libs\vector_3.h</FilePath>
             </File>
             <File>
               <FileName>least_squares_fit.cpp</FileName>
@@ -1719,19 +1519,9 @@
               <FilePath>..\source\Marlin\src\module\stepper\indirection.cpp</FilePath>
             </File>
             <File>
-              <FileName>indirection.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\module\stepper\indirection.h</FilePath>
-            </File>
-            <File>
               <FileName>endstops.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\module\endstops.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>endstops.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\module\endstops.h</FilePath>
             </File>
             <File>
               <FileName>motion.cpp</FileName>
@@ -1739,19 +1529,9 @@
               <FilePath>..\source\Marlin\src\module\motion.cpp</FilePath>
             </File>
             <File>
-              <FileName>motion.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\module\motion.h</FilePath>
-            </File>
-            <File>
               <FileName>planner.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\module\planner.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>planner.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\module\planner.h</FilePath>
             </File>
             <File>
               <FileName>printcounter.h</FileName>
@@ -1764,19 +1544,9 @@
               <FilePath>..\source\Marlin\src\module\settings.cpp</FilePath>
             </File>
             <File>
-              <FileName>settings.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\module\settings.h</FilePath>
-            </File>
-            <File>
               <FileName>stepper.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\module\stepper.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>stepper.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\module\stepper.h</FilePath>
             </File>
             <File>
               <FileName>temperature.cpp</FileName>
@@ -1784,29 +1554,14 @@
               <FilePath>..\source\Marlin\src\module\temperature.cpp</FilePath>
             </File>
             <File>
-              <FileName>temperature.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\module\temperature.h</FilePath>
-            </File>
-            <File>
               <FileName>tool_change.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\module\tool_change.cpp</FilePath>
             </File>
             <File>
-              <FileName>tool_change.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\module\tool_change.h</FilePath>
-            </File>
-            <File>
               <FileName>probe.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\module\probe.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>probe.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\module\probe.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1854,29 +1609,9 @@
               <FilePath>..\source\Marlin\src\sd\cardreader.cpp</FilePath>
             </File>
             <File>
-              <FileName>cardreader.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\sd\cardreader.h</FilePath>
-            </File>
-            <File>
-              <FileName>disk_io_driver.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\sd\disk_io_driver.h</FilePath>
-            </File>
-            <File>
               <FileName>Sd2Card.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\sd\Sd2Card.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>Sd2Card.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\sd\Sd2Card.h</FilePath>
-            </File>
-            <File>
-              <FileName>Sd2Card_sdio.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\sd\Sd2Card_sdio.h</FilePath>
             </File>
             <File>
               <FileName>SdBaseFile.cpp</FileName>
@@ -1884,29 +1619,9 @@
               <FilePath>..\source\Marlin\src\sd\SdBaseFile.cpp</FilePath>
             </File>
             <File>
-              <FileName>SdBaseFile.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\sd\SdBaseFile.h</FilePath>
-            </File>
-            <File>
-              <FileName>SdFatConfig.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\sd\SdFatConfig.h</FilePath>
-            </File>
-            <File>
-              <FileName>SdFatStructs.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\sd\SdFatStructs.h</FilePath>
-            </File>
-            <File>
               <FileName>SdFatUtil.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\sd\SdFatUtil.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>SdFatUtil.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\sd\SdFatUtil.h</FilePath>
             </File>
             <File>
               <FileName>SdFile.cpp</FileName>
@@ -1914,24 +1629,9 @@
               <FilePath>..\source\Marlin\src\sd\SdFile.cpp</FilePath>
             </File>
             <File>
-              <FileName>SdFile.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\sd\SdFile.h</FilePath>
-            </File>
-            <File>
-              <FileName>SdInfo.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\sd\SdInfo.h</FilePath>
-            </File>
-            <File>
               <FileName>SdVolume.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\sd\SdVolume.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>SdVolume.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\Marlin\src\sd\SdVolume.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1954,39 +1654,14 @@
               <FilePath>..\source\compoment\sdio\sdio_f1.cpp</FilePath>
             </File>
             <File>
-              <FileName>sdio_f1.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\compoment\sdio\sdio_f1.h</FilePath>
-            </File>
-            <File>
               <FileName>sdio_hal.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\compoment\sdio\sdio_hal.cpp</FilePath>
             </File>
             <File>
-              <FileName>sdio_hal.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\compoment\sdio\sdio_hal.h</FilePath>
-            </File>
-            <File>
-              <FileName>sd_card.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\compoment\sdio\sd_card\inc\sd_card.h</FilePath>
-            </File>
-            <File>
-              <FileName>sdmmc_cmd.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\compoment\sdio\sd_card\inc\sdmmc_cmd.h</FilePath>
-            </File>
-            <File>
               <FileName>adc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\source\compoment\adc\adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>adc.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\source\compoment\adc\adc.h</FilePath>
             </File>
             <File>
               <FileName>pwm.cpp</FileName>
@@ -1999,14 +1674,14 @@
           <GroupName>marlin_leveling</GroupName>
           <Files>
             <File>
+              <FileName>bedlevel.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\feature\bedlevel\bedlevel.cpp</FilePath>
+            </File>
+            <File>
               <FileName>ubl.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\feature\bedlevel\ubl\ubl.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>ubl_G29.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\source\Marlin\src\feature\bedlevel\ubl\ubl_G29.cpp</FilePath>
             </File>
             <File>
               <FileName>ubl_motion.cpp</FileName>
@@ -2014,19 +1689,24 @@
               <FilePath>..\source\Marlin\src\feature\bedlevel\ubl\ubl_motion.cpp</FilePath>
             </File>
             <File>
-              <FileName>bedlevel.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\source\Marlin\src\feature\bedlevel\bedlevel.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>mesh_bed_leveling.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\source\Marlin\src\feature\bedlevel\mbl\mesh_bed_leveling.cpp</FilePath>
-            </File>
-            <File>
               <FileName>hilbert_curve.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\feature\bedlevel\hilbert_curve.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>ubl_G29.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\feature\bedlevel\ubl\ubl_G29.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>abl.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\feature\bedlevel\abl\abl.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>bbl.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\feature\bedlevel\abl\bbl.cpp</FilePath>
             </File>
           </Files>
         </Group>

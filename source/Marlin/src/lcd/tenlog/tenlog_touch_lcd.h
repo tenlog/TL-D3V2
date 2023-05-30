@@ -183,13 +183,11 @@ extern char tl_tjc_ver[10];
 extern long tl_command[256];
 
 #if ENABLED(TL_BEEPER)
-extern char pre_print_file_name[13];
 extern uint8_t beeper_count;
 extern uint8_t beeper_type;
 #define BEEPER_ON WRITE(TL_BEEPER_PIN, 1)
 #define BEEPER_OFF WRITE(TL_BEEPER_PIN, 0)
 void start_beeper(uint8_t count, uint8_t type);
-
 #endif
 
 extern bool hotendOffsetChanged;
@@ -243,8 +241,13 @@ extern uint32_t wifi_update_interval;
 extern uint8_t sd_OK;
 
 #if ENABLED(TL_LASER_ONLY)
+    extern char pre_print_file_name[13];
     extern uint32_t last_laser_time;
-    #define LASER_FAN_DELAY 30
+    #define LASER_FAN_DELAY 30000
+#endif
+
+#if ENABLED(TL_STEPTEST)
+    extern uint16_t STEPTEST_HZ;
 #endif
 
 extern uint8_t tl_com_ID;

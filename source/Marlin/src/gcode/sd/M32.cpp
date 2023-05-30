@@ -69,7 +69,9 @@ void GcodeSuite::M32() {
 #if BOTH(TENLOG_TOUCH_LCD, TL_LASER_ONLY)
 void GcodeSuite::M320() {
   static uint32_t lastClick;
+  #if ENABLED(TL_BEEPER)
   start_beeper(0, 0);
+  #endif
   char cmd[256];
   if(millis() - lastClick < 2000) return;
   if(!card.isFileOpen()){
@@ -79,10 +81,14 @@ void GcodeSuite::M320() {
       sprintf(cmd, "M32 !%s", pre_print_file_name);
       ZERO(pre_print_file_name);
       EXECUTE_GCODE(cmd);
+      #if ENABLED(TL_BEEPER)
       start_beeper(2, 1);
+      #endif      
     }
   }else{
+    #if ENABLED(TL_BEEPER)
     start_beeper(2, 1);
+    #endif
     tlAbortPrinting();
   }
   lastClick = millis();

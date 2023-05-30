@@ -513,7 +513,7 @@ void do_blocking_move_to(const float rx, const float ry, const float rz, const_f
 
   #else
 
-    TLDEBUG_PRINTLNPAIR("do_blocking_move_to x:", rx, ", y:", ry, " z:", rz, ", zfeedrate:", z_feedrate);
+    //TLDEBUG_PRINTLNPAIR("do_blocking_move_to x:", rx, ", y:", ry, " z:", rz, ", zfeedrate:", z_feedrate);
     // If Z needs to raise, do it before moving XY
     if (current_position.z < rz) {
       current_position.z = rz;
@@ -567,11 +567,7 @@ void do_blocking_move_to_xy_z(const xy_pos_t &raw, const_float_t z, const_feedRa
 
 void do_z_clearance(const_float_t zclear, const bool lower_allowed/*=false*/) {
   float zdest = zclear;
-  TLDEBUG_PRINTLNPAIR("ZDest0:", zdest);
   if (!lower_allowed) NOLESS(zdest, current_position.z);
-  TLDEBUG_PRINTLNPAIR("ZDest1:", zdest);
-  TLDEBUG_PRINTLNPAIR("current_position.z:", current_position.z);
-  //TLDEBUG_PRINTLNPAIR("z_probe_fast_mm_s:", z_probe_fast_mm_s);
   do_blocking_move_to_z(_MIN(zdest, Z_MAX_POS), TERN(HAS_BED_PROBE, z_probe_fast_mm_s, homing_feedrate(Z_AXIS)));
 }
 
@@ -643,7 +639,7 @@ void restore_feedrate_and_scaling() {
           soft_endstop.min.x = X1_MIN_POS;
           soft_endstop.max.x = X1_MAX_POS;
         }
-        TLDEBUG_PRINTLNPAIR("soft_endstop.max.x ", soft_endstop.max.x, " soft_endstop.min.x:", soft_endstop.min.x);
+        //TLDEBUG_PRINTLNPAIR("soft_endstop.max.x ", soft_endstop.max.x, " soft_endstop.min.x:", soft_endstop.min.x);
       }
 
     #elif ENABLED(DELTA)
@@ -993,7 +989,7 @@ FORCE_INLINE void segment_idle(millis_t &next_idle_ms) {
     #if ENABLED(SDSUPPORT)
     if(plr1stZ  && card.flag.sdprinting){
       if(destination.z > 0.0){
-        TLDEBUG_PRINTLNPAIR("dz:", destination.z);
+        //TLDEBUG_PRINTLNPAIR("dz:", destination.z);
         current_position.z = destination.z;
         planner.set_position_mm(current_position);
         plr1stZ = false;
@@ -1113,7 +1109,7 @@ FORCE_INLINE void segment_idle(millis_t &next_idle_ms) {
               new_pos.x = inactive_extruder_x;            
 
             // Move duplicate extruder into correct duplication position.
-            TLDEBUG_PRINTLNPAIR("Set planner X", inactive_extruder_x, " ... Line to X", new_pos.x);
+            //TLDEBUG_PRINTLNPAIR("Set planner X", inactive_extruder_x, " ... Line to X", new_pos.x);
 
             set_duplication_enabled(false);
             planner.set_position_mm(inactive_extruder_x, current_position.y, new_pos.z, current_position.e); //new pos by zyf
@@ -1125,9 +1121,9 @@ FORCE_INLINE void segment_idle(millis_t &next_idle_ms) {
             set_duplication_enabled(true);
             idex_set_parked(false);
             //if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("set_duplication_enabled(true)\nidex_set_parked(false)");
-            TLDEBUG_PRINTLN("set_duplication_enabled(true)\nidex_set_parked(false)");
+            //TLDEBUG_PRINTLN("set_duplication_enabled(true)\nidex_set_parked(false)");
           }
-          else TLDEBUG_PRINTLN("Active extruder not 0");
+          //else TLDEBUG_PRINTLN("Active extruder not 0");
           break;
       }
     }
@@ -1390,12 +1386,12 @@ void prepare_line_to_destination() {
    */
   void do_homing_move(const AxisEnum axis, const float distance, const feedRate_t fr_mm_s=0.0, const bool final_approach=true) {
     DEBUG_SECTION(log_move, "do_homing_move", DEBUGGING(LEVELING));
-    TLDEBUG_PRINT("do_homing_move");
+    //TLDEBUG_PRINT("do_homing_move");
     const feedRate_t home_fr_mm_s = fr_mm_s ?: homing_feedrate(axis);
 
     if (DEBUGGING(LEVELING)) {
       DEBUG_ECHOPAIR("...(", AS_CHAR(axis_codes[axis]), ", ", distance, ", ");
-      TLDEBUG_PRINTPAIR("...(", AS_CHAR(axis_codes[axis]), ", ", distance, ", ");
+      //TLDEBUG_PRINTPAIR("...(", AS_CHAR(axis_codes[axis]), ", ", distance, ", ");
       if (fr_mm_s)
         DEBUG_ECHO(fr_mm_s);
       else
@@ -1403,12 +1399,12 @@ void prepare_line_to_destination() {
       DEBUG_ECHOLNPGM(")");
     }
     
-    TLDEBUG_PRINTPAIR("...(", AS_CHAR(axis_codes[axis]), ", ", distance, ", ");
-    if (fr_mm_s)
-      TLDEBUG_ECHO(fr_mm_s);
-    else
-      TLDEBUG_PRINTPAIR("[", home_fr_mm_s, "]");
-    TLDEBUG_PRINTLN(")");
+    //TLDEBUG_PRINTPAIR("...(", AS_CHAR(axis_codes[axis]), ", ", distance, ", ");
+    //if (fr_mm_s)
+    //  TLDEBUG_ECHO(fr_mm_s);
+    //else
+    //  TLDEBUG_PRINTPAIR("[", home_fr_mm_s, "]");
+    //TLDEBUG_PRINTLN(")");
     
     // Only do some things when moving towards an endstop
     const int8_t axis_home_dir = TERN0(DUAL_X_CARRIAGE, axis == X_AXIS)
@@ -1424,7 +1420,7 @@ void prepare_line_to_destination() {
     #endif
 
     if (is_home_dir) {      
-      TLDEBUG_PRINTLN("is_home_dir 0");
+      //TLDEBUG_PRINTLN("is_home_dir 0");
       if (TERN0(HOMING_Z_WITH_PROBE, axis == Z_AXIS)) {
         #if BOTH(HAS_HEATED_BED, WAIT_FOR_BED_HEATER)
           // Wait for bed to heat back up between probing points
@@ -1470,15 +1466,15 @@ void prepare_line_to_destination() {
       
       if(axis==Z_AXIS && !is_home_dir){      
         safe_delay(500);
-        TLDEBUG_PRINT("planner.buffer_segment: ");
-        TLDEBUG_PRINTLNPAIR("target X ",target[0]," target Y ",target[1]," target Z ",target[2]," home_fr_mm_s ",home_fr_mm_s);
+        //TLDEBUG_PRINT("planner.buffer_segment: ");
+        //TLDEBUG_PRINTLNPAIR("target X ",target[0]," target Y ",target[1]," target Z ",target[2]," home_fr_mm_s ",home_fr_mm_s);
       }
     #endif
 
     planner.synchronize();
 
     if (is_home_dir) {
-      TLDEBUG_PRINTLN("is_home_dir 1");
+      //TLDEBUG_PRINTLN("is_home_dir 1");
       #if HOMING_Z_WITH_PROBE && HAS_QUIET_PROBING
         if (axis == Z_AXIS && final_approach) probe.set_probing_paused(false);
       #endif
@@ -1677,7 +1673,7 @@ void prepare_line_to_destination() {
     if (bump) {
       // Move away from the endstop by the axis HOMING_BUMP_MM
       if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("Move Away: ", -bump, "mm");
-      TLDEBUG_PRINTLNPAIR("Move Away: ", -bump, "mm"); //check do not move back when single head.
+      //TLDEBUG_PRINTLNPAIR("Move Away: ", -bump, "mm"); //check do not move back when single head.
       do_homing_move(axis, -bump, TERN(HOMING_Z_WITH_PROBE, (axis == Z_AXIS ? z_probe_fast_mm_s : 0), 0), false);
 
       #if ENABLED(DETECT_BROKEN_ENDSTOP)

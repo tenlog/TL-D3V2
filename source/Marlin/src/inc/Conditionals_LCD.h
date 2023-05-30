@@ -707,6 +707,9 @@ EXTRUDERS
  * Set flags for enabled probes
  */
 #if ANY(HAS_Z_SERVO_PROBE, FIX_MOUNTED_PROBE, NOZZLE_AS_PROBE, TOUCH_MI_PROBE, Z_PROBE_ALLEN_KEY, Z_PROBE_SLED, SOLENOID_PROBE, SENSORLESS_PROBING, RACK_AND_PINION_PROBE)
+  #if ENABLED(BLTOUCH) && !HAS_Z_SERVO_PROBE
+  #error "not has bed probe!"
+  #endif
   #define HAS_BED_PROBE 1
 #endif
 
@@ -807,6 +810,7 @@ EXTRUDERS
   #endif
   #if DISABLED(Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN)
     #define HAS_CUSTOM_PROBE_PIN 1
+    //#error "has custom probe pin!"
   #endif
   #if Z_HOME_DIR < 0 && (!HAS_CUSTOM_PROBE_PIN || ENABLED(USE_PROBE_FOR_Z_HOMING))
     #define HOMING_Z_WITH_PROBE 1

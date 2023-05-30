@@ -97,6 +97,11 @@ void SpindleLaser::init() {
       //gtValue = gtValue / 100.0;
       //uint16_t oocr = gtValue * MAXVALUE;
       set_pwm_hw(ocr, tl_LASER_MAX_VALUE);
+      if(ocr > 0){
+        #if ENABLED(TL_LASER_ONLY)
+        last_laser_time = millis();
+        #endif
+      }
     #else
       //analogWrite(pin_t(SPINDLE_LASER_PWM_PIN), ocr ^ SPINDLE_LASER_PWM_OFF);
     #endif

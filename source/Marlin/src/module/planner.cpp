@@ -2898,25 +2898,28 @@ bool Planner::buffer_line(const_float_t rx, const_float_t ry, const_float_t rz, 
       float deltaZ = rz - print_from_z_target;
       uint32_t sdPos = card.getIndex();      
       
-      if ((fabs(deltaZ)>0.3 && deltaPoint > 256) || lPrintZEnd == 0)
+      //if ((fabs(deltaZ)>0.5 && deltaPoint > 2048) || lPrintZEnd == 0)
+      if ((fabs(deltaZ)>0.3) || lPrintZEnd == 0)
       {
         //Seaching ....
+        if(rz == 0) return false;
         bool setIndex = true;
         if (lPrintZEnd == 0)
         {
-          lPrintZEnd = card.my_filesize() - 2;
+          lPrintZEnd = card.my_filesize() - 10;
         }
         else if (rz == zLast || rz == 0.0 || rz == 15.0)
         {
-          setIndex = false;
+          return false;
+          //setIndex = false;
         }
         else if (deltaZ > 0)
         {
-          lPrintZEnd = lPrintZMid - 2;
+          lPrintZEnd = lPrintZMid - 10;
         }
         else if (deltaZ < 0)
         {
-          lPrintZStart = lPrintZMid + 2;
+          lPrintZStart = lPrintZMid + 10;
         }       
         zLast = rz;      
 
@@ -2925,14 +2928,14 @@ bool Planner::buffer_line(const_float_t rx, const_float_t ry, const_float_t rz, 
           PrintFromZHeightFound = false;
           card.setIndex(lPrintZMid);
           /*
+          TLDEBUG_PRINTLNPAIR("rz:", rz);
+          TLDEBUG_PRINTLNPAIR("print_from_z_target:", print_from_z_target);
           TLDEBUG_PRINTLNPAIR("lPrintZStart:", lPrintZStart);
           TLDEBUG_PRINTLNPAIR("lPrintZEnd:", lPrintZEnd);
           TLDEBUG_PRINTLNPAIR("lPrintZMid:", lPrintZMid);
-          TLDEBUG_PRINTLNPAIR("rz:", rz);
           */
         }
-        zLast = rz;
-      }else{
+      }else if(fabs(deltaZ) < 0.15){
         //found!
         PrintFromZHeightFound = true;
         current_position.x = 0;
@@ -2952,9 +2955,15 @@ bool Planner::buffer_line(const_float_t rx, const_float_t ry, const_float_t rz, 
         TLDEBUG_PRINTLNPAIR("FF lPrintZMid:", lPrintZMid);
         TLDEBUG_PRINTLNPAIR("FF rz:", rz);
         */
+        zLast = rz;
+      }else if(deltaZ < 0.1 && (deltaPoint < 2048 || deltaZ > -0.3 )){
+        return false;
+      }else if(deltaZ > -0.1 && deltaZ < 0.3){
+        card.setIndex(sdPos - 512);
+        return false;
       }
       return false;
-    }else{
+    }else if(card.flag.sdprinting){
       if(rz < zLast && zLast > 0){
         return false;
       }else if(rz > zLast && zLast > 0){

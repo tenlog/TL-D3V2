@@ -125,6 +125,10 @@ bool plr1stZ = false;
 bool plr1stE = false;
 uint8_t sd_OK = 0;
 
+#if ENABLED(TL_STEPTEST)
+    uint16_t STEPTEST_HZ = 1200;
+#endif
+
 #define TL_LCD_SERIAL LCD_SERIAL
 #ifdef PRINT_FROM_Z_HEIGHT
 bool PrintFromZHeightFound = true;
@@ -134,6 +138,9 @@ float print_from_z_target = 0.0;
 #if ENABLED(TL_BEEPER)
 uint8_t beeper_count = 0;
 uint8_t beeper_type = 0;
+#endif
+
+#if ENABLED(TL_LASER_ONLY)
 char pre_print_file_name[13]={""};
 #endif
 
@@ -944,6 +951,17 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
             //click pause from lcd
             EXECUTE_GCODE("M25");
             my_sleep(2.0);
+            delay(100);
+            my_sleep(0.2);
+            delay(100);
+            my_sleep(0.2);
+            delay(100);
+            my_sleep(0.2);
+            delay(100);
+            my_sleep(0.2);
+            delay(100);
+            my_sleep(0.2);
+            delay(100);
             SetBusyMoving(true);
             TJC_DELAY;
         } 
@@ -986,16 +1004,27 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
                 thermalManager.setTargetHotend(0,1);
 				#endif
             }            
-            
-            my_sleep(5.0);
-            float RaiseZ = zPos_Pause+30;
+
+            my_sleep(3.0);
+            delay(100);
+            my_sleep(0.2);
+            delay(100);
+            my_sleep(0.2);
+            delay(100);
+            my_sleep(0.1);
+            delay(100);
+            float RaiseZ = zPos_Pause+30;                       
             if(RaiseZ > Z_LENGTH) RaiseZ = Z_LENGTH;
             sprintf_P(cmd, PSTR("G0 F6000 Z%f"), RaiseZ);
-            EXECUTE_GCODE(cmd);
-            my_sleep(2.0);
-            EXECUTE_GCODE("G0 X10");
-            my_sleep(3.0);
-
+            queue.inject(cmd);
+            my_sleep(0.2);
+            delay(100);
+            my_sleep(0.2);
+            delay(100);
+            my_sleep(0.2);
+            delay(100);
+            my_sleep(0.2);
+            delay(100);
             //queue.inject("G27");
             SetBusyMoving(false);
         }
@@ -2804,7 +2833,9 @@ void process_command_gcode(long _tl_command[]) {
                         pre_print_file_name[i] = _tl_command[iFrom + 4 + i];
                     }
                     if(strlen(pre_print_file_name) > 2){
+                        #if ENABLED(TL_BEEPER)
                         start_beeper(100,0);
+                        #endif
                         //sprintf_P(cmd, PSTR("M%d !%s"), lM, fileNameP);
                     }
                 #endif  //TL_LASER_ONLY
@@ -3286,6 +3317,23 @@ void tl_sd_abort_on_endstop_hit(){  //only for x & y
     #endif
 }
 
+void CheckLaserFan(){
+  #if ENABLED(TL_LASER_ONLY)  //by zyf auto laser fan 
+    static bool LaserStatus=false;
+    if(millis() - last_laser_time < LASER_FAN_DELAY && millis() > LASER_FAN_DELAY){
+        if(!LaserStatus){
+            WRITE(LASER_FAN_PIN, 1);
+            LaserStatus = true;
+        }
+    }else{
+        if(LaserStatus){
+            WRITE(LASER_FAN_PIN, 0);
+            LaserStatus = false;
+        }
+    }
+    #endif
+  }
+
 /*
 void read_blt(){
     static uint32_t temp ;
@@ -3309,6 +3357,7 @@ void TL_idle(){
         tl_wifi_idle();
     #endif
     tl_sd_abort_on_endstop_hit();
+    CheckLaserFan();
 }
 
 #define CEND  0xFF
@@ -3631,8 +3680,8 @@ void my_sleep(float time){
     unsigned long now_time = millis();
     while(millis() - now_time > time * 1000){
         idle();
+        planner.synchronize();          // Wait for planner moves to finish!      
     } 
-    planner.synchronize();          // Wait for planner moves to finish!      
 }
 
 uint8_t TLTJC_GetLastPage(){

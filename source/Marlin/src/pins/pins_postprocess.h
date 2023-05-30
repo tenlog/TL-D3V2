@@ -404,7 +404,10 @@
 //
 // Disable unused endstop / probe pins
 //
-#if !HAS_CUSTOM_PROBE_PIN
+#if !HAS_CUSTOM_PROBE_PIN     //by zyf?
+  #if ENABLED(BLTOUCH)
+  //  #error "Not has custom probe pin"
+  #endif
   #undef Z_MIN_PROBE_PIN
   #define Z_MIN_PROBE_PIN    -1
 #endif

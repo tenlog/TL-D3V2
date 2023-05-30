@@ -83,4 +83,5 @@
 //
 // Post-process pins according to configured settings
 //
+#include "../inc/Conditionals_LCD.h" //by zyf
 #include "pins_postprocess.h"

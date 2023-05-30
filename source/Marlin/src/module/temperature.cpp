@@ -884,6 +884,7 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
         WRITE(P##_AUTO_FAN_PIN, D);                      \
     }while(0)
 
+
     //by zyf
     /*
     uint8_t fanDone = 0;
@@ -2031,6 +2032,10 @@ void Temperature::updateTemperaturesFromRawValues() {
   #define INIT_CHAMBER_AUTO_FAN_PIN(P) SET_OUTPUT(P)
 #endif
 
+#if ENABLED(TL_LASER_ONLY)
+  #define INIT_LASER_FAN_PIN(P) SET_OUTPUT(P)
+#endif
+
 /**
  * Initialize the temperature manager
  * The manager is implemented by periodic calls to manage_heater()
@@ -2257,6 +2262,10 @@ void Temperature::init() {
   #endif
   #if HAS_AUTO_CHAMBER_FAN && !AUTO_CHAMBER_IS_E
     INIT_CHAMBER_AUTO_FAN_PIN(CHAMBER_AUTO_FAN_PIN);
+  #endif
+
+  #if ENABLED(TL_LASER_ONLY)
+    INIT_LASER_FAN_PIN(LASER_FAN_PIN);
   #endif
 
   #ifdef TLCHAMBER_AUTO_FAN_PIN
