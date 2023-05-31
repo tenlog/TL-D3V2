@@ -15,7 +15,7 @@ static void TimeraUnit_IrqCallback_tlt(void)
 #endif
 
 #ifdef TL_STEPTEST
-static void TimeraUnit_IrqCallback_tlt(void)
+static void TimeraUnit_IrqCallback_tlts(void)
 {
     TIMERA_ClearFlag(TAUNIT_TLTS, TimeraFlagOverflow);
 }
@@ -157,7 +157,7 @@ static void Tim_Config(const uint8_t UN){
      /* Interrupt of timera unit 1 */
       stcIrqRegiConf.enIntSrc = TAUNIT_TLTS_OVERFLOW_INT;
       stcIrqRegiConf.enIRQn = IRQ_INDEX_INT_TIMA_CH_TLTS;
-      stcIrqRegiConf.pfnCallback = &TimeraUnit_IrqCallback_tlt;
+      stcIrqRegiConf.pfnCallback = &TimeraUnit_IrqCallback_tlts;
       #endif
     }
 
@@ -333,8 +333,8 @@ void pwm_init()
   set_pwm_hw(0, 255, UN_TLT);
   #endif
   #ifdef TL_STEPTEST
- 	Tim_Config(UN_TLT);
-  set_pwm_hw(0, 255, UN_TLT);
+ 	Tim_Config(UN_TLTS);
+  set_pwm_hw(0, 255, UN_TLTS);
   #endif
 }
 #endif    //HWPWM

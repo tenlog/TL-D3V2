@@ -518,6 +518,10 @@ typedef struct SettingsDataStruct {
     uint8_t w_wifi_ip_settings[20];
   #endif
 
+  #if ENABLED(TL_STEPTEST)
+    uint32_t steptest_hz;
+  #endif
+
 } SettingsData;
 
 //static_assert(sizeof(SettingsData) <= MARLIN_EEPROM_SIZE, "EEPROM too small to contain SettingsData!");
@@ -1519,6 +1523,9 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(wifi_ip_settings);
     #endif
 
+    #if ENABLED(TL_STEPTEST)
+      EEPROM_WRITE(STEPTEST_HZ);
+    #endif
     tlSendSettings(false);  //Show in ui
     //
     // Report final CRC and Data Size
@@ -2526,6 +2533,12 @@ void MarlinSettings::postprocess() {
         http_port = uwifiport;
         EEPROM_READ(wifi_ip_settings);
       #endif
+      
+      #if ENABLED(TL_STEPTEST)
+        TLDEBUG_PRINTLNPAIR("STEPTEST_HZ", STEPTEST_HZ);
+        EEPROM_READ(STEPTEST_HZ);
+      #endif
+
       #if ENABLED(TENLOG_TOUCH_LCD)
         tlSendSettings(false);  //Show in ui //resend to wifi
       #endif
@@ -3197,11 +3210,17 @@ void MarlinSettings::reset() {
 
   TERN_(TENLOG_TOUCH_LCD, tlResetEEPROM());
   TERN_(HAS_WIFI, wifiResetEEPROM());
+
+  #if ENABLED(TL_STEPTEST)
+    STEPTEST_HZ = STEPTEST_HZ_DEFAULT;
+  #endif
+
   
   postprocess();
 
-  DEBUG_ECHO_START();
-  DEBUG_ECHOLNPGM("Hardcoded Default Settings Loaded");
+  //DEBUG_ECHO_START();
+  //DEBUG_ECHOLNPGM("Hardcoded Default Settings Loaded");
+  TLDEBUG_PRINTLN("Hardcoded Default Settings Loaded");
 
   TERN_(EXTENSIBLE_UI, ExtUI::onFactoryReset());
   save();

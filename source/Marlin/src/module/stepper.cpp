@@ -2675,6 +2675,13 @@ void Stepper::init() {
     initialized = true;
     digipot_init();
   #endif
+
+  #if ENABLED(TL_STEPTEST)
+    SET_OUTPUT(XX_ENABLE_PIN);
+    SET_OUTPUT(XX_DIR_PIN);
+    //SET_OUTPUT(XX_STEP_PIN);
+  #endif
+
 }
 
 /**

@@ -89,7 +89,11 @@ Version     033
 //#define TENLOG_D8
 //#define TENLOG_LW8     //发光字 Luminous words
 
-#define TL_STEPTEST   //给老范做的挤出机拉力测试
+//#define TL_STEPTEST   //给老范做的挤出机拉力测试
+
+#ifdef TL_STEPTEST
+  #define STEPTEST_HZ_DEFAULT 1200
+#endif
 
 #if ENABLED(TENLOG_LW8)
 #define TENLOG_LW
@@ -113,8 +117,8 @@ Version     033
 
 //Auto leveling.
 #if ANY(TENLOG_S3, TENLOG_S2, TENLOG_LW)
-  #define BLTOUCH
-  #define TLTOUCH
+  //#define BLTOUCH
+  //#define TLTOUCH
   //#define MESH_BED_LEVELING
   //#define AUTO_BED_LEVELING_UBL
 #endif

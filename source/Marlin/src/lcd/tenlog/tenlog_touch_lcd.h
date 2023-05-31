@@ -247,7 +247,7 @@ extern uint8_t sd_OK;
 #endif
 
 #if ENABLED(TL_STEPTEST)
-    extern uint16_t STEPTEST_HZ;
+    extern uint32_t STEPTEST_HZ;
 #endif
 
 extern uint8_t tl_com_ID;

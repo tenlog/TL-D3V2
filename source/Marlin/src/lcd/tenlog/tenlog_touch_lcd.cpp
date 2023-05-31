@@ -126,7 +126,7 @@ bool plr1stE = false;
 uint8_t sd_OK = 0;
 
 #if ENABLED(TL_STEPTEST)
-    uint16_t STEPTEST_HZ = 1200;
+    uint32_t STEPTEST_HZ = STEPTEST_HZ_DEFAULT;
 #endif
 
 #define TL_LCD_SERIAL LCD_SERIAL
@@ -188,6 +188,7 @@ void get_lcd_command(int ScreenType)
         i++;
         delay(5);
     }
+
     #endif
 }
 
@@ -438,6 +439,11 @@ void tlSendSettings(bool only_wifi){
 
         sprintf_P(cmd, PSTR("settings2.nCFS.val=%d"), tl_C_FAN_SPEED);
         PRINTTJC(cmd);
+
+        #if ENABLED(TL_STEPTEST)
+        sprintf_P(cmd, PSTR("main.nHZ.val=%d"), STEPTEST_HZ);
+        PRINTTJC(cmd);
+        #endif
 
         uint32_t lX = planner.settings.axis_steps_per_mm[X_AXIS] * 100;
         TERN_(ESP32_WIFI, wifi_printer_settings[7] = lX / 0x10000);
@@ -2494,7 +2500,14 @@ void process_command_gcode(long _tl_command[]) {
 
     long lP = 1;
     long lLen = 0;
-    for(long i=1; i<256; i++){
+    for(uint16_t i=0; i<256; i++){
+        /*
+        if(i < 25 && _tl_command[i]>0){
+            sprintf(cmd, "#%d", _tl_command[i]);
+            TLDEBUG_PRINTLN(cmd);
+        }
+        */
+
         if(_tl_command[i] == 0x0A)
         {
             lFrom[lP] = i + 1;
@@ -2504,6 +2517,7 @@ void process_command_gcode(long _tl_command[]) {
             break;
         lLen++;
     }
+    
 
     if(lLen > 0) {
         for(int i=0; i<lP; i++) {
@@ -2513,8 +2527,8 @@ void process_command_gcode(long _tl_command[]) {
             long lT = GCodelng('T', iFrom, _tl_command, true);
             long lM = GCodelng('M', iFrom, _tl_command, true);
 
-            //sprintf_P(cmd, PSTR("G%d T%d M%d "), lG, lT, lM);
-            //TLDEBUG_PRINTLN(cmd);
+            sprintf_P(cmd, PSTR("G%d T%d M%d "), lG, lT, lM);
+            TLDEBUG_PRINTLN(cmd);
             
             if(lG == 1 || lG == 0) {
                 //G1
@@ -2570,6 +2584,38 @@ void process_command_gcode(long _tl_command[]) {
                 sprintf_P(cmd, PSTR("G%d %s%s%s%s%s"), lG, sF, sX, sY, sZ, sE);
                 EXECUTE_GCODE(cmd);
                 SetBusyMoving(false);
+            }else if(lM == 1586 || lM == 1587){
+                long lS = GCodelng('S', iFrom, _tl_command);
+                #if ENABLED(TL_STEPTEST)
+                    if(lM == 1586){
+                        //M1586 老范挤出机测试
+                        if(lS == 1) {
+                            WRITE(XX_ENABLE_PIN, 0);
+                            WRITE(XX_DIR_PIN, 0);
+                            set_pwm_hw(2, 255, UN_TLTS);
+                        }else if(lS == 2){
+                            WRITE(XX_ENABLE_PIN, 0);
+                            WRITE(XX_DIR_PIN, 1);
+                            set_pwm_hw(2, 255, UN_TLTS);
+                        }else if(lS == 3){
+                            WRITE(XX_ENABLE_PIN, 1);
+                            WRITE(XX_DIR_PIN, 0);
+                            set_pwm_hw(0, 255, UN_TLTS);
+                        }
+                        sprintf_P(cmd, PSTR("M%d S%d"), lM, lS);
+                        TLDEBUG_PRINTLN(cmd);
+                    }else if(lM == 1587){
+                        //M1587 老范挤出机测试
+                        STEPTEST_HZ = lS;
+                        EXECUTE_GCODE(PSTR("M500"));
+                        pwm_init();
+                        set_pwm_hw(1, 255, UN_TLTS);
+                        sprintf_P(cmd, PSTR("M%d S%d"), lM, lS);
+                        TLDEBUG_PRINTLN(cmd);
+                        sprintf_P(cmd, PSTR("M%d S%d"), lM, lS);
+                        TLDEBUG_PRINTLN(cmd);
+                    }
+                #endif
             } else if(lM == 201 || lM == 203 || lM == 204 || lM == 205 || lM == 301 || lM == 304){
                 //M201 XYZE M203 XYZE M204 PTR M205 XYZE M301 PID M304 PID
 
@@ -2852,7 +2898,7 @@ void process_command_gcode(long _tl_command[]) {
                 tl_languageID = GCodelng('S', iFrom, _tl_command);
                 EXECUTE_GCODE(PSTR("M500"));
             }else if(lM == 1017){
-                //M1017
+                //M1017 TJC sleep
                 tl_Sleep = GCodelng('S', iFrom, _tl_command);
                 EXECUTE_GCODE(PSTR("M500"));
             }else if(lM == 1024){
@@ -3159,6 +3205,7 @@ void process_command_gcode(long _tl_command[]) {
                     sprintf_P(cmd, PSTR("M%d Z%s"), lM, dtostrf(fZ, 1, 3, str_1));                
                     EXECUTE_GCODE(cmd);
                 }
+
             }else if(lM == 30){
                 //M30 delete file from sd card.
                 char fileNameP[13];

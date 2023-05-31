@@ -102,6 +102,11 @@
   #ifndef Z_MIN_PROBE_PIN
     //#define Z_MIN_PROBE_PIN  PH2//PC15 
   #endif
+#else
+  #define Y_STOP_PIN         PC3// y-
+  #define X_STOP_PIN         PC13// x-
+  #define Z_STOP_PIN         PC15// Z-
+  #define Z_MAX_PIN          PC15// Z-
 #endif
 
 #if ENABLED(TL_LASER_ONLY)
@@ -129,13 +134,20 @@
 //
 // Steppers
 //
+#if ENABLED(TL_STEPTEST)
+#define X_ENABLE_PIN       PB8
+#define XX_ENABLE_PIN      PB2
+#define XX_STEP_PIN        PA9
+#define XX_DIR_PIN         PA8
+#else
 #define X_ENABLE_PIN       PB2
-#define X_STEP_PIN         PC7
-#define X_DIR_PIN          PC6
-
 #define X2_ENABLE_PIN      X_ENABLE_PIN
 #define X2_STEP_PIN        PA9
 #define X2_DIR_PIN         PA8
+#endif
+
+#define X_STEP_PIN         PC7
+#define X_DIR_PIN          PC6
 
 #define Y_ENABLE_PIN       X_ENABLE_PIN
 #define Y_STEP_PIN         PB15
