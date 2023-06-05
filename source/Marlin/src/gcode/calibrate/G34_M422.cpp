@@ -314,7 +314,7 @@ void GcodeSuite::G34() {
         auto decreasing_accuracy = [](const_float_t v1, const_float_t v2){
           if (v1 < v2 * 0.7f) {
             SERIAL_ECHOLNPGM("Decreasing Accuracy Detected.");
-            LCD_MESSAGEPGM(MSG_DECREASING_ACCURACY);
+            //LCD_MESSAGEPGM(MSG_DECREASING_ACCURACY);
             return true;
           }
           return false;
@@ -397,7 +397,7 @@ void GcodeSuite::G34() {
 
         if (success_break) {
           SERIAL_ECHOLNPGM("Target accuracy achieved.");
-          LCD_MESSAGEPGM(MSG_ACCURACY_ACHIEVED);
+          //LCD_MESSAGEPGM(MSG_ACCURACY_ACHIEVED);
           break;
         }
 

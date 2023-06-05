@@ -184,7 +184,9 @@ bool BLTouch::status_proc() {
 
   if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("BLTouch STATUS requested");
 
+  #ifdef BLTOUCH_SW_MODE  //by zyf
   _set_SW_mode();              // Incidentally, _set_SW_mode() will also RESET any active alarm
+  #endif
   const bool tr = triggered(); // If triggered in SW mode, the pin is up, it is STOWED
 
   if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("BLTouch is ", tr);
@@ -199,6 +201,7 @@ void BLTouch::mode_conv_proc(const bool M5V) {
    * BLTOUCH V3.0: This will set the mode (twice) and sadly, a STOW is needed at the end, because of the deploy
    * BLTOUCH V3.1: This will set the mode and store it in the eeprom. The STOW is not needed but does not hurt
    */
+  #ifdef BLTOUCH_5V_MODE
   if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("BLTouch Set Mode - ", M5V);
   _deploy();
   if (M5V) _set_5V_mode(); else _set_OD_mode();
@@ -206,6 +209,7 @@ void BLTouch::mode_conv_proc(const bool M5V) {
   if (M5V) _set_5V_mode(); else _set_OD_mode();
   _stow();
   last_written_mode = M5V;
+  #endif
 }
 
 #endif // BLTOUCH

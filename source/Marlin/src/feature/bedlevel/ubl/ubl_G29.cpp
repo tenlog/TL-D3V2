@@ -756,6 +756,7 @@ void unified_bed_leveling::shift_mesh_height() {
 
       if (best.pos.x >= 0) {    // mesh point found and is reachable by probe
         TERN_(EXTENSIBLE_UI, ExtUI::onMeshUpdate(best.pos, ExtUI::G29_POINT_START));
+        
         const float measured_z = probe.probe_at_point(
                       best.meshpos(),
                       stow_probe ? PROBE_PT_STOW : PROBE_PT_RAISE, param.V_verbosity

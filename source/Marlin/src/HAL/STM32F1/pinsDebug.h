@@ -32,7 +32,7 @@
 
 #include "fastio.h"
 
-extern const stm32_pin_info PIN_MAP[BOARD_NR_GPIO_PINS];
+//extern const stm32_pin_info PIN_MAP[BOARD_NR_GPIO_PINS];
 
 #define NUM_DIGITAL_PINS BOARD_NR_GPIO_PINS
 #define NUMBER_PINS_TOTAL BOARD_NR_GPIO_PINS
@@ -65,17 +65,20 @@ static inline pin_t DIGITAL_PIN_TO_ANALOG_PIN(pin_t pin) {
 
 static inline bool IS_ANALOG(pin_t pin) {
   if (!VALID_PIN(pin)) return false;
+  /*
   if (PIN_MAP[pin].adc_channel != ADCx) {
     #ifdef NUM_ANALOG_INPUTS
       if (PIN_MAP[pin].adc_channel >= NUM_ANALOG_INPUTS) return false;
     #endif
     return _GET_MODE(pin) == GPIO_INPUT_ANALOG && !M43_NEVER_TOUCH(pin);
   }
+  */
   return false;
 }
 
 static inline bool GET_PINMODE(const pin_t pin) {
-  return VALID_PIN(pin) && !IS_INPUT(pin);
+  //return VALID_PIN(pin) && !IS_INPUT(pin);
+  return false; //by zyf
 }
 
 static inline bool GET_ARRAY_IS_DIGITAL(const int16_t array_pin) {
@@ -90,6 +93,8 @@ static inline bool GET_ARRAY_IS_DIGITAL(const int16_t array_pin) {
 #include "../../inc/MarlinConfig.h" // Allow pins/pins.h to set density
 
 static inline void pwm_details(const pin_t pin) {
+  /*
+  // by zyf
   if (PWM_PIN(pin)) {
     timer_dev * const tdev = PIN_MAP[pin].timer_device;
     const uint8_t channel = PIN_MAP[pin].timer_channel;
@@ -107,6 +112,7 @@ static inline void pwm_details(const pin_t pin) {
     sprintf_P(buffer, PSTR(" TIM%c CH%c"), num, ('0' + channel));
     SERIAL_ECHO(buffer);
   }
+  */
 }
 
 static inline void print_port(pin_t pin) {

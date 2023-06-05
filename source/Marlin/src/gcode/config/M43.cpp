@@ -113,6 +113,15 @@ inline void toggle_pins() {
 } // toggle_pins
 
 inline void servo_probe_test() {
+  #if ENABLED(Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN)
+
+    #define PROBE_TEST_PIN Z_MIN_PIN
+    constexpr bool probe_inverting = Z_MIN_ENDSTOP_INVERTING;
+    SERIAL_ECHOLNPAIR(". Probe Z_MIN_PIN: ", PROBE_TEST_PIN);
+    SERIAL_ECHOPGM(". Z_MIN_ENDSTOP_INVERTING: ");
+    serialprint_truefalse(probe_inverting);
+    SERIAL_EOL();
+  #endif
 
   #if !(NUM_SERVOS > 0 && HAS_SERVO_0)
 

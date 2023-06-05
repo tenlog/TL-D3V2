@@ -688,6 +688,11 @@
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\feature\bltouch.cpp</FilePath>
             </File>
+            <File>
+              <FileName>z_stepper_align.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\feature\z_stepper_align.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1192,6 +1197,11 @@
               <FileName>M851.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\gcode\probe\M851.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>M43.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\gcode\config\M43.cpp</FilePath>
             </File>
           </Files>
         </Group>

@@ -507,9 +507,8 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
   TERN_(HAS_QUIET_PROBING, set_probing_paused(true));
 
   // Move down until the probe is triggered
-  endstops.enable_z_probe(true);//by zyf
   do_blocking_move_to_z(z, fr_mm_s);
-  
+
   // Check to see if the probe was triggered
   const bool probe_triggered = TEST(endstops.trigger_state(), Z_MIN_PROBE);
   TLDEBUG_PRINTLNPAIR("probe_triggered: ",probe_triggered);
@@ -743,6 +742,7 @@ float Probe::run_z_probe(const bool sanity_check/*=true*/) {
   return measured_z;
 }
 
+
 /**
  * - Move to the given XY
  * - Deploy the probe, if not already deployed
@@ -751,8 +751,14 @@ float Probe::run_z_probe(const bool sanity_check/*=true*/) {
  *   - Stow the probe, or
  *   - Raise to the BETWEEN height
  * - Return the probed Z position
+ * probe_at_point -->
+ *    run_z_probe -->
+ *      probe_down_to_z-->
+ *        do_blocking_move_to_z
+ * 
  */
 float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRaise raise_after/*=PROBE_PT_NONE*/, const uint8_t verbose_level/*=0*/, const bool probe_relative/*=true*/, const bool sanity_check/*=true*/) {
+  TLDEBUG_PRINTLNPAIR("probe_at_point X:", rx, " Y:", ry);
   DEBUG_SECTION(log_probe, "Probe::probe_at_point", DEBUGGING(LEVELING));
 
   if (DEBUGGING(LEVELING)) {
@@ -765,6 +771,7 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
     DEBUG_POS("", current_position);
   }
 
+  TLDEBUG_PRINT("Probe::probe_at_point");
   TLDEBUG_PRINTLNPAIR(
       "...(", LOGICAL_X_POSITION(rx), ", ", LOGICAL_Y_POSITION(ry),
       ", ", raise_after == PROBE_PT_RAISE ? "raise" : raise_after == PROBE_PT_STOW ? "stow" : "none",

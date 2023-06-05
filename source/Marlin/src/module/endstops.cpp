@@ -419,7 +419,7 @@ static void print_es_state(const bool is_hit, PGM_P const label=nullptr) {
 }
 
 void Endstops::report_states() {
-  TERN_(BLTOUCH, bltouch._set_SW_mode());
+  //TERN_(BLTOUCH, bltouch._set_SW_mode()); //by zyf
   SERIAL_ECHOLNPGM(STR_M119_REPORT);
   #define ES_REPORT(S) print_es_state(READ(S##_PIN) != S##_ENDSTOP_INVERTING, PSTR(STR_##S))
   #if HAS_X_MIN

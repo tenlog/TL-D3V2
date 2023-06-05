@@ -277,6 +277,7 @@
 #define STR_REMINDER_SAVE_SETTINGS          "Remember to save!"
 #define STR_PASSWORD_SET                    "Password is "
 
+
 // LCD Menu Messages
 
 #define LANGUAGE_DATA_INCL_(M) STRINGIFY_(fontdata/langdata_##M.h)

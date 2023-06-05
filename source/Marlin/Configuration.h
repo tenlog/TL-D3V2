@@ -81,8 +81,8 @@ Version     033
 //#define TENLOG_H2
 //#define TENLOG_D3HS   //High Speed
 //#define TENLOG_D3
-//#define TENLOG_S2   //single head
-#define TENLOG_S3   //single head
+#define TENLOG_S2   //single head
+//#define TENLOG_S3   //single head
 //#define TENLOG_M3
 //#define TENLOG_L4   //laser only
 //#define TENLOG_D5
@@ -1397,7 +1397,7 @@ Version     033
 #define Z_CLEARANCE_MULTI_PROBE    6 // Z Clearance between multiple probes
 #define Z_AFTER_PROBING            6 // Z position after probing is done
 
-#define Z_PROBE_LOW_POINT          -4 // Farthest distance below the trigger-point to go before stopping
+#define Z_PROBE_LOW_POINT          -9 // Farthest distance below the trigger-point to go before stopping
 
 // For M851 give a range for adjusting the Z probe offset
 #define Z_PROBE_OFFSET_RANGE_MIN -20
@@ -1504,7 +1504,7 @@ Version     033
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
 #if ENABLED(SINGLE_HEAD)
-#define X_MIN_POS 0
+#define X_MIN_POS -50
 #else
 #define X_MIN_POS -50
 #endif

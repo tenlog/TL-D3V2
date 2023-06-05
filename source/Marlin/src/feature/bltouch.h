@@ -33,11 +33,11 @@ typedef unsigned char BLTCommand;
 #define STOW_ALARM            true
 #define BLTOUCH_DEPLOY         65//  10  //部署 吐出
 #define BLTOUCH_STOW           160//  90  //装载 收回
-#define BLTOUCH_SW_MODE        60
+//#define BLTOUCH_SW_MODE        60
 #define BLTOUCH_SELFTEST       207//120
-#define BLTOUCH_MODE_STORE     130
-#define BLTOUCH_5V_MODE        140
-#define BLTOUCH_OD_MODE        150
+//#define BLTOUCH_MODE_STORE     130
+//#define BLTOUCH_5V_MODE        140
+//#define BLTOUCH_OD_MODE        150
 #define BLTOUCH_RESET          237//160  //恢复
 
 /**
@@ -83,12 +83,20 @@ public:
 
   static void _selftest()           { command(BLTOUCH_SELFTEST, BLTOUCH_DELAY); }
 
+  #ifdef BLTOUCH_SW_MODE //by zyf
   static void _set_SW_mode()        { command(BLTOUCH_SW_MODE, BLTOUCH_DELAY); }
+  #endif
   static void _reset_SW_mode()      { if (triggered()) _stow(); else _deploy(); }
 
+  #ifdef BLTOUCH_5V_MODE //by zyf
   static void _set_5V_mode()        { command(BLTOUCH_5V_MODE, BLTOUCH_SET5V_DELAY); }
+  #endif
+  #ifdef BLTOUCH_OD_MODE //by zyf
   static void _set_OD_mode()        { command(BLTOUCH_OD_MODE, BLTOUCH_SETOD_DELAY); }
+  #endif
+  #ifdef BLTOUCH_MODE_STORE //by zyf
   static void _mode_store()         { command(BLTOUCH_MODE_STORE, BLTOUCH_MODE_STORE_DELAY); }
+  #endif
 
   static void _deploy()             { command(BLTOUCH_DEPLOY, BLTOUCH_DEPLOY_DELAY); }
   static void _stow()               { command(BLTOUCH_STOW, BLTOUCH_STOW_DELAY); }
