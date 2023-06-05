@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "041"
+#define TL_SUBVERSION "042"
 
 //update log 
 /*
@@ -74,26 +74,21 @@ Version     033
 20230528    Improved algorithm of "Pring from any z height".
             added laser auto fan function. 
             Sub version 041
+20230601    More setting 
 */
 
 //TL Medels and version
 //#define TENLOG_H2
 //#define TENLOG_D3HS   //High Speed
-#define TENLOG_D3
+//#define TENLOG_D3
 //#define TENLOG_S2   //single head
-//#define TENLOG_S3   //single head
+#define TENLOG_S3   //single head
 //#define TENLOG_M3
 //#define TENLOG_L4   //laser only
 //#define TENLOG_D5
 //#define TENLOG_D6
 //#define TENLOG_D8
 //#define TENLOG_LW8     //发光字 Luminous words
-
-//#define TL_STEPTEST   //给老范做的挤出机拉力测试
-
-#ifdef TL_STEPTEST
-  #define STEPTEST_HZ_DEFAULT 1200
-#endif
 
 #if ENABLED(TENLOG_LW8)
 #define TENLOG_LW
@@ -117,10 +112,10 @@ Version     033
 
 //Auto leveling.
 #if ANY(TENLOG_S3, TENLOG_S2, TENLOG_LW)
-  //#define BLTOUCH
-  //#define TLTOUCH
+  #define BLTOUCH
+  #define TLTOUCH
   //#define MESH_BED_LEVELING
-  //#define AUTO_BED_LEVELING_UBL
+  #define AUTO_BED_LEVELING_UBL
 #endif
 
 #define TL_DEBUG
@@ -199,6 +194,11 @@ Version     033
   #define X_BED_SIZE 820
   #define Y_BED_SIZE 820
   #define Z_LENGTH   200
+#endif
+
+//#define TL_STEPTEST   //给老范做的挤出机拉力测试
+#ifdef TL_STEPTEST
+  #define STEPTEST_HZ_DEFAULT 1200
 #endif
 
 #ifdef ELECTROMAGNETIC_VALUE
@@ -1065,7 +1065,7 @@ Version     033
 #if TL_HIGH_SPEED
 #define DEFAULT_MAX_FEEDRATE          { 500, 500, 10, 30 }
 #else
-#define DEFAULT_MAX_FEEDRATE          { 300, 300, 5, 25 }
+#define DEFAULT_MAX_FEEDRATE          { 200, 200, 5, 25 }
 #endif
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
@@ -1323,7 +1323,7 @@ Version     033
  *     O-- FRONT --+
  */
 #if ENABLED(BLTOUCH)
-#define NOZZLE_TO_PROBE_OFFSET { 25, 10, 5 }
+#define NOZZLE_TO_PROBE_OFFSET { 25, 10, -3 }
 #endif
 
 // Most probes should stay away from the edges of the bed, but
@@ -1334,10 +1334,10 @@ Version     033
 #define XY_PROBE_FEEDRATE (60*60)
 
 // Feedrate (mm/min) for the first approach when double-probing (MULTIPLE_PROBING == 2)
-#define Z_PROBE_FEEDRATE_FAST (4*30)
+#define Z_PROBE_FEEDRATE_FAST (3*30)
 
 // Feedrate (mm/min) for the "accurate" probe of each point
-#define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 4)
+#define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 1)
 
 /**
  * Probe Activation Switch
@@ -1375,7 +1375,7 @@ Version     033
  * A total of 2 does fast/slow probes with a weighted average.
  * A total of 3 or more adds more slow probes, taking the average.
  */
-#define MULTIPLE_PROBING 3
+#define MULTIPLE_PROBING 2
 //#define EXTRA_PROBING    1
 
 /**
@@ -1392,12 +1392,12 @@ Version     033
  * Example: `M851 Z-5` with a CLEARANCE of 4  =>  9mm from bed to nozzle.
  *     But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
  */
-#define Z_CLEARANCE_DEPLOY_PROBE   10 // Z Clearance for Deploy/Stow
-#define Z_CLEARANCE_BETWEEN_PROBES 8  // Z Clearance between probe points
-#define Z_CLEARANCE_MULTI_PROBE    8 // Z Clearance between multiple probes
-#define Z_AFTER_PROBING            8 // Z position after probing is done
+#define Z_CLEARANCE_DEPLOY_PROBE   6 // Z Clearance for Deploy/Stow
+#define Z_CLEARANCE_BETWEEN_PROBES 6  // Z Clearance between probe points
+#define Z_CLEARANCE_MULTI_PROBE    6 // Z Clearance between multiple probes
+#define Z_AFTER_PROBING            6 // Z position after probing is done
 
-#define Z_PROBE_LOW_POINT          -2 // Farthest distance below the trigger-point to go before stopping
+#define Z_PROBE_LOW_POINT          -4 // Farthest distance below the trigger-point to go before stopping
 
 // For M851 give a range for adjusting the Z probe offset
 #define Z_PROBE_OFFSET_RANGE_MIN -20
@@ -1488,7 +1488,7 @@ Version     033
 // (mm) Minimal Z height before homing (G28) for Z clearance above the bed, clamps, ...
 // Be sure to have this much clearance over your Z_MAX_POS to prevent grinding.
 #if ENABLED(BLTOUCH)
-  #define Z_HOMING_HEIGHT  8
+  #define Z_HOMING_HEIGHT  6
 #else
   #define Z_HOMING_HEIGHT  4
 #endif
@@ -1684,7 +1684,9 @@ Version     033
  * Turn on with the command 'M111 S32'.
  * NOTE: Requires a lot of PROGMEM!
  */
+#if ENABLED(TL_DEBUG)
 //#define DEBUG_LEVELING_FEATURE
+#endif
 
 #if ANY(MESH_BED_LEVELING, AUTO_BED_LEVELING_UBL, PROBE_MANUALLY)
   // Set a height for the start of manual adjustment
@@ -1758,7 +1760,7 @@ Version     033
   //#define MESH_EDIT_GFX_OVERLAY   // Display a graphics overlay while editing the mesh
 
   #define MESH_INSET 10              // Set Mesh bounds as an inset region of the bed
-  #define GRID_MAX_POINTS_X 10      // Don't use more than 15 points per axis, implementation limited.
+  #define GRID_MAX_POINTS_X 3      // Don't use more than 15 points per axis, implementation limited.
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   #define UBL_HILBERT_CURVE       // Use Hilbert distribution for less travel when probing multiple points

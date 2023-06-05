@@ -546,7 +546,85 @@ void tlSendSettings(bool only_wifi){
         TERN_(ESP32_WIFI, wifi_printer_settings[35] = (Z_MAX_POS*10)/0x100);
         TERN_(ESP32_WIFI, wifi_printer_settings[36] = (Z_MAX_POS*10)%0x100);
 
+        TERN_(ESP32_WIFI, wifi_printer_settings[38] = (planner.settings.max_acceleration_mm_per_s2[X_AXIS])/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[39] = (planner.settings.max_acceleration_mm_per_s2[X_AXIS])%0x100);
+
+        TERN_(ESP32_WIFI, wifi_printer_settings[40] = (planner.settings.max_acceleration_mm_per_s2[Y_AXIS])/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[41] = (planner.settings.max_acceleration_mm_per_s2[Y_AXIS])%0x100);
         
+        TERN_(ESP32_WIFI, wifi_printer_settings[42] = (planner.settings.max_acceleration_mm_per_s2[Z_AXIS])/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[43] = (planner.settings.max_acceleration_mm_per_s2[Z_AXIS])%0x100);
+        
+        TERN_(ESP32_WIFI, wifi_printer_settings[44] = (planner.settings.max_acceleration_mm_per_s2[E_AXIS])/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[45] = (planner.settings.max_acceleration_mm_per_s2[E_AXIS])%0x100);
+        
+        TERN_(ESP32_WIFI, wifi_printer_settings[46] =  (uint16_t)planner.settings.max_feedrate_mm_s[X_AXIS]/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[47] =  (uint16_t)planner.settings.max_feedrate_mm_s[X_AXIS]%0x100);
+        
+        TERN_(ESP32_WIFI, wifi_printer_settings[48] =  (uint16_t)planner.settings.max_feedrate_mm_s[Y_AXIS]/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[49] =  (uint16_t)planner.settings.max_feedrate_mm_s[Y_AXIS]%0x100);
+        
+        TERN_(ESP32_WIFI, wifi_printer_settings[50] =  (uint16_t)planner.settings.max_feedrate_mm_s[Z_AXIS]/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[51] =  (uint16_t)planner.settings.max_feedrate_mm_s[Z_AXIS]%0x100);
+        
+        TERN_(ESP32_WIFI, wifi_printer_settings[52] =  (uint16_t)planner.settings.max_feedrate_mm_s[E_AXIS]/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[53] =  (uint16_t)planner.settings.max_feedrate_mm_s[E_AXIS]%0x100);
+        
+        uint32_t lPIDP = (uint32_t)(PID_PARAM(Kp, 0) * 100.0f + 0.5f);
+        uint32_t lPIDI = (uint32_t)(unscalePID_i(PID_PARAM(Ki, 0)) * 100.0f + 0.5f);
+        uint32_t lPIDD = (uint32_t)(unscalePID_d(PID_PARAM(Kd, 0)) * 100.0f + 0.5f);
+
+        uint32_t lPIDPB = (uint32_t)(thermalManager.temp_bed.pid.Kp * 100.0f + 0.5f);
+        uint32_t lPIDIB = (uint32_t)(unscalePID_i(thermalManager.temp_bed.pid.Ki) * 100.0f + 0.5f);
+        uint32_t lPIDDB = (uint32_t)(unscalePID_d(thermalManager.temp_bed.pid.Kd) * 100.0f + 0.5f);
+
+        uint16_t lMXJerk = (uint16_t)(planner.max_jerk.x * 100.0f + 0.5f);
+        uint16_t lMYJerk = (uint16_t)(planner.max_jerk.y * 100.0f + 0.5f);
+        uint16_t lMZJerk = (uint16_t)(planner.max_jerk.z * 100.0f + 0.5f);
+        uint16_t lMEJerk = (uint16_t)(planner.max_jerk.e * 100.0f + 0.5f);
+
+        TERN_(ESP32_WIFI, wifi_printer_settings[54] = lPIDP/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[55] = lPIDP%0x100);
+
+        TERN_(ESP32_WIFI, wifi_printer_settings[56] = lPIDI/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[57] = lPIDI%0x100);
+
+        TERN_(ESP32_WIFI, wifi_printer_settings[58] = lPIDD/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[59] = lPIDD%0x100);
+
+        TERN_(ESP32_WIFI, wifi_printer_settings[60] = lPIDPB/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[61] = lPIDPB%0x100);
+
+        TERN_(ESP32_WIFI, wifi_printer_settings[62] = lPIDIB/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[63] = lPIDIB%0x100);
+
+        TERN_(ESP32_WIFI, wifi_printer_settings[64] = lPIDDB/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[65] = lPIDDB%0x100);
+
+        TERN_(ESP32_WIFI, wifi_printer_settings[66] = tl_E_MAX_TEMP/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[67] = tl_E_MAX_TEMP%0x100);
+
+        TERN_(ESP32_WIFI, wifi_printer_settings[68] = (uint16_t)(planner.settings.acceleration)/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[69] = (uint16_t)(planner.settings.acceleration)%0x100);
+
+        TERN_(ESP32_WIFI, wifi_printer_settings[70] = (uint16_t)(planner.settings.travel_acceleration)/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[71] = (uint16_t)(planner.settings.travel_acceleration)%0x100);
+
+        TERN_(ESP32_WIFI, wifi_printer_settings[72] = (uint16_t)(planner.settings.retract_acceleration)/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[73] = (uint16_t)(planner.settings.retract_acceleration)%0x100);
+
+        TERN_(ESP32_WIFI, wifi_printer_settings[74] = lMXJerk/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[75] = lMXJerk%0x100);
+
+        TERN_(ESP32_WIFI, wifi_printer_settings[76] = lMYJerk/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[77] = lMYJerk%0x100);
+
+        TERN_(ESP32_WIFI, wifi_printer_settings[78] = lMZJerk/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[79] = lMZJerk%0x100);
+
+        TERN_(ESP32_WIFI, wifi_printer_settings[80] = lMEJerk/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[81] = lMEJerk%0x100);
+
         sprintf_P(cmd, PSTR("settings1.xM201X.val=%d"), planner.settings.max_acceleration_mm_per_s2[X_AXIS]);
         PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings1.xM201Y.val=%d"), planner.settings.max_acceleration_mm_per_s2[Y_AXIS]);
@@ -565,18 +643,18 @@ void tlSendSettings(bool only_wifi){
         sprintf_P(cmd, PSTR("settings1.xM203E.val=%d"), (uint16_t)planner.settings.max_feedrate_mm_s[E_AXIS]);
         PRINTTJC(cmd); 
 
-        sprintf_P(cmd, PSTR("settings1.xM301P.val=%d"), (uint32_t)(PID_PARAM(Kp, 0) * 100.0f + 0.5f));
+        sprintf_P(cmd, PSTR("settings1.xM301P.val=%d"), lPIDP);
         PRINTTJC(cmd);
-        sprintf_P(cmd, PSTR("settings1.xM301I.val=%d"), (uint32_t)(unscalePID_i(PID_PARAM(Ki, 0)) * 100.0f + 0.5f));
+        sprintf_P(cmd, PSTR("settings1.xM301I.val=%d"), lPIDI);
         PRINTTJC(cmd);
-        sprintf_P(cmd, PSTR("settings1.xM301D.val=%d"), (uint32_t)(unscalePID_d(PID_PARAM(Kd, 0)) * 100.0f + 0.5f));
+        sprintf_P(cmd, PSTR("settings1.xM301D.val=%d"), lPIDD);
         PRINTTJC(cmd);
         
-        sprintf_P(cmd, PSTR("settings1.xM304P.val=%d"), (uint32_t)(thermalManager.temp_bed.pid.Kp * 100.0f + 0.5f));
+        sprintf_P(cmd, PSTR("settings1.xM304P.val=%d"), lPIDPB);
         PRINTTJC(cmd);
-        sprintf_P(cmd, PSTR("settings1.xM304I.val=%d"), (uint32_t)(unscalePID_i(thermalManager.temp_bed.pid.Ki) * 100.0f + 0.5f));
+        sprintf_P(cmd, PSTR("settings1.xM304I.val=%d"), lPIDIB);
         PRINTTJC(cmd); 
-        sprintf_P(cmd, PSTR("settings1.xM304D.val=%d"), (uint32_t)(unscalePID_d(thermalManager.temp_bed.pid.Kd) * 100.0f + 0.5f));
+        sprintf_P(cmd, PSTR("settings1.xM304D.val=%d"), lPIDDB);
         PRINTTJC(cmd);
         #if ENABLED(TL_LASER_ONLY)
         sprintf_P(cmd, PSTR("settings2.xM306S.val=%d"), (uint16_t)(tl_LASER_MAX_VALUE));
@@ -591,13 +669,13 @@ void tlSendSettings(bool only_wifi){
         sprintf_P(cmd, PSTR("settings2.xM204R.val=%d"), (uint16_t)(planner.settings.retract_acceleration));
         PRINTTJC(cmd);
 
-        sprintf_P(cmd, PSTR("settings2.xM205X.val=%d"), (uint16_t)(planner.max_jerk.x * 100.0f + 0.5f));
+        sprintf_P(cmd, PSTR("settings2.xM205X.val=%d"), lMXJerk);
         PRINTTJC(cmd);
-        sprintf_P(cmd, PSTR("settings2.xM205Y.val=%d"), (uint16_t)(planner.max_jerk.y * 100.0f + 0.5f));
+        sprintf_P(cmd, PSTR("settings2.xM205Y.val=%d"), lMYJerk);
         PRINTTJC(cmd);
-        sprintf_P(cmd, PSTR("settings2.xM205Z.val=%d"), (uint16_t)(planner.max_jerk.z * 100.0f + 0.5f));
+        sprintf_P(cmd, PSTR("settings2.xM205Z.val=%d"), lMZJerk);
         PRINTTJC(cmd);
-        sprintf_P(cmd, PSTR("settings2.xM205E.val=%d"), (uint16_t)(planner.max_jerk.e * 100.0f + 0.5f));
+        sprintf_P(cmd, PSTR("settings2.xM205E.val=%d"), lMEJerk);
         PRINTTJC(cmd);
         
     }else if(tl_TouchScreenType == 0){

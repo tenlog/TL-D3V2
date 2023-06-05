@@ -83,13 +83,18 @@
 #define TLDEBUG_PRINT         SERIAL_ECHOPGM_P
 #define TLDEBUG_PRINTLN       SERIAL_ECHOLNPGM_P
 #define TLDEBUG_ECHO         SERIAL_ECHO
+#define TLDEBUG_POS               SERIAL_POS
+#define TLDEBUG_XYZ               SERIAL_XYZ
 #else
 #define TLDEBUG_PRINTPAIR(...)    NOOP
 #define TLDEBUG_PRINTLNPAIR(...)      NOOP
 #define TLDEBUG_PRINT(...)         NOOP
 #define TLDEBUG_PRINTLN(...)       NOOP
 #define TLDEBUG_ECHO(...)         NOOP
+#define TLDEBUG_POS(...)            NOOP
+#define TLDEBUG_XYZ(...)            NOOP
 #endif
+
 #define TL_ECHO SERIAL_CHAR
 #define TLECHO_PRINTLNPAIR      SERIAL_ECHOLNPAIR
 #define TLECHO_PRINT         SERIAL_ECHOPGM_P

@@ -89,7 +89,6 @@
   #else
     #define Z_MAX_PIN          PC14// 14Z+1
   #endif
-
 #elif (defined(TENLOG_LW) || defined(TL_LASER_ONLY))
   #define X_STOP_PIN         PC13// x-
   #define Y_STOP_PIN         PC3// y-
@@ -98,7 +97,7 @@
 #elif defined(BLTOUCH)
   #define X_STOP_PIN         PC13// x-
   #define Y_STOP_PIN         PC3// y-
-  #define Z_STOP_PIN         PH2// Z- 
+  #define Z_STOP_PIN         PC15// Z- 
   #ifndef Z_MIN_PROBE_PIN
     //#define Z_MIN_PROBE_PIN  PH2//PC15 
   #endif

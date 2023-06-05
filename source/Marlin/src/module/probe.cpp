@@ -77,8 +77,8 @@
   #include "stepper/indirection.h"
 #endif
 
-#if ENABLED(EXTENSIBLE_UI)
-  #include "../lcd/extui/ui_api.h"
+#if ENABLED(TENLOG_TOUCH_LCD)
+  #include "../lcd/tenlog/tenlog_touch_lcd.h"
 #endif
 
 #define DEBUG_OUT ENABLED(DEBUG_LEVELING_FEATURE)
@@ -478,6 +478,7 @@ bool Probe::set_deployed(const bool deploy) {
  */
 bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
   DEBUG_SECTION(log_probe, "Probe::probe_down_to_z", DEBUGGING(LEVELING));
+  TLDEBUG_PRINTLN("Probe::probe_down_to_z");
 
   #if BOTH(HAS_HEATED_BED, WAIT_FOR_BED_HEATER)
     thermalManager.wait_for_bed_heating();
@@ -487,7 +488,10 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
     thermalManager.wait_for_hotend_heating(active_extruder);
   #endif
 
-  if (TERN0(BLTOUCH_SLOW_MODE, bltouch.deploy())) return true; // Deploy in LOW SPEED MODE on every probe action
+  if (TERN0(BLTOUCH_SLOW_MODE, bltouch.deploy())){
+    TLDEBUG_PRINTLN("BLTOUCH_SLOW_MODE bltouch.deploy return ture!");
+    return true; // Deploy in LOW SPEED MODE on every probe action
+  }
 
   // Disable stealthChop if used. Enable diag1 pin on driver.
   #if ENABLED(SENSORLESS_PROBING)
@@ -503,16 +507,12 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
   TERN_(HAS_QUIET_PROBING, set_probing_paused(true));
 
   // Move down until the probe is triggered
+  endstops.enable_z_probe(true);//by zyf
   do_blocking_move_to_z(z, fr_mm_s);
-
+  
   // Check to see if the probe was triggered
-  const bool probe_triggered =
-    #if BOTH(DELTA, SENSORLESS_PROBING)
-      endstops.trigger_state() & (_BV(X_MAX) | _BV(Y_MAX) | _BV(Z_MAX))
-    #else
-      TEST(endstops.trigger_state(), Z_MIN_PROBE)
-    #endif
-  ;
+  const bool probe_triggered = TEST(endstops.trigger_state(), Z_MIN_PROBE);
+  TLDEBUG_PRINTLNPAIR("probe_triggered: ",probe_triggered);
 
   TERN_(HAS_QUIET_PROBING, set_probing_paused(false));
 
@@ -526,8 +526,10 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
     tmc_disable_stallguard(stepperZ, stealth_states.z);
   #endif
 
-  if (probe_triggered && TERN0(BLTOUCH_SLOW_MODE, bltouch.stow())) // Stow in LOW SPEED MODE on every trigger
+  if (probe_triggered && TERN0(BLTOUCH_SLOW_MODE, bltouch.stow())){ // Stow in LOW SPEED MODE on every trigger
     return true;
+  }
+
 
   // Clear endstop flags
   endstops.hit_on_purpose();
@@ -588,12 +590,14 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
  */
 float Probe::run_z_probe(const bool sanity_check/*=true*/) {
   DEBUG_SECTION(log_probe, "Probe::run_z_probe", DEBUGGING(LEVELING));
+  TLDEBUG_PRINTLN("Probe::run_z_probe");
 
   auto try_to_probe = [&](PGM_P const plbl, const_float_t z_probe_low_point, const feedRate_t fr_mm_s, const bool scheck, const float clearance) -> bool {
     // Tare the probe, if supported
     if (TERN0(PROBE_TARE, tare())) return true;
 
     // Do a first probe at the fast speed
+    TLDEBUG_PRINTLNPAIR("z_probe_low_point:", z_probe_low_point, "fr_mm_s", fr_mm_s);
     const bool probe_fail = probe_down_to_z(z_probe_low_point, fr_mm_s),            // No probe trigger?
                early_fail = (scheck && current_position.z > -offset.z + clearance); // Probe triggered too high?
     #if ENABLED(DEBUG_LEVELING_FEATURE)
@@ -605,6 +609,10 @@ float Probe::run_z_probe(const bool sanity_check/*=true*/) {
         DEBUG_EOL();
       }
     #else
+      TLDEBUG_PRINT(plbl);
+      TLDEBUG_PRINT(" Probe fail! -");
+      if (probe_fail) TLDEBUG_PRINTLN(" No trigger.");
+      if (early_fail) TLDEBUG_PRINTLN(" Triggered early.");
       UNUSED(plbl);
     #endif
     return probe_fail || early_fail;
@@ -757,6 +765,14 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
     DEBUG_POS("", current_position);
   }
 
+  TLDEBUG_PRINTLNPAIR(
+      "...(", LOGICAL_X_POSITION(rx), ", ", LOGICAL_Y_POSITION(ry),
+      ", ", raise_after == PROBE_PT_RAISE ? "raise" : raise_after == PROBE_PT_STOW ? "stow" : "none",
+      ", ", verbose_level,
+      ", ", probe_relative ? "probe" : "nozzle", "_relative)"
+  );
+  TLDEBUG_POS("", current_position);
+
   #if BOTH(BLTOUCH, BLTOUCH_HS_MODE)
     if (bltouch.triggered()) bltouch._reset();
   #endif
@@ -766,6 +782,7 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
   if (probe_relative) {                                     // The given position is in terms of the probe
     if (!can_reach(npos)) {
       if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Position Not Reachable");
+      TLDEBUG_PRINTLN("Position Not Reachable");
       return NAN;
     }
     npos -= offset_xy;                                      // Get the nozzle position
@@ -786,8 +803,10 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
 
     if (verbose_level > 2)
       SERIAL_ECHOLNPAIR("Bed X: ", LOGICAL_X_POSITION(rx), " Y: ", LOGICAL_Y_POSITION(ry), " Z: ", measured_z);
+    TLDEBUG_PRINTLNPAIR("Bed X: ", LOGICAL_X_POSITION(rx), " Y: ", LOGICAL_Y_POSITION(ry), " Z: ", measured_z);
+     
   }
-
+  TLDEBUG_PRINTLNPAIR("measured_z:", measured_z);
   if (isnan(measured_z)) {
     stow();
     //LCD_MESSAGEPGM(MSG_LCD_PROBING_FAILED);

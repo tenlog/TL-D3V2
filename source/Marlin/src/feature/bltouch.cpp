@@ -41,11 +41,13 @@ void stop();
 
 bool BLTouch::command(const BLTCommand cmd, const millis_t &ms) {
   if (DEBUGGING(LEVELING)) SERIAL_ECHOLNPAIR("BLTouch Command :", cmd);
-  //TLDEBUG_PRINTLNPAIR("BLTouch Command :", cmd);
+  TLDEBUG_PRINTLNPAIR("BLTouch Command:", cmd);
   set_pwm_hw(cmd, 255, UN_TLT);
   //MOVE_SERVO(Z_PROBE_SERVO_NR, cmd);  //by zyf
   safe_delay(_MAX(ms, (uint32_t)BLTOUCH_DELAY)); // BLTOUCH_DELAY is also the *minimum* delay
-  return triggered();
+  bool Triggered = triggered();
+  TLDEBUG_PRINTLNPAIR("Triggered:", Triggered);
+  return Triggered;
 }
 
 // Init the class and device. Call from setup().
@@ -99,18 +101,20 @@ bool BLTouch::triggered() { return PROBE_TRIGGERED(); }
 bool BLTouch::deploy_proc() {
   // Do a DEPLOY
   if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("BLTouch DEPLOY requested");
+  TLDEBUG_PRINTLN("BLTouch DEPLOY requested");
 
   // Attempt to DEPLOY, wait for DEPLOY_DELAY or ALARM
   if (_deploy_query_alarm()) {
     // The deploy might have failed or the probe is already triggered (nozzle too low?)
     if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("BLTouch ALARM or TRIGGER after DEPLOY, recovering");
+    TLDEBUG_PRINTLN("BLTouch ALARM or TRIGGER after DEPLOY, recovering");
 
     clear();                               // Get the probe into start condition
 
     // Last attempt to DEPLOY
     if (_deploy_query_alarm()) {
       // The deploy might have failed or the probe is actually triggered (nozzle too low?) again
-      //if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("BLTouch Recovery Failed");
+      if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("BLTouch Recovery Failed");
       TLDEBUG_PRINTLN("BLTouch Recovery Failed deploy");
 
       SERIAL_ERROR_MSG(STR_STOP_BLTOUCH);  // Tell the user something is wrong, needs action
@@ -128,6 +132,7 @@ bool BLTouch::deploy_proc() {
   // is registered.
 
   if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("bltouch.deploy_proc() end");
+  TLDEBUG_PRINTLN("bltouch.deploy_proc() end");
 
   return false; // report success to caller
 }
@@ -135,7 +140,7 @@ bool BLTouch::deploy_proc() {
 bool BLTouch::stow_proc() {
   // Do a STOW
   if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("BLTouch STOW requested");
-
+  TLDEBUG_PRINTLN("BLTouch STOW requested");
   // A STOW will clear a triggered condition in the probe (10ms pulse).
   // At the moment that we come in here, we might (pulse) or will (SW mode) see the trigger on the pin.
   // So even though we know a STOW will be ignored if an ALARM condition is active, we will STOW.
@@ -146,6 +151,7 @@ bool BLTouch::stow_proc() {
   if (_stow_query_alarm()) {
     // The stow might have failed
     if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("BLTouch ALARM or TRIGGER after STOW, recovering");
+    TLDEBUG_PRINTLN("BLTouch ALARM or TRIGGER after STOW, recovering");
 
     _reset();                              // This RESET will then also pull up the pin. If it doesn't
                                            // work and the pin is still down, there will no longer be
@@ -165,6 +171,7 @@ bool BLTouch::stow_proc() {
   }
 
   if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("bltouch.stow_proc() end");
+  TLDEBUG_PRINTLN("bltouch.stow_proc() end");
 
   return false; // report success to caller
 }

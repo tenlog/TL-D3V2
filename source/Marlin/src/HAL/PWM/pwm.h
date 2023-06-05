@@ -37,7 +37,7 @@
 
 
 //for tltouch
-#ifdef TLTOUC
+#ifdef TLTOUCH
 #define TAUNIT_TLT                    (M4_TMRA4) 
 #define TAUNIT_TLT_CLOCK              (PWC_FCG2_PERIPH_TIMA4) 
 #define TAUNIT_TLT_OVERFLOW_INT       (INT_TMRA4_OVF)

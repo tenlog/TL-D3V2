@@ -863,7 +863,7 @@
 
   <Group>
     <GroupName>marlin_feature</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -2115,7 +2115,7 @@
       <GroupNumber>6</GroupNumber>
       <FileNumber>154</FileNumber>
       <FileType>8</FileType>
-      <tvExp>1</tvExp>
+      <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>..\source\Marlin\src\gcode\bedlevel\ubl\G29.cpp</PathWithFileName>
@@ -2779,7 +2779,7 @@
 
   <Group>
     <GroupName>marlin_lcd</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -2799,7 +2799,7 @@
 
   <Group>
     <GroupName>marlin_libs</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -3328,30 +3328,6 @@
       <bDave2>0</bDave2>
       <PathWithFileName>..\source\Marlin\src\feature\bedlevel\ubl\ubl_G29.cpp</PathWithFileName>
       <FilenameWithoutPath>ubl_G29.cpp</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>16</GroupNumber>
-      <FileNumber>249</FileNumber>
-      <FileType>8</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\source\Marlin\src\feature\bedlevel\abl\abl.cpp</PathWithFileName>
-      <FilenameWithoutPath>abl.cpp</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>16</GroupNumber>
-      <FileNumber>250</FileNumber>
-      <FileType>8</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\source\Marlin\src\feature\bedlevel\abl\bbl.cpp</PathWithFileName>
-      <FilenameWithoutPath>bbl.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

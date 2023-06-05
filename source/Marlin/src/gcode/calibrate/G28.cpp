@@ -125,7 +125,7 @@
 #if ENABLED(Z_SAFE_HOMING)
 
   inline void home_z_safely() {
-    //TLDEBUG_PRINTLN("home_z_safely");
+    TLDEBUG_PRINTLN("home_z_safely");
     DEBUG_SECTION(log_G28, "home_z_safely", DEBUGGING(LEVELING));
 
     // Disallow Z homing if X or Y homing is needed
@@ -497,10 +497,6 @@ void GcodeSuite::G28() {
       stepperY2.rms_current(tmc_save_current_Y2);
     #endif
   #endif
-
-  //ui.refresh(); //by zyf
-
-  TERN_(EXTENSIBLE_UI, ExtUI::onHomingComplete());
 
   report_current_position();
 

@@ -1698,16 +1698,6 @@
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\feature\bedlevel\ubl\ubl_G29.cpp</FilePath>
             </File>
-            <File>
-              <FileName>abl.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\source\Marlin\src\feature\bedlevel\abl\abl.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>bbl.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\source\Marlin\src\feature\bedlevel\abl\bbl.cpp</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
