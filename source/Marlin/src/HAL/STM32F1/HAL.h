@@ -57,8 +57,8 @@
 #define _MSERIAL(X) Serial##X
 #define MSERIAL(X) _MSERIAL(X)
 
-#if BOTH(ESP32_WIFI, TENLOG_TOUCH_LCD)
-  #define NUM_UARTS 3
+#if ENABLED(TENLOG_TOUCH_LCD)
+  #define NUM_UARTS 2
 #else
   #define NUM_UARTS 1
 #endif

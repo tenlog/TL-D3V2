@@ -248,6 +248,7 @@ extern uint8_t sd_OK;
 #if ENABLED(TL_LASER_ONLY)
     extern char pre_print_file_name[13];
     extern uint32_t last_laser_time;
+    extern uint16_t laser_power;
     #define LASER_FAN_DELAY 30000
 #endif
 

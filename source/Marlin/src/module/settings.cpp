@@ -509,7 +509,7 @@ typedef struct SettingsDataStruct {
     uint16_t ui_tlEMaxTemp;
   #endif
 
-  #if ENABLED(HAS_WIFI)
+  #if (HAS_WIFI)
     uint8_t w_wifi_mode;
     uint16_t w_http_port;
     char w_wifi_ssid[20];
@@ -1514,7 +1514,7 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(tl_E_MAX_TEMP);
     #endif
 
-    #if ENABLED(HAS_WIFI)
+    #if (HAS_WIFI)
       EEPROM_WRITE(wifi_mode);
       EEPROM_WRITE(wifi_ssid);
       EEPROM_WRITE(wifi_pswd);
@@ -2519,7 +2519,7 @@ void MarlinSettings::postprocess() {
         
       #endif
       
-      #if ENABLED(HAS_WIFI)
+      #if (HAS_WIFI)
         uint8_t uwifimode;
         EEPROM_READ(uwifimode);
         if(uwifimode < 0 || uwifimode > 5) uwifimode = WIFI_DEFAULT_MODE;
@@ -4163,7 +4163,7 @@ void MarlinSettings::reset() {
       TLDEBUG_PRINTLNPAIR("TL E Max Temp:", tl_E_MAX_TEMP);
     #endif
 
-    #if ENABLED(HAS_WIFI)
+    #if (HAS_WIFI)
       TLDEBUG_PRINTLNPAIR("WIFI Mode:", wifi_mode);
       TLDEBUG_PRINTLNPAIR("WIFI SSID:", wifi_ssid);
       TLDEBUG_PRINTLNPAIR("WIFI PSWD:", wifi_pswd);

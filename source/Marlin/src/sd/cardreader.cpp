@@ -384,8 +384,10 @@ void CardReader::tl_ls(bool wifi) {
     root.rewind();
     dir_t p;
 
-    int iFileID = 0;    
-    wifi_file_name[0]=fileNum;
+    int iFileID = 0;
+    #if HAS_WIFI 
+      wifi_file_name[0]=fileNum;
+    #endif
 
     while (root.readDir(&p, longFilename) > 0) {
       if (is_dir_or_gcode(p, true)) {
@@ -398,7 +400,7 @@ void CardReader::tl_ls(bool wifi) {
             tl_print_page_id = pageNum;
             tl_print_file_id = fileNum - ((pageNum-1)*6) + 1;
             
-            #if ENABLED(HAS_WIFI)
+            #if (HAS_WIFI)
               wifi_file_name_p++;
               wifi_file_name[wifi_file_name_p]=iFileID; //start form 1
 
@@ -508,7 +510,7 @@ void CardReader::tl_ls(bool wifi) {
     }
   }
   
-  #if ENABLED(HAS_WIFI)
+  #if (HAS_WIFI)
     if(wifi){
       delay(100);
       /*
@@ -644,7 +646,7 @@ void CardReader::mount() {
   ) 
   {
     SERIAL_ECHO_MSG(STR_SD_INIT_FAIL);
-    #if ENABLED(HAS_WIFI)
+    #if (HAS_WIFI)
     ZERO(wifi_file_name);
     delay(10);
     WIFI_TX_Handler(0x0A);

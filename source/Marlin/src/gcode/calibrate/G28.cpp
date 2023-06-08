@@ -125,7 +125,7 @@
 #if ENABLED(Z_SAFE_HOMING)
 
   inline void home_z_safely() {
-    TLDEBUG_PRINTLN("home_z_safely");
+    //TLDEBUG_PRINTLN("home_z_safely");
     DEBUG_SECTION(log_G28, "home_z_safely", DEBUGGING(LEVELING));
 
     // Disallow Z homing if X or Y homing is needed
@@ -360,11 +360,11 @@ void GcodeSuite::G28() {
 
     const float z_homing_height = parser.seenval('R') ? parser.value_linear_units() : Z_HOMING_HEIGHT;
 
-    TLDEBUG_PRINTLNPAIR("z_homing_height ", z_homing_height);
+    //TLDEBUG_PRINTLNPAIR("z_homing_height ", z_homing_height);
     if (z_homing_height && (doX || doY || TERN0(Z_SAFE_HOMING, doZ))) {
       // Raise Z before homing any other axes and z is not already high enough (never lower z)
       if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("Raise Z (before homing) by ", z_homing_height);
-      TLDEBUG_PRINTLNPAIR("Raise Z (before homing) by ", z_homing_height);
+      //TLDEBUG_PRINTLNPAIR("Raise Z (before homing) by ", z_homing_height);
       do_z_clearance(z_homing_height);
 
       TERN_(BLTOUCH, bltouch.init());

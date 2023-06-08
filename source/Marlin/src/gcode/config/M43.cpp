@@ -113,32 +113,34 @@ inline void toggle_pins() {
 } // toggle_pins
 
 inline void servo_probe_test() {
+  /*
   #if ENABLED(Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN)
-
     #define PROBE_TEST_PIN Z_MIN_PIN
     constexpr bool probe_inverting = Z_MIN_ENDSTOP_INVERTING;
     SERIAL_ECHOLNPAIR(". Probe Z_MIN_PIN: ", PROBE_TEST_PIN);
     SERIAL_ECHOPGM(". Z_MIN_ENDSTOP_INVERTING: ");
     serialprint_truefalse(probe_inverting);
     SERIAL_EOL();
+  #else
+    #define PROBE_TEST_PIN Z_MIN_PROBE_PIN
+    constexpr bool probe_inverting = Z_MIN_PROBE_ENDSTOP_INVERTING;
+    SERIAL_ECHOLNPAIR(". Probe Z_MIN_PIN: ", PROBE_TEST_PIN);
+    SERIAL_ECHOPGM(". Z_MIN_ENDSTOP_INVERTING: ");
+    serialprint_truefalse(probe_inverting);
+    SERIAL_EOL();
   #endif
+  */
 
   #if !(NUM_SERVOS > 0 && HAS_SERVO_0)
-
     SERIAL_ERROR_MSG("SERVO not set up.");
-
   #elif !HAS_Z_SERVO_PROBE
-
     SERIAL_ERROR_MSG("Z_PROBE_SERVO_NR not set up.");
-
   #else // HAS_Z_SERVO_PROBE
-
     const uint8_t probe_index = parser.byteval('P', Z_PROBE_SERVO_NR);
-
     SERIAL_ECHOLNPAIR("Servo probe test\n"
                       ". using index:  ", probe_index,
-                      ", deploy angle: ", servo_angles[probe_index][0],
-                      ", stow angle:   ", servo_angles[probe_index][1]
+                      ", deploy value: ", BLTOUCH_DEPLOY,
+                      ", stow value:   ", BLTOUCH_STOW
     );
 
     bool deploy_state = false, stow_state;
@@ -179,7 +181,7 @@ inline void servo_probe_test() {
       bltouch._reset();
       bltouch._stow();
       if (probe_inverting == READ(PROBE_TEST_PIN)) {
-        bltouch._set_SW_mode();
+        bltouch._reset_SW_mode();
         if (probe_inverting != READ(PROBE_TEST_PIN)) {
           bltouch._deploy();
           if (probe_inverting == READ(PROBE_TEST_PIN)) {
@@ -203,10 +205,12 @@ inline void servo_probe_test() {
       uint8_t i = 0;
       SERIAL_ECHOLNPGM(". Deploy & stow 4 times");
       do {
-        MOVE_SERVO(probe_index, servo_angles[Z_PROBE_SERVO_NR][0]); // Deploy
+        //MOVE_SERVO(probe_index, BLTOUCH_DEPLOY); // Deploy
+        bltouch._deploy();
         safe_delay(500);
         deploy_state = READ(PROBE_TEST_PIN);
-        MOVE_SERVO(probe_index, servo_angles[Z_PROBE_SERVO_NR][1]); // Stow
+        //MOVE_SERVO(probe_index, BLTOUCH_STOW); // Stow
+        bltouch._stow();
         safe_delay(500);
         stow_state = READ(PROBE_TEST_PIN);
       } while (++i < 4);
@@ -231,7 +235,8 @@ inline void servo_probe_test() {
     }
 
     // Ask the user for a trigger event and measure the pulse width.
-    MOVE_SERVO(probe_index, servo_angles[Z_PROBE_SERVO_NR][0]); // Deploy
+    //MOVE_SERVO(probe_index, servo_angles[Z_PROBE_SERVO_NR][0]); // Deploy
+    bltouch._deploy();
     safe_delay(500);
     SERIAL_ECHOLNPGM("** Please trigger probe within 30 sec **");
     uint16_t probe_counter = 0;
@@ -260,8 +265,8 @@ inline void servo_probe_test() {
           SERIAL_ECHOLNPGM(" detected.");
         }
         else SERIAL_ECHOLNPGM("FAIL: Noise detected - please re-run test");
-
-        MOVE_SERVO(probe_index, servo_angles[Z_PROBE_SERVO_NR][1]); // Stow
+        //MOVE_SERVO(probe_index, servo_angles[Z_PROBE_SERVO_NR][1]); // Stow
+        bltouch._stow();
         return;
       }
     }

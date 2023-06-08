@@ -148,6 +148,7 @@ uint32_t wifi_update_interval = 400;
 
 #if ENABLED(TL_LASER_ONLY)
 uint32_t last_laser_time = 0;
+uint16_t laser_power = 0;
 #endif
 uint8_t tl_com_ID = 0;
 ///////////////// common functions
@@ -501,7 +502,7 @@ void tlSendSettings(bool only_wifi){
         PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings.xZOffset.val=%d"), lOffsetZ);
         PRINTTJC(cmd);
-        #if ENABLED(HAS_WIFI)
+        #if (HAS_WIFI)
         sprintf_P(cmd, PSTR("wifisetting.vMode.val=%d"), wifi_mode);
         PRINTTJC(cmd);
         //wifi_printer_settings[39] = (http_port)/0x100;
@@ -1011,7 +1012,7 @@ void SetBusyMoving(bool Busy){
         TLMoving = false;
         TLSTJC_println("main.vCC.val=0");
     }
-	#if ENABLED(HAS_WIFI)
+	#if (HAS_WIFI)
     if(wifi_connected)
         tenlog_status_update(false);
 	#endif
@@ -2321,8 +2322,11 @@ void tenlog_status_update(bool isTJC)
     ln12 = card.flag.sdprinting;
     if(TLPrintingStatus == 2)
         ln12 = TLPrintingStatus;
-    if(file_uploading)
-        ln12 = 0;
+    
+    #if HAS_WIFI
+        if(file_uploading)
+            ln12 = 0;
+    #endif
 
     ln13 = card.percentDone();
     if(ln12 == 0)
@@ -2361,8 +2365,10 @@ void tenlog_status_update(bool isTJC)
     ln17 = card.isFileOpen();
     if(ln17 == 0 && TLPrintingStatus == 2)
         ln17 = 1;
-    if(file_uploading)
-        ln17 = 0;
+        #if HAS_WIFI
+            if(file_uploading)
+                ln17 = 0;
+        #endif
     #endif
 
 	#if HAS_HOTEND
@@ -2387,7 +2393,7 @@ void tenlog_status_update(bool isTJC)
     if(e1_flow < 0 || e1_flow > 250) e1_flow = 100;
     //TLDEBUG_PRINTLNPAIR("E0 Flow", e0_flow, "E1 Flow", e1_flow);    
 
-    #if ENABLED(HAS_WIFI)
+    #if (HAS_WIFI)
     if((wifi_connected || wifiFirstSend < 2000) && !isTJC){
         wifiFirstSend ++;
         
@@ -2605,8 +2611,8 @@ void process_command_gcode(long _tl_command[]) {
             long lT = GCodelng('T', iFrom, _tl_command, true);
             long lM = GCodelng('M', iFrom, _tl_command, true);
 
-            sprintf_P(cmd, PSTR("G%d T%d M%d "), lG, lT, lM);
-            TLDEBUG_PRINTLN(cmd);
+            //sprintf_P(cmd, PSTR("G%d T%d M%d "), lG, lT, lM);
+            //TLDEBUG_PRINTLN(cmd);
             
             if(lG == 1 || lG == 0) {
                 //G1
@@ -3195,7 +3201,7 @@ void process_command_gcode(long _tl_command[]) {
                     TLSTJC_println(cmd);
                     TLDEBUG_PRINTLN(cmd);
                 }
-                #if ENABLED(HAS_WIFI)
+                #if (HAS_WIFI)
                     if(lM == 1501){
                         //M1501
                         int _wifi_mode = GCodelng('S', iFrom, _tl_command);
@@ -3329,22 +3335,23 @@ void tenlog_screen_update()
         
 }
 
-void tl_wifi_idle()
-{   
-    if(file_uploading){
-        wifi_upload_write_data();
-        WIFI_TX_Handler(0x0C);
-        delay(1);
-        return;
+#if HAS_WIFI
+    void tl_wifi_idle()
+    {   
+        if(file_uploading){
+            wifi_upload_write_data();
+            WIFI_TX_Handler(0x0C);
+            delay(1);
+            return;
+        }
+        static unsigned long lWLastUpdateTime;
+        if(millis() - lWLastUpdateTime < wifi_update_interval)
+            return;
+        
+        lWLastUpdateTime=millis();
+        tenlog_status_update(false);
     }
-    static unsigned long lWLastUpdateTime;
-    if(millis() - lWLastUpdateTime < wifi_update_interval)
-        return;
-    
-    lWLastUpdateTime=millis();
-    tenlog_status_update(false);
-}
-
+#endif
 
 void tenlog_command_handler()
 {
@@ -3478,7 +3485,7 @@ void TL_idle(){
     #endif
     tenlog_command_handler();
     tenlog_screen_update();
-    #if ENABLED(HAS_WIFI)
+    #if (HAS_WIFI)
         tl_wifi_idle();
     #endif
     tl_sd_abort_on_endstop_hit();

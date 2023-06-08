@@ -100,6 +100,7 @@ void SpindleLaser::init() {
       if(ocr > 0){
         #if ENABLED(TL_LASER_ONLY)
         last_laser_time = millis();
+        laser_power = ocr;
         #endif
       }
     #else

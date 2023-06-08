@@ -26,7 +26,7 @@
  * Copyright (c) Tenlog 3D / Zyf
  * **/
 #include "../gcode.h"
-#if ENABLED(HAS_WIFI)
+#if (HAS_WIFI)
 #include "../../MarlinCore.h"
 
 #if ENABLED(ESP8266_WIFI)

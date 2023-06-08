@@ -478,7 +478,7 @@ bool Probe::set_deployed(const bool deploy) {
  */
 bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
   DEBUG_SECTION(log_probe, "Probe::probe_down_to_z", DEBUGGING(LEVELING));
-  TLDEBUG_PRINTLN("Probe::probe_down_to_z");
+  //TLDEBUG_PRINTLN("Probe::probe_down_to_z");
 
   #if BOTH(HAS_HEATED_BED, WAIT_FOR_BED_HEATER)
     thermalManager.wait_for_bed_heating();
@@ -506,12 +506,16 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
 
   TERN_(HAS_QUIET_PROBING, set_probing_paused(true));
 
+  #if HAS_CUSTOM_PROBE_PIN
+    endstops.enable_z_probe(true);
+  #endif    //by zyf
+
   // Move down until the probe is triggered
   do_blocking_move_to_z(z, fr_mm_s);
 
   // Check to see if the probe was triggered
-  const bool probe_triggered = TEST(endstops.trigger_state(), Z_MIN_PROBE);
-  TLDEBUG_PRINTLNPAIR("probe_triggered: ",probe_triggered);
+  const bool probe_triggered =  TEST(endstops.trigger_state(), TERN(Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN, Z_MIN, Z_MIN_PROBE));
+  TLDEBUG_PRINTLNPAIR("probe_down_to_z triggered: ", probe_triggered);
 
   TERN_(HAS_QUIET_PROBING, set_probing_paused(false));
 
@@ -538,6 +542,8 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
 
   // Tell the planner where we actually are
   sync_plan_position();
+
+
 
   return !probe_triggered;
 }
@@ -589,14 +595,15 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
  */
 float Probe::run_z_probe(const bool sanity_check/*=true*/) {
   DEBUG_SECTION(log_probe, "Probe::run_z_probe", DEBUGGING(LEVELING));
-  TLDEBUG_PRINTLN("Probe::run_z_probe");
+  //TLDEBUG_PRINTLN("Probe::run_z_probe");
+
 
   auto try_to_probe = [&](PGM_P const plbl, const_float_t z_probe_low_point, const feedRate_t fr_mm_s, const bool scheck, const float clearance) -> bool {
     // Tare the probe, if supported
     if (TERN0(PROBE_TARE, tare())) return true;
 
     // Do a first probe at the fast speed
-    TLDEBUG_PRINTLNPAIR("z_probe_low_point:", z_probe_low_point, "fr_mm_s", fr_mm_s);
+    //TLDEBUG_PRINTLNPAIR("z_probe_low_point:", z_probe_low_point, "fr_mm_s", fr_mm_s);
     const bool probe_fail = probe_down_to_z(z_probe_low_point, fr_mm_s),            // No probe trigger?
                early_fail = (scheck && current_position.z > -offset.z + clearance); // Probe triggered too high?
     #if ENABLED(DEBUG_LEVELING_FEATURE)
@@ -608,10 +615,12 @@ float Probe::run_z_probe(const bool sanity_check/*=true*/) {
         DEBUG_EOL();
       }
     #else
-      TLDEBUG_PRINT(plbl);
-      TLDEBUG_PRINT(" Probe fail! -");
-      if (probe_fail) TLDEBUG_PRINTLN(" No trigger.");
-      if (early_fail) TLDEBUG_PRINTLN(" Triggered early.");
+      if(probe_fail || early_fail){
+        TLDEBUG_PRINT(plbl);
+        TLDEBUG_PRINT(" Probe fail! -");
+        if (probe_fail) TLDEBUG_PRINTLN(" No trigger.");
+        if (early_fail) TLDEBUG_PRINTLN(" Triggered early.");
+      }
       UNUSED(plbl);
     #endif
     return probe_fail || early_fail;
@@ -634,6 +643,7 @@ float Probe::run_z_probe(const bool sanity_check/*=true*/) {
     const float first_probe_z = current_position.z;
 
     if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("1st Probe Z:", first_probe_z);
+    TLDEBUG_PRINTLNPAIR("1st Probe Z:", first_probe_z);
 
     // Raise to give the probe clearance
     do_blocking_move_to_z(current_position.z + Z_CLEARANCE_MULTI_PROBE, z_probe_fast_mm_s);
@@ -675,6 +685,7 @@ float Probe::run_z_probe(const bool sanity_check/*=true*/) {
       TERN_(MEASURE_BACKLASH_WHEN_PROBING, backlash.measure_with_probe());
 
       const float z = current_position.z;
+      TLDEBUG_PRINTLNPAIR("2nd Probe Z:", z);
 
       #if EXTRA_PROBING > 0
         // Insert Z measurement into probes[]. Keep it sorted ascending.
@@ -751,10 +762,12 @@ float Probe::run_z_probe(const bool sanity_check/*=true*/) {
  *   - Stow the probe, or
  *   - Raise to the BETWEEN height
  * - Return the probed Z position
- * probe_at_point -->
- *    run_z_probe -->
- *      probe_down_to_z-->
- *        do_blocking_move_to_z
+ *(void)probe_entire_mesh-->
+ * (float)probe_at_point-->
+ *    (float)run_z_probe-->
+ *        (bool)try_to_probe-->
+ *          (bool)probe_down_to_z-->
+ *            do_blocking_move_to_z-->
  * 
  */
 float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRaise raise_after/*=PROBE_PT_NONE*/, const uint8_t verbose_level/*=0*/, const bool probe_relative/*=true*/, const bool sanity_check/*=true*/) {
@@ -771,6 +784,7 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
     DEBUG_POS("", current_position);
   }
 
+  /*
   TLDEBUG_PRINT("Probe::probe_at_point");
   TLDEBUG_PRINTLNPAIR(
       "...(", LOGICAL_X_POSITION(rx), ", ", LOGICAL_Y_POSITION(ry),
@@ -779,6 +793,7 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
       ", ", probe_relative ? "probe" : "nozzle", "_relative)"
   );
   TLDEBUG_POS("", current_position);
+  */
 
   #if BOTH(BLTOUCH, BLTOUCH_HS_MODE)
     if (bltouch.triggered()) bltouch._reset();
@@ -808,12 +823,12 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
     else if (raise_after == PROBE_PT_STOW)
       if (stow()) measured_z = NAN;   // Error on stow?
 
-    if (verbose_level > 2)
+    if (verbose_level > 2){
       SERIAL_ECHOLNPAIR("Bed X: ", LOGICAL_X_POSITION(rx), " Y: ", LOGICAL_Y_POSITION(ry), " Z: ", measured_z);
-    TLDEBUG_PRINTLNPAIR("Bed X: ", LOGICAL_X_POSITION(rx), " Y: ", LOGICAL_Y_POSITION(ry), " Z: ", measured_z);
-     
+      TLDEBUG_PRINTLNPAIR("Bed X: ", LOGICAL_X_POSITION(rx), " Y: ", LOGICAL_Y_POSITION(ry), " Z: ", measured_z);
+    }
   }
-  TLDEBUG_PRINTLNPAIR("measured_z:", measured_z);
+  //TLDEBUG_PRINTLNPAIR("measured_z:", measured_z);
   if (isnan(measured_z)) {
     stow();
     //LCD_MESSAGEPGM(MSG_LCD_PROBING_FAILED);

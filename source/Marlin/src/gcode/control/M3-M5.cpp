@@ -142,6 +142,7 @@ void GcodeSuite::M5() {
   cutter.menuPower = cutter.unitPower;
   #if ENABLED(HWPWM)
   set_pwm_hw(0, 1000);
+  laser_power = 0;
   #endif
 }
 

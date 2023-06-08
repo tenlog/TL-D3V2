@@ -419,7 +419,7 @@ static void print_es_state(const bool is_hit, PGM_P const label=nullptr) {
 }
 
 void Endstops::report_states() {
-  //TERN_(BLTOUCH, bltouch._set_SW_mode()); //by zyf
+  TERN_(BLTOUCH, bltouch._reset_SW_mode()); //by zyf
   SERIAL_ECHOLNPGM(STR_M119_REPORT);
   #define ES_REPORT(S) print_es_state(READ(S##_PIN) != S##_ENDSTOP_INVERTING, PSTR(STR_##S))
   #if HAS_X_MIN
@@ -840,7 +840,9 @@ void Endstops::update() {
       #if HAS_Z_MIN || (Z_SPI_SENSORLESS && Z_HOME_DIR < 0)
         if ( TERN1(Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN, z_probe_enabled)
           && TERN1(HAS_CUSTOM_PROBE_PIN, !z_probe_enabled)
-        ) PROCESS_ENDSTOP_Z(MIN);
+        ){
+          PROCESS_ENDSTOP_Z(MIN);
+        }
         #if   CORE_DIAG(XZ, X, MIN)
           PROCESS_CORE_ENDSTOP(X,MIN,Z,MIN);
         #elif CORE_DIAG(XZ, X, MAX)
@@ -852,9 +854,20 @@ void Endstops::update() {
         #endif
       #endif
 
-      // When closing the gap check the enabled probe
+      // When closing the gap check the enabled probe // zyf .. check endstops when z moving..
       #if HAS_CUSTOM_PROBE_PIN
-        if (z_probe_enabled) PROCESS_ENDSTOP(Z, MIN_PROBE);
+        if (z_probe_enabled) {
+          PROCESS_ENDSTOP(Z, MIN_PROBE);
+          /*
+          if(PROCESS_ENDSTOP(Z, MIN_PROBE)){
+            WRITE(LED_PIN, 0);
+          }else{
+            WRITE(LED_PIN, 1);
+          }
+          */
+        //}else{
+        //  WRITE(LED_PIN, 0);
+        }
       #endif
     }
     else { // Z +direction. Gantry up, bed down.
@@ -1061,8 +1074,10 @@ void Endstops::update() {
         ES_REPORT_CHANGE(Z4_MAX);
       #endif
       SERIAL_ECHOLNPGM("\n");
+      /*
       analogWrite(pin_t(LED_PIN), local_LED_status);
       local_LED_status ^= 255;
+      */
       old_live_state_local = live_state_local;
     }
   }

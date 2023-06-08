@@ -333,6 +333,7 @@ public:
       unitPower = 0;
       #if ENABLED(HWPWM)
         set_pwm_hw(0, 1000);
+        laser_power = 0;
       #endif
       planner.laser_inline.status.isPlanned = false;
       planner.laser_inline.status.isEnabled = false;
@@ -350,6 +351,7 @@ public:
         TERN(SPINDLE_LASER_PWM, inline_ocr_power, inline_power)(0);
         #if ENABLED(HWPWM)
           set_pwm_hw(0, 1000);
+          laser_power = 0;
         #endif
       }
     }

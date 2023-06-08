@@ -867,9 +867,16 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
       }
         //SBI(fanState, pgm_read_byte(&fanBit[CHAMBER_FAN_INDEX]));
 
-      if(isStepEna || isHeating)
+      if(isStepEna || isHeating){
         LastChamberFanRun = millis();
-      
+      }else if(!isStepEna){
+        if(laser_power > 10){
+          set_pwm_hw(0, 1000);
+          laser_power = 0;
+        }
+      }
+
+
     #endif  
 
     #if HAS_AUTO_COOLER_FAN

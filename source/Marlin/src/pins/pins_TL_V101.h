@@ -97,9 +97,13 @@
 #elif defined(BLTOUCH)
   #define X_STOP_PIN         PC13// x-
   #define Y_STOP_PIN         PC3// y-
-  #define Z_STOP_PIN         PC15// Z- 
-  #ifndef Z_MIN_PROBE_PIN
-    //#define Z_MIN_PROBE_PIN  PH2//PC15 
+  #if ENABLED(USE_PROBE_FOR_Z_HOMING)
+    #define Z_STOP_PIN         PC15// Z- 
+  #else
+    #define Z_STOP_PIN         PA15// Z- 
+    #ifndef Z_MIN_PROBE_PIN
+      #define Z_MIN_PROBE_PIN  PC15// 
+    #endif
   #endif
 #else
   #define Y_STOP_PIN         PC3// y-
@@ -126,7 +130,8 @@
   #if defined(TENLOG_LW) || defined(TENLOG_LASER_ONLY)
     #define FIL_RUNOUT_PIN                    PD0   // "Pulled-high"
   #else
-    #define FIL_RUNOUT_PIN                    PA15   // "Pulled-high" 
+    //#define FIL_RUNOUT_PIN                  PA15   // "Pulled-high" 
+    #define FIL_RUNOUT_PIN                    PH2   // "Pulled-high" 
   #endif
 #endif
 

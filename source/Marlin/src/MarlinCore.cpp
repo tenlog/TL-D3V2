@@ -521,21 +521,66 @@ inline void manage_inactivity(const bool ignore_stepper_queue=false) {
   #endif
 
   #if ENABLED(CUSTOM_USER_BUTTONS)
-    // Handle a custom user button if defined
+    // Handle a custom user button if defined //by zyf.. handling button down & button up
     const bool printer_not_busy = !printingIsActive();
-    #define HAS_CUSTOM_USER_BUTTON(N) (PIN_EXISTS(BUTTON##N) && defined(BUTTON##N##_HIT_STATE) && defined(BUTTON##N##_GCODE) && defined(BUTTON##N##_DESC))
-    #define CHECK_CUSTOM_USER_BUTTON(N) do{                            \
-      constexpr millis_t CUB_DEBOUNCE_DELAY_##N = 1000UL;              \
-      static millis_t next_cub_ms_##N;                                 \
-      if (BUTTON##N##_HIT_STATE == READ(BUTTON##N##_PIN)               \
-        && (ENABLED(BUTTON##N##_WHEN_PRINTING) || printer_not_busy)) { \
-        const millis_t ms = millis();                                  \
-        if (ELAPSED(ms, next_cub_ms_##N)) {                            \
-          next_cub_ms_##N = ms + CUB_DEBOUNCE_DELAY_##N;               \
-          TLDEBUG_PRINTLN(PSTR(BUTTON##N##_DESC));                     \
-          EXECUTE_GCODE(PSTR(BUTTON##N##_GCODE));                      \
-        }                                                              \
-      }                                                                \
+    #define HAS_CUSTOM_USER_BUTTON(N) (PIN_EXISTS(BUTTON##N) && defined(BUTTON##N##_HIT_STATE) && defined(BUTTON##N##_GCODE) && defined(BUTTON##N##_GCODE_1) && defined(BUTTON##N##_DESC))
+    #define CHECK_CUSTOM_USER_BUTTON(N) do{                             \
+      constexpr millis_t CUB_DEBOUNCE_DELAY_##N = 1000UL;               \
+      static millis_t next_cub_ms_##N;                                  \
+      static millis_t button_up_##N;                                    \
+      static millis_t button_down_##N;                                  \
+      static bool button_down_b_##N;                                    \
+      bool triggered_##N = false;                                       \
+      bool triggered_1_##N = false;                                     \
+      if (BUTTON##N##_HIT_STATE == READ(BUTTON##N##_PIN)                \
+        && (ENABLED(BUTTON##N##_WHEN_PRINTING) || printer_not_busy)     \
+        && !button_down_b_##N) {                                        \
+          button_down_b_##N=true;                                       \
+          button_down_##N=millis();                                     \
+      }                                                                 \
+      if (BUTTON##N##_HIT_STATE == !READ(BUTTON##N##_PIN)               \
+        && (ENABLED(BUTTON##N##_WHEN_PRINTING) || printer_not_busy)     \
+        && millis()-button_down_##N<500UL                               \
+        && button_down_b_##N) {                            \
+          button_up_##N=millis();                                       \
+          triggered_##N=true;                                           \
+          triggered_1_##N=false;                                        \
+      }else if (BUTTON##N##_HIT_STATE == !READ(BUTTON##N##_PIN)         \
+        && (ENABLED(BUTTON##N##_WHEN_PRINTING) || printer_not_busy)     \
+        && millis()-button_down_##N>2000UL                              \
+        && millis()-button_down_##N<4000UL                              \
+        && button_down_b_##N) {                                        \
+          button_up_##N=millis();                                       \
+          triggered_1_##N=true;                                         \
+          triggered_##N=false;                                          \
+      }                                                                 \
+      if (BUTTON##N##_HIT_STATE == !READ(BUTTON##N##_PIN)               \
+        && (ENABLED(BUTTON##N##_WHEN_PRINTING) || printer_not_busy)     \
+        && button_down_b_##N) {                                         \
+          button_up_##N=millis();                                       \
+          button_down_b_##N=false;                                      \
+      }                                                                 \
+      if (triggered_##N) {                                              \
+        const millis_t ms = millis();                                   \
+        if (ELAPSED(ms, next_cub_ms_##N)) {                             \
+          next_cub_ms_##N = ms + CUB_DEBOUNCE_DELAY_##N;                \
+          TLDEBUG_PRINTLN(PSTR(BUTTON##N##_DESC));                      \
+          EXECUTE_GCODE(PSTR(BUTTON##N##_GCODE));                       \
+        }                                                               \
+        triggered_##N=false;                                            \
+        triggered_1_##N=false;                                          \
+      }else if (triggered_1_##N) {                                           \
+        const millis_t ms = millis();                                   \
+        if (ELAPSED(ms, next_cub_ms_##N)) {                             \
+          next_cub_ms_##N = ms + CUB_DEBOUNCE_DELAY_##N;                \
+          if (PSTR(BUTTON##N##_GCODE_1)!="") {                             \
+            TLDEBUG_PRINTLN(PSTR(BUTTON##N##_DESC_1));                    \
+            EXECUTE_GCODE(PSTR(BUTTON##N##_GCODE_1));                     \
+          }                                                               \
+        }                                                               \
+        triggered_##N=false;                                           \
+        triggered_1_##N=false;                                           \
+      }                                                                 \
     }while(0)
 
     #if HAS_CUSTOM_USER_BUTTON(1)
@@ -1594,7 +1639,7 @@ void setup() {
     print_from_z_target = 0.0;
   #endif
   
-  #if ENABLED(HAS_WIFI)
+  #if (HAS_WIFI)
     TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init Tenlog Wifi..."));
     WIFI_Init();
   #endif
@@ -1619,6 +1664,10 @@ void setup() {
       if(lastPageID != 8)
         TlPageMain();
     }
+  #endif
+
+  #if ENABLED(TL_BEEPER)
+    start_beeper(2, 1);
   #endif
 
 }

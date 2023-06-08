@@ -2309,7 +2309,8 @@
 #endif
 
 // Servos
-#if PIN_EXISTS(SERVO0) && NUM_SERVOS > 0
+//#if PIN_EXISTS(SERVO0) && NUM_SERVOS > 0 //by zyf use hwpwm, no need define pin.
+#if NUM_SERVOS == 1
   #define HAS_SERVO_0 1
 #endif
 #if PIN_EXISTS(SERVO1) && NUM_SERVOS > 1
@@ -2656,7 +2657,7 @@
  */
 #if HAS_BED_PROBE
   #if BOTH(ENDSTOPPULLUPS, HAS_Z_MIN_PROBE_PIN)
-    #define ENDSTOPPULLUP_ZMIN_PROBE
+    #define ENDSTOPPULLDOWN_ZMIN_PROBE
   #endif
   #ifndef Z_PROBE_OFFSET_RANGE_MIN
     #define Z_PROBE_OFFSET_RANGE_MIN -20

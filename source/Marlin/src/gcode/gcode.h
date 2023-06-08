@@ -1097,13 +1097,20 @@ private:
     static void M710();
   #endif
 
-  #if ENABLED(HAS_WIFI)
+  #if (HAS_WIFI)
     static void M1501();
     static void M1502();
     static void M1503();
     static void M1504();
     static void M1505();
     static void M1510();
+  #endif
+
+  #if ENABLED(TENLOG_TOUCH_LCD)
+    static void M1521();
+    #if ENABLED(TL_LASER_ONLY)
+      static void M1522();
+    #endif
   #endif
 
   static void T(const int8_t tool_index);

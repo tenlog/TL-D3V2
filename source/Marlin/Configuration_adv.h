@@ -828,7 +828,9 @@
  * Z Steppers Auto-Alignment
  * Add the G34 command to align multiple Z steppers using a bed probe.
  */
+#if ENABLED(BLTOUCH)
 #define Z_STEPPER_AUTO_ALIGN
+#endif
 #if ENABLED(Z_STEPPER_AUTO_ALIGN)
   // Define probe X and Y positions for Z1, Z2 [, Z3 [, Z4]]
   // If not defined, probe limits will be used.
@@ -889,7 +891,7 @@
 #if ENABLED(ASSISTED_TRAMMING)
 
   // Define positions for probe points.
-  #define TRAMMING_POINT_XY { {  20, 20 }, { 180,  20 }, { 180, 180 }, { 20, 180 } }
+  #define TRAMMING_POINT_XY { {  20, 20 }, { X_BED_SIZE-20,  20 }, { X_BED_SIZE-20, Y_BED_SIZE-20 }, { 20, Y_BED_SIZE-20 } }
 
   // Define position names for probe points.
   #define TRAMMING_POINT_NAME_1 "Front-Left"
@@ -3577,16 +3579,20 @@
     #if PIN_EXISTS(BUTTON1)
       #define BUTTON1_HIT_STATE     LOW       // State of the triggered button. NC=LOW. NO=HIGH.
       #define BUTTON1_WHEN_PRINTING false     // Button allowed to trigger during printing?
-      #define BUTTON1_GCODE         "M502"
-      #define BUTTON1_DESC          "Reset default"  // Optional string to set the LCD status
+      #define BUTTON1_GCODE         "M1522"
+      #define BUTTON1_GCODE_1       "M502"
+      #define BUTTON1_DESC          "Laser Light"  // Optional string to set the LCD status
+      #define BUTTON1_DESC_1        "Reset default(M502)"  // Optional string to set the LCD status
     #endif
 
-    #define BUTTON2_PIN TL_BUTTON_PIN //use lcd usart tx for test
+    #define BUTTON2_PIN TL_BUTTON_PIN //
     #if PIN_EXISTS(BUTTON2)
       #define BUTTON2_HIT_STATE     LOW
       #define BUTTON2_WHEN_PRINTING true
       #define BUTTON2_GCODE         "M320"  //Print a pre selected file.
+      #define BUTTON2_GCODE_1       ""  //Print a pre selected file.
       #define BUTTON2_DESC          "Print a pre selected file."
+      #define BUTTON2_DESC_1        ""
     #endif
   #endif
 

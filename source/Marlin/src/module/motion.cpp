@@ -451,9 +451,9 @@ void do_blocking_move_to(const float rx, const float ry, const float rz, const_f
   DEBUG_SECTION(log_move, "do_blocking_move_to", DEBUGGING(LEVELING));
   if (DEBUGGING(LEVELING)) DEBUG_XYZ("> ", rx, ry, rz);
 
-  TLDEBUG_PRINT("do_blocking_move_to");
-  TLDEBUG_XYZ("> ", rx, ry, rz);
-  TLDEBUG_PRINTLN(" ");
+  //TLDEBUG_PRINT("do_blocking_move_to");
+  //TLDEBUG_XYZ("> ", rx, ry, rz);
+  //TLDEBUG_PRINTLN(" ");
 
   const feedRate_t z_feedrate = fr_mm_s ?: homing_feedrate(Z_AXIS),
                   xy_feedrate = fr_mm_s ?: feedRate_t(XY_PROBE_FEEDRATE_MM_S);
@@ -1390,7 +1390,7 @@ void prepare_line_to_destination() {
    */
   void do_homing_move(const AxisEnum axis, const float distance, const feedRate_t fr_mm_s=0.0, const bool final_approach=true) {
     DEBUG_SECTION(log_move, "do_homing_move", DEBUGGING(LEVELING));
-    TLDEBUG_PRINT("do_homing_move");
+    //TLDEBUG_PRINT("do_homing_move");
     const feedRate_t home_fr_mm_s = fr_mm_s ?: homing_feedrate(axis);
 
     if (DEBUGGING(LEVELING)) {
@@ -1402,14 +1402,14 @@ void prepare_line_to_destination() {
         DEBUG_ECHOPAIR("[", home_fr_mm_s, "]");
       DEBUG_ECHOLNPGM(")");
     }
-    
+    /*
     TLDEBUG_PRINTPAIR("...(", AS_CHAR(axis_codes[axis]), ", ", distance, ", ");
     if (fr_mm_s)
       TLDEBUG_ECHO(fr_mm_s);
     else
       TLDEBUG_PRINTPAIR("[", home_fr_mm_s, "]");
     TLDEBUG_PRINTLN(")");
-    
+    */
     // Only do some things when moving towards an endstop
     const int8_t axis_home_dir = TERN0(DUAL_X_CARRIAGE, axis == X_AXIS)
                   ? x_home_dir(active_extruder) : home_dir(axis);
@@ -1677,7 +1677,7 @@ void prepare_line_to_destination() {
     if (bump) {
       // Move away from the endstop by the axis HOMING_BUMP_MM
       if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("Move Away: ", -bump, "mm");
-      TLDEBUG_PRINTLNPAIR("Move Away: ", -bump, "mm"); //check do not move back when single head.
+      //TLDEBUG_PRINTLNPAIR("Move Away: ", -bump, "mm"); //check do not move back when single head.
       do_homing_move(axis, -bump, TERN(HOMING_Z_WITH_PROBE, (axis == Z_AXIS ? z_probe_fast_mm_s : 0), 0), false);
 
       #if ENABLED(DETECT_BROKEN_ENDSTOP)

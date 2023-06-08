@@ -81,10 +81,10 @@ Version     033
 //#define TENLOG_H2
 //#define TENLOG_D3HS   //High Speed
 //#define TENLOG_D3
-#define TENLOG_S2   //single head
+//#define TENLOG_S2   //single head
 //#define TENLOG_S3   //single head
 //#define TENLOG_M3
-//#define TENLOG_L4   //laser only
+#define TENLOG_L4   //laser only
 //#define TENLOG_D5
 //#define TENLOG_D6
 //#define TENLOG_D8
@@ -123,7 +123,6 @@ Version     033
 #define TENLOG_TOUCH_LCD
 //#define ESP8266_WIFI
 #define HWPWM
-#define ESP32_WIFI
 
 //TL Functions
 //#define ELECTROMAGNETIC_VALUE
@@ -132,6 +131,8 @@ Version     033
 #ifdef TL_LASER_ONLY
   #define TL_NO_SCREEN
   #define TL_BEEPER
+#else
+  #define ESP32_WIFI
 #endif
 
 #define TL_LASER
@@ -210,10 +211,10 @@ Version     033
 #define TL_MODEL_STR TL_MODEL_STR_0 TL_MODEL_STR_1
 
 #if EITHER(ESP8266_WIFI, ESP32_WIFI)
-  #define HAS_WIFI
+  #define HAS_WIFI 1
 #endif
 
-#if ENABLED(HAS_WIFI)
+#if (HAS_WIFI)
   #define WIFI_DEFAULT_SSID "TL-3D"
   #define WIFI_DEFAULT_PSWD "12345678"
   #define WIFI_DEFAULT_ACCE_CODE "12345"
@@ -1174,9 +1175,11 @@ Version     033
  * (Automatically enables USE_PROBE_FOR_Z_HOMING.)
  */
 #if ENABLED(BLTOUCH)
-#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
-// Force the use of the probe for Z-axis homing
-#define USE_PROBE_FOR_Z_HOMING
+  // Force the use of the probe for Z-axis homing
+  //#define USE_PROBE_FOR_Z_HOMING
+  #if ENABLED(USE_PROBE_FOR_Z_HOMING)
+    #define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+  #endif
 #endif
 
 /**
@@ -1334,10 +1337,10 @@ Version     033
 #define XY_PROBE_FEEDRATE (60*60)
 
 // Feedrate (mm/min) for the first approach when double-probing (MULTIPLE_PROBING == 2)
-#define Z_PROBE_FEEDRATE_FAST (3*30)
+#define Z_PROBE_FEEDRATE_FAST (6*30)
 
 // Feedrate (mm/min) for the "accurate" probe of each point
-#define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 1)
+#define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 2)
 
 /**
  * Probe Activation Switch
@@ -1397,7 +1400,7 @@ Version     033
 #define Z_CLEARANCE_MULTI_PROBE    6 // Z Clearance between multiple probes
 #define Z_AFTER_PROBING            6 // Z position after probing is done
 
-#define Z_PROBE_LOW_POINT          -9 // Farthest distance below the trigger-point to go before stopping
+#define Z_PROBE_LOW_POINT          -5 // Farthest distance below the trigger-point to go before stopping
 
 // For M851 give a range for adjusting the Z probe offset
 #define Z_PROBE_OFFSET_RANGE_MIN -20
@@ -1504,7 +1507,7 @@ Version     033
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
 #if ENABLED(SINGLE_HEAD)
-#define X_MIN_POS -50
+#define X_MIN_POS 0
 #else
 #define X_MIN_POS -50
 #endif
@@ -1759,8 +1762,8 @@ Version     033
 
   //#define MESH_EDIT_GFX_OVERLAY   // Display a graphics overlay while editing the mesh
 
-  #define MESH_INSET 10              // Set Mesh bounds as an inset region of the bed
-  #define GRID_MAX_POINTS_X 3      // Don't use more than 15 points per axis, implementation limited.
+  #define MESH_INSET 15              // Set Mesh bounds as an inset region of the bed
+  #define GRID_MAX_POINTS_X 5      // Don't use more than 15 points per axis, implementation limited.
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   #define UBL_HILBERT_CURVE       // Use Hilbert distribution for less travel when probing multiple points
@@ -1858,7 +1861,7 @@ Version     033
 // - Move the Z probe (or nozzle) to a defined XY point before Z Homing.
 // - Prevent Z homing when the Z probe is outside bed area.
 //
-#if ENABLED(BLTOUCH)
+#if ENABLED(USE_PROBE_FOR_Z_HOMING)
   #define Z_SAFE_HOMING
 #endif
 

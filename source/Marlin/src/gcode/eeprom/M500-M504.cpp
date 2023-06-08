@@ -29,6 +29,10 @@
 #include "../../HAL/ESP32_SPI/esp32_wifi.h"
 #endif
 
+#if ENABLED(TL_LASER_ONLY)
+#include "../../HAL/PWM/pwm.h"
+#endif
+
 #if ENABLED(TENLOG_TOUCH_LCD)
 #include "../../lcd/tenlog/tenlog_touch_lcd.h"
 #endif
@@ -52,7 +56,9 @@ void GcodeSuite::M501() {
  */
 void GcodeSuite::M502() {
   (void)settings.reset();
+  #if(HAS_WIFI)
   SPI_RestartWIFI();
+  #endif
   #if ENABLED(TL_BEEPER)
     start_beeper(4, 1);
   #endif
@@ -111,5 +117,28 @@ void GcodeSuite::M502() {
     if (settings.validate())
       SERIAL_ECHO_MSG("EEPROM OK");
   }
+
+#endif
+
+#if ENABLED(TENLOG_TOUCH_LCD)
+  void GcodeSuite::M1521(){
+    int8_t S = parser.seenval('S');
+    command_M1521(S);
+  }
+  #if ENABLED(TL_LASER_ONLY)
+    void GcodeSuite::M1522(){
+      static bool weakLaserOn;
+      if(!weakLaserOn){
+        laser_power = 10;
+        set_pwm_hw(laser_power, 1000);
+        weakLaserOn = true;
+        start_beeper(2, 0);
+      }else{
+        set_pwm_hw(0, 1000);
+        laser_power = 0;
+        weakLaserOn = false;
+      }
+    }
+  #endif
 
 #endif

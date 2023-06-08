@@ -1010,12 +1010,18 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 7219: M7219(); break;                                // M7219: Set LEDs, columns, and rows
       #endif
 
-      #if ENABLED(HAS_WIFI)
+      #if (HAS_WIFI)
         case 1501: M1501(); break;
         case 1502: M1502(); break;
         case 1503: M1503(); break;
         case 1504: M1504(); break;
         case 1505: M1505(); break;
+      #endif
+      #if ENABLED(TENLOG_TOUCH_LCD)
+        case 1521: M1521(); break;
+        #if ENABLED(TL_LASER_ONLY)
+          case 1522: M1522(); break;
+        #endif
       #endif
 
       default: parser.unknown_command_warning(); break;
