@@ -19,7 +19,11 @@
 #define TAUNIT_F0_CH_PIN            (Pin01)
 #define TAUNIT_F0_CH_FUNC           (Func_Tima0) //0
 
+#if(TL_LASER_ONLY)
 #define TIMERA_COUNT_OVERFLOW_F0          (1250)  //5000 Hz
+#else
+#define TIMERA_COUNT_OVERFLOW_F0          (25000)  //500 Hz
+#endif
 #define IRQ_INDEX_INT_TIMA_CH_F0          (Int007_IRQn)
 
 //for fan1
@@ -32,9 +36,8 @@
 #define TAUNIT_F1_CH_PIN            (Pin08)
 #define TAUNIT_F1_CH_FUNC           (Func_Tima0)
 
-#define TIMERA_COUNT_OVERFLOW_F1          (1250)  //5000 Hz
+#define TIMERA_COUNT_OVERFLOW_F1          (25000)  //500 Hz
 #define IRQ_INDEX_INT_TIMA_CH_F1          (Int008_IRQn)
-
 
 //for tltouch
 #ifdef TLTOUCH

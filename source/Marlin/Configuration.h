@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "042"
+#define TL_SUBVERSION "043"
 
 //update log 
 /*
@@ -74,17 +74,19 @@ Version     033
 20230528    Improved algorithm of "Pring from any z height".
             added laser auto fan function. 
             Sub version 041
-20230601    More setting 
+20230601    More settings 
+20200619    Bug fixed: E2 side fan speed error. Thank Kai.
+            Sub version 043
 */
 
 //TL Medels and version
 //#define TENLOG_H2
 //#define TENLOG_D3HS   //High Speed
-//#define TENLOG_D3
+#define TENLOG_D3
 //#define TENLOG_S2   //single head
 //#define TENLOG_S3   //single head
 //#define TENLOG_M3
-#define TENLOG_L4   //laser only
+//#define TENLOG_L4   //laser only
 //#define TENLOG_D5
 //#define TENLOG_D6
 //#define TENLOG_D8
@@ -118,7 +120,7 @@ Version     033
   #define AUTO_BED_LEVELING_UBL
 #endif
 
-#define TL_DEBUG
+//#define TL_DEBUG
 //TL hardware.
 #define TENLOG_TOUCH_LCD
 //#define ESP8266_WIFI
@@ -1082,6 +1084,8 @@ Version     033
  */
 #if TL_HIGH_SPEED
   #define DEFAULT_MAX_ACCELERATION      {5000, 5000, 100, 1000}
+#elif ENABLED(TL_LASER_ONLY)
+  #define DEFAULT_MAX_ACCELERATION      {500, 500, 20, 500}
 #else
   #define DEFAULT_MAX_ACCELERATION      {800, 800, 100, 800}
 #endif
@@ -1176,9 +1180,10 @@ Version     033
  */
 #if ENABLED(BLTOUCH)
   // Force the use of the probe for Z-axis homing
-  //#define USE_PROBE_FOR_Z_HOMING
+  #define USE_PROBE_FOR_Z_HOMING
   #if ENABLED(USE_PROBE_FOR_Z_HOMING)
     #define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+    #define Z_MIN_ENDSTOP_PROBE_OFFSET
   #endif
 #endif
 
@@ -1398,9 +1403,9 @@ Version     033
 #define Z_CLEARANCE_DEPLOY_PROBE   6 // Z Clearance for Deploy/Stow
 #define Z_CLEARANCE_BETWEEN_PROBES 6  // Z Clearance between probe points
 #define Z_CLEARANCE_MULTI_PROBE    6 // Z Clearance between multiple probes
-#define Z_AFTER_PROBING            6 // Z position after probing is done
+#define Z_AFTER_PROBING            3 // Z position after probing is done
 
-#define Z_PROBE_LOW_POINT          -5 // Farthest distance below the trigger-point to go before stopping
+#define Z_PROBE_LOW_POINT          -1 // Farthest distance below the trigger-point to go before stopping
 
 // For M851 give a range for adjusting the Z probe offset
 #define Z_PROBE_OFFSET_RANGE_MIN -20
@@ -1762,8 +1767,8 @@ Version     033
 
   //#define MESH_EDIT_GFX_OVERLAY   // Display a graphics overlay while editing the mesh
 
-  #define MESH_INSET 15              // Set Mesh bounds as an inset region of the bed
-  #define GRID_MAX_POINTS_X 5      // Don't use more than 15 points per axis, implementation limited.
+  #define MESH_INSET 26              // Set Mesh bounds as an inset region of the bed
+  #define GRID_MAX_POINTS_X 4      // Don't use more than 15 points per axis, implementation limited.
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   #define UBL_HILBERT_CURVE       // Use Hilbert distribution for less travel when probing multiple points
@@ -1861,7 +1866,7 @@ Version     033
 // - Move the Z probe (or nozzle) to a defined XY point before Z Homing.
 // - Prevent Z homing when the Z probe is outside bed area.
 //
-#if ENABLED(USE_PROBE_FOR_Z_HOMING)
+#if ENABLED(USE_PROBE_FOR_Z_HOMING) && DISABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
   #define Z_SAFE_HOMING
 #endif
 

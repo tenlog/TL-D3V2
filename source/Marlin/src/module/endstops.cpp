@@ -689,7 +689,10 @@ void Endstops::update() {
   #define PROCESS_ENDSTOP(AXIS, MINMAX) do { \
     if (TEST_ENDSTOP(_ENDSTOP(AXIS, MINMAX))) { \
       _ENDSTOP_HIT(AXIS, MINMAX); \
+      /*WRITE(LED_PIN, 0);*/   \
       planner.endstop_triggered(_AXIS(AXIS)); \
+    }else{    \
+      /*WRITE(LED_PIN, 1);*/   \
     } \
   }while(0)
 
@@ -836,6 +839,22 @@ void Endstops::update() {
 
   if (stepper.axis_is_moving(Z_AXIS)) {
     if (stepper.motor_direction(Z_AXIS_HEAD)) { // Z -direction. Gantry down, bed up.
+    
+      // When closing the gap check the enabled probe // zyf .. check endstops when z moving..
+      #if HAS_CUSTOM_PROBE_PIN
+        if (z_probe_enabled) {
+          PROCESS_ENDSTOP(Z, MIN_PROBE);
+          /*
+          if(PROCESS_ENDSTOP(Z, MIN_PROBE)){
+            WRITE(LED_PIN, 0);
+          }else{
+            WRITE(LED_PIN, 1);
+          }
+          */
+        //}else{
+        //  WRITE(LED_PIN, 0);
+        }
+      #endif
 
       #if HAS_Z_MIN || (Z_SPI_SENSORLESS && Z_HOME_DIR < 0)
         if ( TERN1(Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN, z_probe_enabled)
@@ -854,21 +873,6 @@ void Endstops::update() {
         #endif
       #endif
 
-      // When closing the gap check the enabled probe // zyf .. check endstops when z moving..
-      #if HAS_CUSTOM_PROBE_PIN
-        if (z_probe_enabled) {
-          PROCESS_ENDSTOP(Z, MIN_PROBE);
-          /*
-          if(PROCESS_ENDSTOP(Z, MIN_PROBE)){
-            WRITE(LED_PIN, 0);
-          }else{
-            WRITE(LED_PIN, 1);
-          }
-          */
-        //}else{
-        //  WRITE(LED_PIN, 0);
-        }
-      #endif
     }
     else { // Z +direction. Gantry up, bed down.
       #if HAS_Z_MAX || (Z_SPI_SENSORLESS && Z_HOME_DIR > 0)

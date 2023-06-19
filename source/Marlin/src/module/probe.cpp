@@ -515,7 +515,7 @@ bool Probe::probe_down_to_z(const_float_t z, const_feedRate_t fr_mm_s) {
 
   // Check to see if the probe was triggered
   const bool probe_triggered =  TEST(endstops.trigger_state(), TERN(Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN, Z_MIN, Z_MIN_PROBE));
-  TLDEBUG_PRINTLNPAIR("probe_down_to_z triggered: ", probe_triggered);
+  //TLDEBUG_PRINTLNPAIR("probe_down_to_z triggered: ", probe_triggered);
 
   TERN_(HAS_QUIET_PROBING, set_probing_paused(false));
 
@@ -643,7 +643,7 @@ float Probe::run_z_probe(const bool sanity_check/*=true*/) {
     const float first_probe_z = current_position.z;
 
     if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("1st Probe Z:", first_probe_z);
-    TLDEBUG_PRINTLNPAIR("1st Probe Z:", first_probe_z);
+    //TLDEBUG_PRINTLNPAIR("1st Probe Z:", first_probe_z);
 
     // Raise to give the probe clearance
     do_blocking_move_to_z(current_position.z + Z_CLEARANCE_MULTI_PROBE, z_probe_fast_mm_s);
@@ -685,7 +685,7 @@ float Probe::run_z_probe(const bool sanity_check/*=true*/) {
       TERN_(MEASURE_BACKLASH_WHEN_PROBING, backlash.measure_with_probe());
 
       const float z = current_position.z;
-      TLDEBUG_PRINTLNPAIR("2nd Probe Z:", z);
+      //TLDEBUG_PRINTLNPAIR("2nd Probe Z:", z);
 
       #if EXTRA_PROBING > 0
         // Insert Z measurement into probes[]. Keep it sorted ascending.
@@ -771,7 +771,7 @@ float Probe::run_z_probe(const bool sanity_check/*=true*/) {
  * 
  */
 float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRaise raise_after/*=PROBE_PT_NONE*/, const uint8_t verbose_level/*=0*/, const bool probe_relative/*=true*/, const bool sanity_check/*=true*/) {
-  TLDEBUG_PRINTLNPAIR("probe_at_point X:", rx, " Y:", ry);
+  //TLDEBUG_PRINTLNPAIR("probe_at_point X:", rx, " Y:", ry);
   DEBUG_SECTION(log_probe, "Probe::probe_at_point", DEBUGGING(LEVELING));
 
   if (DEBUGGING(LEVELING)) {
@@ -825,7 +825,7 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
 
     if (verbose_level > 2){
       SERIAL_ECHOLNPAIR("Bed X: ", LOGICAL_X_POSITION(rx), " Y: ", LOGICAL_Y_POSITION(ry), " Z: ", measured_z);
-      TLDEBUG_PRINTLNPAIR("Bed X: ", LOGICAL_X_POSITION(rx), " Y: ", LOGICAL_Y_POSITION(ry), " Z: ", measured_z);
+      //TLDEBUG_PRINTLNPAIR("Bed X: ", LOGICAL_X_POSITION(rx), " Y: ", LOGICAL_Y_POSITION(ry), " Z: ", measured_z);
     }
   }
   //TLDEBUG_PRINTLNPAIR("measured_z:", measured_z);

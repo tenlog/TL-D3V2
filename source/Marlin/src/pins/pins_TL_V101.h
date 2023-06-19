@@ -62,10 +62,7 @@
 //#define SDCARD_EEPROM_EMULATION
 
 #ifdef IIC_BL24CXX_EEPROM
-  #ifdef TENLOG_LW
-    #define IIC_EEPROM_SDA       PD13
-    #define IIC_EEPROM_SCL       PD12
-  #elif defined(TL_LASER_ONLY)
+  #if defined(TENLOG_LW) || defined(TL_LASER_ONLY)
     #define IIC_EEPROM_SDA       PD12 
     #define IIC_EEPROM_SCL       PD13 
   #else
@@ -89,7 +86,7 @@
   #else
     #define Z_MAX_PIN          PC14// 14Z+1
   #endif
-#elif (defined(TENLOG_LW) || defined(TL_LASER_ONLY))
+#elif defined(TL_LASER_ONLY)
   #define X_STOP_PIN         PC13// x-
   #define Y_STOP_PIN         PC3// y-
   #define Z_STOP_PIN         PC15// Z-
@@ -105,6 +102,7 @@
       #define Z_MIN_PROBE_PIN  PC15// 
     #endif
   #endif
+  //PC14 to hw pwm for bl touch
 #else
   #define Y_STOP_PIN         PC3// y-
   #define X_STOP_PIN         PC13// x-
@@ -127,11 +125,13 @@
 // Filament Runout Sensor
 //
 #ifndef FIL_RUNOUT_PIN
-  #if defined(TENLOG_LW) || defined(TENLOG_LASER_ONLY)
+  #if defined(TENLOG_LW) 
+    #define FIL_RUNOUT_PIN                    PA0   // "Pulled-high"  
+  #elif defined(TENLOG_LASER_ONLY)
     #define FIL_RUNOUT_PIN                    PD0   // "Pulled-high"
   #else
-    //#define FIL_RUNOUT_PIN                  PA15   // "Pulled-high" 
-    #define FIL_RUNOUT_PIN                    PH2   // "Pulled-high" 
+    #define FIL_RUNOUT_PIN                  PA15   // "Pulled-high" 
+    //#define FIL_RUNOUT_PIN                    PH2   // "Pulled-high" 
   #endif
 #endif
 
@@ -199,7 +199,7 @@
   #elif defined(TL_LASER_ONLY)
     #define FAN_LASER_PIN         PD3   //FAN2 For laser
   #else
-    #define FAN2_PIN              PA0   //FAN2 FZ1
+    #define FAN2_PIN              PA0   //FAN2 FZ1  //PA0
     #define FAN3_PIN              PE7   //FZ2
   #endif
   #define HEATER_0_PIN          PA5   // HEATER0

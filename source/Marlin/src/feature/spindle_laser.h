@@ -327,7 +327,7 @@ public:
      * to handle laser power and scale to movement speed.
      */
 
-    // Force disengage planner power control
+    //Force disengage planner power control
     static inline void inline_disable() {
       isReady = false;
       unitPower = 0;
@@ -350,8 +350,8 @@ public:
         planner.laser_inline.status.isPlanned = false;
         TERN(SPINDLE_LASER_PWM, inline_ocr_power, inline_power)(0);
         #if ENABLED(HWPWM)
-          set_pwm_hw(0, 1000);
-          laser_power = 0;
+          if(laser_power > 10) laser_power = 0;
+          set_pwm_hw(laser_power, 1000);          
         #endif
       }
     }

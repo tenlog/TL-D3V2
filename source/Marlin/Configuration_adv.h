@@ -934,11 +934,12 @@
  * Set DISABLE_INACTIVE_? 'true' to shut down axis steppers after an idle period.
  * The Deactive Time can be overridden with M18 and M84. Set to 0 for No Timeout.
  */
-//#if defined(TENLOG_LW) || defined(TL_LASER_ONLY)
+#if defined(TL_LASER_ONLY)
+#define DEFAULT_STEPPER_DEACTIVE_TIME 1 //by zyf .. 120 //Release stepper time
+#else
 #define DEFAULT_STEPPER_DEACTIVE_TIME 5 //by zyf .. 120 //Release stepper time
-//#else
-//#define DEFAULT_STEPPER_DEACTIVE_TIME 120 //by zyf .. 120 //Release stepper time
-//#endif
+#endif
+
 #define DISABLE_INACTIVE_X true
 #define DISABLE_INACTIVE_Y true
 #define DISABLE_INACTIVE_Z true  // Set 'false' if the nozzle could fall onto your printed part!
@@ -1979,7 +1980,11 @@
 #endif
 
 // Moves (or segments) with fewer steps than this will be joined with the next move
+#if ENABLED(TL_LASER_ONLY)
+#define MIN_STEPS_PER_SEGMENT 6 
+#else
 #define MIN_STEPS_PER_SEGMENT 1 //6 //by zyf 0.0125
+#endif
 
 /**
  * Minimum delay before and after setting the stepper DIR (in ns)
@@ -3581,7 +3586,7 @@
       #define BUTTON1_WHEN_PRINTING false     // Button allowed to trigger during printing?
       #define BUTTON1_GCODE         "M1522"
       #define BUTTON1_GCODE_1       "M502"
-      #define BUTTON1_DESC          "Laser Light"  // Optional string to set the LCD status
+      #define BUTTON1_DESC          "Weak Laser Light"  // Optional string to set the LCD status
       #define BUTTON1_DESC_1        "Reset default(M502)"  // Optional string to set the LCD status
     #endif
 
@@ -3590,9 +3595,9 @@
       #define BUTTON2_HIT_STATE     LOW
       #define BUTTON2_WHEN_PRINTING true
       #define BUTTON2_GCODE         "M320"  //Print a pre selected file.
-      #define BUTTON2_GCODE_1       ""  //Print a pre selected file.
+      #define BUTTON2_GCODE_1       "M1523"  //G28.
       #define BUTTON2_DESC          "Print a pre selected file."
-      #define BUTTON2_DESC_1        ""
+      #define BUTTON2_DESC_1        "G28 XY"
     #endif
   #endif
 

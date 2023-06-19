@@ -540,15 +540,15 @@ inline void manage_inactivity(const bool ignore_stepper_queue=false) {
       }                                                                 \
       if (BUTTON##N##_HIT_STATE == !READ(BUTTON##N##_PIN)               \
         && (ENABLED(BUTTON##N##_WHEN_PRINTING) || printer_not_busy)     \
-        && millis()-button_down_##N<500UL                               \
+        && millis()-button_down_##N<1000UL                               \
         && button_down_b_##N) {                            \
           button_up_##N=millis();                                       \
           triggered_##N=true;                                           \
           triggered_1_##N=false;                                        \
       }else if (BUTTON##N##_HIT_STATE == !READ(BUTTON##N##_PIN)         \
         && (ENABLED(BUTTON##N##_WHEN_PRINTING) || printer_not_busy)     \
-        && millis()-button_down_##N>2000UL                              \
-        && millis()-button_down_##N<4000UL                              \
+        && millis()-button_down_##N>1000UL                              \
+        && millis()-button_down_##N<5000UL                              \
         && button_down_b_##N) {                                        \
           button_up_##N=millis();                                       \
           triggered_1_##N=true;                                         \
@@ -564,7 +564,7 @@ inline void manage_inactivity(const bool ignore_stepper_queue=false) {
         const millis_t ms = millis();                                   \
         if (ELAPSED(ms, next_cub_ms_##N)) {                             \
           next_cub_ms_##N = ms + CUB_DEBOUNCE_DELAY_##N;                \
-          TLDEBUG_PRINTLN(PSTR(BUTTON##N##_DESC));                      \
+          TLDEBUG_PRINT(PSTR(BUTTON##N##_DESC));                      \
           EXECUTE_GCODE(PSTR(BUTTON##N##_GCODE));                       \
         }                                                               \
         triggered_##N=false;                                            \
@@ -1341,7 +1341,7 @@ void setup() {
     SETUP_RUN(probe.tare_init());
   #endif
 
-  #if BOTH(SDSUPPORT, SDCARD_EEPROM_EMULATION)
+  #if ENABLED(SDSUPPORT) && ENABLED(TL_LASER_ONLY)
     TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init SD Reader..."));
     TLDEBUG_PRINTLN("Init SD Reader...");
     SETUP_RUN(card.mount());          // Mount media with settings before first_load
@@ -1350,6 +1350,10 @@ void setup() {
   TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Loading Settings..."));
   SETUP_RUN(settings.first_load());   // Load data from EEPROM if available (or use defaults)
                                       // This also updates variables in the planner, elsewhere
+
+  #if HAS_BED_PROBE
+    EXECUTE_GCODE("G29 A");
+  #endif
 
   #if HAS_ETHERNET
     SETUP_RUN(ethernet.init());

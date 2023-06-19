@@ -2588,11 +2588,13 @@ void MarlinSettings::postprocess() {
 
           if (ubl.storage_slot >= 0) {
             load_mesh(ubl.storage_slot);
-            DEBUG_ECHOLNPAIR("Mesh ", ubl.storage_slot, " loaded from storage.");
+            //DEBUG_ECHOLNPAIR("Mesh ", ubl.storage_slot, " loaded from storage.");
+            TLDEBUG_PRINTLNPAIR("Mesh ", ubl.storage_slot, " loaded from storage.");
           }
           else {
             ubl.reset();
-            DEBUG_ECHOLNPGM("UBL reset");
+            //DEBUG_ECHOLNPGM("UBL reset");
+            TLDEBUG_PRINTLN("UBL reset");
           }
         }
       #endif

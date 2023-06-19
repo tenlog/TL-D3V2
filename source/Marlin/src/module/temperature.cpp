@@ -870,10 +870,12 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
       if(isStepEna || isHeating){
         LastChamberFanRun = millis();
       }else if(!isStepEna){
-        if(laser_power > 10){
+        #if ENABLED(TL_LASER_ONLY)
+        if(laser_power > 20){
           set_pwm_hw(0, 1000);
-          laser_power = 0;
+          laser_power = 0;          
         }
+        #endif
       }
 
 

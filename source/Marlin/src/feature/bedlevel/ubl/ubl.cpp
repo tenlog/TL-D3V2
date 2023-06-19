@@ -190,6 +190,23 @@ void unified_bed_leveling::display_map(const uint8_t map_type) {
   // the current Z position after G28 and the mesh values.
   const xy_int8_t curr = closest_indexes(xy_pos_t(current_position) + probe.offset_xy);
 
+  #if ENABLED(TENLOG_TOUCH_LCD)
+    char cmd[64];
+    sprintf(cmd, "page auto_level%d", GRID_MAX_POINTS_X);
+    TLSTJC_println(cmd);
+    //TLDEBUG_PRINTLN(cmd);
+    int16_t MAXV=-9999;
+    int16_t MINV=9999;
+    for (int8_t j = (GRID_MAX_POINTS_Y) - 1; j >= 0; j--) {
+      LOOP_L_N(i, GRID_MAX_POINTS_X) {
+        const float f = z_values[i][j];
+        int16_t XV=(int16_t)(f*1000.0);
+        if(XV>MAXV) MAXV=XV;
+        if(XV<MINV) MINV=XV;
+      }
+    }
+  #endif
+
   if (!lcd) SERIAL_EOL();
   for (int8_t j = (GRID_MAX_POINTS_Y) - 1; j >= 0; j--) {
 
@@ -209,6 +226,39 @@ void unified_bed_leveling::display_map(const uint8_t map_type) {
 
       // Z Value at current I, J
       const float f = z_values[i][j];
+      #if ENABLED(TENLOG_TOUCH_LCD)
+        //char cmd[64];
+        uint8_t XID=GRID_MAX_POINTS_X * j + i;
+        int16_t XV=(int16_t)(f*1000.0);
+        int16_t V256= (int16_t)((float)(XV-MINV)/(float)(MAXV-MINV)*255.0);
+        uint16_t range=255;
+        uint16_t R=0;
+        uint16_t G=0;
+        uint16_t B=0;
+        if(V256<range/4){ //0-64
+          R=0;
+          G=4*V256;
+          B=range;
+        }else if(V256<range/2){ //64-128
+          R=0;
+          G=range;
+          B=-4*V256+2*range;
+        }else if(V256<=3*range/4){ //128-192
+          R=4*V256-2*range;
+          G=range;
+          B=0;
+        }else{  //192-255
+          R=range;
+          G=4*(range-V256);
+          B=0;
+        }
+        uint16_t V565=R/8*2048+G/4*32+B/8;
+        sprintf(cmd, "x%d.val=%d", XID, XV);
+        TLSTJC_println(cmd);        
+        sprintf(cmd, "x%d.bco=%d", XID, V565);
+        TLSTJC_println(cmd);        
+        //TLDEBUG_PRINTLN(cmd);
+      #endif
       if (lcd) {
         // TODO: Display on Graphical LCD
       }

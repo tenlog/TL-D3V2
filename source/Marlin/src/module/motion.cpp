@@ -991,7 +991,7 @@ FORCE_INLINE void segment_idle(millis_t &next_idle_ms) {
 
     //by zyf-tenlog
     #if ENABLED(SDSUPPORT)
-    if(plr1stZ  && card.flag.sdprinting){
+    if(plr1stZ  && IS_SD_PRINTING()){
       if(destination.z > 0.0){
         //TLDEBUG_PRINTLNPAIR("dz:", destination.z);
         current_position.z = destination.z;

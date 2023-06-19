@@ -2893,7 +2893,7 @@ bool Planner::buffer_line(const_float_t rx, const_float_t ry, const_float_t rz, 
     //Searching the height point by "dichotomy" -- by zyf
     //bool setIndex = false;
 
-    if (!PrintFromZHeightFound && card.flag.sdprinting){
+    if (!PrintFromZHeightFound && IS_SD_PRINTING()){
       int32_t deltaPoint = lPrintZEnd - lPrintZStart;
       float deltaZ = rz - print_from_z_target;
       uint32_t sdPos = card.getIndex();      
@@ -2963,7 +2963,7 @@ bool Planner::buffer_line(const_float_t rx, const_float_t ry, const_float_t rz, 
         return false;
       }
       return false;
-    }else if(card.flag.sdprinting){
+    }else if(IS_SD_PRINTING()){
       if(rz < zLast && zLast > 0){
         return false;
       }else if(rz > zLast && zLast > 0){

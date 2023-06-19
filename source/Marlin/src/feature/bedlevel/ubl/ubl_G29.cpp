@@ -419,7 +419,7 @@ void unified_bed_leveling::G29() {
 
       #if HAS_BED_PROBE
 
-        case 1: {
+        case 1: { //G29 P1
           //
           // Invalidate Entire Mesh and Automatically Probe Mesh in areas that can be reached by the probe
           //
@@ -437,6 +437,12 @@ void unified_bed_leveling::G29() {
 
           report_current_position();
           probe_deployed = true;
+          //by zyf
+          safe_delay(100);
+          EXECUTE_GCODE("M500");
+          safe_delay(100);
+          EXECUTE_GCODE("G29 T0");
+          set_bed_leveling_enabled(true);
         } break;
 
       #endif // HAS_BED_PROBE
@@ -640,7 +646,7 @@ void unified_bed_leveling::G29() {
     SERIAL_ECHOLNPGM("Done.");
   }
 
-  if (parser.seen_test('T'))
+  if (parser.seen_test('T')) //G29 T0 G29 T1
     display_map(param.T_map_type);
 
   LEAVE:
@@ -722,6 +728,18 @@ void unified_bed_leveling::shift_mesh_height() {
    *   This attempts to fill in locations closest to the nozzle's start location first.
    */
   void unified_bed_leveling::probe_entire_mesh(const xy_pos_t &nearby, const bool do_ubl_mesh_map, const bool stow_probe, const bool do_furthest) {
+    //by zyf
+    #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
+    BLTouch_G28 = true;
+    homeaxis(Z_AXIS);
+    BLTouch_G28 = false;
+    float z_min_endstop_probe_offset = 0;
+    const float es_probe_z = probe.probe_at_point(
+                probe.offset_xy,
+                PROBE_PT_STOW);
+    if(!isnan(es_probe_z)) z_min_endstop_probe_offset = es_probe_z;
+    #endif
+
     probe.deploy(); // Deploy before ui.capture() to allow for PAUSE_BEFORE_DEPLOY_STOW
 
     TERN_(HAS_LCD_MENU, ui.capture());
@@ -750,6 +768,12 @@ void unified_bed_leveling::shift_mesh_height() {
         }
       #endif
 
+      #if ENABLED(TENLOG_TOUCH_LCD) //by zyf
+        char TMessage[10];
+        sprintf(TMessage, "%d/%d", point_num, GRID_MAX_POINTS);
+        TJCMessage(8,8,26,"","","",TMessage);
+      #endif
+
       best = do_furthest
         ? find_furthest_invalid_mesh_point()
         : find_closest_mesh_point_of_type(INVALID, nearby, true);
@@ -757,10 +781,13 @@ void unified_bed_leveling::shift_mesh_height() {
       if (best.pos.x >= 0) {    // mesh point found and is reachable by probe
         TERN_(EXTENSIBLE_UI, ExtUI::onMeshUpdate(best.pos, ExtUI::G29_POINT_START));
         
-        const float measured_z = probe.probe_at_point(
+        float measured_z = probe.probe_at_point(
                       best.meshpos(),
                       stow_probe ? PROBE_PT_STOW : PROBE_PT_RAISE, param.V_verbosity
                     );
+        #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET) //by zyf
+        measured_z -= z_min_endstop_probe_offset;
+        #endif
         z_values[best.pos.x][best.pos.y] = measured_z;
         #if ENABLED(EXTENSIBLE_UI)
           ExtUI::onMeshUpdate(best.pos, ExtUI::G29_POINT_FINISH);

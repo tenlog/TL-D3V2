@@ -27,6 +27,8 @@
 #include "../HAL/PWM/pwm.h"
 #include "bltouch.h"
 
+#include "../lcd/tenlog/tenlog_touch_lcd.h"
+
 BLTouch bltouch;
 
 bool BLTouch::last_written_mode; // Initialized by settings.load, 0 = Open Drain; 1 = 5V Drain
@@ -40,6 +42,9 @@ void stop();
 #include "../core/debug_out.h"
 
 bool BLTouch::command(const BLTCommand cmd, const millis_t &ms) {
+  #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
+  if(BLTouch_G28) return false;
+  #endif
   if (DEBUGGING(LEVELING)) SERIAL_ECHOLNPAIR("BLTouch Command :", cmd);
   //TLDEBUG_PRINTLNPAIR("BLTouch Command:", cmd);
   set_pwm_hw(cmd, 255, UN_TLT);

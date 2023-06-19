@@ -258,4 +258,11 @@ extern uint8_t sd_OK;
 
 extern uint8_t tl_com_ID;
 
+#if ENABLED(BLTOUCH)
+    #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
+    extern bool BLTouch_G28;
+    #endif
+
+#endif
+
 #endif  //TENLOG_TOUCH_LCD

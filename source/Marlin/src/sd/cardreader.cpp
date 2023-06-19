@@ -651,9 +651,8 @@ void CardReader::mount() {
     delay(10);
     WIFI_TX_Handler(0x0A);
     #endif
-
-  }
-  else if (!volume.init(driver))
+    return;
+  }else if (!volume.init(driver))
     SERIAL_ERROR_MSG(STR_SD_VOL_INIT_FAIL);
   else if (!root.openRoot(&volume))
     SERIAL_ERROR_MSG(STR_SD_OPENROOT_FAIL);

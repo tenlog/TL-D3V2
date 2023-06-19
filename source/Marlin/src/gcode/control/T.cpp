@@ -57,7 +57,7 @@ void GcodeSuite::T(const int8_t tool_index) {
   if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("...(", tool_index, ")");
 
   #if BOTH(TENLOG_TOUCH_LCD, DUAL_X_CARRIAGE) && defined(SDSUPPORT)
-    if(!card.flag.sdprinting || hotendOffsetChanged){
+    if(!IS_SD_PRINTING() || hotendOffsetChanged){
       EXECUTE_GCODE("G28 X");
     }
   #endif

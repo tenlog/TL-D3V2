@@ -342,7 +342,7 @@ void GcodeSuite::G28() {
     //for PRINT_FROM_Z_HEIGHT by zyf
     bool bSkipZ = false;
     #if defined(PRINT_FROM_Z_HEIGHT) && defined(SDSUPPORT)
-      if ((home_all || doZ) && !PrintFromZHeightFound && card.flag.sdprinting)
+      if ((home_all || doZ) && !PrintFromZHeightFound && IS_SD_PRINTING())
       {
           bSkipZ = true;
       }
@@ -421,7 +421,13 @@ void GcodeSuite::G28() {
           stepper.set_separate_multi_axis(false);
         #endif
 
+        #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
+        BLTouch_G28 = true;
+        #endif
         TERN(Z_SAFE_HOMING, home_z_safely(), homeaxis(Z_AXIS));
+        #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
+        BLTouch_G28 = false;
+        #endif
         probe.move_z_after_homing();
       }
     #endif

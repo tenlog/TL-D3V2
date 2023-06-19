@@ -1021,6 +1021,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 1521: M1521(); break;
         #if ENABLED(TL_LASER_ONLY)
           case 1522: M1522(); break;
+          case 1523: M1523(); break;
         #endif
       #endif
 

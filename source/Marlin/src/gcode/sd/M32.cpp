@@ -75,14 +75,21 @@ void GcodeSuite::M320() {
   char cmd[256];
   if(millis() - lastClick < 2000) return;
   if(!card.isFileOpen()){
+    if(strlen(pre_print_file_name)<2){
+      card.tl_ls(false);
+    }
     if(strlen(pre_print_file_name)>2){
-      EXECUTE_GCODE("G92 X-20 Y5");
+      EXECUTE_GCODE("G92 X0 Y0");
       delay(500);
       sprintf(cmd, "M32 !%s", pre_print_file_name);
       ZERO(pre_print_file_name);
       EXECUTE_GCODE(cmd);
       #if ENABLED(TL_BEEPER)
       start_beeper(2, 1);
+      #endif      
+    }else{
+      #if ENABLED(TL_BEEPER)
+      start_beeper(8, 0);
       #endif      
     }
   }else{

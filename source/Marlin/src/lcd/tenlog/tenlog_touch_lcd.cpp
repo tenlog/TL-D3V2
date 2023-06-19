@@ -51,6 +51,10 @@
   #include "../../HAL/ESP32_SPI/esp32_wifi.h"
 #endif
 
+#if HAS_BED_PROBE
+  #include "../../module/probe.h"
+#endif
+
 #if ENABLED(TENLOG_TOUCH_LCD)
 #include "tenlog_touch_lcd.h"
 
@@ -152,6 +156,10 @@ uint16_t laser_power = 0;
 #endif
 uint8_t tl_com_ID = 0;
 ///////////////// common functions
+
+#if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
+    bool BLTouch_G28 = false;
+#endif
 
 long ConvertHexLong(long command[], int Len)
 {
@@ -678,7 +686,21 @@ void tlSendSettings(bool only_wifi){
         PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings2.xM205E.val=%d"), lMEJerk);
         PRINTTJC(cmd);
-        
+
+        #if HAS_BED_PROBE
+        sprintf_P(cmd, PSTR("main.vAutoLevel.val=%d"), GRID_MAX_POINTS_X);
+        PRINTTJC(cmd);
+        TLDEBUG_PRINTLN(cmd);
+        uint32_t M851X = (uint32_t)(probe.offset_xy.x * 100.0f + 0.5f);
+        uint32_t M851Y = (uint32_t)(probe.offset_xy.y * 100.0f + 0.5f);
+        uint32_t M851Z = (uint32_t)(probe.offset.z * 100.0f + 1000.5f);
+        sprintf_P(cmd, PSTR("auto_level.xM851X.val=%d"), M851X);
+        PRINTTJC(cmd);
+        sprintf_P(cmd, PSTR("auto_level.xM851Y.val=%d"), M851Y);
+        PRINTTJC(cmd);
+        sprintf_P(cmd, PSTR("auto_level.xM851Z.val=%d"), M851Z);
+        PRINTTJC(cmd);
+        #endif //HAS_BED_PROBE
     }else if(tl_TouchScreenType == 0){
         DWN_DELAY;
         DWN_Language(tl_languageID);
@@ -871,7 +893,7 @@ void initTLScreen(){
 
 void TlLoadingMessage(const char Message[], const int ShowType, const int DelayTime){
     if(tl_TouchScreenType == 1 && (ShowType==1 || ShowType==-1)){
-        TLDEBUG_PRINTLN(Message);
+        //TLDEBUG_PRINTLN(Message);
         TLSTJC_println("sleep=0");
         TLSTJC_print("tStatus.txt=\"");
         TLSTJC_print(Message);
@@ -1824,13 +1846,13 @@ void process_command_dwn()
                     break;
                 case 0x15:
                 case 0x64:                                        
-                    if (!card.flag.sdprinting)
+                    if (!IS_SD_PRINTING())
                     {
                         EXECUTE_GCODE(PSTR("M605 S1"));
                         delay(300);
                         EXECUTE_GCODE(PSTR("G28 X"));
                         delay(100);
-                        if (card.isFileOpen() && !card.flag.sdprinting)
+                        if (card.isFileOpen() && !IS_SD_PRINTING())
                         {
                             DWN_Page(DWN_P_RELOAD);
                         }
@@ -1847,7 +1869,7 @@ void process_command_dwn()
                     }
                     else if (lData == 0xF2)
                     {
-                        if (millis() - lLogoBTS <= 1500 && !card.flag.sdprinting)
+                        if (millis() - lLogoBTS <= 1500 && !IS_SD_PRINTING())
                         {
                             DWN_VClick(5, 5);
                         }
@@ -1943,7 +1965,7 @@ void DWN_MessageHandler(const bool ISOK){
                         PrintFromZHeightFound = true;
                 #endif
 
-                if (card.flag.sdprinting)
+                if (IS_SD_PRINTING())
                 {
                     planner.synchronize();
                     card.closefile();
@@ -2034,13 +2056,13 @@ void Setting_ECO_MODE(){
 	#ifndef ELECTROMAGNETIC_VALUE
     static bool bECOSeted;
     static int iECOBedT;
-    if (current_position[Z_AXIS] >= ECO_HEIGHT && !bECOSeted && card.flag.sdprinting && tl_ECO_MODE == 1)
+    if (current_position[Z_AXIS] >= ECO_HEIGHT && !bECOSeted && IS_SD_PRINTING() && tl_ECO_MODE == 1)
     {
         iECOBedT = thermalManager.degTargetBed();
         thermalManager.setTargetBed(0);
         bECOSeted = true;
     }
-    else if (current_position[Z_AXIS] >= ECO_HEIGHT && card.flag.sdprinting && tl_ECO_MODE == 0 && bECOSeted && iECOBedT > 0)
+    else if (current_position[Z_AXIS] >= ECO_HEIGHT && IS_SD_PRINTING() && tl_ECO_MODE == 0 && bECOSeted && iECOBedT > 0)
     {
         thermalManager.setTargetBed(iECOBedT);
         bECOSeted = false;
@@ -2132,7 +2154,7 @@ void tenlog_screen_update_dwn()
     int iTimeS = 0;
     int iPercent = 0;
     #if ENABLED(SDSUPPORT)
-    if (card.flag.sdprinting)
+    if (IS_SD_PRINTING())
     {
         uint16_t time = millis() / 60000 - startPrintTime / 60000;
         
@@ -2155,9 +2177,9 @@ void tenlog_screen_update_dwn()
     }
     #endif
 
-    DWN_Data(0x8840, card.flag.sdprinting + tl_languageID * 3, 2);
+    DWN_Data(0x8840, IS_SD_PRINTING() + tl_languageID * 3, 2);
     DWN_DELAY;
-    DWN_Data(0x8842, card.flag.sdprinting, 2);
+    DWN_Data(0x8842, IS_SD_PRINTING(), 2);
     DWN_DELAY;
 
     DWN_Text(0x7540, 8, sTime);
@@ -2319,7 +2341,7 @@ void tenlog_status_update(bool isTJC)
     int8_t ln12 = 0;
     int8_t ln13 = 0;
     #if ENABLED(SDSUPPORT)
-    ln12 = card.flag.sdprinting;
+    ln12 = IS_SD_PRINTING();
     if(TLPrintingStatus == 2)
         ln12 = TLPrintingStatus;
     
@@ -2667,6 +2689,7 @@ void process_command_gcode(long _tl_command[]) {
                 feedrate_mm_s = lF / 60;
                 sprintf_P(cmd, PSTR("G%d %s%s%s%s%s"), lG, sF, sX, sY, sZ, sE);
                 EXECUTE_GCODE(cmd);
+                TLDEBUG_PRINTLN(cmd);
                 SetBusyMoving(false);
             }else if(lM == 1586 || lM == 1587){
                 long lS = GCodelng('S', iFrom, _tl_command);
@@ -2786,7 +2809,6 @@ void process_command_gcode(long _tl_command[]) {
                 sprintf_P(cmd, PSTR("M%d %s%s%s%s%s%s%s%s%s"), lM, sX, sY, sZ, sE, sP, sI, sD, sT, sR);
                 EXECUTE_GCODE(cmd);
                 EXECUTE_GCODE(PSTR("M500"));
-
             } else if(lG == 28){
                 //G28
                 SetBusyMoving(true);
@@ -2821,6 +2843,18 @@ void process_command_gcode(long _tl_command[]) {
                 //TLDEBUG_PRINTLN(cmd);
                 EXECUTE_GCODE(cmd);
                 SetBusyMoving(false);
+            } else if(lG == 29){
+                //G29
+                #if HAS_BED_PROBE
+                    long lT=GCodelng('T', iFrom, _tl_command);
+                    long lP=GCodelng('P', iFrom, _tl_command);
+                    if(lT==0){
+                        EXECUTE_GCODE("G29 T0");
+                    }else if(lP==1){
+                        TJCMessage(8,8,26,"","","","");
+                        EXECUTE_GCODE("G29 P1");
+                    }
+                #endif
             }else if(lT == 0 || lT == 1){                    
                 //T0 , T1
                 SetBusyMoving(true);
@@ -3168,6 +3202,34 @@ void process_command_gcode(long _tl_command[]) {
                         hotendOffsetChanged = true;
                     }
                 #endif //(EXTRUDERS==2)
+            }else if(lM == 851){
+                #if (HAS_BED_PROBE)
+                    //nozzle to probe offset 1 //M851
+                    uint32_t lR = GCodelng('R',iFrom, _tl_command);
+                    uint32_t lX = GCodelng('X',iFrom, _tl_command);
+                    uint32_t lY = GCodelng('Y',iFrom, _tl_command);
+                    uint32_t lZ = GCodelng('Z',iFrom, _tl_command);
+                    
+                    if(lR==100){
+                        char sX[10],sY[10],sZ[10];
+                        NULLZERO(sX);
+                        NULLZERO(sY);
+                        NULLZERO(sZ);
+                        if(lX > 0) {
+                            sprintf_P(sX, PSTR("X%.2f "), (float)lX/float(lR));
+                        }
+                        if(lY > 0) {
+                            sprintf_P(sY, PSTR("Y%.2f "), (float)lY/float(lR));
+                        }
+                        if(lZ > 0) {
+                            sprintf_P(sZ, PSTR("Z%.2f "), (float)lZ/float(lR)-10.0);
+                        }
+                        sprintf(cmd, "M851 %s%s%s", sX, sY, sZ);
+                        TLDEBUG_PRINTLN(cmd);
+                        EXECUTE_GCODE(cmd);
+                        EXECUTE_GCODE(PSTR("M500"));
+                    }
+                #endif //(HAS_BED_PROBE)
             }else if(lM == 1004){
                 #if ENABLED(SDSUPPORT)
                 //M1004
@@ -3194,15 +3256,25 @@ void process_command_gcode(long _tl_command[]) {
                 //M1050
                 int8_t KillFlag = GCodelng('S',iFrom, _tl_command);
             }else if(lM > 1499 && lM < 1599){
-                //1500-1510
+                //1500-1599
                 if(lM == 1550){//M1550
                     delay(100);
                     sprintf_P(cmd, "tUID.txt=\"UID:%s\"", tl_hc_sn);
                     TLSTJC_println(cmd);
-                    TLDEBUG_PRINTLN(cmd);
+                    sprintf_P(cmd, PSTR("about.tVer.txt=\"%s V%s.%s\""), TL_MODEL_STR, SHORT_BUILD_VERSION, TL_SUBVERSION);
+                    TLSTJC_println(cmd);
+                    //TLDEBUG_PRINTLN(cmd);
                 }
                 #if (HAS_WIFI)
-                    if(lM == 1501){
+                    if(lM == 1551){//M1551
+                        delay(100);
+                        if(wifi_version[3] % 2 == 0)
+                            sprintf_P(cmd, PSTR("tVersion.txt=\"WIFI V%d.%d.%d\""), wifi_version[0],wifi_version[1],wifi_version[2]);
+                        else
+                            sprintf_P(cmd, PSTR("tVersion.txt=\"WIFICAM V%d.%d.%d\""), wifi_version[0],wifi_version[1],wifi_version[2]);
+                        TLSTJC_println(cmd);
+                        //TLDEBUG_PRINTLN(cmd);
+                    }else if(lM == 1501){
                         //M1501
                         int _wifi_mode = GCodelng('S', iFrom, _tl_command);
                         if(_wifi_mode != wifi_mode){
@@ -3376,7 +3448,10 @@ void button_light_handler(){
         return;
     }
     lastLightTime = millis();
-    if(!card.flag.sdprinting){
+
+    bool isStepEna = (X_ENABLE_READ() == X_ENABLE_ON || Y_ENABLE_READ() == Y_ENABLE_ON );
+    if(!IS_SD_PRINTING() && laser_power>10 && !isStepEna){
+        laser_power = 0;
         set_pwm_hw(0, 1000);
     }
     btLight = ! btLight;
@@ -3422,9 +3497,8 @@ void start_beeper(uint8_t count, uint8_t type){
     beeper_count=count;
     beeper_type=type;
 }
-#endif
+#endif //TL_BEEPER
 
-#
 void tl_sd_abort_on_endstop_hit(){  //only for x & y
     #if ENABLED(TL_SD_ABORT_ON_ENDSTOP_HIT)
         static uint8_t last_hitX;
@@ -3438,7 +3512,7 @@ void tl_sd_abort_on_endstop_hit(){  //only for x & y
         last_hitX = hitX;
         last_hitY = hitY;
         if(hitX == 0 || hitY == 0 || hitZ == 0){
-            if(card.flag.sdprinting){
+            if(IS_SD_PRINTING()){
                 TLDEBUG_PRINTLN("EndStop Hited!!"); //by zyf
                 tlAbortPrinting();
                 #if ENABLED(TL_BEEPER)
@@ -3452,7 +3526,7 @@ void tl_sd_abort_on_endstop_hit(){  //only for x & y
 void CheckLaserFan(){
   #if ENABLED(TL_LASER_ONLY)  //by zyf auto laser fan 
     static bool LaserStatus=false;
-    if(millis() - last_laser_time < LASER_FAN_DELAY && millis() > LASER_FAN_DELAY){
+    if(millis() - last_laser_time < LASER_FAN_DELAY && millis() > LASER_FAN_DELAY || millis()<LASER_FAN_DELAY && last_laser_time<LASER_FAN_DELAY){
         if(!LaserStatus){
             WRITE(LASER_FAN_PIN, 1);
             LaserStatus = true;

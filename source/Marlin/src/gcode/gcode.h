@@ -1110,6 +1110,7 @@ private:
     static void M1521();
     #if ENABLED(TL_LASER_ONLY)
       static void M1522();
+      static void M1523();
     #endif
   #endif
 

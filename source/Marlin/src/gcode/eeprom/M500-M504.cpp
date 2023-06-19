@@ -35,6 +35,7 @@
 
 #if ENABLED(TENLOG_TOUCH_LCD)
 #include "../../lcd/tenlog/tenlog_touch_lcd.h"
+#include "../../sd/cardreader.h"
 #endif
 
 /**
@@ -133,10 +134,22 @@ void GcodeSuite::M502() {
         set_pwm_hw(laser_power, 1000);
         weakLaserOn = true;
         start_beeper(2, 0);
+        TLDEBUG_PRINTLN(" On");
       }else{
         set_pwm_hw(0, 1000);
         laser_power = 0;
         weakLaserOn = false;
+        start_beeper(4, 0);
+        TLDEBUG_PRINTLN(" Off");
+      }
+    }
+
+    void GcodeSuite::M1523(){
+      if(!IS_SD_PRINTING()){
+        start_beeper(2, 1);
+        EXECUTE_GCODE("G28 XY");
+        safe_delay(1000);
+        EXECUTE_GCODE("G0 X2Y2");
       }
     }
   #endif
