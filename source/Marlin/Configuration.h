@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "043"
+#define TL_SUBVERSION "044"
 
 //update log 
 /*
@@ -82,17 +82,23 @@ Version     033
 //TL Medels and version
 //#define TENLOG_H2
 //#define TENLOG_D3HS   //High Speed
-#define TENLOG_D3
+//#define TENLOG_D3
 //#define TENLOG_S2   //single head
 //#define TENLOG_S3   //single head
 //#define TENLOG_M3
+//#define TENLOG_M3S
 //#define TENLOG_L4   //laser only
 //#define TENLOG_D5
 //#define TENLOG_D6
 //#define TENLOG_D8
 //#define TENLOG_LW8     //发光字 Luminous words
+#define TENLOG_LW3     //发光字 Luminous words
 
-#if ENABLED(TENLOG_LW8)
+//#define DUAL_HEAD_BLTOUCH
+
+//#define TL_DEBUG    //debug
+
+#if ANY(TENLOG_LW8, TENLOG_LW3)
 #define TENLOG_LW
 #endif
 
@@ -101,11 +107,13 @@ Version     033
 #endif
 
 //Headers
-#if ANY(TL_LASER_ONLY,TENLOG_S3,TENLOG_S2)
+#if ANY(TENLOG_S3,TENLOG_S2,TENLOG_M3S)
   #define SINGLE_HEAD
   #define EXTRUDERS 1
 #elif(ENABLED(TENLOG_LW))
   #define MIXING_EXTRUDER
+  #define EXTRUDERS 1
+#elif ENABLED(TL_LASER_ONLY)
   #define EXTRUDERS 1
 #else
   #define DUAL_X_CARRIAGE
@@ -113,14 +121,15 @@ Version     033
 #endif
 
 //Auto leveling.
-#if ANY(TENLOG_S3, TENLOG_S2, TENLOG_LW)
-  #define BLTOUCH
-  #define TLTOUCH
-  //#define MESH_BED_LEVELING
-  #define AUTO_BED_LEVELING_UBL
+#if ANY(SINGLE_HEAD, TENLOG_LW, DUAL_HEAD_BLTOUCH)
+  #ifndef TENLOG_M3S
+    #define BLTOUCH
+    #define TLTOUCH
+    //#define MESH_BED_LEVELING
+    #define AUTO_BED_LEVELING_UBL
+  #endif
 #endif
 
-//#define TL_DEBUG
 //TL hardware.
 #define TENLOG_TOUCH_LCD
 //#define ESP8266_WIFI
@@ -154,6 +163,11 @@ Version     033
 #elif defined(TENLOG_M3)
   #define TL_MODEL_STR_0 "M3"
   #define X_BED_SIZE 300
+  #define Y_BED_SIZE 210
+  #define Z_LENGTH   200
+#elif defined(TENLOG_M3S)
+  #define TL_MODEL_STR_0 "M3S"
+  #define X_BED_SIZE 350
   #define Y_BED_SIZE 210
   #define Z_LENGTH   200
 #elif defined(TENLOG_H2)
@@ -197,6 +211,12 @@ Version     033
   #define X_BED_SIZE 820
   #define Y_BED_SIZE 820
   #define Z_LENGTH   200
+#elif defined(TENLOG_LW3)
+  //#define TL_HIGH_SPEED 1
+  #define TL_MODEL_STR_0 "LW3"
+  #define X_BED_SIZE 310
+  #define Y_BED_SIZE 310
+  #define Z_LENGTH   200
 #endif
 
 //#define TL_STEPTEST   //给老范做的挤出机拉力测试
@@ -225,7 +245,7 @@ Version     033
   #define WIFI_DEFAULT_IP_SETTINGS {192,168,0,1,255,255,255,0,192,168,0,88}
 #endif
 
-#if defined(TENLOG_M3) || defined(TL_LASER_ONLY) 
+#if defined(TENLOG_M3) || defined(TENLOG_M3S) || defined(TL_LASER_ONLY) 
   #define INVERT_X_DIR false
 #else
   #define INVERT_X_DIR true
@@ -1012,6 +1032,7 @@ Version     033
 
 // Enable this feature if all enabled endstop pins are interrupt-capable.
 // This will remove the need to poll the interrupt pins, saving many CPU cycles.
+//by zyf 这里没写 BED_PROBE 的部分，导致使用热床探针的时候失效
 #define ENDSTOP_INTERRUPTS_FEATURE
 
 /**
@@ -1183,7 +1204,9 @@ Version     033
   #define USE_PROBE_FOR_Z_HOMING
   #if ENABLED(USE_PROBE_FOR_Z_HOMING)
     #define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
-    #define Z_MIN_ENDSTOP_PROBE_OFFSET
+    #if ANY(SINGLE_HEAD, TENLOG_LW)
+      #define Z_MIN_ENDSTOP_PROBE_OFFSET
+    #endif
   #endif
 #endif
 
@@ -1331,7 +1354,11 @@ Version     033
  *     O-- FRONT --+
  */
 #if ENABLED(BLTOUCH)
-#define NOZZLE_TO_PROBE_OFFSET { 25, 10, -3 }
+  #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
+    #define NOZZLE_TO_PROBE_OFFSET { 25, 10, 0 }
+  #else
+    #define NOZZLE_TO_PROBE_OFFSET { 25, 10, -3 }
+  #endif
 #endif
 
 // Most probes should stay away from the edges of the bed, but
@@ -1403,9 +1430,14 @@ Version     033
 #define Z_CLEARANCE_DEPLOY_PROBE   6 // Z Clearance for Deploy/Stow
 #define Z_CLEARANCE_BETWEEN_PROBES 6  // Z Clearance between probe points
 #define Z_CLEARANCE_MULTI_PROBE    6 // Z Clearance between multiple probes
-#define Z_AFTER_PROBING            3 // Z position after probing is done
 
-#define Z_PROBE_LOW_POINT          -1 // Farthest distance below the trigger-point to go before stopping
+#if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
+  #define Z_AFTER_PROBING            3 // Z position after probing is done
+  #define Z_PROBE_LOW_POINT          -1 // Farthest distance below the trigger-point to go before stopping
+#else
+  #define Z_AFTER_PROBING            6 // Z position after probing is done
+  #define Z_PROBE_LOW_POINT          -5 // Farthest distance below the trigger-point to go before stopping
+#endif
 
 // For M851 give a range for adjusting the Z probe offset
 #define Z_PROBE_OFFSET_RANGE_MIN -20
@@ -1511,7 +1543,7 @@ Version     033
 
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
-#if ENABLED(SINGLE_HEAD)
+#if ANY(SINGLE_HEAD, TENLOG_LW)
 #define X_MIN_POS 0
 #else
 #define X_MIN_POS -50
@@ -1735,7 +1767,7 @@ Version     033
 #if EITHER(AUTO_BED_LEVELING_LINEAR, AUTO_BED_LEVELING_BILINEAR)
 
   // Set the number of grid points per dimension.
-  #define GRID_MAX_POINTS_X 4
+  #define GRID_MAX_POINTS_X -1
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   // Probe along the Y axis, advancing X after each column
@@ -1767,12 +1799,26 @@ Version     033
 
   //#define MESH_EDIT_GFX_OVERLAY   // Display a graphics overlay while editing the mesh
 
-  #define MESH_INSET 26              // Set Mesh bounds as an inset region of the bed
-  #define GRID_MAX_POINTS_X 4      // Don't use more than 15 points per axis, implementation limited.
+  #if X_MIN_POS == -50
+    #define MESH_INSET 10              // Set Mesh bounds as an inset region of the bed
+  #elif X_MIN_POS < 20
+    #define MESH_INSET 26              
+  #endif  
+
+  //GRID_MAX_POINTS_X Don't use more than 15 points per axis, implementation limited.
+  #if X_MAX_POS < 299
+    #define GRID_MAX_POINTS_X 3 
+  #elif X_MAX_POS < 399
+    #define GRID_MAX_POINTS_X 4 
+  #elif X_MAX_POS < 599
+    #define GRID_MAX_POINTS_X 7 
+  #elif X_MAX_POS < 699
+    #define GRID_MAX_POINTS_X 8 
+  #else
+    #define GRID_MAX_POINTS_X 10 
+  #endif  
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
-
   #define UBL_HILBERT_CURVE       // Use Hilbert distribution for less travel when probing multiple points
-
   #define UBL_MESH_EDIT_MOVES_Z     // Sophisticated users prefer no movement of nozzle
   #define UBL_SAVE_ACTIVE_ON_M500   // Save the currently active mesh in the current slot on M500
 

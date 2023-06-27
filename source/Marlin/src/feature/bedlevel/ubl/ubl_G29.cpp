@@ -738,7 +738,7 @@ void unified_bed_leveling::shift_mesh_height() {
                 probe.offset_xy,
                 PROBE_PT_STOW);
     if(!isnan(es_probe_z)) z_min_endstop_probe_offset = es_probe_z;
-    #endif
+    #endif //Z_MIN_ENDSTOP_PROBE_OFFSET
 
     probe.deploy(); // Deploy before ui.capture() to allow for PAUSE_BEFORE_DEPLOY_STOW
 

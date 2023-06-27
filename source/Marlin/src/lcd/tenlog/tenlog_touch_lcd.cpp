@@ -160,6 +160,7 @@ uint8_t tl_com_ID = 0;
 #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
     bool BLTouch_G28 = false;
 #endif
+char TJCModelNo[64]={""};
 
 long ConvertHexLong(long command[], int Len)
 {
@@ -201,6 +202,12 @@ void get_lcd_command(int ScreenType)
     #endif
 }
 
+void GetTJCVer(){
+    if(strlen(tl_tjc_ver)<8){
+        TLTJC_GetTJCVersion();
+   }
+}
+
 ///////eof common functions
 
 //Detect touch screen..
@@ -237,11 +244,10 @@ int DETECT_TLS(){
             get_lcd_command(1);
 
             //char SerialNo[64];
-            char ModelNo[64];
             int SLoop = 0;
             int MLoop = 0;
             NULLZERO(tl_tjc_sn);
-            NULLZERO(ModelNo);
+            NULLZERO(TJCModelNo);
             int iDHCount = 0;
             for(int i=0; i<100; i++){
                 if(tl_command[i] == '\0') break;
@@ -255,10 +261,10 @@ int DETECT_TLS(){
                 }
 
                 if(iDHCount == 2){
-                    ModelNo[MLoop] = tl_command[i];                        
-                    if(ModelNo[MLoop] == '_')
-                        ModelNo[MLoop] = '\0';
-                    if(ModelNo[MLoop] != ',')
+                    TJCModelNo[MLoop] = tl_command[i];                        
+                    if(TJCModelNo[MLoop] == '_')
+                        TJCModelNo[MLoop] = '\0';
+                    if(TJCModelNo[MLoop] != ',')
                         MLoop++;
                 }
             }
@@ -282,7 +288,7 @@ int DETECT_TLS(){
                     sprintf_P(cmd, "about.tUID.txt=\"UID:%s\"", tl_hc_sn);
                     TLSTJC_println(cmd);
                     
-                    sprintf_P(cmd, "loading.tUI.txt=\"UI %s\"", ModelNo);
+                    sprintf_P(cmd, "loading.tUI.txt=\"UI %s\"", TJCModelNo);
                     TLSTJC_println(cmd);
 
                     uint8_t iLastPageID = TLTJC_GetLastPage();
@@ -471,6 +477,10 @@ void tlSendSettings(bool only_wifi){
         TERN_(ESP32_WIFI, wifi_printer_settings[17] = lE / 0x100);
         TERN_(ESP32_WIFI, wifi_printer_settings[18] = lE % 0x100);
 
+        #ifdef SINGLE_HEAD
+        PRINTTJC(PSTR("main.vSingleHead.val=1"));
+        #endif
+
         sprintf_P(cmd, PSTR("settings.xXs.val=%d"), lX);
         PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("settings.xYs.val=%d"), lY);
@@ -494,7 +504,15 @@ void tlSendSettings(bool only_wifi){
         TERN_(ESP32_WIFI, wifi_printer_settings[21] = lOffsetX / 0x100);
         TERN_(ESP32_WIFI, wifi_printer_settings[22] = lOffsetX % 0x100);
 
-        uint32_t lOffsetY = hotend_offset[1].y * 100 + 500;
+        char V27[9] = "V:2.2.27";
+        GetTJCVer();
+        float YShowOffset = 5.0;
+        if(strcmp_P(tl_tjc_ver,V27)>0)
+        {
+            YShowOffset=0.0;
+        }
+        int32_t lOffsetY = ((float)hotend_offset[1].y + YShowOffset) * 100;
+
         TERN_(ESP32_WIFI, wifi_printer_settings[23] = lOffsetY / 0x100);
         TERN_(ESP32_WIFI, wifi_printer_settings[24] = lOffsetY % 0x100);
 
@@ -691,9 +709,9 @@ void tlSendSettings(bool only_wifi){
         sprintf_P(cmd, PSTR("main.vAutoLevel.val=%d"), GRID_MAX_POINTS_X);
         PRINTTJC(cmd);
         TLDEBUG_PRINTLN(cmd);
-        uint32_t M851X = (uint32_t)(probe.offset_xy.x * 100.0f + 0.5f);
-        uint32_t M851Y = (uint32_t)(probe.offset_xy.y * 100.0f + 0.5f);
-        uint32_t M851Z = (uint32_t)(probe.offset.z * 100.0f + 1000.5f);
+        int32_t M851X = (int32_t)(probe.offset_xy.x * 100.0f);
+        int32_t M851Y = (int32_t)(probe.offset_xy.y * 100.0f);
+        int32_t M851Z = (int32_t)(probe.offset.z * 100.0f);
         sprintf_P(cmd, PSTR("auto_level.xM851X.val=%d"), M851X);
         PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("auto_level.xM851Y.val=%d"), M851Y);
@@ -716,7 +734,7 @@ void tlSendSettings(bool only_wifi){
             DWN_Data(0x6010 + i * 2, iSend, 4);
             DWN_DELAY;
         }
-
+        
         long lOffsetY = hotend_offset[1].y * 100 + 500;
         long lOffsetZ = hotend_offset[1].z * 100;
         DWN_Data(0x6020, lOffsetY, 2);
@@ -955,7 +973,7 @@ float GCodelng(const char Header, const long FromPostion, long _command[], const
             }
         }
     }
-    return -999.0;
+    return -9999.0;
 }
 
 void tlAbortPrinting(){
@@ -1054,7 +1072,7 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
     long lO = GCodelng('O', 0, tl_command);
     if(PR) {
         //Pause
-        if(lO == -999){
+        if(lO == -9999){
             //click pause from lcd
             EXECUTE_GCODE("M25");
             my_sleep(2.0);
@@ -1072,7 +1090,7 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
             SetBusyMoving(true);
             TJC_DELAY;
         } 
-        if(lO == 0 || lO == 1 || lO == -999){
+        if(lO == 0 || lO == 1 || lO == -9999){
 
             bool FilaRunout = false;
             if(lO == 1) FilaRunout = true;  //runout from lcd message box
@@ -2520,9 +2538,7 @@ void tenlog_status_update(bool isTJC)
     if(isTJC){
         char printerStatus[100];
         char V25[9] = "V:2.2.25";
-        if(strlen(tl_tjc_ver)<8){
-            TLTJC_GetTJCVersion();
-        }
+        GetTJCVer();
         if(strcmp_P(tl_tjc_ver,V25)>0) {       
             lnAll = ln0+ln1+ln2+ln3+ln4+ln5+ln6+ln7+ln8+ln9+ln10+ln11+ln12+ln13+ln14+ln15+ln17+ln18+ln19+ln20+e0_flow+e1_flow;
             sprintf_P(printerStatus, PSTR("%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%s|%d|%d|%d|%d|%d|%d|%d|"), 
@@ -2649,8 +2665,8 @@ void process_command_gcode(long _tl_command[]) {
                 
                 long lRate = 1;
                 long lMode = 0;
-                if(lR != -999) lRate = lR;
-                if(lM != -999) lMode = lM;
+                if(lR != -9999) lRate = lR;
+                if(lM != -9999) lMode = lM;
 
                 char sX[10],sY[10],sZ[10],sE[10],sF[10];
                 NULLZERO(sX);
@@ -2660,29 +2676,29 @@ void process_command_gcode(long _tl_command[]) {
                 NULLZERO(sF);
                 
                 float fTemp = 0.0;
-                if(fX > -999.0)
+                if(fX > -9999.0)
                 {
                     fTemp = fX / (float)lRate + current_position[X_AXIS] * lMode;
                     sprintf_P(sX, PSTR("X%s "), dtostrf(fTemp, 1, 1, str_1));                
                 }
-                if(fY > -999.0)
+                if(fY > -9999.0)
                 {
                     fTemp = fY / (float)lRate + current_position[Y_AXIS] * lMode;
                     sprintf_P(sY, PSTR("Y%s "), dtostrf(fTemp, 1, 1, str_1));                
                 }
-                if(fZ > -999.0)
+                if(fZ > -9999.0)
                 {
                     fTemp = fZ / (float)lRate + current_position[Z_AXIS] * lMode;
                     sprintf_P(sZ, PSTR("Z%s "), dtostrf(fTemp, 1, 1, str_1));                
                 }
-                if(lE != -999)
+                if(lE != -9999)
                 {
                     fTemp = (float)lE / (float)lRate;
                     float fEPos = current_position[E_AXIS] * lM;
                     fEPos += fTemp;
                     sprintf_P(sE, PSTR("E%f "), fEPos);
                 }
-                if(lF != -999)
+                if(lF != -9999)
                 {
                     sprintf_P(sF, PSTR("F%d "), lF);                
                 }
@@ -2737,7 +2753,7 @@ void process_command_gcode(long _tl_command[]) {
                 int32_t lR = GCodelng('R', iFrom, _tl_command);
 
                 uint32_t lRate = 1;                    
-                if(lM != 204 && lR != -999) lRate = lR;
+                if(lM != 204 && lR != -9999) lRate = lR;
 
                 char sX[16],sY[16],sZ[16],sE[16],sP[16],sI[16],sD[16],sR[16],sT[16];
                 NULLZERO(sX);
@@ -2756,47 +2772,47 @@ void process_command_gcode(long _tl_command[]) {
                 NULLZERO(chrA);
 
                 float fTemp = 0.0;
-                if(fX > -999.0) {
+                if(fX > -9999.0) {
                     fTemp = fX / (float)lRate;
                     sprintf_P(sX, PSTR("X%.2f "), fTemp);
                     chrA[0] = 'X';
                 }
-                if(fY > -999.0) {
+                if(fY > -9999.0) {
                     fTemp = fY / (float)lRate;
                     sprintf_P(sY, PSTR("Y%.2f "), fTemp);
                     chrA[0] = 'Y';
                 }
-                if(fZ > -999.0) {
+                if(fZ > -9999.0) {
                     fTemp = fZ / (float)lRate;
                     sprintf_P(sZ, PSTR("Z%.2f "), fTemp);
                     chrA[0] = 'Z';
                 }
-                if(fE > -999.0) {
+                if(fE > -9999.0) {
                     fTemp = fE / (float)lRate;
                     sprintf_P(sE, PSTR("E%.2f "), fTemp);
                     chrA[0] = 'E';
                 }
-                if(fP > -999.0) {
+                if(fP > -9999.0) {
                     fTemp = fP / (float)lRate;
                     sprintf_P(sP, PSTR("P%.2f "), fTemp);
                     chrA[0] = 'P';
                 }
-                if(fI > -999.0) {
+                if(fI > -9999.0) {
                     fTemp = fI / (float)lRate;
                     sprintf_P(sI, PSTR("I%.2f "), fTemp);
                     chrA[0] = 'I';
                 }
-                if(fD > -999.0) {
+                if(fD > -9999.0) {
                     fTemp = fD / (float)lRate;
                     sprintf_P(sD, PSTR("D%.2f "), fTemp);
                     chrA[0] = 'D';
                 }
-                if(fT > -999.0) {
+                if(fT > -9999.0) {
                     fTemp = fT / (float)lRate;
                     sprintf_P(sT, PSTR("T%.2f "), fTemp);
                     chrA[0] = 'T';
                 }
-                if(lR > -999 && lM == 204){
+                if(lR > -9999 && lM == 204){
                     sprintf_P(sR, PSTR("R%d "), lR);
                     chrA[0] = 'R';
                     fTemp = lR;
@@ -2821,24 +2837,24 @@ void process_command_gcode(long _tl_command[]) {
                 NULLZERO(sY);
                 NULLZERO(sZ);
 
-                if(lX > -999) {
+                if(lX > -9999) {
                     sX[0] = 'X';
                     //sprintf_P(sX, PSTR("X"));
                     sprintf_P(cmd, PSTR("G%d X\\n"), lG);
                 }
-                if(lY > -999) {
+                if(lY > -9999) {
                     sY[0] = 'Y';
                     sprintf_P(cmd, PSTR("G%d Y\\n"), lG);
                     //sprintf_P(sY, PSTR("Y"));                
                 }
-                if(lZ > -999) {
+                if(lZ > -9999) {
                     sZ[0] = 'Z';
                     sprintf_P(cmd, PSTR("G%d Z\\n"), lG);
                     //sprintf_P(sZ, PSTR("Z"));                
                 }
 
-                if(lX == -999 && lY == -999 && lZ == -999)
-                sprintf_P(cmd, PSTR("G%d \\n"), lG);
+                if(lX == -9999 && lY == -9999 && lZ == -9999)
+                    sprintf_P(cmd, PSTR("G%d \\n"), lG);
                 
                 //TLDEBUG_PRINTLN(cmd);
                 EXECUTE_GCODE(cmd);
@@ -2867,7 +2883,7 @@ void process_command_gcode(long _tl_command[]) {
                 SetBusyMoving(true);
                 long lS = GCodelng('S', iFrom, _tl_command);
                 long lT = GCodelng('T', iFrom, _tl_command);
-                if((lS == 0 || lS == 1) && lT > -999){
+                if((lS == 0 || lS == 1) && lT > -9999){
                     load_filament(lS, lT);
                 }else if(lS == 2 || lS == 3 || lS == 4 || lS == 5){
                     long lX = 0;
@@ -2908,10 +2924,10 @@ void process_command_gcode(long _tl_command[]) {
                 char sT[10],sS[10];
                 NULLZERO(sT);
                 NULLZERO(sS);
-                if(lTT > -999) {
+                if(lTT > -9999) {
                     sprintf_P(sT, PSTR("T%d "), lTT);                
                 }
-                if(lS > -999) {
+                if(lS > -9999) {
                     sprintf_P(sS, PSTR("S%d "), lS);                
                 }
                 sprintf_P(cmd, PSTR("M%d %s%s"), lM, sT, sS);
@@ -2921,7 +2937,7 @@ void process_command_gcode(long _tl_command[]) {
                 long lS = GCodelng('S', iFrom, _tl_command);
                 char sS[10];
                 NULLZERO(sS);
-                if(lS > -999) {
+                if(lS > -9999) {
                     sprintf_P(sS, PSTR("S%d "), lS);
                 }
                 sprintf_P(cmd, PSTR("M%d %s"), lM, sS);
@@ -2938,7 +2954,7 @@ void process_command_gcode(long _tl_command[]) {
                     fR = 2.55f;
                 }
                 uint16_t lS = 0;
-                if(fS > -999.0) {
+                if(fS > -9999.0) {
                     lS = (uint16_t)((float)(fS * fR) + 0.5f);
                     sprintf_P(sS, PSTR("S%d "), lS);                
                 }
@@ -3083,7 +3099,7 @@ void process_command_gcode(long _tl_command[]) {
                 //M92
                 long lRate = 1; //M92
                 long lR = GCodelng('R', iFrom, _tl_command);
-                if(lR > -999) lRate = lR;
+                if(lR > -9999) lRate = lR;
 
                 float fX = GCodelng('X', iFrom, _tl_command);
                 float fY = GCodelng('Y', iFrom, _tl_command);
@@ -3098,19 +3114,19 @@ void process_command_gcode(long _tl_command[]) {
                 NULLZERO(sE);
                 
                 float fTemp = 0.0;
-                if(fX > -999.0){
+                if(fX > -9999.0){
                     fTemp = fX / (float)lRate ;
                     sprintf_P(sX, PSTR("X%s "), dtostrf(fTemp, 1, 2, str_1));                
                 }
-                if(fY > -999.0){
+                if(fY > -9999.0){
                     fTemp = fY / (float)lRate ;
                     sprintf_P(sY, PSTR("Y%s "), dtostrf(fTemp, 1, 2, str_1));                
                 }
-                if(fZ > -999.0){
+                if(fZ > -9999.0){
                     fTemp = fZ / (float)lRate ;
                     sprintf_P(sZ, PSTR("Z%s "), dtostrf(fTemp, 1, 2, str_1));                
                 }
-                if(fE != -999.0){
+                if(fE != -9999.0){
                     fTemp = fE / (float)lRate ;
                     sprintf_P(sE, PSTR("E%s "), dtostrf(fTemp, 1, 2, str_1));                
                 }
@@ -3125,18 +3141,18 @@ void process_command_gcode(long _tl_command[]) {
                 
                 long lX = GCodelng('X', iFrom, _tl_command);
                 NULLZERO(sX);
-                if(lX > -999) {
+                if(lX > -9999) {
                     sprintf_P(sX, PSTR("X%d "), lX);
                 }
                 NULLZERO(sR);
                 long lR = GCodelng('R', iFrom, _tl_command);
-                if(lR > -999) {
+                if(lR > -9999) {
                     sprintf_P(sR, PSTR("R%d "), lR);
                 }
                 
                 NULLZERO(sS);
                 long lS = GCodelng('S', iFrom, _tl_command);
-                if(lS > -999) {
+                if(lS > -9999) {
                     sprintf_P(sS, PSTR("S%d "), lS);
                 }
                 sprintf_P(cmd, PSTR("M%d %s%s%s"), lM, sS, sX, sR);
@@ -3181,21 +3197,29 @@ void process_command_gcode(long _tl_command[]) {
             }else if(lM == 1011 || lM == 1012 || lM == 1013){
                 #if (EXTRUDERS==2)
                     //hoten offset 1 M1011 M1012 M1013
+                    bool bV28 = false;
+                    char V27[9] = "V:2.2.27";
+                    GetTJCVer();
+                    float YShowOffset = -5.0;
+                    if(strcmp_P(tl_tjc_ver,V27)>0)
+                    {
+                        YShowOffset=0.0;
+                    }
                     uint32_t lR = GCodelng('R',iFrom, _tl_command);
-                    uint32_t lS = GCodelng('S',iFrom, _tl_command);
+                    int32_t lS = GCodelng('S',iFrom, _tl_command);
                     
-                    if(lR == 100 && lS > 0 ){
+                    if(lR == 100 && lS > -9999 ){
                         
                         long lAxis = lM - 1011;
                         float fOffset = (float)lS / (float)lR;
-                        if(lAxis == X_AXIS)
+                        if(lAxis == X_AXIS){
                             hotend_offset[1].x = fOffset;
-                        else if(lAxis == Y_AXIS){
-                            fOffset = fOffset - 5.0f;
+                        }else if(lAxis == Y_AXIS){
+                            fOffset = fOffset + YShowOffset;
                             hotend_offset[1].y = fOffset;
                         }
                         else if(lAxis == Z_AXIS){
-                            fOffset = fOffset;
+                            //fOffset = fOffset;
                             hotend_offset[1].z = fOffset;
                         }
                         EXECUTE_GCODE(PSTR("M500"));
@@ -3205,24 +3229,25 @@ void process_command_gcode(long _tl_command[]) {
             }else if(lM == 851){
                 #if (HAS_BED_PROBE)
                     //nozzle to probe offset 1 //M851
-                    uint32_t lR = GCodelng('R',iFrom, _tl_command);
-                    uint32_t lX = GCodelng('X',iFrom, _tl_command);
-                    uint32_t lY = GCodelng('Y',iFrom, _tl_command);
-                    uint32_t lZ = GCodelng('Z',iFrom, _tl_command);
+                    int32_t lR = GCodelng('R',iFrom, _tl_command);
+                    int32_t lX = GCodelng('X',iFrom, _tl_command);
+                    int32_t lY = GCodelng('Y',iFrom, _tl_command);
+                    int32_t lZ = GCodelng('Z',iFrom, _tl_command);
                     
                     if(lR==100){
-                        char sX[10],sY[10],sZ[10];
+                        char sX[16],sY[60],sZ[16];
                         NULLZERO(sX);
                         NULLZERO(sY);
                         NULLZERO(sZ);
-                        if(lX > 0) {
+                        if(lX > -9999) {
+                            TLDEBUG_PRINTLN("M8511 X?");
                             sprintf_P(sX, PSTR("X%.2f "), (float)lX/float(lR));
                         }
-                        if(lY > 0) {
+                        if(lY > -9999) {
                             sprintf_P(sY, PSTR("Y%.2f "), (float)lY/float(lR));
                         }
-                        if(lZ > 0) {
-                            sprintf_P(sZ, PSTR("Z%.2f "), (float)lZ/float(lR)-10.0);
+                        if(lZ > -9999) {
+                            sprintf_P(sZ, PSTR("Z%.2f "), (float)lZ/float(lR));
                         }
                         sprintf(cmd, "M851 %s%s%s", sX, sY, sZ);
                         TLDEBUG_PRINTLN(cmd);
@@ -3259,6 +3284,8 @@ void process_command_gcode(long _tl_command[]) {
                 //1500-1599
                 if(lM == 1550){//M1550
                     delay(100);
+                    sprintf_P(cmd, "tUI.txt=\"UI %s\"", TJCModelNo);
+                    TLSTJC_println(cmd);
                     sprintf_P(cmd, "tUID.txt=\"UID:%s\"", tl_hc_sn);
                     TLSTJC_println(cmd);
                     sprintf_P(cmd, PSTR("about.tVer.txt=\"%s V%s.%s\""), TL_MODEL_STR, SHORT_BUILD_VERSION, TL_SUBVERSION);
@@ -3356,7 +3383,7 @@ void process_command_gcode(long _tl_command[]) {
             }else if(lM == 290){
                 //M290 babysetp
                 float fZ = GCodelng('Z', iFrom, _tl_command);
-                if(fZ > -999.0)
+                if(fZ > -9999.0)
                 {
                     sprintf_P(cmd, PSTR("M%d Z%s"), lM, dtostrf(fZ, 1, 3, str_1));                
                     EXECUTE_GCODE(cmd);

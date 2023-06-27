@@ -257,6 +257,7 @@ extern uint8_t sd_OK;
 #endif
 
 extern uint8_t tl_com_ID;
+extern char TJCModelNo[64];
 
 #if ENABLED(BLTOUCH)
     #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)

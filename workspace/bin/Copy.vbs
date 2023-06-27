@@ -1,8 +1,8 @@
 Dim Version
-Version="TL-D3V2.0.8.042"
+Version="TL-LW3V2.0.8.044"
 Set fso=CreateObject("Scripting.filesystemobject")  
 SrcFile = createobject("Scripting.FileSystemObject").GetFile(Wscript.ScriptFullName).ParentFolder.Path&"\firmware.bin"  
-DstFile = "F:\user\"&Version&".bin"  
+DstFile = "E:\user\"&Version&".bin"  
 DstFile1 = createobject("Scripting.FileSystemObject").GetFile(Wscript.ScriptFullName).ParentFolder.Path&"\bin\1.bin"
 DstFile2 = createobject("Scripting.FileSystemObject").GetFile(Wscript.ScriptFullName).ParentFolder.Path&"\"&Version&".bin"
 If fso.FileExists(DstFile) Then fso.DeleteFile(DstFile)

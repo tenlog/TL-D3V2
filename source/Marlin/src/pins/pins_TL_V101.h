@@ -81,31 +81,28 @@
   #define Y_STOP_PIN         PC3// y-
   #define X_STOP_PIN         PC13// x-
   #define Z_STOP_PIN         PC15// Z-
-  #ifdef TENLOG_M3
-    #define Z_MAX_PIN          PC15// 14Z+
+  #if defined(TENLOG_M3)
+    #define Z_MAX_PIN        PC15// 14Z+ //不能有这行，否则Z回零第一次触碰之后不会抬高。很诡异的错误！
+    //PC14 to hw pwm for bl touch
+  #elif defined(BLTOUCH)
+    //#define Z_MAX_PIN        PC15// 14Z+ //不能有这行，否则Z回零第一次触碰之后不会抬高。很诡异的错误！
+    //PC14 to hw pwm for bl touch
   #else
-    #define Z_MAX_PIN          PC14// 14Z+1
+    #define Z_MAX_PIN        PC14// 14Z+
   #endif
 #elif defined(TL_LASER_ONLY)
   #define X_STOP_PIN         PC13// x-
   #define Y_STOP_PIN         PC3// y-
   #define Z_STOP_PIN         PC15// Z-
   #define Z_MAX_PIN          PC15// Z-
-#elif defined(BLTOUCH)
+#elif defined(BLTOUCH) && (defined(SINGLE_HEAD) || defined(TENLOG_LW))
   #define X_STOP_PIN         PC13// x-
   #define Y_STOP_PIN         PC3// y-
-  #if ENABLED(USE_PROBE_FOR_Z_HOMING)
-    #define Z_STOP_PIN         PC15// Z- 
-  #else
-    #define Z_STOP_PIN         PA15// Z- 
-    #ifndef Z_MIN_PROBE_PIN
-      #define Z_MIN_PROBE_PIN  PC15// 
-    #endif
-  #endif
+  #define Z_STOP_PIN         PC15// Z- 
   //PC14 to hw pwm for bl touch
 #else
-  #define Y_STOP_PIN         PC3// y-
   #define X_STOP_PIN         PC13// x-
+  #define Y_STOP_PIN         PC3// y-
   #define Z_STOP_PIN         PC15// Z-
   #define Z_MAX_PIN          PC15// Z-
 #endif
@@ -124,15 +121,12 @@
 //
 // Filament Runout Sensor
 //
-#ifndef FIL_RUNOUT_PIN
-  #if defined(TENLOG_LW) 
-    #define FIL_RUNOUT_PIN                    PA0   // "Pulled-high"  
-  #elif defined(TENLOG_LASER_ONLY)
-    #define FIL_RUNOUT_PIN                    PD0   // "Pulled-high"
-  #else
-    #define FIL_RUNOUT_PIN                  PA15   // "Pulled-high" 
-    //#define FIL_RUNOUT_PIN                    PH2   // "Pulled-high" 
-  #endif
+#if defined(TENLOG_LW) 
+  #define FIL_RUNOUT_PIN                    PA0   // "Pulled-high"  
+#elif defined(TENLOG_LASER_ONLY)
+  #define FIL_RUNOUT_PIN                    PD0   // "Pulled-high"
+#else
+  #define FIL_RUNOUT_PIN                    PA15   // "Pulled-high" 
 #endif
 
 //
@@ -164,15 +158,24 @@
 #define HEATER_BED_PIN     PE10 
 
 #define Z2_ENABLE_PIN       X_ENABLE_PIN
-#define Z2_STEP_PIN         PB13
-#define Z2_DIR_PIN          PB12
-
 #define E0_ENABLE_PIN      X_ENABLE_PIN
-#define E0_STEP_PIN        PB4
-#define E0_DIR_PIN         PB3
 #define E1_ENABLE_PIN      X_ENABLE_PIN
-#define E1_STEP_PIN        PB6
-#define E1_DIR_PIN         PB5
+
+#if ENABLED(TENLOG_LW)
+  #define E0_STEP_PIN        PB13
+  #define E0_DIR_PIN         PB12
+  #define E1_STEP_PIN        PB4
+  #define E1_DIR_PIN         PB3
+  #define Z2_STEP_PIN        PB6
+  #define Z2_DIR_PIN         PB5
+#else
+  #define Z2_STEP_PIN         PB13
+  #define Z2_DIR_PIN          PB12
+  #define E0_STEP_PIN        PB4
+  #define E0_DIR_PIN         PB3
+  #define E1_STEP_PIN        PB6
+  #define E1_DIR_PIN         PB5
+#endif
 
 #ifdef ELECTROMAGNETIC_VALUE
   #define ELECTROMAGNETIC_VALUE_ON            1

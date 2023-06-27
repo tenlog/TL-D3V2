@@ -1677,7 +1677,7 @@ void prepare_line_to_destination() {
     if (bump) {
       // Move away from the endstop by the axis HOMING_BUMP_MM
       if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("Move Away: ", -bump, "mm");
-      //TLDEBUG_PRINTLNPAIR("Move Away: ", -bump, "mm"); //check do not move back when single head.
+      TLDEBUG_PRINTLNPAIR("Move Away:",  axis, ": ", -bump, "mm"); //check do not move back when single head.
       do_homing_move(axis, -bump, TERN(HOMING_Z_WITH_PROBE, (axis == Z_AXIS ? z_probe_fast_mm_s : 0), 0), false);
 
       #if ENABLED(DETECT_BROKEN_ENDSTOP)
