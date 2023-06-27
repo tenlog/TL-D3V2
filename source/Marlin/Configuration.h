@@ -82,7 +82,7 @@ Version     033
 //TL Medels and version
 //#define TENLOG_H2
 //#define TENLOG_D3HS   //High Speed
-//#define TENLOG_D3
+#define TENLOG_D3
 //#define TENLOG_S2   //single head
 //#define TENLOG_S3   //single head
 //#define TENLOG_M3
@@ -92,9 +92,9 @@ Version     033
 //#define TENLOG_D6
 //#define TENLOG_D8
 //#define TENLOG_LW8     //发光字 Luminous words
-#define TENLOG_LW3     //发光字 Luminous words
+//#define TENLOG_LW3     //发光字 Luminous words
 
-//#define DUAL_HEAD_BLTOUCH
+#define DUAL_HEAD_BLTOUCH
 
 //#define TL_DEBUG    //debug
 
