@@ -584,10 +584,15 @@ EXTRUDERS
   #define SINGLENOZZLE
 #endif
 #if EITHER(SINGLENOZZLE, MIXING_EXTRUDER)         // One hotend, one thermistor, no XY offset
-  #undef HOTENDS
-  #define HOTENDS       1
-  #undef HOTEND_OFFSET_X
-  #undef HOTEND_OFFSET_Y
+  #if ENABLED(TENLOG_X)     //by zyf 4进2出
+    #undef HOTENDS
+    #define HOTENDS       2
+  #else  
+    #undef HOTENDS
+    #define HOTENDS       1
+    #undef HOTEND_OFFSET_X
+    #undef HOTEND_OFFSET_Y
+  #endif
 #endif
 
 #ifndef HOTENDS

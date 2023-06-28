@@ -522,10 +522,15 @@ void tlSendSettings(bool only_wifi){
         TERN_(ESP32_WIFI, wifi_printer_settings[26] = lOffsetZW / 0x100);
         TERN_(ESP32_WIFI, wifi_printer_settings[27] = lOffsetZW % 0x100);
 
-        sprintf_P(cmd, PSTR("settings.xX2.val=%d"), lOffsetX);
-        PRINTTJC(cmd);
-        sprintf_P(cmd, PSTR("settings.xY2.val=%d"), lOffsetY);
-        PRINTTJC(cmd);
+        #if ENABLED(DUAL_X_CARRIAGE)
+            sprintf_P(cmd, PSTR("settings.xX2.val=%d"), lOffsetX);
+            PRINTTJC(cmd);
+            sprintf_P(cmd, PSTR("settings.xY2.val=%d"), lOffsetY);
+            PRINTTJC(cmd);
+        #else
+            PRINTTJC("settings.xX2.val=0");
+            PRINTTJC("settings.xY2.val=0");
+        #endif
         sprintf_P(cmd, PSTR("settings.xZOffset.val=%d"), lOffsetZ);
         PRINTTJC(cmd);
         #if (HAS_WIFI)
@@ -1268,7 +1273,11 @@ void TLSDPrintFinished(){
 
 void load_filament(int LoadUnload, int TValue)
 {    
+    #if ENABLED(MIXING_EXTRUDER)
+    int iTempE = mixer.get_current_vtool();
+    #else
     int iTempE = active_extruder;
+    #endif
     if (TValue != iTempE && TValue != -1){
         sprintf_P(cmd, PSTR("T%i"), TValue);
         EXECUTE_GCODE(cmd);
@@ -2379,6 +2388,9 @@ void tenlog_status_update(bool isTJC)
     #if ENABLED(DUAL_X_CARRIAGE)
     const int8_t ln14 = active_extruder;
     const int8_t ln15 = dual_x_carriage_mode;
+    #elif ENABLED(MIXING_EXTRUDER)
+    const int8_t ln14 = mixer.get_current_vtool();
+    const int8_t ln15 = 1;
     #else
     const int8_t ln14 = 0;
     const int8_t ln15 = 0;
@@ -2875,7 +2887,7 @@ void process_command_gcode(long _tl_command[]) {
                 //T0 , T1
                 SetBusyMoving(true);
                 sprintf_P(cmd, PSTR("T%d"), lT);
-                //TLDEBUG_PRINTLN(cmd);
+                TLDEBUG_PRINTLN(cmd);
                 EXECUTE_GCODE(cmd);
                 SetBusyMoving(false);
             }else if(lM == 1022){

@@ -154,7 +154,9 @@ uint8_t Stepper::last_direction_bits, // = 0
 
 bool Stepper::abort_current_block;
 
-#if DISABLED(MIXING_EXTRUDER) && HAS_MULTI_EXTRUDER
+#if ENABLED(TENLOG_X) && HAS_MULTI_EXTRUDER
+  uint8_t Stepper::last_moved_extruder = 0xFF;
+#elif DISABLED(MIXING_EXTRUDER) && HAS_MULTI_EXTRUDER
   uint8_t Stepper::last_moved_extruder = 0xFF;
 #endif
 
@@ -2193,7 +2195,7 @@ uint32_t Stepper::block_phase_isr() {
       accelerate_until = current_block->accelerate_until << oversampling;
       decelerate_after = current_block->decelerate_after << oversampling;
 
-      TERN_(MIXING_EXTRUDER, mixer.stepper_setup(current_block->b_color))
+      TERN_(MIXING_EXTRUDER, mixer.stepper_setup(current_block->b_color));
 
       TERN_(HAS_MULTI_EXTRUDER, stepper_extruder = current_block->extruder);
 

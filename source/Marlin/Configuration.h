@@ -77,12 +77,15 @@ Version     033
 20230601    More settings 
 20200619    Bug fixed: E2 side fan speed error. Thank Kai.
             Sub version 043
+20200628    LW系列OK，Fixed some bugs.
+            Sub version 044
+            Start Neza.. X Serial.
 */
 
 //TL Medels and version
 //#define TENLOG_H2
 //#define TENLOG_D3HS   //High Speed
-#define TENLOG_D3
+//#define TENLOG_D3
 //#define TENLOG_S2   //single head
 //#define TENLOG_S3   //single head
 //#define TENLOG_M3
@@ -91,15 +94,20 @@ Version     033
 //#define TENLOG_D5
 //#define TENLOG_D6
 //#define TENLOG_D8
-//#define TENLOG_LW8     //发光字 Luminous words
-//#define TENLOG_LW3     //发光字 Luminous words
+#define TENLOG_LW8   //发光字 Luminous words
+//#define TENLOG_LW3   //发光字 Luminous words
+//#define TENLOG_X3      //4进2出 Neza
 
 #define DUAL_HEAD_BLTOUCH
 
-//#define TL_DEBUG    //debug
+#define TL_DEBUG    //debug
 
 #if ANY(TENLOG_LW8, TENLOG_LW3)
 #define TENLOG_LW
+#endif
+
+#if ANY(TENLOG_X3, TENLOG_X5, TENLOG_X5, TENLOG_X6, TENLOG_X100)
+  #define TENLOG_X
 #endif
 
 #ifdef TENLOG_L4
@@ -120,8 +128,12 @@ Version     033
   #define EXTRUDERS 2
 #endif
 
+#if ENABLED(TENLOG_X)
+  #define MIXING_EXTRUDER
+#endif
+
 //Auto leveling.
-#if ANY(SINGLE_HEAD, TENLOG_LW, DUAL_HEAD_BLTOUCH)
+#if ANY(SINGLE_HEAD, TENLOG_LW, DUAL_HEAD_BLTOUCH, TENLOG_X)
   #ifndef TENLOG_M3S
     #define BLTOUCH
     #define TLTOUCH
@@ -217,6 +229,12 @@ Version     033
   #define X_BED_SIZE 310
   #define Y_BED_SIZE 310
   #define Z_LENGTH   200
+#elif defined(TENLOG_X3)
+  //#define TL_HIGH_SPEED 1
+  #define TL_MODEL_STR_0 "X3 Neza!"
+  #define X_BED_SIZE 310
+  #define Y_BED_SIZE 310
+  #define Z_LENGTH   350
 #endif
 
 //#define TL_STEPTEST   //给老范做的挤出机拉力测试
