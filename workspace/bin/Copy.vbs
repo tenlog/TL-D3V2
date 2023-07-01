@@ -1,5 +1,5 @@
 Dim Version
-Version="TL-LW3V2.0.8.044"
+Version="TL-D3V2.0.8.044"
 Set fso=CreateObject("Scripting.filesystemobject")  
 SrcFile = createobject("Scripting.FileSystemObject").GetFile(Wscript.ScriptFullName).ParentFolder.Path&"\firmware.bin"  
 DstFile = "E:\user\"&Version&".bin"  

@@ -2868,7 +2868,7 @@ void process_command_gcode(long _tl_command[]) {
                 if(lX == -9999 && lY == -9999 && lZ == -9999)
                     sprintf_P(cmd, PSTR("G%d \\n"), lG);
                 
-                //TLDEBUG_PRINTLN(cmd);
+                TLDEBUG_PRINTLN(cmd);
                 EXECUTE_GCODE(cmd);
                 SetBusyMoving(false);
             } else if(lG == 29){
@@ -3002,6 +3002,8 @@ void process_command_gcode(long _tl_command[]) {
                         fileNameP[i] = _tl_command[iFrom + 4 + i];
                     }
                     if(strlen(fileNameP) > 2){
+                        sprintf_P(cmd, PSTR("printing.tFileName.txt=\"%s\""), fileNameP);
+                        TLSTJC_println(cmd);
                         sprintf_P(cmd, PSTR("M%d !%s"), lM, fileNameP);
                     }
                 }

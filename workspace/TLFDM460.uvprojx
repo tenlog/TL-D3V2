@@ -16,7 +16,7 @@
         <TargetCommonOption>
           <Device>HC32F460PETB</Device>
           <Vendor>HDSC</Vendor>
-          <PackID>HDSC.HC32F460.1.0.10</PackID>
+          <PackID>HDSC.HC32F460.1.0.7</PackID>
           <PackURL>https://raw.githubusercontent.com/hdscmcu/pack/master/</PackURL>
           <Cpu>IRAM(0x1FFF8000,0x2F000) IRAM2(0x200F0000,0x1000) IROM(0x00000000,0x80000) IROM2(0x03000C00,0x003FC) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -186,7 +186,6 @@
             <RvdsVP>2</RvdsVP>
             <RvdsMve>0</RvdsMve>
             <RvdsCdeCp>0</RvdsCdeCp>
-            <nBranchProt>0</nBranchProt>
             <hadIRAM2>1</hadIRAM2>
             <hadIROM2>1</hadIROM2>
             <StupSel>8</StupSel>

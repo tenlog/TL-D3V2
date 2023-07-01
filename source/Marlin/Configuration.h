@@ -85,7 +85,7 @@ Version     033
 //TL Medels and version
 //#define TENLOG_H2
 //#define TENLOG_D3HS   //High Speed
-//#define TENLOG_D3
+#define TENLOG_D3
 //#define TENLOG_S2   //single head
 //#define TENLOG_S3   //single head
 //#define TENLOG_M3
@@ -94,13 +94,13 @@ Version     033
 //#define TENLOG_D5
 //#define TENLOG_D6
 //#define TENLOG_D8
-#define TENLOG_LW8   //发光字 Luminous words
+//#define TENLOG_LW8   //发光字 Luminous words
 //#define TENLOG_LW3   //发光字 Luminous words
 //#define TENLOG_X3      //4进2出 Neza
 
-#define DUAL_HEAD_BLTOUCH
+//#define DUAL_HEAD_BLTOUCH
 
-#define TL_DEBUG    //debug
+//#define TL_DEBUG    //debug
 
 #if ANY(TENLOG_LW8, TENLOG_LW3)
 #define TENLOG_LW
@@ -244,8 +244,10 @@ Version     033
 
 #ifdef ELECTROMAGNETIC_VALUE
   #define TL_MODEL_STR_1 "-EV"
+#elif defined(DUAL_HEAD_BLTOUCH)
+  #define TL_MODEL_STR_1 "-AL"  //AutoLeveling
 #else
-  #define TL_MODEL_STR_1 ""
+  #define TL_MODEL_STR_1 "" 
 #endif
 
 #define TL_MODEL_STR TL_MODEL_STR_0 TL_MODEL_STR_1
@@ -721,11 +723,11 @@ Version     033
 #define MAX_REDUNDANT_TEMP_SENSOR_DIFF 10
 #endif
 
-#define TEMP_RESIDENCY_TIME           3//5  // (seconds) Time to wait for hotend to "settle" in M109
+#define TEMP_RESIDENCY_TIME           1//5  // (seconds) Time to wait for hotend to "settle" in M109
 #define TEMP_WINDOW                   1  // (��C) Temperature proximity for the "temperature reached" timer
 #define TEMP_HYSTERESIS               3  // (��C) Temperature proximity considered "close enough" to the target
 
-#define TEMP_BED_RESIDENCY_TIME       3//5  // (seconds) Time to wait for bed to "settle" in M190
+#define TEMP_BED_RESIDENCY_TIME       1//5  // (seconds) Time to wait for bed to "settle" in M190
 #define TEMP_BED_WINDOW               1  // (��C) Temperature proximity for the "temperature reached" timer
 #define TEMP_BED_HYSTERESIS           3  // (��C) Temperature proximity considered "close enough" to the target
 
@@ -1373,9 +1375,9 @@ Version     033
  */
 #if ENABLED(BLTOUCH)
   #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
-    #define NOZZLE_TO_PROBE_OFFSET { 25, 10, 0 }
+    #define NOZZLE_TO_PROBE_OFFSET { 35, -10, 0 }
   #else
-    #define NOZZLE_TO_PROBE_OFFSET { 25, 10, -3 }
+    #define NOZZLE_TO_PROBE_OFFSET { 35, 15, -3.3 }
   #endif
 #endif
 

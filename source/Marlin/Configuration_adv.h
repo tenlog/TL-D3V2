@@ -3590,7 +3590,7 @@
       #define BUTTON1_DESC_1        "Reset default(M502)"  // Optional string to set the LCD status
     #endif
 
-    #define BUTTON2_PIN TL_BUTTON_PIN //
+    #define BUTTON2_PIN TL_BUTTON_START_PIN //
     #if PIN_EXISTS(BUTTON2)
       #define BUTTON2_HIT_STATE     LOW
       #define BUTTON2_WHEN_PRINTING true

@@ -110,7 +110,8 @@
 #if ENABLED(TL_LASER_ONLY)
   #define LASER_FAN_PIN       PD3
   #define RESET_PIN           PA15 
-  #define TL_BUTTON_PIN       PC14
+  #define TL_BUTTON_START_PIN       PC14
+  #define TL_BUTTON_HOME_PIN        PE6
   #define TL_BUTTON_LIGHT_PIN PD8
 #endif
 
