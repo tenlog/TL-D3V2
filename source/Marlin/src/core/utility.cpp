@@ -25,13 +25,19 @@
 #include "../MarlinCore.h"
 #include "../module/temperature.h"
 
+#if ENABLED(TENLOG_TOUCH_LCD)
+  #include "../lcd/tenlog/tenlog_touch_lcd.h"
+#endif
+
 void safe_delay(millis_t ms) {
   while (ms > 50) {
     ms -= 50;
     delay(50);
+    TL_idle();
     thermalManager.manage_heater();
   }
   delay(ms);
+  TL_idle();
   thermalManager.manage_heater(); // This keeps us safe if too many small safe_delay() calls are made
 }
 

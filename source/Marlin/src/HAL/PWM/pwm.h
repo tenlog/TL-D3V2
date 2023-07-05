@@ -19,7 +19,7 @@
 #define TAUNIT_F0_CH_PIN            (Pin01)
 #define TAUNIT_F0_CH_FUNC           (Func_Tima0) //0
 
-#if(TL_LASER_ONLY)
+#if ENABLED(TL_LASER_ONLY)
 #define TIMERA_COUNT_OVERFLOW_F0          (1250)  //5000 Hz
 #else
 #define TIMERA_COUNT_OVERFLOW_F0          (25000)  //500 Hz

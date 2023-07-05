@@ -141,8 +141,10 @@ void GcodeSuite::M5() {
   cutter.set_enabled(false);
   cutter.menuPower = cutter.unitPower;
   #if ENABLED(TL_LASER_ONLY)
-  set_pwm_hw(0, 1000);
-  laser_power = 0;
+  if(laser_power > 20){
+    set_pwm_hw(0, 1000);
+    laser_power = 0;
+  }
   #endif
 }
 

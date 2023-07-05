@@ -967,7 +967,7 @@
 
   <Group>
     <GroupName>marlin_gcode</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -1995,7 +1995,7 @@
       <GroupNumber>6</GroupNumber>
       <FileNumber>144</FileNumber>
       <FileType>8</FileType>
-      <tvExp>0</tvExp>
+      <tvExp>1</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>..\source\Marlin\src\gcode\control\M3-M5.cpp</PathWithFileName>
@@ -2927,7 +2927,7 @@
 
   <Group>
     <GroupName>marlin_module</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

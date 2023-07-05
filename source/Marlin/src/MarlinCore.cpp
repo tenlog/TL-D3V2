@@ -898,8 +898,14 @@ void kill(PGM_P const lcd_error/*=nullptr*/, PGM_P const lcd_component/*=nullptr
       //settings.killFlagSet(1);
       char ErrorMessage[128];
       sprintf_P(ErrorMessage, PSTR("%s %s"), lcd_error, lcd_component);
-      if(ErrorMessage[0]!='N' && ErrorMessage[1]!='D') //Do not display some special message
+      if(ErrorMessage[0]!='N' && ErrorMessage[1]!='D') {
+        //Do not display some special message
         TJCMessage(1, 1, 24, "", "", "", ErrorMessage);
+      }
+      #if ENABLED(TL_BEEPER)
+        start_beeper(4, 0);
+        safe_delay(1200);
+      #endif
     }
   #endif
   thermalManager.disable_all_heaters();
@@ -1672,8 +1678,12 @@ void setup() {
 
   #if ENABLED(TL_BEEPER)
     start_beeper(2, 1);
+    safe_delay(200);
   #endif
 
+  #if ENABLED(TL_LASER_ONLY)
+    EXECUTE_GCODE("M1523");
+  #endif
 }
 
 /**

@@ -869,6 +869,11 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
 
       if(isStepEna || isHeating){
         LastChamberFanRun = millis();
+        #if ENABLED(TL_LASER_ONLY)
+          if(isStepEna){
+            last_laser_time = millis();
+          }
+        #endif
       }else if(!isStepEna){
         #if ENABLED(TL_LASER_ONLY)
         if(laser_power > 20){
@@ -877,7 +882,6 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
         }
         #endif
       }
-
 
     #endif  
 

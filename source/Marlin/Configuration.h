@@ -98,9 +98,9 @@ Version     033
 //#define TENLOG_LW3   //发光字 Luminous words
 //#define TENLOG_X3      //4进2出 Neza
 
-//#define DUAL_HEAD_BLTOUCH
+#define DUAL_HEAD_BLTOUCH
 
-//#define TL_DEBUG    //debug
+#define TL_DEBUG    //debug
 
 #if ANY(TENLOG_LW8, TENLOG_LW3)
 #define TENLOG_LW
@@ -154,6 +154,7 @@ Version     033
 #ifdef TL_LASER_ONLY
   #define TL_NO_SCREEN
   #define TL_BEEPER
+  #define ESP32_WIFI
 #else
   #define ESP32_WIFI
 #endif
@@ -245,7 +246,7 @@ Version     033
 #ifdef ELECTROMAGNETIC_VALUE
   #define TL_MODEL_STR_1 "-EV"
 #elif defined(DUAL_HEAD_BLTOUCH)
-  #define TL_MODEL_STR_1 "-AL"  //AutoLeveling
+  #define TL_MODEL_STR_1 "-ABL"  //AutoBedLeveling
 #else
   #define TL_MODEL_STR_1 "" 
 #endif
@@ -265,13 +266,17 @@ Version     033
   #define WIFI_DEFAULT_IP_SETTINGS {192,168,0,1,255,255,255,0,192,168,0,88}
 #endif
 
-#if defined(TENLOG_M3) || defined(TENLOG_M3S) || defined(TL_LASER_ONLY) 
+#if defined(TENLOG_M3) || defined(TENLOG_M3S) 
   #define INVERT_X_DIR false
 #else
   #define INVERT_X_DIR true
 #endif
 
-#define INVERT_Y_DIR false
+#if ENABLED(TL_LASER_ONLY)
+  #define INVERT_Y_DIR true
+#else
+  #define INVERT_Y_DIR false
+#endif
 
 // Homing speeds (mm/min)
 #define HOMING_FEEDRATE_MM_M {6000, 5000, 500}
@@ -1563,7 +1568,7 @@ Version     033
 
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
-#if ANY(SINGLE_HEAD, TENLOG_LW)
+#if ANY(SINGLE_HEAD, TENLOG_LW, TL_LASER_ONLY)
 #define X_MIN_POS 0
 #else
 #define X_MIN_POS -50

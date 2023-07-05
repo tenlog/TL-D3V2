@@ -62,7 +62,7 @@
 //#define SDCARD_EEPROM_EMULATION
 
 #ifdef IIC_BL24CXX_EEPROM
-  #if defined(TENLOG_LW) || defined(TL_LASER_ONLY)
+  #if defined(TENLOG_LW) || defined(TL_LASER_ONLY)//|| defined(TENLOG_S3)
     #define IIC_EEPROM_SDA       PD12 
     #define IIC_EEPROM_SCL       PD13 
   #else

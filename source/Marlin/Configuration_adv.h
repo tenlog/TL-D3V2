@@ -3595,18 +3595,20 @@
       #define BUTTON2_HIT_STATE     LOW
       #define BUTTON2_WHEN_PRINTING true
       #define BUTTON2_GCODE         "M320"  //Print a pre selected file.
-      #define BUTTON2_GCODE_1       "M1523"  //G28.
       #define BUTTON2_DESC          "Print a pre selected file."
-      #define BUTTON2_DESC_1        "G28 XY"
+      #define BUTTON2_GCODE_1       ""  //G28.
+      #define BUTTON2_DESC_1        ""
     #endif
-  #endif
 
-  //#define BUTTON3_PIN -1
-  #if PIN_EXISTS(BUTTON3)
-    #define BUTTON3_HIT_STATE     LOW
-    #define BUTTON3_WHEN_PRINTING false
-    #define BUTTON3_GCODE         "M140 S" STRINGIFY(PREHEAT_2_TEMP_BED) "\nM104 S" STRINGIFY(PREHEAT_2_TEMP_HOTEND)
-    #define BUTTON3_DESC          "Preheat for " PREHEAT_2_LABEL
+    #define BUTTON3_PIN TL_BUTTON_HOME_PIN
+    #if PIN_EXISTS(BUTTON3)
+      #define BUTTON3_HIT_STATE     LOW
+      #define BUTTON3_WHEN_PRINTING false
+      #define BUTTON3_GCODE         "M1523"
+      #define BUTTON3_DESC          "Home XY"
+      #define BUTTON3_GCODE_1       ""  //G28.
+      #define BUTTON3_DESC_1        ""
+    #endif
   #endif
 #endif
 

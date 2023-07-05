@@ -916,7 +916,7 @@ void initTLScreen(){
 
 void TlLoadingMessage(const char Message[], const int ShowType, const int DelayTime){
     if(tl_TouchScreenType == 1 && (ShowType==1 || ShowType==-1)){
-        //TLDEBUG_PRINTLN(Message);
+        TLDEBUG_PRINTLN(Message);
         TLSTJC_println("sleep=0");
         TLSTJC_print("tStatus.txt=\"");
         TLSTJC_print(Message);
@@ -3508,7 +3508,7 @@ void button_light_handler(){
 void tl_beeper_handler(){
     static bool beeper_state;
     static uint32_t lastBeeperTime;
-    uint16_t beeper_time = 250;
+    uint16_t beeper_time = 200;
     if(beeper_type == 1) beeper_time = 500;
     if(millis() - lastBeeperTime < beeper_time ){
         return;
@@ -3567,6 +3567,7 @@ void tl_sd_abort_on_endstop_hit(){  //only for x & y
 void CheckLaserFan(){
   #if ENABLED(TL_LASER_ONLY)  //by zyf auto laser fan 
     static bool LaserStatus=false;
+    
     if(millis() - last_laser_time < LASER_FAN_DELAY && millis() > LASER_FAN_DELAY || millis()<LASER_FAN_DELAY && last_laser_time<LASER_FAN_DELAY){
         if(!LaserStatus){
             WRITE(LASER_FAN_PIN, 1);
