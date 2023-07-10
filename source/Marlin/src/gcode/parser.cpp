@@ -28,6 +28,10 @@
 
 #include "../MarlinCore.h"
 
+#if ANY(TENLOG_TOUCH_LCD, TL_DEBUG)
+#include "../lcd/tenlog/tenlog_touch_lcd.h"
+#endif
+
 // Must be declared for allocation and to satisfy the linker
 // Zero values need no initialization.
 
@@ -77,7 +81,11 @@ GCodeParser parser;
  */
 void GCodeParser::reset() {
   string_arg = nullptr;                 // No whole line argument
-  command_letter = '?';                 // No command letter
+  #if ENABLED(TL_GRBL)
+    command_letter = ' ';                 // No command letter
+  #else
+    command_letter = '?';                 // No command letter
+  #endif
   codenum = 0;                          // No command code
   TERN_(USE_GCODE_SUBCODES, subcode = 0); // No command sub-code
   #if ENABLED(FASTER_GCODE_PARSER)
@@ -155,7 +163,7 @@ void GCodeParser::parse(char *p) {
    * With Realtime Reporting, commands S000, P000, and R000 are allowed.
    */
   switch (letter) {
-    case 'G': case 'M': case 'T': TERN_(MARLIN_DEV_MODE, case 'D':)
+    case 'G': case 'M': case 'T': TERN_(MARLIN_DEV_MODE, case 'D':) TERN_(TL_GRBL, case '$':) TERN_(TL_GRBL, case '?':)
       // Skip spaces to get the numeric part
       while (*p == ' ') p++;
 
@@ -169,9 +177,20 @@ void GCodeParser::parse(char *p) {
           }
         }
       #endif
-
-      // Bail if there's no command code number
-      if (!TERN(SIGNED_CODENUM, NUMERIC_SIGNED(*p), NUMERIC(*p))) return;
+      
+      #if ENABLED(TL_GRBL)
+        if(letter == '$' || letter == '?'){
+          //TLDEBUG_PRINTLN("$ SSeen!"); 
+          command_letter = letter;
+          break;
+        }else{
+          // Bail if there's no command code number
+          if (!TERN(SIGNED_CODENUM, NUMERIC_SIGNED(*p), NUMERIC(*p))) return;
+        }
+      #else
+        // Bail if there's no command code number
+        if (!TERN(SIGNED_CODENUM, NUMERIC_SIGNED(*p), NUMERIC(*p))) return;
+      #endif
 
       // Save the command letter at this point
       // A '?' signifies an unknown command
@@ -240,12 +259,15 @@ void GCodeParser::parse(char *p) {
         }
         else if (TERN0(GCODE_MOTION_MODES, motion_mode_codenum != 5)) return;
       } // fall-thru
+      /*
       case 'S': {
         codenum = 0;                  // The only valid codenum is 0
         uint8_t digits = 0;
         while (*p++ == '0') digits++; // Count up '0' characters
         command_letter = (digits == 3) ? letter : '?'; // Three '0' digits is a good command
-      } return;                       // No parameters needed, so return now
+      } return;
+      */ //by zyf error here
+                            // No parameters needed, so return now
     #endif
 
     default: return;
@@ -287,7 +309,22 @@ void GCodeParser::parse(char *p) {
     bool quoted_string_arg = false;
   #endif
   string_arg = nullptr;
+  #if ENABLED(TL_GRBL)
+    if(letter == '$'){
+      sprintf(grbl_arg, "%s", p);
+    }
+  #endif
+
   while (const char param = uppercase(*p++)) {  // Get the next parameter. A NUL ends the loop
+
+     #if ENABLED(TL_GRBL)
+        if(letter == '$' || letter == '$'){
+          if(param == 'I'){
+            //TLDEBUG_PRINTLN("$I found!");
+            return;
+          }
+        }
+    #endif
 
     // Special handling for M32 [P] !/path/to/file.g#
     // The path must be the last parameter
@@ -357,6 +394,7 @@ void GCodeParser::parse(char *p) {
     }
   }
 }
+
 
 #if ENABLED(CNC_COORDINATE_SYSTEMS)
 

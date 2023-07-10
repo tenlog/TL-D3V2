@@ -549,7 +549,7 @@
 #define E7_AUTO_FAN_PIN -1
 #define CHAMBER_AUTO_FAN_PIN -1
 
-#if DISABLED(TL_LASER_ONLY)
+#if DISABLED(TENLOG_L)
 #define TLCHAMBER_AUTO_FAN_PIN CHAMEBER_PIN
 #endif
 
@@ -934,7 +934,7 @@
  * Set DISABLE_INACTIVE_? 'true' to shut down axis steppers after an idle period.
  * The Deactive Time can be overridden with M18 and M84. Set to 0 for No Timeout.
  */
-#if defined(TL_LASER_ONLY)
+#if defined(TENLOG_L)
 #define DEFAULT_STEPPER_DEACTIVE_TIME 1 //by zyf .. 120 //Release stepper time
 #else
 #define DEFAULT_STEPPER_DEACTIVE_TIME 5 //by zyf .. 120 //Release stepper time
@@ -1412,7 +1412,7 @@
    * To have any effect, endstops must be enabled during SD printing.
    */
   
-  #if ENABLED(TL_LASER_ONLY)
+  #if ENABLED(TENLOG_L)
     //#define SD_ABORT_ON_ENDSTOP_HIT //不知道为什么Y轴不生效，试了2天放弃了，自己写一个还快。
     #define TL_SD_ABORT_ON_ENDSTOP_HIT
   #endif
@@ -1980,7 +1980,7 @@
 #endif
 
 // Moves (or segments) with fewer steps than this will be joined with the next move
-#if ENABLED(TL_LASER_ONLY)
+#if ENABLED(TENLOG_L)
 #define MIN_STEPS_PER_SEGMENT 6 
 #else
 #define MIN_STEPS_PER_SEGMENT 1 //6 //by zyf 0.0125
@@ -2121,7 +2121,9 @@
  * - During Hold all Emergency Parser commands are available, as usual.
  * - Enable NANODLP_Z_SYNC and NANODLP_ALL_AXIS for move command end-state reports.
  */
-//#define REALTIME_REPORTING_COMMANDS
+#if ENABLED(TENLOG_L)
+  #define REALTIME_REPORTING_COMMANDS
+#endif
 #if ENABLED(REALTIME_REPORTING_COMMANDS)
   //#define FULL_REPORT_TO_HOST_FEATURE   // Auto-report the machine status like Grbl CNC
 #endif
@@ -3206,7 +3208,7 @@
      * This allows the laser to keep in perfect sync with the planner and removes
      * the powerup/down delay since lasers require negligible time.
      */
-    #ifdef TL_LASER_ONLY
+    #ifdef TENLOG_L
     #define LASER_POWER_INLINE
     #endif
 
@@ -3229,7 +3231,7 @@
        * board isn't able to generate steps fast enough (and you are using LASER_POWER_INLINE_TRAPEZOID_CONT), increase this.
        * Note that when this is zero it means it occurs every cycle; 1 means a delay wait one cycle then run, etc.
        */
-      #if ENABLED(TL_LASER_ONLY)
+      #if ENABLED(TENLOG_L)
       #define LASER_POWER_INLINE_TRAPEZOID_CONT
       #endif
 
@@ -3479,7 +3481,7 @@
  * High feedrates may cause ringing and harm print quality.
  */
 //#define PAREN_COMMENTS      // Support for parentheses-delimited comments
-#ifdef TL_LASER_ONLY
+#ifdef TENLOG_L
   #define GCODE_MOTION_MODES  // Remember the motion mode (G0 G1 G2 G3 G5 G38.X) and apply for X Y Z E F, etc.
 #endif
 
@@ -3579,7 +3581,7 @@
  */
 #define CUSTOM_USER_BUTTONS
 #if ENABLED(CUSTOM_USER_BUTTONS)
-  #if ENABLED(TL_LASER_ONLY)
+  #if ENABLED(TENLOG_L)
     #define BUTTON1_PIN RESET_PIN
     #if PIN_EXISTS(BUTTON1)
       #define BUTTON1_HIT_STATE     LOW       // State of the triggered button. NC=LOW. NO=HIGH.

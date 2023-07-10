@@ -1347,7 +1347,7 @@ void setup() {
     SETUP_RUN(probe.tare_init());
   #endif
 
-  #if ENABLED(SDSUPPORT) && ENABLED(TL_LASER_ONLY)
+  #if ENABLED(SDSUPPORT) && ENABLED(TENLOG_L)
     TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init SD Reader..."));
     TLDEBUG_PRINTLN("Init SD Reader...");
     SETUP_RUN(card.mount());          // Mount media with settings before first_load
@@ -1681,7 +1681,7 @@ void setup() {
     safe_delay(200);
   #endif
 
-  #if ENABLED(TL_LASER_ONLY)
+  #if ENABLED(TENLOG_L)
     EXECUTE_GCODE("M1523");
   #endif
 }

@@ -786,6 +786,9 @@ void unified_bed_leveling::shift_mesh_height() {
                       stow_probe ? PROBE_PT_STOW : PROBE_PT_RAISE, param.V_verbosity
                     );
         #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET) //by zyf
+        if(point_num==1 && z_min_endstop_probe_offset==0){
+          z_min_endstop_probe_offset = measured_z;
+        } 
         measured_z -= z_min_endstop_probe_offset;
         #endif
         z_values[best.pos.x][best.pos.y] = measured_z;

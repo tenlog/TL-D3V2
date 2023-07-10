@@ -330,7 +330,7 @@ void SPI_RX_Handler(){
             blockCount = 0;
             lostCount = 0;
             //CRCerrorCount = 0;
-            #if ENABLED(TL_LASER_ONLY)
+            #if ENABLED(TENLOG_L)
             ZERO(pre_print_file_name);
             sprintf(pre_print_file_name, "%s", fname);
             #endif
@@ -517,7 +517,7 @@ void WIFI_TX_Handler(int8_t control_code){
                 singleHead = 1;
             #endif
             uint8_t laser_only=0;
-            #ifdef TL_LASER_ONLY
+            #ifdef TENLOG_L
                 laser_only=1;
             #endif
             uint8_t mixing_extruder=0;

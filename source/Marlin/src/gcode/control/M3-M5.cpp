@@ -140,7 +140,7 @@ void GcodeSuite::M5() {
   planner.synchronize();
   cutter.set_enabled(false);
   cutter.menuPower = cutter.unitPower;
-  #if ENABLED(TL_LASER_ONLY)
+  #if ENABLED(TENLOG_L)
   if(laser_power > 20){
     set_pwm_hw(0, 1000);
     laser_power = 0;

@@ -97,13 +97,13 @@ void SpindleLaser::init() {
       //gtValue = gtValue / 100.0;
       //uint16_t oocr = gtValue * MAXVALUE;
       uint16_t ocr_New = ocr;
-      #if ENABLED(TL_LASER_ONLY)
+      #if ENABLED(TENLOG_L)
         if(ocr == 0 && laser_power==10) ocr_New=10;
       #endif
       
       set_pwm_hw(ocr_New, tl_LASER_MAX_VALUE);
       if(ocr > 0){
-        #if ENABLED(TL_LASER_ONLY)
+        #if ENABLED(TENLOG_L)
         last_laser_time = millis();
         laser_power = ocr;
         #endif

@@ -30,14 +30,18 @@
 #endif
 
 void safe_delay(millis_t ms) {
-  while (ms > 50) {
-    ms -= 50;
-    delay(50);
-    TL_idle();
+  while (ms > 20) {           //by zyf original 50ms 
+    ms -= 20;
+    delay(20);
+    #if ENABLED(TL_BEEPER)
+      tl_beeper_handler();
+    #endif
     thermalManager.manage_heater();
   }
   delay(ms);
-  TL_idle();
+  #if ENABLED(TL_BEEPER)
+    tl_beeper_handler();
+  #endif
   thermalManager.manage_heater(); // This keeps us safe if too many small safe_delay() calls are made
 }
 

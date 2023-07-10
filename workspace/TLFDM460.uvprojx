@@ -1204,6 +1204,11 @@
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\gcode\config\M43.cpp</FilePath>
             </File>
+            <File>
+              <FileName>grbl.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\gcode\grbl\grbl.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

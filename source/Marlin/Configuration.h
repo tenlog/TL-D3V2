@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "044"
+#define TL_SUBVERSION "045"
 
 //update log 
 /*
@@ -85,12 +85,12 @@ Version     033
 //TL Medels and version
 //#define TENLOG_H2
 //#define TENLOG_D3HS   //High Speed
-#define TENLOG_D3
+//#define TENLOG_D3
 //#define TENLOG_S2   //single head
 //#define TENLOG_S3   //single head
 //#define TENLOG_M3
 //#define TENLOG_M3S
-//#define TENLOG_L4   //laser only
+#define TENLOG_L4   //laser only
 //#define TENLOG_D5
 //#define TENLOG_D6
 //#define TENLOG_D8
@@ -98,9 +98,8 @@ Version     033
 //#define TENLOG_LW3   //发光字 Luminous words
 //#define TENLOG_X3      //4进2出 Neza
 
-#define DUAL_HEAD_BLTOUCH
-
-#define TL_DEBUG    //debug
+//#define TL_DEBUG    //debug
+//#define DUAL_HEAD_BLTOUCH
 
 #if ANY(TENLOG_LW8, TENLOG_LW3)
 #define TENLOG_LW
@@ -111,7 +110,7 @@ Version     033
 #endif
 
 #ifdef TENLOG_L4
-  #define TL_LASER_ONLY
+  #define TENLOG_L
 #endif
 
 //Headers
@@ -121,7 +120,7 @@ Version     033
 #elif(ENABLED(TENLOG_LW))
   #define MIXING_EXTRUDER
   #define EXTRUDERS 1
-#elif ENABLED(TL_LASER_ONLY)
+#elif ENABLED(TENLOG_L)
   #define EXTRUDERS 1
 #else
   #define DUAL_X_CARRIAGE
@@ -146,20 +145,20 @@ Version     033
 #define TENLOG_TOUCH_LCD
 //#define ESP8266_WIFI
 #define HWPWM
+#define TL_LASER
 
 //TL Functions
 //#define ELECTROMAGNETIC_VALUE
 #define PRINT_FROM_Z_HEIGHT
 
-#ifdef TL_LASER_ONLY
+#ifdef TENLOG_L
   #define TL_NO_SCREEN
   #define TL_BEEPER
-  #define ESP32_WIFI
+  //#define ESP32_WIFI
+  #define TL_GRBL
 #else
   #define ESP32_WIFI
 #endif
-
-#define TL_LASER
 
 // The size of the printable area
 #if defined(TENLOG_D3) 
@@ -223,7 +222,7 @@ Version     033
   #define TL_MODEL_STR_0 "LW8"
   #define X_BED_SIZE 820
   #define Y_BED_SIZE 820
-  #define Z_LENGTH   200
+  #define Z_LENGTH   100
 #elif defined(TENLOG_LW3)
   //#define TL_HIGH_SPEED 1
   #define TL_MODEL_STR_0 "LW3"
@@ -272,7 +271,7 @@ Version     033
   #define INVERT_X_DIR true
 #endif
 
-#if ENABLED(TL_LASER_ONLY)
+#if ENABLED(TENLOG_L)
   #define INVERT_Y_DIR true
 #else
   #define INVERT_Y_DIR false
@@ -1008,7 +1007,12 @@ Version     033
 #endif
 
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
-#define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop. 低电平触发
+#if ENABLED(TENLOG_LW)
+  #define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop. 高电平触发
+#else
+  #define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop. 低电平触发
+#endif
+
 #define Y_MIN_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop. 低电平触发
 #define Z_MIN_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
 #define X_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
@@ -1102,9 +1106,12 @@ Version     033
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-// #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 500 }
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 395 }
-#define DEFAULT_AXIS_STEPS_PER_UNIT_MATRII3D   { 80, 80, 800, 415 }
+#if ENABLED(TENLOG_LW)
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 118, 118, 800, 145}
+#else
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 395}
+#endif
+#define DEFAULT_AXIS_STEPS_PER_UNIT_MATRII3D   { 80, 80, 800, 415}
 
 /**
  * Default Max Feed Rate (mm/s)
@@ -1130,7 +1137,7 @@ Version     033
  */
 #if TL_HIGH_SPEED
   #define DEFAULT_MAX_ACCELERATION      {5000, 5000, 100, 1000}
-#elif ENABLED(TL_LASER_ONLY)
+#elif ENABLED(TENLOG_L)
   #define DEFAULT_MAX_ACCELERATION      {500, 500, 20, 500}
 #else
   #define DEFAULT_MAX_ACCELERATION      {800, 800, 100, 800}
@@ -1380,7 +1387,11 @@ Version     033
  */
 #if ENABLED(BLTOUCH)
   #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
+    #if ENABLED(TENLOG_LW)
+    #define NOZZLE_TO_PROBE_OFFSET { 45, 0, 0 }
+    #else
     #define NOZZLE_TO_PROBE_OFFSET { 35, -10, 0 }
+    #endif
   #else
     #define NOZZLE_TO_PROBE_OFFSET { 35, 15, -3.3 }
   #endif
@@ -1568,7 +1579,7 @@ Version     033
 
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
-#if ANY(SINGLE_HEAD, TENLOG_LW, TL_LASER_ONLY)
+#if ANY(SINGLE_HEAD, TENLOG_LW, TENLOG_L)
 #define X_MIN_POS 0
 #else
 #define X_MIN_POS -50
@@ -1826,8 +1837,10 @@ Version     033
 
   #if X_MIN_POS == -50
     #define MESH_INSET 10              // Set Mesh bounds as an inset region of the bed
-  #elif X_MIN_POS < 20
-    #define MESH_INSET 26              
+  #elif X_MAX_POS > 600
+    #define MESH_INSET 50              
+  #elif X_MIN_POS == 0
+    #define MESH_INSET 30              
   #endif  
 
   //GRID_MAX_POINTS_X Don't use more than 15 points per axis, implementation limited.

@@ -43,9 +43,6 @@
  *    M32 S60 !PATH/TO/FILE.GCO#  ; Start FILE.GCO at byte 60
  */
 void GcodeSuite::M32() {
-  //#if ENABLED(TL_LASER_ONLY)
-  //ZERO(pre_print_file_name);
-  //#endif
   if (IS_SD_PRINTING()) planner.synchronize();
 
   if (card.isMounted()) {
@@ -53,7 +50,7 @@ void GcodeSuite::M32() {
     
     card.openFileRead(parser.string_arg, call_procedure);
     
-    #if ENABLED(TL_LASER_ONLY)
+    #if ENABLED(TENLOG_L)
     sprintf(pre_print_file_name, "%s", parser.string_arg);
     #endif
 
@@ -66,7 +63,7 @@ void GcodeSuite::M32() {
   }
 }
 
-#if BOTH(TENLOG_TOUCH_LCD, TL_LASER_ONLY)
+#if BOTH(TENLOG_TOUCH_LCD, TENLOG_L)
 void GcodeSuite::M320() {
   static uint32_t lastClick;
   #if ENABLED(TL_BEEPER)

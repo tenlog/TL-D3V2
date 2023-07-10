@@ -193,6 +193,7 @@ extern uint8_t beeper_type;
 #define BEEPER_ON WRITE(TL_BEEPER_PIN, 1)
 #define BEEPER_OFF WRITE(TL_BEEPER_PIN, 0)
 void start_beeper(uint8_t count, uint8_t type);
+void tl_beeper_handler();
 #endif
 
 extern bool hotendOffsetChanged;
@@ -245,7 +246,7 @@ extern float print_from_z_target;
 extern uint32_t wifi_update_interval;
 extern uint8_t sd_OK;
 
-#if ENABLED(TL_LASER_ONLY)
+#if ENABLED(TENLOG_L)
     extern char pre_print_file_name[13];
     extern uint32_t last_laser_time;
     extern uint16_t laser_power;
@@ -263,7 +264,10 @@ extern char TJCModelNo[64];
     #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
     extern bool BLTouch_G28;
     #endif
+#endif
 
+#if ENABLED(TL_GRBL)
+    extern char grbl_arg[30];
 #endif
 
 #endif  //TENLOG_TOUCH_LCD

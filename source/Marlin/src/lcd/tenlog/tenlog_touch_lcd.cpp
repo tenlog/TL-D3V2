@@ -144,13 +144,13 @@ uint8_t beeper_count = 0;
 uint8_t beeper_type = 0;
 #endif
 
-#if ENABLED(TL_LASER_ONLY)
+#if ENABLED(TENLOG_L)
 char pre_print_file_name[13]={""};
 #endif
 
 uint32_t wifi_update_interval = 400;
 
-#if ENABLED(TL_LASER_ONLY)
+#if ENABLED(TENLOG_L)
 uint32_t last_laser_time = 0;
 uint16_t laser_power = 0;
 #endif
@@ -161,6 +161,10 @@ uint8_t tl_com_ID = 0;
     bool BLTouch_G28 = false;
 #endif
 char TJCModelNo[64]={""};
+
+#if ENABLED(TL_GRBL)
+ char grbl_arg[30] = {""};
+#endif
 
 long ConvertHexLong(long command[], int Len)
 {
@@ -555,7 +559,7 @@ void tlSendSettings(bool only_wifi){
         //wifi_printer_settings[38] = (http_port)%0x100;
         #endif
         
-        #if DISABLED(ELECTROMAGNETIC_VALUE) && DISABLED(TL_LASER_ONLY)
+        #if DISABLED(ELECTROMAGNETIC_VALUE) && DISABLED(TENLOG_L)
         sprintf_P(cmd, PSTR("main.vTempMax.val=%d"), tl_E_MAX_TEMP - HOTEND_OVERSHOOT);
         PRINTTJC(cmd);
         TERN_(ESP32_WIFI, wifi_printer_settings[28] = (tl_E_MAX_TEMP-HOTEND_OVERSHOOT) / 0x100);
@@ -688,7 +692,7 @@ void tlSendSettings(bool only_wifi){
         PRINTTJC(cmd); 
         sprintf_P(cmd, PSTR("settings1.xM304D.val=%d"), lPIDDB);
         PRINTTJC(cmd);
-        #if ENABLED(TL_LASER_ONLY)
+        #if ENABLED(TENLOG_L)
         sprintf_P(cmd, PSTR("settings2.xM306S.val=%d"), (uint16_t)(tl_LASER_MAX_VALUE));
         #else
         sprintf_P(cmd, PSTR("settings2.xM306S.val=%d"), (uint16_t)(tl_E_MAX_TEMP));
@@ -996,7 +1000,7 @@ void tlAbortPrinting(){
     print_job_timer.abort();
     EXECUTE_GCODE("M106 S0");
     
-    #if ENABLED(TL_LASER_ONLY)
+    #if ENABLED(TENLOG_L)
         set_pwm_hw(0, 1000);
         //endstops.enable(true);
         //queue.inject_P(PSTR("G28 X"));
@@ -3012,14 +3016,14 @@ void process_command_gcode(long _tl_command[]) {
                     TLPrintingStatus = 1;
                     settings.plr_fn_save(lF-1);
                     TLDEBUG_PRINTLN(cmd);
-                    #if ENABLED(TL_LASER_ONLY)
+                    #if ENABLED(TENLOG_L)
                     EXECUTE_GCODE("G92 X-20 Y5");
                     #endif
                     EXECUTE_GCODE(cmd);
                 }
                 #endif
             }else if(lM == 321){
-                #if ENABLED(TL_LASER_ONLY)
+                #if ENABLED(TENLOG_L)
                     //M321 pre select print file name
                     //print from wifi
                     NULLZERO(pre_print_file_name);
@@ -3032,7 +3036,7 @@ void process_command_gcode(long _tl_command[]) {
                         #endif
                         //sprintf_P(cmd, PSTR("M%d !%s"), lM, fileNameP);
                     }
-                #endif  //TL_LASER_ONLY
+                #endif  //TENLOG_L
             }else if(lM == 19){
                 //M19
                 tl_print_page_id = GCodelng('S', iFrom, _tl_command);
@@ -3074,7 +3078,7 @@ void process_command_gcode(long _tl_command[]) {
                 #endif
             }else if(lM == 1018){
                 //M1018
-                #if ENABLED(TL_LASER_ONLY)
+                #if ENABLED(TENLOG_L)
                 tl_LASER_MAX_VALUE= GCodelng('S', iFrom, _tl_command);
                 #else
                 tl_E_MAX_TEMP = GCodelng('S', iFrom, _tl_command);
@@ -3565,7 +3569,7 @@ void tl_sd_abort_on_endstop_hit(){  //only for x & y
 }
 
 void CheckLaserFan(){
-  #if ENABLED(TL_LASER_ONLY)  //by zyf auto laser fan 
+  #if ENABLED(TENLOG_L)  //by zyf auto laser fan 
     static bool LaserStatus=false;
     
     if(millis() - last_laser_time < LASER_FAN_DELAY && millis() > LASER_FAN_DELAY || millis()<LASER_FAN_DELAY && last_laser_time<LASER_FAN_DELAY){

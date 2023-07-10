@@ -485,7 +485,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
 
         #if HAS_MEDIA_SUBCALLS
           case 32: M32(); break;                                  // M32: Select file and start SD print
-          #if ENABLED(TL_LASER_ONLY)
+          #if ENABLED(TENLOG_L)
           case 320: M320(); break;                                // M320: print a pre selected file.
           #endif
         #endif
@@ -1019,7 +1019,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
       #endif
       #if ENABLED(TENLOG_TOUCH_LCD)
         case 1521: M1521(); break;
-        #if ENABLED(TL_LASER_ONLY)
+        #if ENABLED(TENLOG_L)
           case 1522: M1522(); break;
           case 1523: M1523(); break;
         #endif
@@ -1037,6 +1037,21 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
 
     #if ENABLED(REALTIME_REPORTING_COMMANDS)
       case 'S': case 'P': case 'R': break;                        // Invalid S, P, R commands already filtered
+    #endif
+
+    #if ENABLED(TL_GRBL)
+      case '$':
+      {
+        //TLDEBUG_PRINTLN("$ Seen!");
+        grbl_d();
+      }
+      break;
+      case '?':
+      {
+        //TLDEBUG_PRINTLN("$ Seen!");
+        grbl_a();
+      }
+      break;
     #endif
 
     default:
@@ -1136,8 +1151,9 @@ void GcodeSuite::process_subcommands_now(char * gcode) {
       switch (busy_state) {
         case IN_HANDLER:
         case IN_PROCESS:
-          #if DISABLED(TL_DEBUG)
-          SERIAL_ECHO_MSG(STR_BUSY_PROCESSING); //by zyf
+          #if ANY(TL_DEBUG, TL_GRBL)
+          #else 
+            SERIAL_ECHO_MSG(STR_BUSY_PROCESSING); //by zyf
           #endif
           TERN_(FULL_REPORT_TO_HOST_FEATURE, report_current_position_moving());
           break;

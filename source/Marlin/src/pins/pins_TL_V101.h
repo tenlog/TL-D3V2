@@ -62,7 +62,7 @@
 //#define SDCARD_EEPROM_EMULATION
 
 #ifdef IIC_BL24CXX_EEPROM
-  #if defined(TENLOG_LW) || defined(TL_LASER_ONLY)//|| defined(TENLOG_S3)
+  #if defined(TENLOG_LW) || defined(TENLOG_L)
     #define IIC_EEPROM_SDA       PD12 
     #define IIC_EEPROM_SCL       PD13 
   #else
@@ -90,7 +90,7 @@
   #else
     #define Z_MAX_PIN        PC14// 14Z+
   #endif
-#elif defined(TL_LASER_ONLY)
+#elif defined(TENLOG_L)
   #define X_STOP_PIN         PC13// x-
   #define Y_STOP_PIN         PC3// y-
   #define Z_STOP_PIN         PC15// Z-
@@ -107,7 +107,7 @@
   #define Z_MAX_PIN          PC15// Z-
 #endif
 
-#if ENABLED(TL_LASER_ONLY)
+#if ENABLED(TENLOG_L)
   #define LASER_FAN_PIN       PD3
   #define RESET_PIN           PA15 
   #define TL_BUTTON_START_PIN       PC14
@@ -200,7 +200,7 @@
   #if defined(TENLOG_LW)
     #define FAN2_PIN              PD3   //FAN2 FZ1
     #define FAN3_PIN              PE7   //FZ2
-  #elif defined(TL_LASER_ONLY)
+  #elif defined(TENLOG_L)
     #define FAN_LASER_PIN         PD3   //FAN2 For laser
   #else
     #define FAN2_PIN              PA0   //FAN2 FZ1  //PA0
@@ -214,7 +214,7 @@
 #ifdef TENLOG_LW
   #define FAN4_PIN                PC3   
   #define CHAMEBER_PIN            FAN4_PIN   //机箱风扇口
-#elif ENABLED(TL_LASER_ONLY)
+#elif ENABLED(TENLOG_L)
 
 #else
   #define FAN4_PIN                PE3   

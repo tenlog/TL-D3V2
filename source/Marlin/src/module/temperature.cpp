@@ -869,13 +869,13 @@ int16_t Temperature::getHeaterPower(const heater_id_t heater_id) {
 
       if(isStepEna || isHeating){
         LastChamberFanRun = millis();
-        #if ENABLED(TL_LASER_ONLY)
+        #if ENABLED(TENLOG_L)
           if(isStepEna){
             last_laser_time = millis();
           }
         #endif
       }else if(!isStepEna){
-        #if ENABLED(TL_LASER_ONLY)
+        #if ENABLED(TENLOG_L)
         if(laser_power > 20){
           set_pwm_hw(0, 1000);
           laser_power = 0;          
@@ -2045,7 +2045,7 @@ void Temperature::updateTemperaturesFromRawValues() {
   #define INIT_CHAMBER_AUTO_FAN_PIN(P) SET_OUTPUT(P)
 #endif
 
-#if ENABLED(TL_LASER_ONLY)
+#if ENABLED(TENLOG_L)
   #define INIT_LASER_FAN_PIN(P) SET_OUTPUT(P)
 #endif
 
@@ -2277,7 +2277,7 @@ void Temperature::init() {
     INIT_CHAMBER_AUTO_FAN_PIN(CHAMBER_AUTO_FAN_PIN);
   #endif
 
-  #if ENABLED(TL_LASER_ONLY)
+  #if ENABLED(TENLOG_L)
     INIT_LASER_FAN_PIN(LASER_FAN_PIN);
   #endif
 

@@ -350,7 +350,7 @@ void GcodeSuite::G28() {
       PrintFromZHeightFound = true;
     #endif // by zyf
 
-    #if ENABLED(TL_LASER_ONLY)
+    #if ENABLED(TENLOG_L)
       bSkipZ = true;
     #endif
 

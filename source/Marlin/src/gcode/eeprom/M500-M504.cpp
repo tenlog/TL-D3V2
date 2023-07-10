@@ -29,7 +29,7 @@
 #include "../../HAL/ESP32_SPI/esp32_wifi.h"
 #endif
 
-#if ENABLED(TL_LASER_ONLY)
+#if ENABLED(TENLOG_L)
 #include "../../HAL/PWM/pwm.h"
 #endif
 
@@ -126,7 +126,7 @@ void GcodeSuite::M502() {
     int8_t S = parser.seenval('S');
     command_M1521(S);
   }
-  #if ENABLED(TL_LASER_ONLY)
+  #if ENABLED(TENLOG_L)
     void GcodeSuite::M1522(){
       static bool weakLaserOn;
       if(!weakLaserOn){
