@@ -2785,6 +2785,11 @@ void Stepper::endstop_triggered(const AxisEnum axis) {
 
   // Discard the rest of the move if there is a current block
   quick_stop();
+  #if ENABLED(TL_GRBL)
+    if(!isHoming){
+      TLECHO_PRINTLN("ALARM:1");
+    }
+  #endif
 
   if (was_enabled) wake_up();
 }

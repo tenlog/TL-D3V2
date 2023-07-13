@@ -318,7 +318,7 @@ void GCodeParser::parse(char *p) {
   while (const char param = uppercase(*p++)) {  // Get the next parameter. A NUL ends the loop
 
      #if ENABLED(TL_GRBL)
-        if(letter == '$' || letter == '$'){
+        if(letter == '$' || letter == '?'){
           if(param == 'I'){
             //TLDEBUG_PRINTLN("$I found!");
             return;
@@ -380,8 +380,7 @@ void GCodeParser::parse(char *p) {
       if (TERN0(DEBUG_GCODE_PARSER, debug)) SERIAL_EOL();
 
       TERN_(FASTER_GCODE_PARSER, set(param, valptr)); // Set parameter exists and pointer (nullptr for no value)
-    }
-    else if (!string_arg) {                     // Not A-Z? First time, keep as the string_arg
+    } else if (!string_arg) {                     // Not A-Z? First time, keep as the string_arg
       string_arg = p - 1;
       #if ENABLED(DEBUG_GCODE_PARSER)
         if (debug) SERIAL_ECHOPAIR(" string_arg: ", hex_address((void*)string_arg)); // DEBUG

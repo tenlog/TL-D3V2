@@ -382,8 +382,14 @@ void Endstops::event_handler() {
     #define ENDSTOP_HIT_TEST_Y() _ENDSTOP_HIT_TEST(Y,'Y')
     #define ENDSTOP_HIT_TEST_Z() _ENDSTOP_HIT_TEST(Z,'Z')
 
+    #if ENABLED(TL_GRBL)
+      if(!isHoming){
+        //TLECHO_PRINTLN("<Alarm:1>");
+      }
+    #else
     SERIAL_ECHO_START();
     SERIAL_ECHOPGM(STR_ENDSTOPS_HIT);
+    #endif
     ENDSTOP_HIT_TEST_X();
     ENDSTOP_HIT_TEST_Y();
     ENDSTOP_HIT_TEST_Z();
@@ -394,9 +400,9 @@ void Endstops::event_handler() {
     #endif
     SERIAL_EOL();
 
-    char cmd[256];
-    sprintf(cmd, "%s %c %c %c %c", "Endstops:", chrX, chrY, chrZ, chrP);
-    TLDEBUG_PRINTLN(cmd);
+    //char cmd[256];
+    //sprintf(cmd, "%s %c %c %c %c", "Endstops:", chrX, chrY, chrZ, chrP);
+    //TLDEBUG_PRINTLN(cmd);
 
     //TERN_(HAS_STATUS_MESSAGE, ui.status_printf_P(0, PSTR(S_FMT " %c %c %c %c"), GET_TEXT(MSG_LCD_ENDSTOPS), chrX, chrY, chrZ, chrP));
 
@@ -791,6 +797,11 @@ void Endstops::update() {
       #endif
     }
     else { // +direction
+      #if ENABLED(TENLOG_L)
+        if(!isHoming){
+          PROCESS_ENDSTOP_X(MIN);
+        }
+      #endif
       #if HAS_X_MAX || (X_SPI_SENSORLESS && X_HOME_DIR > 0)
         PROCESS_ENDSTOP_X(MAX);
         #if   CORE_DIAG(XY, Y, MIN)
@@ -822,6 +833,11 @@ void Endstops::update() {
       #endif
     }
     else { // +direction
+      #if ENABLED(TENLOG_L)
+        if(!isHoming){
+          PROCESS_ENDSTOP_Y(MIN);
+        }
+      #endif
       #if HAS_Y_MAX || (Y_SPI_SENSORLESS && Y_HOME_DIR > 0)
         PROCESS_ENDSTOP_Y(MAX);
         #if   CORE_DIAG(XY, X, MIN)

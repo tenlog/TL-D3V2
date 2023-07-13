@@ -164,6 +164,7 @@ char TJCModelNo[64]={""};
 
 #if ENABLED(TL_GRBL)
  char grbl_arg[30] = {""};
+ bool isHoming = false;
 #endif
 
 long ConvertHexLong(long command[], int Len)

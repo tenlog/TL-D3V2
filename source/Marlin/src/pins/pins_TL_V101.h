@@ -92,9 +92,11 @@
   #endif
 #elif defined(TENLOG_L)
   #define X_STOP_PIN         PC13// x-
+  //#define X_MAX_PIN          PC13// x+
   #define Y_STOP_PIN         PC3// y-
+  //#define Y_MAX_PIN          PC3// y+
   #define Z_STOP_PIN         PC15// Z-
-  #define Z_MAX_PIN          PC15// Z-
+  //#define Z_MAX_PIN          PC15// Z-
 #elif defined(BLTOUCH) && (defined(SINGLE_HEAD) || defined(TENLOG_LW))
   #define X_STOP_PIN         PC13// x-
   #define Y_STOP_PIN         PC3// y-

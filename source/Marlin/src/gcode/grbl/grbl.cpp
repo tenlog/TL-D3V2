@@ -25,8 +25,13 @@
 #if ENABLED(TL_GRBL)
 #include "../../lcd/tenlog/tenlog_touch_lcd.h"
 #include "../gcode.h"
-void GcodeSuite::grbl_a() {
+#include "../../module/motion.h"
 
+char message[64]={""};
+
+void GcodeSuite::grbl_a() {
+    sprintf(message, "<Idle|MPos:%02f,%02f,%02f|Fs:%d,0>",current_position.x,current_position.y,current_position.z,feedrate_mm_s);
+    TLECHO_PRINTLN(message);
 }
 void GcodeSuite::grbl_d() {
     //char para[30];
@@ -38,6 +43,8 @@ void GcodeSuite::grbl_d() {
         TLECHO_PRINTLN("[MSG:Using machine:TENLOG_L]");        
         TLECHO_PRINTLN("[MSG:No WIFI]");        
         TLECHO_PRINTLN("[MSG:No BT]");        
+    }else if(grbl_arg[0] == 'I'){
+        EXECUTE_GCODE("M1523");
     }
 }
 #endif

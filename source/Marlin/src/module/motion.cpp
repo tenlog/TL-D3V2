@@ -1598,6 +1598,10 @@ void prepare_line_to_destination() {
 
   void homeaxis(const AxisEnum axis) {
 
+    #if ENABLED(TL_GRBL)
+      isHoming = true;
+    #endif
+
     #if EITHER(MORGAN_SCARA, MP_SCARA)
       // Only Z homing (with probe) is permitted
       if (axis != Z_AXIS) { BUZZ(100, 880); return; }
@@ -1676,7 +1680,7 @@ void prepare_line_to_destination() {
     // If a second homing move is configured...
     if (bump) {
       // Move away from the endstop by the axis HOMING_BUMP_MM
-      if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("Move Away: ", -bump, "mm");
+      //if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("Move Away: ", -bump, "mm");
       TLDEBUG_PRINTLNPAIR("Move Away:",  axis, ": ", -bump, "mm"); //check do not move back when single head.
       do_homing_move(axis, -bump, TERN(HOMING_Z_WITH_PROBE, (axis == Z_AXIS ? z_probe_fast_mm_s : 0), 0), false);
 
@@ -1910,6 +1914,10 @@ void prepare_line_to_destination() {
     // Clear retracted status if homing the Z axis
     #if ENABLED(FWRETRACT)
       if (axis == Z_AXIS) fwretract.current_hop = 0.0;
+    #endif
+
+    #if ENABLED(TL_GRBL)
+      isHoming = false;
     #endif
 
     if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPAIR("<<< homeaxis(", AS_CHAR(axis_codes[axis]), ")");
