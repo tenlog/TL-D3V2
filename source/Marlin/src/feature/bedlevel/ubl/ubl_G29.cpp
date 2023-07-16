@@ -730,14 +730,22 @@ void unified_bed_leveling::shift_mesh_height() {
   void unified_bed_leveling::probe_entire_mesh(const xy_pos_t &nearby, const bool do_ubl_mesh_map, const bool stow_probe, const bool do_furthest) {
     //by zyf
     #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
-    BLTouch_G28 = true;
-    homeaxis(Z_AXIS);
-    BLTouch_G28 = false;
-    float z_min_endstop_probe_offset = 0;
-    const float es_probe_z = probe.probe_at_point(
-                probe.offset_xy,
-                PROBE_PT_STOW);
-    if(!isnan(es_probe_z)) z_min_endstop_probe_offset = es_probe_z;
+      BLTouch_G28 = true;
+      EXECUTE_GCODE("G28");
+      //homeaxis(Z_AXIS);      
+      BLTouch_G28 = false;
+      float z_min_endstop_probe_offset = 0;
+      xy_pos_t firstProbeXY;
+      #if(X_HOME_DIR==1)
+        firstProbeXY.x = X_MAX_POS - MESH_INSET + probe.offset_xy.x;
+      #else
+        firstProbeXY.x = MESH_INSET + probe.offset_xy.x;
+      #endif
+      firstProbeXY.y = MESH_INSET + probe.offset_xy.y;
+      const float es_probe_z = probe.probe_at_point(
+                  firstProbeXY,
+                  PROBE_PT_STOW);
+      if(!isnan(es_probe_z)) z_min_endstop_probe_offset = es_probe_z;
     #endif //Z_MIN_ENDSTOP_PROBE_OFFSET
 
     probe.deploy(); // Deploy before ui.capture() to allow for PAUSE_BEFORE_DEPLOY_STOW
@@ -774,9 +782,10 @@ void unified_bed_leveling::shift_mesh_height() {
         TJCMessage(8,8,26,"","","",TMessage);
       #endif
 
+      // G2 P1 U=do_furthest
       best = do_furthest
         ? find_furthest_invalid_mesh_point()
-        : find_closest_mesh_point_of_type(INVALID, nearby, true);
+        : find_closest_mesh_point_of_type(INVALID, nearby, true); // INVALID
 
       if (best.pos.x >= 0) {    // mesh point found and is reachable by probe
         TERN_(EXTENSIBLE_UI, ExtUI::onMeshUpdate(best.pos, ExtUI::G29_POINT_START));

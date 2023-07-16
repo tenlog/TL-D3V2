@@ -86,11 +86,11 @@ Version     033
 //#define TENLOG_H2
 //#define TENLOG_D3HS   //High Speed
 //#define TENLOG_D3
-//#define TENLOG_S2   //single head
+#define TENLOG_S2   //single head
 //#define TENLOG_S3   //single head
 //#define TENLOG_M3
 //#define TENLOG_M3S
-#define TENLOG_L4   //laser only
+//#define TENLOG_L4   //laser only
 //#define TENLOG_D5
 //#define TENLOG_D6
 //#define TENLOG_D8
@@ -105,7 +105,7 @@ Version     033
 #define TENLOG_LW
 #endif
 
-#if ANY(TENLOG_X3, TENLOG_X5, TENLOG_X5, TENLOG_X6, TENLOG_X100)
+#if ANY(TENLOG_X3, TENLOG_X5, TENLOG_X6, TENLOG_X100)
   #define TENLOG_X
 #endif
 
@@ -156,6 +156,7 @@ Version     033
   #define TL_BEEPER
   //#define ESP32_WIFI
   #define TL_GRBL
+  #define LASER_ENDSTOP_WIDTH -2
 #else
   #define ESP32_WIFI
 #endif
@@ -214,8 +215,8 @@ Version     033
   #define Z_LENGTH   350
 #elif defined(TENLOG_S2)
   #define TL_MODEL_STR_0 "S2"
-  #define X_BED_SIZE 220
-  #define Y_BED_SIZE 220
+  #define X_BED_SIZE 260
+  #define Y_BED_SIZE 235
   #define Z_LENGTH   250
 #elif defined(TENLOG_LW8)
   #define TL_HIGH_SPEED 1
@@ -973,12 +974,26 @@ Version     033
 // Specify here all the endstop connectors that are connected to any endstop or probe.
 // Almost all printers will be using one per axis. Probes will use one or more of the
 // extra connectors. Leave undefined any used for non-endstop and non-probe purposes.
+
 #define USE_XMIN_PLUG
 #define USE_YMIN_PLUG
 #define USE_ZMIN_PLUG
 #define USE_XMAX_PLUG
-//#define USE_YMAX_PLUG
+#define USE_YMAX_PLUG
 #define USE_ZMAX_PLUG
+
+#if ENABLED(TENLOG_L)
+  #undef USE_ZMAX_PLUG
+#elif ENABLED(BLTOUCH)
+  #undef USE_YMAX_PLUG
+  #if ANY(SINGLE_HEAD, TENLOG_LW)
+    #undef USE_ZMAX_PLUG
+    #undef USE_XMIN_PLUG
+  #endif
+#else
+  #undef USE_YMAX_PLUG
+#endif
+
 
 // Enable pullup for all endstops to prevent a floating state
 #define ENDSTOPPULLUPS
@@ -1016,7 +1031,7 @@ Version     033
 #define Y_MIN_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop. 低电平触发
 #define Z_MIN_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
 #define X_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
-//#define Y_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
+#define Y_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
 #define Z_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
 #define Z_MIN_PROBE_ENDSTOP_INVERTING false // Set to true to invert the logic of the probe.
 
@@ -1388,9 +1403,9 @@ Version     033
 #if ENABLED(BLTOUCH)
   #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
     #if ENABLED(TENLOG_LW)
-    #define NOZZLE_TO_PROBE_OFFSET { 45, 0, 0 }
+    #define NOZZLE_TO_PROBE_OFFSET { -45, 0, 0 }
     #else
-    #define NOZZLE_TO_PROBE_OFFSET { 35, -10, 0 }
+    #define NOZZLE_TO_PROBE_OFFSET { -35, 0, 0 }
     #endif
   #else
     #define NOZZLE_TO_PROBE_OFFSET { 35, 15, -3.3 }
@@ -1402,13 +1417,13 @@ Version     033
 #define PROBING_MARGIN 10
 
 // X and Y axis travel speed (mm/min) between probes
-#define XY_PROBE_FEEDRATE (60*60)
+#define XY_PROBE_FEEDRATE (100*60)
 
 // Feedrate (mm/min) for the first approach when double-probing (MULTIPLE_PROBING == 2)
-#define Z_PROBE_FEEDRATE_FAST (6*30)
+#define Z_PROBE_FEEDRATE_FAST (8*30)
 
 // Feedrate (mm/min) for the "accurate" probe of each point
-#define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 2)
+#define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 3 * 2)
 
 /**
  * Probe Activation Switch
@@ -1446,7 +1461,7 @@ Version     033
  * A total of 2 does fast/slow probes with a weighted average.
  * A total of 3 or more adds more slow probes, taking the average.
  */
-#define MULTIPLE_PROBING 2
+#define MULTIPLE_PROBING 2 
 //#define EXTRA_PROBING    1
 
 /**
@@ -1573,18 +1588,29 @@ Version     033
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
-#define X_HOME_DIR -1
+#if ANY(TENLOG_LW, SINGLE_HEAD)
+  #define X_HOME_DIR 1
+#else
+  #define X_HOME_DIR -1
+#endif
 #define Y_HOME_DIR -1
 #define Z_HOME_DIR -1
 
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
-#if ANY(SINGLE_HEAD, TENLOG_LW, TENLOG_L)
-#define X_MIN_POS 0
+#if ANY(SINGLE_HEAD, TENLOG_LW)
+  #define X_MIN_POS 0
+#elif ENABLED(TENLOG_L)
+  #define X_MIN_POS LASER_ENDSTOP_WIDTH
 #else
-#define X_MIN_POS -50
+  #define X_MIN_POS -50
 #endif
-#define Y_MIN_POS 0
+
+#if ENABLED(TENLOG_L)
+  #define Y_MIN_POS LASER_ENDSTOP_WIDTH
+#else
+  #define Y_MIN_POS 0
+#endif
 #define Z_MIN_POS 0
 #define X_MAX_POS X_BED_SIZE
 #define Y_MAX_POS Y_BED_SIZE

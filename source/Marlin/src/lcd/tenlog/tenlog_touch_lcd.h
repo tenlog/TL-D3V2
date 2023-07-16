@@ -269,6 +269,7 @@ extern char TJCModelNo[64];
 #if ENABLED(TL_GRBL)
     extern char grbl_arg[30];
     extern bool isHoming;
+    extern uint32_t Homing_start;
 #endif
 
 #endif  //TENLOG_TOUCH_LCD

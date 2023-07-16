@@ -43,7 +43,7 @@ void GcodeSuite::grbl_d() {
         TLECHO_PRINTLN("[MSG:Using machine:TENLOG_L]");        
         TLECHO_PRINTLN("[MSG:No WIFI]");        
         TLECHO_PRINTLN("[MSG:No BT]");        
-    }else if(grbl_arg[0] == 'I'){
+    }else if(grbl_arg[0] == 'H'){
         EXECUTE_GCODE("M1523");
     }
 }

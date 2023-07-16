@@ -1537,7 +1537,9 @@ void setup() {
   #endif
 
   #if ENABLED(BLTOUCH)
+    //TERN_(Z_MIN_ENDSTOP_PROBE_OFFSET, (BLTouch_G28 = true));
     SETUP_RUN(bltouch.init(/*set_voltage=*/true));
+    TERN_(Z_MIN_ENDSTOP_PROBE_OFFSET, (BLTouch_G28 = false));
   #endif
 
   #if ENABLED(I2C_POSITION_ENCODERS)
@@ -1682,7 +1684,7 @@ void setup() {
   #endif
 
   #if ENABLED(TENLOG_L)
-    EXECUTE_GCODE("M1523");
+    //EXECUTE_GCODE("M1523");
   #endif
 }
 

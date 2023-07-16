@@ -554,6 +554,7 @@ private:
 
   #if HAS_CUTTER
     static void M3_M4(const bool is_M4);
+    static void M2();
     static void M5();
     #if ENABLED(AIR_EVACUATION)
       static void M10();

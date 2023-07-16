@@ -126,6 +126,15 @@ void GcodeSuite::M3_M4(const bool is_M4) {
 }
 
 /**
+ * Program End, turn off spindle/laser and stops the machine.
+ */
+void GcodeSuite::M2() {
+  #if ENABLED(TL_GRBL)
+    //do nothing...
+  #endif
+}
+
+/**
  * M5 - Cutter OFF (when moves are complete)
  */
 void GcodeSuite::M5() {

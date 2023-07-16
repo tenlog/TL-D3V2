@@ -25,6 +25,9 @@
 #include "../../core/serial.h"
 #include "../../inc/MarlinConfig.h"
 
+//#include "../../../module/planner.h"
+#include "../../../module/motion.h"
+
 #if ENABLED(ESP32_WIFI)
 #include "../../HAL/ESP32_SPI/esp32_wifi.h"
 #endif
@@ -146,10 +149,23 @@ void GcodeSuite::M502() {
 
     void GcodeSuite::M1523(){
       if(!IS_SD_PRINTING()){
+        char cmd[20];
         start_beeper(2, 1);
+        if(READ(X_STOP_PIN) == 0){
+          float fX = current_position.x - LASER_ENDSTOP_WIDTH;
+          sprintf(cmd, "G0 X%02f", fX);
+          EXECUTE_GCODE(cmd);
+          delay(200);
+        }
+        if(READ(Y_STOP_PIN) == 0){
+          float fY = current_position.y - LASER_ENDSTOP_WIDTH;
+          sprintf(cmd, "G0 Y%02f", fY);
+          EXECUTE_GCODE(cmd);
+          delay(200);
+        }
         EXECUTE_GCODE("G28 XY");
         safe_delay(1000);
-        EXECUTE_GCODE("G0 X2Y2");
+        EXECUTE_GCODE("G0 X0Y0");
       }
     }
   #endif

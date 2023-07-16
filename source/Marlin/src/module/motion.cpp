@@ -1600,6 +1600,7 @@ void prepare_line_to_destination() {
 
     #if ENABLED(TL_GRBL)
       isHoming = true;
+      Homing_start = millis();
     #endif
 
     #if EITHER(MORGAN_SCARA, MP_SCARA)
@@ -1694,8 +1695,12 @@ void prepare_line_to_destination() {
           case Z_AXIS: es = Z_ENDSTOP; break;
         }
         if (TEST(endstops.state(), es)) {
+          #if DISABLED(TENLOG_L)
           SERIAL_ECHO_MSG("Bad ", AS_CHAR(axis_codes[axis]), " Endstop?");
           kill(GET_TEXT(MSG_KILL_HOMING_FAILED));
+          #else
+          //TLECHO_PRINTLN("ALARM:6");
+          #endif
         }
       #endif
 

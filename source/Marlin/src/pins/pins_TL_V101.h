@@ -92,13 +92,17 @@
   #endif
 #elif defined(TENLOG_L)
   #define X_STOP_PIN         PC13// x-
-  //#define X_MAX_PIN          PC13// x+
+  #define X_MAX_PIN          PE5// x+
   #define Y_STOP_PIN         PC3// y-
-  //#define Y_MAX_PIN          PC3// y+
+  #define Y_MAX_PIN          PA10// y+
   #define Z_STOP_PIN         PC15// Z-
   //#define Z_MAX_PIN          PC15// Z-
 #elif defined(BLTOUCH) && (defined(SINGLE_HEAD) || defined(TENLOG_LW))
-  #define X_STOP_PIN         PC13// x-
+  #if ENABLED(TENLOG_LW)
+    #define X_STOP_PIN         PC13// x-
+  #else
+   #define X_MAX_PIN          PH2// x-
+  #endif
   #define Y_STOP_PIN         PC3// y-
   #define Z_STOP_PIN         PC15// Z- 
   //PC14 to hw pwm for bl touch
@@ -141,26 +145,32 @@
 #define XX_STEP_PIN        PA9
 #define XX_DIR_PIN         PA8
 #else
-#define X_ENABLE_PIN       PB2
-#define X2_ENABLE_PIN      X_ENABLE_PIN
-#define X2_STEP_PIN        PA9
-#define X2_DIR_PIN         PA8
+  #define X_ENABLE_PIN       PB2
+  #ifndef TENLOG_S2
+    #define X2_ENABLE_PIN      X_ENABLE_PIN
+    #define X2_STEP_PIN        PA9
+    #define X2_DIR_PIN         PA8
+  #endif
 #endif
 
+#if ENABLED(TENLOG_S2)
+#define X_STEP_PIN         PA9
+#define X_DIR_PIN          PA8
+#else
 #define X_STEP_PIN         PC7
 #define X_DIR_PIN          PC6
+#endif
 
 #define Y_ENABLE_PIN       X_ENABLE_PIN
 #define Y_STEP_PIN         PB15
 #define Y_DIR_PIN          PB14
 
 #define Z_ENABLE_PIN       X_ENABLE_PIN
-
+#define Z2_ENABLE_PIN      X_ENABLE_PIN
 #define Z_STEP_PIN         PE13
 #define Z_DIR_PIN          PE12
 #define HEATER_BED_PIN     PE10 
 
-#define Z2_ENABLE_PIN       X_ENABLE_PIN
 #define E0_ENABLE_PIN      X_ENABLE_PIN
 #define E1_ENABLE_PIN      X_ENABLE_PIN
 
@@ -239,7 +249,7 @@
   #define FAN_SOFT_PWM
 #endif
 
-#define REPRINT_PIN         PE11             
+//#define REPRINT_PIN         PE11             
 #define POWEROFF_PIN        PB10
 //#define BREAK_PIN           PA15
 
