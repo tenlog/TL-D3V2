@@ -146,19 +146,19 @@
 #define XX_DIR_PIN         PA8
 #else
   #define X_ENABLE_PIN       PB2
-  #ifndef TENLOG_S2
+  #if !defined(TENLOG_S2) && !defined(TENLOG_S3)
     #define X2_ENABLE_PIN      X_ENABLE_PIN
     #define X2_STEP_PIN        PA9
     #define X2_DIR_PIN         PA8
   #endif
 #endif
 
-#if ENABLED(TENLOG_S2)
-#define X_STEP_PIN         PA9
-#define X_DIR_PIN          PA8
+#if defined(TENLOG_S2) || defined(TENLOG_S3)
+  #define X_STEP_PIN         PA9
+  #define X_DIR_PIN          PA8
 #else
-#define X_STEP_PIN         PC7
-#define X_DIR_PIN          PC6
+  #define X_STEP_PIN         PC7
+  #define X_DIR_PIN          PC6
 #endif
 
 #define Y_ENABLE_PIN       X_ENABLE_PIN

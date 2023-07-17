@@ -3403,10 +3403,17 @@ void process_command_gcode(long _tl_command[]) {
             }else if(lM == 290){
                 //M290 babysetp
                 float fZ = GCodelng('Z', iFrom, _tl_command);
+                uint16_t lR = GCodelng('R', iFrom, _tl_command);
                 if(fZ > -9999.0)
                 {
-                    sprintf_P(cmd, PSTR("M%d Z%s"), lM, dtostrf(fZ, 1, 3, str_1));                
+                    if(lR == 1000){
+                        fZ = (fZ / 1000.0) + tl_Z_HOME_POS;
+                    }
+                    sprintf(cmd, "M290 Z%f", fZ);
+                    TLDEBUG_PRINTLN(cmd);
                     EXECUTE_GCODE(cmd);
+                    safe_delay(500);
+                    TLSTJC_println("vOK.val=1");
                 }
 
             }else if(lM == 30){

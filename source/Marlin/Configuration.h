@@ -1405,7 +1405,7 @@ Version     033
     #if ENABLED(TENLOG_LW)
     #define NOZZLE_TO_PROBE_OFFSET { -45, 0, 0 }
     #else
-    #define NOZZLE_TO_PROBE_OFFSET { -35, 0, 0 }
+    #define NOZZLE_TO_PROBE_OFFSET { 35, 0, 0 }
     #endif
   #else
     #define NOZZLE_TO_PROBE_OFFSET { 35, 15, -3.3 }
@@ -1866,7 +1866,7 @@ Version     033
   #elif X_MAX_POS > 600
     #define MESH_INSET 50              
   #elif X_MIN_POS == 0
-    #define MESH_INSET 30              
+    #define MESH_INSET 55              
   #endif  
 
   //GRID_MAX_POINTS_X Don't use more than 15 points per axis, implementation limited.

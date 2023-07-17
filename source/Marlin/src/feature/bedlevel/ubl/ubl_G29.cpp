@@ -756,14 +756,15 @@ void unified_bed_leveling::shift_mesh_height() {
     uint8_t count = GRID_MAX_POINTS;
 
     mesh_index_pair best;
-    TERN_(EXTENSIBLE_UI, ExtUI::onMeshUpdate(best.pos, ExtUI::G29_START));
+    //TERN_(EXTENSIBLE_UI, ExtUI::onMeshUpdate(best.pos, ExtUI::G29_START));
     do {
       if (do_ubl_mesh_map) display_map(param.T_map_type);
 
       const uint8_t point_num = (GRID_MAX_POINTS - count) + 1;
       SERIAL_ECHOLNPAIR("Probing mesh point ", point_num, "/", GRID_MAX_POINTS, ".");
-      TERN_(HAS_STATUS_MESSAGE, ui.status_printf_P(0, PSTR(S_FMT " %i/%i"), GET_TEXT(MSG_PROBING_MESH), point_num, int(GRID_MAX_POINTS)));
+      //TERN_(HAS_STATUS_MESSAGE, ui.status_printf_P(0, PSTR(S_FMT " %i/%i"), GET_TEXT(MSG_PROBING_MESH), point_num, int(GRID_MAX_POINTS)));
 
+      /*
       #if HAS_LCD_MENU
         if (ui.button_pressed()) {
           ui.quick_feedback(false); // Preserve button state for click-and-hold
@@ -775,7 +776,7 @@ void unified_bed_leveling::shift_mesh_height() {
           return restore_ubl_active_state_and_leave();
         }
       #endif
-
+      */
       #if ENABLED(TENLOG_TOUCH_LCD) //by zyf
         char TMessage[10];
         sprintf(TMessage, "%d/%d", point_num, GRID_MAX_POINTS);
@@ -788,7 +789,7 @@ void unified_bed_leveling::shift_mesh_height() {
         : find_closest_mesh_point_of_type(INVALID, nearby, true); // INVALID
 
       if (best.pos.x >= 0) {    // mesh point found and is reachable by probe
-        TERN_(EXTENSIBLE_UI, ExtUI::onMeshUpdate(best.pos, ExtUI::G29_POINT_START));
+        //TERN_(EXTENSIBLE_UI, ExtUI::onMeshUpdate(best.pos, ExtUI::G29_POINT_START));
         
         float measured_z = probe.probe_at_point(
                       best.meshpos(),
@@ -801,21 +802,23 @@ void unified_bed_leveling::shift_mesh_height() {
         measured_z -= z_min_endstop_probe_offset;
         #endif
         z_values[best.pos.x][best.pos.y] = measured_z;
+        /*
         #if ENABLED(EXTENSIBLE_UI)
           ExtUI::onMeshUpdate(best.pos, ExtUI::G29_POINT_FINISH);
           ExtUI::onMeshUpdate(best.pos, measured_z);
         #endif
+        */
       }
       SERIAL_FLUSH(); // Prevent host M105 buffer overrun.
 
     } while (best.pos.x >= 0 && --count);
 
-    TERN_(EXTENSIBLE_UI, ExtUI::onMeshUpdate(best.pos, ExtUI::G29_FINISH));
+    //TERN_(EXTENSIBLE_UI, ExtUI::onMeshUpdate(best.pos, ExtUI::G29_FINISH));
 
     // Release UI during stow to allow for PAUSE_BEFORE_DEPLOY_STOW
-    TERN_(HAS_LCD_MENU, ui.release());
+    //TERN_(HAS_LCD_MENU, ui.release());
     probe.stow();
-    TERN_(HAS_LCD_MENU, ui.capture());
+    //TERN_(HAS_LCD_MENU, ui.capture());
 
     probe.move_z_after_probing();
 
