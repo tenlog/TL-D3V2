@@ -804,7 +804,7 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
   if (probe_relative) {                                     // The given position is in terms of the probe
     if (!can_reach(npos)) {
       if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Position Not Reachable");
-      TLDEBUG_PRINTLN("Position Not Reachable");
+      TLDEBUG_PRINTLNPAIR("Position Not Reachable X:", npos.x, " Y:", npos.y);
       return NAN;
     }
     npos -= offset_xy;                                      // Get the nozzle position

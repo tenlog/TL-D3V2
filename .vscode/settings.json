@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "bitset": "cpp",
-        "hc32f46x_clk.h": "c"
+        "hc32f46x_clk.h": "c",
+        "xstring": "cpp"
     }
 }

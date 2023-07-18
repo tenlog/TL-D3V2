@@ -86,8 +86,8 @@ Version     033
 //#define TENLOG_H2
 //#define TENLOG_D3HS   //High Speed
 //#define TENLOG_D3
-#define TENLOG_S2   //single head
-//#define TENLOG_S3   //single head
+//#define TENLOG_S2   //single head
+#define TENLOG_S3   //single head
 //#define TENLOG_M3
 //#define TENLOG_M3S
 //#define TENLOG_L4   //laser only
@@ -98,7 +98,7 @@ Version     033
 //#define TENLOG_LW3   //发光字 Luminous words
 //#define TENLOG_X3      //4进2出 Neza
 
-//#define TL_DEBUG    //debug
+#define TL_DEBUG    //debug
 //#define DUAL_HEAD_BLTOUCH
 
 #if ANY(TENLOG_LW8, TENLOG_LW3)
@@ -210,7 +210,7 @@ Version     033
   #define Z_LENGTH   100
 #elif defined(TENLOG_S3)
   #define TL_MODEL_STR_0 "S3"
-  #define X_BED_SIZE 310
+  #define X_BED_SIZE 360
   #define Y_BED_SIZE 310
   #define Z_LENGTH   350
 #elif defined(TENLOG_S2)
@@ -1555,7 +1555,11 @@ Version     033
 // @section extruder
 
 // For direct drive extruder v9 set to true, for geared extruder set to false.
+#if ANY(TENLOG_S2, TENLOG_S3)
+#define INVERT_E0_DIR false
+#else
 #define INVERT_E0_DIR true
+#endif
 #define INVERT_E1_DIR false
 #define INVERT_E2_DIR false
 #define INVERT_E3_DIR false

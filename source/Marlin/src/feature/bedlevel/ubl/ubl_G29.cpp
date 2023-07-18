@@ -315,7 +315,7 @@ void unified_bed_leveling::G29() {
   if (may_move) {
     planner.synchronize();
     // Send 'N' to force homing before G29 (internal only)
-    if (axes_should_home() || parser.seen_test('N')) gcode.home_all_axes();
+    //if (axes_should_home() || parser.seen_test('N')) gcode.home_all_axes(); by zyf
     TERN_(HAS_MULTI_HOTEND, if (active_extruder) tool_change(0));
   }
 
@@ -737,9 +737,9 @@ void unified_bed_leveling::shift_mesh_height() {
       float z_min_endstop_probe_offset = 0;
       xy_pos_t firstProbeXY;
       #if(X_HOME_DIR==1)
-        firstProbeXY.x = X_MAX_POS - MESH_INSET + probe.offset_xy.x;
+        firstProbeXY.x = X_MAX_POS - MESH_INSET;
       #else
-        firstProbeXY.x = MESH_INSET + probe.offset_xy.x;
+        firstProbeXY.x = MESH_INSET;
       #endif
       firstProbeXY.y = MESH_INSET + probe.offset_xy.y;
       const float es_probe_z = probe.probe_at_point(
@@ -756,7 +756,45 @@ void unified_bed_leveling::shift_mesh_height() {
     uint8_t count = GRID_MAX_POINTS;
 
     mesh_index_pair best;
-    //TERN_(EXTENSIBLE_UI, ExtUI::onMeshUpdate(best.pos, ExtUI::G29_START));
+
+    uint8_t m_count = 0;
+    for(uint8_t YS=0; YS<GRID_MAX_POINTS_Y; YS++){
+      uint8_t Y = YS;
+      for(uint8_t XS=0; XS<GRID_MAX_POINTS_X; XS++){
+        uint8_t X = XS; 
+        #if(X_HOME_DIR==1)
+          if(YS % 2 == 0){X = GRID_MAX_POINTS_X - 1 - XS; }
+        #elif(X_HOME_DIR==-1)
+          if(YS % 2 == 0){X = GRID_MAX_POINTS_X - 1 - XS; }
+        #endif
+        m_count++;
+        #if ENABLED(TENLOG_TOUCH_LCD) //by zyf
+          char TMessage[10];
+          sprintf(TMessage, "%d/%d", m_count, GRID_MAX_POINTS);
+          TJCMessage(8,8,26,"","","",TMessage);
+        #endif
+        best.pos.x = X;
+        best.pos.y = Y;
+        if (best.pos.x >= 0) {    // mesh point found and is reachable by probe
+          
+          TLDEBUG_PRINTLNPAIR("probe: X", best.pos.x, ", Y:", best.pos.y);
+          float measured_z = probe.probe_at_point(
+                        best.meshpos(),
+                        stow_probe ? PROBE_PT_STOW : PROBE_PT_RAISE, param.V_verbosity
+                      );
+          #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET) //by zyf
+          if(m_count==1 && z_min_endstop_probe_offset==0){
+            z_min_endstop_probe_offset = measured_z;
+          } 
+          measured_z -= z_min_endstop_probe_offset;
+          #endif
+          z_values[best.pos.x][best.pos.y] = measured_z;
+        }
+        SERIAL_FLUSH(); // Prevent host M105 buffer overrun.
+      }
+    }
+
+    #if 0
     do {
       if (do_ubl_mesh_map) display_map(param.T_map_type);
 
@@ -764,7 +802,6 @@ void unified_bed_leveling::shift_mesh_height() {
       SERIAL_ECHOLNPAIR("Probing mesh point ", point_num, "/", GRID_MAX_POINTS, ".");
       //TERN_(HAS_STATUS_MESSAGE, ui.status_printf_P(0, PSTR(S_FMT " %i/%i"), GET_TEXT(MSG_PROBING_MESH), point_num, int(GRID_MAX_POINTS)));
 
-      /*
       #if HAS_LCD_MENU
         if (ui.button_pressed()) {
           ui.quick_feedback(false); // Preserve button state for click-and-hold
@@ -776,7 +813,7 @@ void unified_bed_leveling::shift_mesh_height() {
           return restore_ubl_active_state_and_leave();
         }
       #endif
-      */
+   
       #if ENABLED(TENLOG_TOUCH_LCD) //by zyf
         char TMessage[10];
         sprintf(TMessage, "%d/%d", point_num, GRID_MAX_POINTS);
@@ -802,16 +839,17 @@ void unified_bed_leveling::shift_mesh_height() {
         measured_z -= z_min_endstop_probe_offset;
         #endif
         z_values[best.pos.x][best.pos.y] = measured_z;
-        /*
+        
         #if ENABLED(EXTENSIBLE_UI)
           ExtUI::onMeshUpdate(best.pos, ExtUI::G29_POINT_FINISH);
           ExtUI::onMeshUpdate(best.pos, measured_z);
         #endif
-        */
+        
       }
       SERIAL_FLUSH(); // Prevent host M105 buffer overrun.
 
     } while (best.pos.x >= 0 && --count);
+    #endif
 
     //TERN_(EXTENSIBLE_UI, ExtUI::onMeshUpdate(best.pos, ExtUI::G29_FINISH));
 

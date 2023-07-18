@@ -719,7 +719,7 @@ void tlSendSettings(bool only_wifi){
         #if HAS_BED_PROBE
         sprintf_P(cmd, PSTR("main.vAutoLevel.val=%d"), GRID_MAX_POINTS_X);
         PRINTTJC(cmd);
-        TLDEBUG_PRINTLN(cmd);
+        //TLDEBUG_PRINTLN(cmd);
         int32_t M851X = (int32_t)(probe.offset_xy.x * 100.0f);
         int32_t M851Y = (int32_t)(probe.offset_xy.y * 100.0f);
         int32_t M851Z = (int32_t)(probe.offset.z * 100.0f);
@@ -3951,8 +3951,8 @@ uint8_t TLTJC_GetLastPage(){
     delay(200);
     get_lcd_command(1);
     if(tl_command[0]==0x66 && tl_command[2]==0xFF && tl_command[3]==0xFF && tl_command[4]==0xFF){
-    lastPageID = tl_command[1];
-    TLDEBUG_PRINTLNPAIR("Page=", lastPageID);
+        lastPageID = tl_command[1];
+        //TLDEBUG_PRINTLNPAIR("Page=", lastPageID);
     }
     return lastPageID;
 }
