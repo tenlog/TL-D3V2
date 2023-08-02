@@ -307,7 +307,17 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
 
     case 'G': switch (parser.codenum) {
 
-      case 0: case 1:                                             // G0: Fast Move, G1: Linear Move
+      case 0: case 1: TERN_(TL_GRBL, case 91: case 53: case 90:)   // G0: Fast Move, G1: Linear Move  //Also G53 G91 G90
+        #if ENABLED(TL_GRBL) //by zyf
+          if(parser.codenum == 91){
+            set_relative_mode(true);
+          }else if(parser.codenum == 90){
+            set_relative_mode(false);
+          }else if(parser.codenum == 53){
+            G53();
+          }
+          
+        #endif
         G0_G1(TERN_(HAS_FAST_MOVES, parser.codenum == 0)); break;
 
       #if ENABLED(ARC_SUPPORT) && DISABLED(SCARA)
@@ -394,7 +404,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
       #endif
 
       #if ENABLED(CNC_COORDINATE_SYSTEMS)
-        case 53: G53(); break;                                    // G53: (prefix) Apply native workspace
+        //case 53: G53(); break;                                    // G53: (prefix) Apply native workspace
         case 54: G54(); break;                                    // G54: Switch to Workspace 1
         case 55: G55(); break;                                    // G55: Switch to Workspace 2
         case 56: G56(); break;                                    // G56: Switch to Workspace 3
@@ -416,8 +426,10 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 80: G80(); break;                                    // G80: Reset the current motion mode
       #endif
 
+      #if DISABLED(TL_GRBL)
       case 90: set_relative_mode(false); break;                   // G90: Absolute Mode
-      case 91: set_relative_mode(true);  break;                   // G91: Relative Mode
+      case 91: set_relative_mode(true); break;                    // G91: Relative Mode
+      #endif
 
       case 92: G92(); break;                                      // G92: Set current axis position(s)
 

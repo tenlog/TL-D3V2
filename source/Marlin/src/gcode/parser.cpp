@@ -310,18 +310,24 @@ void GCodeParser::parse(char *p) {
   #endif
   string_arg = nullptr;
   #if ENABLED(TL_GRBL)
-    if(letter == '$'){
+    if(command_letter == '$'){
       sprintf(grbl_arg, "%s", p);
+      return;
+    }
+    if(command_letter == '?'){
+      //command_letter = '';
+      //grbl_report_status();
+      //return;
     }
   #endif
 
   while (const char param = uppercase(*p++)) {  // Get the next parameter. A NUL ends the loop
 
-     #if ENABLED(TL_GRBL)
+     #if 0 // ENABLED(TL_GRBL)
         if(letter == '$' || letter == '?'){
           if(param == 'I'){
             //TLDEBUG_PRINTLN("$I found!");
-            return;
+            //return;
           }
         }
     #endif

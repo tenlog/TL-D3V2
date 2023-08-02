@@ -502,8 +502,10 @@ void GcodeSuite::G28() {
     #endif
   #endif
 
+  #if DISABLED(TL_GRBL)
   report_current_position();
-
+  #endif
+  
   if (ENABLED(NANODLP_Z_SYNC) && (doZ || ENABLED(NANODLP_ALL_AXIS)))
     SERIAL_ECHOLNPGM(STR_Z_MOVE_COMP);
 

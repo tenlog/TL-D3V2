@@ -56,9 +56,9 @@ inline void setup_endstop_interrupts() {
   #if HAS_X_MIN
     attachInterrupt(X_MIN_PIN, ExtInt_X_MIN_Callback, 0, CHANGE);
   #endif
-    #if HAS_X_MAX
+  #if HAS_X_MAX
     attachInterrupt(X_MAX_PIN, ExtInt_X_MAX_Callback, 1, CHANGE);
-    #endif
+  #endif
   #if HAS_Y_MIN
     attachInterrupt(Y_MIN_PIN, ExtInt_Y_MIN_Callback, 2, CHANGE);
   #endif

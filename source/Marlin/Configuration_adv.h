@@ -753,7 +753,9 @@
 
 //#define HOMING_BACKOFF_POST_MM { 2, 2, 2 }  // (mm) Backoff from endstops after homing
 
+#if ENABLED(TENLOG_L)
 //#define QUICK_HOME                          // If G28 contains XY do a diagonal move first
+#endif
 //#define HOME_Y_BEFORE_X                     // If G28 contains XY home Y before X
 //#define HOME_Z_FIRST                        // Home Z first. Requires a Z-MIN endstop (not a probe).
 //#define CODEPENDENT_XY_HOMING               // If X/Y can't home without homing Y/X first
@@ -942,7 +944,7 @@
 #if defined(TENLOG_L)
 #define DEFAULT_STEPPER_DEACTIVE_TIME 1 //by zyf .. 120 //Release stepper time
 #else
-#define DEFAULT_STEPPER_DEACTIVE_TIME 5 //by zyf .. 120 //Release stepper time
+#define DEFAULT_STEPPER_DEACTIVE_TIME 3 //by zyf .. 120 //Release stepper time
 #endif
 
 #define DISABLE_INACTIVE_X true
@@ -951,8 +953,13 @@
 #define DISABLE_INACTIVE_E true
 
 // Default Minimum Feedrates for printing and travel moves
-#define DEFAULT_MINIMUMFEEDRATE       0.0     // (mm/s) Minimum feedrate. Set with M205 S.
-#define DEFAULT_MINTRAVELFEEDRATE     0.0     // (mm/s) Minimum travel feedrate. Set with M205 T.
+#if ENABLED(TENLOG_L)
+  #define DEFAULT_MINIMUMFEEDRATE       10     // (mm/s) Minimum feedrate. Set with M205 S.
+  #define DEFAULT_MINTRAVELFEEDRATE     20     // (mm/s) Minimum travel feedrate. Set with M205 T.
+#else
+  #define DEFAULT_MINIMUMFEEDRATE       0     // (mm/s) Minimum feedrate. Set with M205 S.
+  #define DEFAULT_MINTRAVELFEEDRATE     0     // (mm/s) Minimum travel feedrate. Set with M205 T.
+#endif
 
 // Minimum time that a segment needs to take as the buffer gets emptied
 #define DEFAULT_MINSEGMENTTIME        20000   // (µs) Set with M205 B.
@@ -3258,7 +3265,7 @@
       #if ENABLED(LASER_MOVE_POWER)
         // Turn off the laser on G0 moves with no power parameter.
         // If a power parameter is provided, use that instead.
-        //#define LASER_MOVE_G0_OFF
+        #define LASER_MOVE_G0_OFF
 
         // Turn off the laser on G28 homing.
         #define LASER_MOVE_G28_OFF
@@ -3387,7 +3394,9 @@
  * Enables G53 and G54-G59.3 commands to select coordinate systems
  * and G92.1 to reset the workspace to native machine space.
  */
-//#define CNC_COORDINATE_SYSTEMS
+#if ENABLED(TL_GRBL)
+#define CNC_COORDINATE_SYSTEMS
+#endif
 
 /**
  * Auto-report temperatures with M155 S<seconds>

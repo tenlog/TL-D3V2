@@ -70,7 +70,7 @@ extern uint8_t wifi_mode;
 extern uint16_t http_port;
 extern bool wifi_connected;
 extern bool wifi_resent;
-extern int8_t wifiFirstSend;
+extern uint8_t wifiFirstSend;
 
 extern uint8_t wifi_printer_status[WIFI_MSG_LENGTH];
 extern uint8_t wifi_printer_settings[WIFI_MSG_LENGTH];

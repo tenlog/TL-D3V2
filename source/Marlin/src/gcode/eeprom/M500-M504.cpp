@@ -64,7 +64,7 @@ void GcodeSuite::M502() {
   SPI_RestartWIFI();
   #endif
   #if ENABLED(TL_BEEPER)
-    start_beeper(4, 1);
+    start_beeper(4, 1); //恢复出厂设置
   #endif
 }
 
@@ -131,26 +131,27 @@ void GcodeSuite::M502() {
   }
   #if ENABLED(TENLOG_L)
     void GcodeSuite::M1522(){
-      static bool weakLaserOn;
       if(!weakLaserOn){
         laser_power = 10;
         set_pwm_hw(laser_power, 1000);
         weakLaserOn = true;
-        start_beeper(2, 0);
+        start_beeper(2, 1); //开启弱光
         TLDEBUG_PRINTLN(" On");
       }else{
         set_pwm_hw(0, 1000);
         laser_power = 0;
         weakLaserOn = false;
-        start_beeper(4, 0);
+        start_beeper(2, 1); //关闭弱光
         TLDEBUG_PRINTLN(" Off");
       }
     }
 
+    #if ENABLED(TENLOG_L)
     void GcodeSuite::M1523(){
       if(!IS_SD_PRINTING()){
         char cmd[20];
-        start_beeper(2, 1);
+        start_beeper(2, 1); //回零
+        /*
         if(READ(X_STOP_PIN) == 0){
           float fX = current_position.x - LASER_ENDSTOP_WIDTH;
           sprintf(cmd, "G0 X%02f", fX);
@@ -163,11 +164,18 @@ void GcodeSuite::M502() {
           EXECUTE_GCODE(cmd);
           delay(200);
         }
+        */
+        tlStoped = false;
+        EXECUTE_GCODE("M999");
+        safe_delay(200);
+        isHoming = true;
         EXECUTE_GCODE("G28 XY");
-        safe_delay(1000);
-        EXECUTE_GCODE("G0 X0Y0");
+        //safe_delay(500);
+        //EXECUTE_GCODE("G0 X0Y0");
+        isHoming = false;
       }
     }
+    #endif
   #endif
 
 #endif

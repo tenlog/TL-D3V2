@@ -85,20 +85,20 @@ Version     033
 //TL Medels and version
 //#define TENLOG_H2
 //#define TENLOG_D3HS   //High Speed
-//#define TENLOG_D3
+#define TENLOG_D3
 //#define TENLOG_S2   //single head
-#define TENLOG_S3   //single head
+//#define TENLOG_S3   //single head
 //#define TENLOG_M3
 //#define TENLOG_M3S
 //#define TENLOG_L4   //laser only
 //#define TENLOG_D5
 //#define TENLOG_D6
-//#define TENLOG_D8
+//#define TENLOG_D8     
 //#define TENLOG_LW8   //发光字 Luminous words
 //#define TENLOG_LW3   //发光字 Luminous words
-//#define TENLOG_X3      //4进2出 Neza
+//#define TENLOG_X3    //4进2出 Neza
 
-#define TL_DEBUG    //debug
+//#define TL_DEBUG    //debug
 //#define DUAL_HEAD_BLTOUCH
 
 #if ANY(TENLOG_LW8, TENLOG_LW3)
@@ -114,12 +114,12 @@ Version     033
 #endif
 
 //Headers
-#if ANY(TENLOG_S3,TENLOG_S2,TENLOG_M3S)
+#if ANY(TENLOG_S3,TENLOG_S2,TENLOG_LW,TENLOG_M3S)
   #define SINGLE_HEAD
   #define EXTRUDERS 1
-#elif(ENABLED(TENLOG_LW))
-  #define MIXING_EXTRUDER
-  #define EXTRUDERS 1
+  #if ENABLED(TENLOG_LW)
+    #define MIXING_EXTRUDER
+  #endif
 #elif ENABLED(TENLOG_L)
   #define EXTRUDERS 1
 #else
@@ -132,7 +132,7 @@ Version     033
 #endif
 
 //Auto leveling.
-#if ANY(SINGLE_HEAD, TENLOG_LW, DUAL_HEAD_BLTOUCH, TENLOG_X)
+#if ANY(SINGLE_HEAD, DUAL_HEAD_BLTOUCH, TENLOG_X)
   #ifndef TENLOG_M3S
     #define BLTOUCH
     #define TLTOUCH
@@ -157,8 +157,11 @@ Version     033
   //#define ESP32_WIFI
   #define TL_GRBL
   #define LASER_ENDSTOP_WIDTH -2
-#else
   #define ESP32_WIFI
+#endif
+
+#ifdef TL_GRBL
+  #define GRBL_BREATHE  1000
 #endif
 
 // The size of the printable area
@@ -205,9 +208,9 @@ Version     033
   #define Z_LENGTH   610
 #elif defined(TENLOG_L4)
   #define TL_MODEL_STR_0 "L4"
-  #define X_BED_SIZE 410
-  #define Y_BED_SIZE 410
-  #define Z_LENGTH   100
+  #define X_BED_SIZE 400
+  #define Y_BED_SIZE 400
+  #define Z_LENGTH   10
 #elif defined(TENLOG_S3)
   #define TL_MODEL_STR_0 "S3"
   #define X_BED_SIZE 360
@@ -261,12 +264,16 @@ Version     033
   #define WIFI_DEFAULT_SSID "TL-3D"
   #define WIFI_DEFAULT_PSWD "12345678"
   #define WIFI_DEFAULT_ACCE_CODE "12345"
+  #if ENABLED(TL_NO_SCREEN)
   #define WIFI_DEFAULT_MODE 2
+  #else
+  #define WIFI_DEFAULT_MODE 0
+  #endif
   #define WIFI_DEFAULT_PORT 80
   #define WIFI_DEFAULT_IP_SETTINGS {192,168,0,1,255,255,255,0,192,168,0,88}
 #endif
 
-#if defined(TENLOG_M3) || defined(TENLOG_M3S) 
+#if defined(TENLOG_M3) || defined(TENLOG_M3S)
   #define INVERT_X_DIR false
 #else
   #define INVERT_X_DIR true
@@ -983,12 +990,14 @@ Version     033
 #define USE_ZMAX_PLUG
 
 #if ENABLED(TENLOG_L)
+  //#undef USE_XMAX_PLUG
+  //#undef USE_YMAX_PLUG
   #undef USE_ZMAX_PLUG
 #elif ENABLED(BLTOUCH)
   #undef USE_YMAX_PLUG
-  #if ANY(SINGLE_HEAD, TENLOG_LW)
+  #if ENABLED(SINGLE_HEAD)
     #undef USE_ZMAX_PLUG
-    #undef USE_XMIN_PLUG
+    #undef USE_XMAX_PLUG
   #endif
 #else
   #undef USE_YMAX_PLUG
@@ -1000,12 +1009,12 @@ Version     033
 #if DISABLED(ENDSTOPPULLUPS)
   // Disable ENDSTOPPULLUPS to set pullups individually
   //#define ENDSTOPPULLUP_XMAX
-  //#define ENDSTOPPULLUP_YMAX
-  //#define ENDSTOPPULLUP_ZMAX
-  //#define ENDSTOPPULLUP_XMIN
-  //#define ENDSTOPPULLUP_YMIN
-  //#define ENDSTOPPULLUP_ZMIN
-  //#define ENDSTOPPULLUP_ZMIN_PROBE
+  #define ENDSTOPPULLUP_YMAX
+  #define ENDSTOPPULLUP_ZMAX
+  #define ENDSTOPPULLUP_XMIN
+  #define ENDSTOPPULLUP_YMIN
+  #define ENDSTOPPULLUP_ZMIN
+  #define ENDSTOPPULLUP_ZMIN_PROBE
 #endif
 
 // Enable pulldown for all endstops to prevent a floating state
@@ -1022,16 +1031,24 @@ Version     033
 #endif
 
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
-#if ENABLED(TENLOG_LW)
+#if ANY(TENLOG_LW, TENLOG_L)
   #define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop. 高电平触发
 #else
   #define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop. 低电平触发
 #endif
 
-#define Y_MIN_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop. 低电平触发
-#define Z_MIN_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
+#define Y_MIN_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop. 
+
+#if ENABLED(TENLOG_L)
+#define X_MAX_ENDSTOP_INVERTING !X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
+#define Y_MAX_ENDSTOP_INVERTING !X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
+#define Z_MIN_ENDSTOP_INVERTING !X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
+#else
 #define X_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
 #define Y_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
+#define Z_MIN_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
+#endif
+
 #define Z_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
 #define Z_MIN_PROBE_ENDSTOP_INVERTING false // Set to true to invert the logic of the probe.
 
@@ -1040,7 +1057,7 @@ Version     033
  *
  * These settings allow Marlin to tune stepper driver timing and enable advanced options for
  * stepper drivers that support them. You may also override timing options in Configuration_adv.h.
- *
+ 
  * A4988 is assumed for unspecified drivers.
  *
  * Use TMC2208/TMC2208_STANDALONE for TMC2225 drivers and TMC2209/TMC2209_STANDALONE for TMC2226 drivers.
@@ -1077,7 +1094,10 @@ Version     033
 // Enable this feature if all enabled endstop pins are interrupt-capable.
 // This will remove the need to poll the interrupt pins, saving many CPU cycles.
 //by zyf 这里没写 BED_PROBE 的部分，导致使用热床探针的时候失效
-#define ENDSTOP_INTERRUPTS_FEATURE
+//限位器中断
+#if DISABLED(TENLOG_L)
+  #define ENDSTOP_INTERRUPTS_FEATURE
+#endif
 
 /**
  * Endstop Noise Threshold
@@ -1251,7 +1271,7 @@ Version     033
   #define USE_PROBE_FOR_Z_HOMING
   #if ENABLED(USE_PROBE_FOR_Z_HOMING)
     #define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
-    #if ANY(SINGLE_HEAD, TENLOG_LW)
+    #if ENABLED(SINGLE_HEAD)
       #define Z_MIN_ENDSTOP_PROBE_OFFSET
     #endif
   #endif
@@ -1592,17 +1612,18 @@ Version     033
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
-#if ANY(TENLOG_LW, SINGLE_HEAD)
-  #define X_HOME_DIR 1
-#else
+//#if ENABLED(TENLOG_L)
+//  #define X_HOME_DIR 1
+//#else
   #define X_HOME_DIR -1
-#endif
+//#endif
+
 #define Y_HOME_DIR -1
 #define Z_HOME_DIR -1
 
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
-#if ANY(SINGLE_HEAD, TENLOG_LW)
+#if ENABLED(SINGLE_HEAD)
   #define X_MIN_POS 0
 #elif ENABLED(TENLOG_L)
   #define X_MIN_POS LASER_ENDSTOP_WIDTH
@@ -1630,7 +1651,9 @@ Version     033
  */
 
 // Min software endstops constrain movement within minimum coordinate bounds
+#if DISABLED(TENLOG_L)
 #define MIN_SOFTWARE_ENDSTOPS
+#endif
 #if ENABLED(MIN_SOFTWARE_ENDSTOPS)
   #define MIN_SOFTWARE_ENDSTOP_X
   #define MIN_SOFTWARE_ENDSTOP_Y
@@ -1638,7 +1661,9 @@ Version     033
 #endif
 
 // Max software endstops constrain movement within maximum coordinate bounds
+#if DISABLED(TENLOG_L)
 #define MAX_SOFTWARE_ENDSTOPS
+#endif
 #if ENABLED(MAX_SOFTWARE_ENDSTOPS)
   #define MAX_SOFTWARE_ENDSTOP_X
   #define MAX_SOFTWARE_ENDSTOP_Y

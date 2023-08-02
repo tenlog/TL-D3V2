@@ -56,6 +56,11 @@ GCodeQueue queue;
   #include "../feature/repeat.h"
 #endif
 
+#if ENABLED(TENLOG_TOUCH_LCD)
+#include "../lcd/tenlog/tenlog_touch_lcd.h"
+#endif
+
+
 // Frequently used G-code strings
 PGMSTR(G28_STR, "G28");
 
@@ -437,8 +442,21 @@ void GCodeQueue::get_serial_commands() {
         continue;
       }
 
-      const char serial_char = (char)c;
+      char serial_char = (char)c;
       SerialState &serial = serial_state[p];
+
+      #if ENABLED(TL_GRBL)
+      if(serial_char == '?' && (serial.line_buffer[0] == '\n' || serial.line_buffer[0] == '\0' || serial.line_buffer[0] == '?'
+       || serial.line_buffer[1] == '?' || serial.line_buffer[2] == '?' || serial.line_buffer[3] == '?'
+        || serial.line_buffer[4] == '?' || serial.line_buffer[5] == '?' || serial.line_buffer[6] == '?')){ //by zyf
+        grbl_report_status();
+        safe_delay(5);
+        serial_char = '\n';
+      }else if(serial_char == 24){
+        EXECUTE_GCODE("M81");
+        serial_char = '\n';
+      }
+      #endif
 
       if (ISEOL(serial_char)) {
 
@@ -511,7 +529,7 @@ void GCodeQueue::get_serial_commands() {
               #endif
                 PORT_REDIRECT(SERIAL_PORTMASK(p));     // Reply to the serial port that sent the command
                 SERIAL_ECHOLNPGM(STR_ERR_STOPPED);
-                //LCD_MESSAGEPGM(MSG_STOPPED); //by zyf
+                //LCD_MESSAGEPGM(MSG_STOPPED); 
                 break;
             }
           }

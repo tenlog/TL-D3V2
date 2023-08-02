@@ -2787,7 +2787,8 @@ void Stepper::endstop_triggered(const AxisEnum axis) {
   quick_stop();
   #if ENABLED(TL_GRBL)
     if(!isHoming){
-      TLECHO_PRINTLN("ALARM:1");
+      tlStoped = true;
+      //TLECHO_PRINTLN("ALARM:1");
     }
   #endif
 
@@ -2814,12 +2815,12 @@ int32_t Stepper::triggered_position(const AxisEnum axis) {
 void Stepper::report_a_position(const xyz_long_t &pos) {
   #if ANY(CORE_IS_XY, CORE_IS_XZ, MARKFORGED_XY, DELTA, IS_SCARA)
     SERIAL_ECHOPAIR(STR_COUNT_A, pos.x, " B:", pos.y);
-  #else
+  #elif DISABLED(TL_GRBL)
     SERIAL_ECHOPAIR_P(PSTR(STR_COUNT_X), pos.x, SP_Y_LBL, pos.y);
   #endif
   #if ANY(CORE_IS_XZ, CORE_IS_YZ, DELTA)
     SERIAL_ECHOLNPAIR(" C:", pos.z);
-  #else
+  #elif DISABLED(TL_GRBL)
     SERIAL_ECHOLNPAIR_P(SP_Z_LBL, pos.z);
   #endif
 }

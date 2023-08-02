@@ -59,7 +59,7 @@ static inline __always_inline void noInterrupts() {
 }
 void init(void);
 extern void setup_Extinterrupt(void);
-extern void attachInterrupt(uint8 pin, voidFuncPtr handler, uint8 irqNum,ExtIntTriggerMode mode);
+extern void attachInterrupt(uint8 pin, voidFuncPtr handler, uint8 irqNum, ExtIntTriggerMode mode);
 extern void ExtInt_X_MIN_Callback(void);
 extern void ExtInt_X_MAX_Callback(void);
 extern void ExtInt_Y_MIN_Callback(void);

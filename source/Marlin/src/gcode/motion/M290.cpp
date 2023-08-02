@@ -94,7 +94,7 @@ void GcodeSuite::M290() {
         int32_t zoffset = tl_Z_HOME_POS * 1000;
         sprintf_P(cmd, PSTR("settings.xZOffset.val=%d"), -zoffset);
         TLSTJC_println(cmd);
-        sprintf_P(cmd, PSTR("babystep.xBaby.val=%d"), -zoffset);
+        sprintf_P(cmd, PSTR("xBaby.val=%d"), -zoffset);
         TLSTJC_println(cmd);
         EXECUTE_GCODE(PSTR("M500"));
       #endif

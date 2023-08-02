@@ -903,7 +903,7 @@ void kill(PGM_P const lcd_error/*=nullptr*/, PGM_P const lcd_component/*=nullptr
         TJCMessage(1, 1, 24, "", "", "", ErrorMessage);
       }
       #if ENABLED(TL_BEEPER)
-        start_beeper(4, 0);
+        start_beeper(4, 0); //重启
         safe_delay(1200);
       #endif
     }
@@ -1680,7 +1680,7 @@ void setup() {
 
   #if ENABLED(TL_BEEPER)
     start_beeper(2, 1);
-    safe_delay(200);
+    safe_delay(200); //开机成功
   #endif
 
   #if ENABLED(TENLOG_L)

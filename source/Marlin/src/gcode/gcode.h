@@ -1118,6 +1118,8 @@ private:
   #if ENABLED(TL_GRBL)
     static void grbl_d();
     static void grbl_a();
+    static void grbl_j();
+    static void grbl_dd();
   #endif
 
   static void T(const int8_t tool_index);

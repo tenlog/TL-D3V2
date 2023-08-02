@@ -82,7 +82,7 @@
   #define X_STOP_PIN         PC13// x-
   #define Z_STOP_PIN         PC15// Z-
   #if defined(TENLOG_M3)
-    #define Z_MAX_PIN        PC15// 14Z+ //不能有这行，否则Z回零第一次触碰之后不会抬高。很诡异的错误！
+    #define Z_MAX_PIN        PC15//
     //PC14 to hw pwm for bl touch
   #elif defined(BLTOUCH)
     //#define Z_MAX_PIN        PC15// 14Z+ //不能有这行，否则Z回零第一次触碰之后不会抬高。很诡异的错误！
@@ -91,17 +91,17 @@
     #define Z_MAX_PIN        PC14// 14Z+
   #endif
 #elif defined(TENLOG_L)
-  #define X_STOP_PIN         PC13// x-
-  #define X_MAX_PIN          PE5// x+
-  #define Y_STOP_PIN         PC3// y-
-  #define Y_MAX_PIN          PA10// y+
-  #define Z_STOP_PIN         PC15// Z-
-  //#define Z_MAX_PIN          PC15// Z-
-#elif defined(BLTOUCH) && (defined(SINGLE_HEAD) || defined(TENLOG_LW))
-  #if ENABLED(TENLOG_LW)
-    #define X_STOP_PIN         PC13// x-
+  #define X_MIN_PIN           PC13// x-
+  #define X_MAX_PIN           PE11// x+
+  #define Y_STOP_PIN          PC3// y-
+  #define Y_MAX_PIN           PE9// y+
+  #define Z_STOP_PIN          PC15// Z-
+  //#define Z_MAX_PIN         PC15// Z-
+#elif defined(BLTOUCH) && defined(SINGLE_HEAD)
+  #ifdef TENLOG_LW
+    #define X_STOP_PIN         PC13// x+
   #else
-   #define X_MAX_PIN          PH2// x-
+    #define X_MAX_PIN         PH2// x+
   #endif
   #define Y_STOP_PIN         PC3// y-
   #define Z_STOP_PIN         PC15// Z- 
@@ -113,7 +113,7 @@
   #define Z_MAX_PIN          PC15// Z-
 #endif
 
-#if ENABLED(TENLOG_L)
+#ifdef TENLOG_L
   #define LASER_FAN_PIN       PD3
   #define RESET_PIN           PA15 
   #define TL_BUTTON_START_PIN       PC14
@@ -121,7 +121,7 @@
   #define TL_BUTTON_LIGHT_PIN PD8
 #endif
 
-#if ENABLED(TL_BEEPER)
+#ifdef TL_BEEPER
   #define TL_BEEPER_PIN   PE3//PC3
 #endif
 
@@ -145,11 +145,11 @@
 #define XX_STEP_PIN        PA9
 #define XX_DIR_PIN         PA8
 #else
-  #define X_ENABLE_PIN       PB2
-  #if !defined(TENLOG_S2) && !defined(TENLOG_S3)
-    #define X2_ENABLE_PIN      X_ENABLE_PIN
-    #define X2_STEP_PIN        PA9
-    #define X2_DIR_PIN         PA8
+  #define X_ENABLE_PIN     PB2
+  #if !defined(SINGLE_HEAD)
+    #define X2_ENABLE_PIN  X_ENABLE_PIN
+    #define X2_STEP_PIN    PA9
+    #define X2_DIR_PIN     PA8
   #endif
 #endif
 
@@ -174,7 +174,7 @@
 #define E0_ENABLE_PIN      X_ENABLE_PIN
 #define E1_ENABLE_PIN      X_ENABLE_PIN
 
-#if ENABLED(TENLOG_LW)
+#ifdef TENLOG_LW
   #define E0_STEP_PIN        PB13
   #define E0_DIR_PIN         PB12
   #define E1_STEP_PIN        PB4
@@ -182,8 +182,8 @@
   #define Z2_STEP_PIN        PB6
   #define Z2_DIR_PIN         PB5
 #else
-  #define Z2_STEP_PIN         PB13
-  #define Z2_DIR_PIN          PB12
+  #define Z2_STEP_PIN        PB13
+  #define Z2_DIR_PIN         PB12
   #define E0_STEP_PIN        PB4
   #define E0_DIR_PIN         PB3
   #define E1_STEP_PIN        PB6

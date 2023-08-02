@@ -166,6 +166,9 @@ char TJCModelNo[64]={""};
  char grbl_arg[30] = {""};
  bool isHoming = false;
  uint32_t Homing_start = 0;
+ bool tlStoped = false;
+ bool weakLaserOn = false;
+ //bool grbl_1stconnected = false;
 #endif
 
 long ConvertHexLong(long command[], int Len)
@@ -571,10 +574,10 @@ void tlSendSettings(bool only_wifi){
         PRINTTJC(cmd);
         #endif
         
-        sprintf_P(cmd, PSTR("main.vXMax.val=%d"), lOffsetX / 10);
+        sprintf_P(cmd, PSTR("main.vXMax.val=%d"), X_MAX_POS * 10);
         PRINTTJC(cmd);
-        TERN_(ESP32_WIFI, wifi_printer_settings[31] = (lOffsetX/10)/0x100);
-        TERN_(ESP32_WIFI, wifi_printer_settings[32] = (lOffsetX/10)%0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[31] = (X_MAX_POS * 10)/0x100);
+        TERN_(ESP32_WIFI, wifi_printer_settings[32] = (X_MAX_POS * 10)%0x100);
         sprintf_P(cmd, PSTR("main.vYMax.val=%d"), Y_MAX_POS * 10);
         PRINTTJC(cmd);
         TERN_(ESP32_WIFI, wifi_printer_settings[33] = (Y_MAX_POS*10)/0x100);
@@ -727,8 +730,8 @@ void tlSendSettings(bool only_wifi){
         PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("auto_level.xM851Y.val=%d"), M851Y);
         PRINTTJC(cmd);
-        sprintf_P(cmd, PSTR("auto_level.xM851Z.val=%d"), M851Z);
-        PRINTTJC(cmd);
+        //sprintf_P(cmd, PSTR("auto_level.xM851Z.val=%d"), M851Z);
+        //PRINTTJC(cmd);
         #endif //HAS_BED_PROBE
     }else if(tl_TouchScreenType == 0){
         DWN_DELAY;
@@ -1273,7 +1276,7 @@ void TLSDPrintFinished(){
 
     }
     #if ENABLED(TL_BEEPER)
-    start_beeper(16, 1);
+    start_beeper(8, 1); //打印完毕 4长声
     #endif
 }
 
@@ -2452,7 +2455,7 @@ void tenlog_status_update(bool isTJC)
     //TLDEBUG_PRINTLNPAIR("E0 Flow", e0_flow, "E1 Flow", e1_flow);    
 
     #if (HAS_WIFI)
-    if((wifi_connected || wifiFirstSend < 2000) && !isTJC){
+    if((wifi_connected || wifiFirstSend < 200) && !isTJC){
         wifiFirstSend ++;
         
         ZERO(wifi_printer_status);
@@ -2528,6 +2531,7 @@ void tenlog_status_update(bool isTJC)
         wifi_printer_status[35] =  lnSeconds; //SD OK
         
         WIFI_TX_Handler(0x07);
+        TLDEBUG_PRINTLNPAIR("Wifi Send: 0x07: ", wifiFirstSend);
 
         if(!wifi_resent && wifi_connected){
            #if ENABLED(SDSUPPORT)
@@ -3019,7 +3023,7 @@ void process_command_gcode(long _tl_command[]) {
                     settings.plr_fn_save(lF-1);
                     TLDEBUG_PRINTLN(cmd);
                     #if ENABLED(TENLOG_L)
-                    EXECUTE_GCODE("G92 X-20 Y5");
+                    EXECUTE_GCODE("G92 X0 Y0");
                     #endif
                     EXECUTE_GCODE(cmd);
                 }
@@ -3034,7 +3038,7 @@ void process_command_gcode(long _tl_command[]) {
                     }
                     if(strlen(pre_print_file_name) > 2){
                         #if ENABLED(TL_BEEPER)
-                        start_beeper(100,0);
+                        //start_beeper(100,0);
                         #endif
                         //sprintf_P(cmd, PSTR("M%d !%s"), lM, fileNameP);
                     }
@@ -3554,26 +3558,51 @@ void start_beeper(uint8_t count, uint8_t type){
 #endif //TL_BEEPER
 
 void tl_sd_abort_on_endstop_hit(){  //only for x & y
-    #if ENABLED(TL_SD_ABORT_ON_ENDSTOP_HIT)
-        static uint8_t last_hitX;
-        static uint8_t last_hitY;
-        static uint8_t last_hitZ;
+    #if ANY(TL_SD_ABORT_ON_ENDSTOP_HIT, TL_GRBL)
+        static uint8_t last_hitX = X_MIN_ENDSTOP_INVERTING;
+        static uint8_t last_hitXMax = X_MIN_ENDSTOP_INVERTING;
+        static uint8_t last_hitY = Y_MIN_ENDSTOP_INVERTING;
+        static uint8_t last_hitYMax = Y_MIN_ENDSTOP_INVERTING;
+        static uint8_t last_hitZ = Z_MIN_ENDSTOP_INVERTING;
         uint8_t hitX = READ(X_STOP_PIN);
         uint8_t hitY = READ(Y_STOP_PIN);
+        uint8_t hitXMax = READ(X_MAX_PIN);
+        uint8_t hitYMax = READ(Y_MAX_PIN);
         uint8_t hitZ = READ(Z_STOP_PIN);
-        if(hitX == last_hitX && hitY == last_hitY && hitZ == last_hitZ) return;
+        if(hitX == last_hitX && hitY == last_hitY && hitXMax == last_hitXMax && hitYMax == last_hitYMax && hitZ == last_hitZ) return;
         last_hitZ = hitZ;
         last_hitX = hitX;
         last_hitY = hitY;
-        if(hitX == 0 || hitY == 0 || hitZ == 0){
+        last_hitXMax = hitXMax;
+        last_hitYMax = hitYMax;
+        if(hitX != X_MIN_ENDSTOP_INVERTING 
+        || hitY != Y_MIN_ENDSTOP_INVERTING 
+        || hitXMax != X_MAX_ENDSTOP_INVERTING 
+        || hitYMax != Y_MAX_ENDSTOP_INVERTING 
+        || hitZ != Z_MIN_ENDSTOP_INVERTING){
             if(IS_SD_PRINTING()){
-                TLDEBUG_PRINTLN("EndStop Hited!!"); //by zyf
+                char cmd[128];
+                sprintf(cmd, "X0:%d, Y0:%d, Z0:%d, X1:%d, Y1:%d", hitX, hitY, hitZ, hitXMax, hitYMax);
+                TLDEBUG_PRINTLN(cmd); //by zyf
+                tlStoped = true;                
+
                 tlAbortPrinting();
-                #if ENABLED(TL_BEEPER)
-                start_beeper(32, 0);
-                #endif
+                //stop();
             }
         }
+        #if ENABLED(TL_GRBL)
+        if(hitZ != Z_MIN_ENDSTOP_INVERTING){
+            tlStoped = true;
+            /*
+            TLECHO_PRINTLN("ALARM:1");
+            #if ENABLED(TL_BEEPER)
+                start_beeper(6, 0); //倾倒开关
+                safe_delay(2000);
+            #endif
+            stop();
+            */
+        }
+        #endif
     #endif
 }
 
@@ -3607,7 +3636,22 @@ void read_blt(){
 }
 */
 
-void TL_idle(){    
+void TL_idle(){
+    #if ENABLED(TL_GRBL)
+    static bool i_tlStoped = false;
+    if(i_tlStoped != tlStoped){
+        if(tlStoped){
+            //planner.finish_and_disable();
+            WRITE(X_ENABLE_PIN, HIGH);
+            TLECHO_PRINTLN("ALARM:1");            
+            start_beeper(6, 0);
+            safe_delay(2000);
+            stop();
+        }
+        i_tlStoped = tlStoped;
+    }
+    #endif
+
     #if ENABLED(TL_BEEPER)
         button_light_handler();
         tl_beeper_handler(); 
@@ -3619,6 +3663,9 @@ void TL_idle(){
     #endif
     tl_sd_abort_on_endstop_hit();
     CheckLaserFan();
+    #if ENABLED(TL_GRBL)
+        grbl_idle();
+    #endif
 }
 
 #define CEND  0xFF
@@ -4033,6 +4080,38 @@ void command_M1521(int8_t Status){
     if(Status) WRITE(LED_PIN, 1); else WRITE(LED_PIN, 0);
 }
 
+#if ENABLED(TL_GRBL)
+char message[64]={""};
 
+void grbl_breathe(){
+    static uint32_t grbl_breathe_time;
+    if(millis() - grbl_breathe_time > GRBL_BREATHE){
+        grbl_report_status();
+        //TLECHO_PRINTLN("Grbl 1.1g ['$' for help]");
+        grbl_breathe_time = millis();
+    }
+}
+
+void grbl_idle(){
+    //if(!grbl_1stconnected){
+        //grbl_breathe();
+    //}
+}
+
+void grbl_report_status(){
+    static char m_static[20];
+    if(tl_busy_state){
+        sprintf(m_static, "%s", "Cycle");
+    }else if(isHoming){
+        sprintf(m_static, "%s", "Homing");
+    }else if(IsStopped()){
+        sprintf(m_static, "%s", "Alarm");
+    }else{
+        sprintf(m_static, "%s", "Idle");
+    }
+    sprintf(message, "<%s|MPos:%02f,%02f,%02f|Fs:%d,0>",m_static,current_position.x,current_position.y,current_position.z,feedrate_mm_s);
+    TLECHO_PRINTLN(message);
+}
+#endif //TL_GRBL
 
 #endif  //TENLOG_TOUCH_LCD

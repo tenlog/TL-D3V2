@@ -273,6 +273,10 @@
 #define LOOP_LE_N(VAR, N) LOOP_S_LE_N(VAR, 0, N)
 #define LOOP_L_N(VAR, N) LOOP_S_L_N(VAR, 0, N)
 
+//by zyf copy from 2.0.9.6
+#define NUM_AXES  3
+#define LOOP_NUM_AXES(VAR) LOOP_S_L_N(VAR, X_AXIS, NUM_AXES)
+
 #define NOOP (void(0))
 
 #define CEILING(x,y) (((x) + (y) - 1) / (y))

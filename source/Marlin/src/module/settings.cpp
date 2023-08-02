@@ -662,6 +662,7 @@ void MarlinSettings::postprocess() {
   bool MarlinSettings::size_error(const uint16_t size) {
     if (size != datasize()) {
       DEBUG_ERROR_MSG("EEPROM datasize error.");
+      TLECHO_PRINTLN("EEPROM datasize error.");
       return true;
     }
     return false;
@@ -4179,6 +4180,9 @@ void MarlinSettings::reset() {
       sprintf_P(cmd, "Local IP:%d.%d.%d.%d.",wifi_ip_settings[8],wifi_ip_settings[9],wifi_ip_settings[10],wifi_ip_settings[11]);
       TLDEBUG_PRINTLN(cmd);
     #endif
+
+    TLDEBUG_PRINTLNPAIR("Data Size:", datasize());
+
   }
 
 #endif // !DISABLE_M503

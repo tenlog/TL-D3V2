@@ -76,22 +76,23 @@ void GcodeSuite::M320() {
       card.tl_ls(false);
     }
     if(strlen(pre_print_file_name)>2){
-      EXECUTE_GCODE("G92 X0 Y0");
-      delay(500);
+      EXECUTE_GCODE("G92 X-3 Y-3");
+      EXECUTE_GCODE("G0 X0 Y0");
+      safe_delay(500);
       sprintf(cmd, "M32 !%s", pre_print_file_name);
       ZERO(pre_print_file_name);
       EXECUTE_GCODE(cmd);
       #if ENABLED(TL_BEEPER)
-      start_beeper(2, 1);
+      start_beeper(2, 1); //开始打印
       #endif      
     }else{
       #if ENABLED(TL_BEEPER)
-      start_beeper(8, 0);
+      start_beeper(0, 0);
       #endif      
     }
   }else{
     #if ENABLED(TL_BEEPER)
-    start_beeper(2, 1);
+    start_beeper(2, 1); //停止打印
     #endif
     tlAbortPrinting();
   }

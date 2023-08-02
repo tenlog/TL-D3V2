@@ -414,11 +414,11 @@ void Endstops::event_handler() {
 
     #if BOTH(SD_ABORT_ON_ENDSTOP_HIT, SDSUPPORT)
       if (planner.abort_on_endstop_hit) {
-        TLDEBUG_PRINTLN("EndStop Hited!!"); //by zyf
-        tlAbortPrinting();
-        #if ENABLED(TL_BEEPER)
-        start_beeper(32, 0);
-        #endif
+        //TLDEBUG_PRINTLN("EndStop Hited!!"); //by zyf
+        //tlAbortPrinting();
+        //#if ENABLED(TL_BEEPER)
+        //start_beeper(32, 0);
+        //#endif
       }
     #endif
   }
@@ -701,7 +701,7 @@ void Endstops::update() {
   #define PROCESS_ENDSTOP(AXIS, MINMAX) do { \
     if (TEST_ENDSTOP(_ENDSTOP(AXIS, MINMAX))) { \
       _ENDSTOP_HIT(AXIS, MINMAX); \
-      /*WRITE(LED_PIN, 0);*/   \
+      /*WRITE(TL_BEEPER_PIN, 1);*/   \
       planner.endstop_triggered(_AXIS(AXIS)); \
     }else{    \
       /*WRITE(LED_PIN, 1);*/   \
@@ -789,8 +789,14 @@ void Endstops::update() {
 
   if (stepper.axis_is_moving(X_AXIS)) {
     if (stepper.motor_direction(X_AXIS_HEAD)) { // -direction
-      #if HAS_X_MIN || (X_SPI_SENSORLESS && X_HOME_DIR < 0)
-        PROCESS_ENDSTOP_X(MIN);
+      #if HAS_X_MIN || (X_SPI_SENSORLESS && X_HOME_DIR < 0)        
+        #if 0 //ENABLED(TENLOG_L) //by zyf noneed..
+          if(isHoming){
+            PROCESS_ENDSTOP_X(MIN);
+          }
+        #else
+          PROCESS_ENDSTOP_X(MIN);
+        #endif
         #if   CORE_DIAG(XY, Y, MIN)
           PROCESS_CORE_ENDSTOP(Y,MIN,X,MIN);
         #elif CORE_DIAG(XY, Y, MAX)
@@ -803,13 +809,9 @@ void Endstops::update() {
       #endif
     }
     else { // +direction
-      #if 0 //ENABLED(TENLOG_L)
-        if(!isHoming && millis()-Homing_start>8000){
-          PROCESS_ENDSTOP_X(MIN);
-        }
-      #endif
+      
       #if HAS_X_MAX || (X_SPI_SENSORLESS && X_HOME_DIR > 0)
-        PROCESS_ENDSTOP_X(MAX);
+        PROCESS_ENDSTOP_X(MAX); //无反应？
         #if   CORE_DIAG(XY, Y, MIN)
           PROCESS_CORE_ENDSTOP(Y,MIN,X,MAX);
         #elif CORE_DIAG(XY, Y, MAX)
@@ -826,7 +828,13 @@ void Endstops::update() {
   if (stepper.axis_is_moving(Y_AXIS)) {
     if (stepper.motor_direction(Y_AXIS_HEAD)) { // -direction
       #if HAS_Y_MIN || (Y_SPI_SENSORLESS && Y_HOME_DIR < 0)
-        PROCESS_ENDSTOP_Y(MIN);
+        #if 0 //ENABLED(TENLOG_L) //by zyf noneed..
+          if(isHoming){
+            PROCESS_ENDSTOP_Y(MIN);
+          }
+        #else
+          PROCESS_ENDSTOP_Y(MIN);
+        #endif
         #if   CORE_DIAG(XY, X, MIN)
           PROCESS_CORE_ENDSTOP(X,MIN,Y,MIN);
         #elif CORE_DIAG(XY, X, MAX)
@@ -839,11 +847,6 @@ void Endstops::update() {
       #endif
     }
     else { // +direction
-      #if 0 //ENABLED(TENLOG_L)
-        if(!isHoming && millis()-Homing_start>10000){
-          PROCESS_ENDSTOP_Y(MIN);
-        }
-      #endif
       #if HAS_Y_MAX || (Y_SPI_SENSORLESS && Y_HOME_DIR > 0)
         PROCESS_ENDSTOP_Y(MAX);
         #if   CORE_DIAG(XY, X, MIN)

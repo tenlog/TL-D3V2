@@ -39,7 +39,7 @@ uint8_t wifi_ip_settings[20] = WIFI_DEFAULT_IP_SETTINGS;
 uint8_t wifi_mode = WIFI_DEFAULT_MODE;
 uint16_t http_port = WIFI_DEFAULT_PORT;
 bool wifi_connected = false;
-int8_t wifiFirstSend = 0;
+uint8_t wifiFirstSend = 0;
 bool wifi_resent = false;
 
 char wifi_tjc_cmd[64]="";

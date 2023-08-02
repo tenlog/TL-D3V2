@@ -250,7 +250,7 @@ extern uint8_t sd_OK;
     extern char pre_print_file_name[13];
     extern uint32_t last_laser_time;
     extern uint16_t laser_power;
-    #define LASER_FAN_DELAY 30000
+    #define LASER_FAN_DELAY 180000
 #endif
 
 #if ENABLED(TL_STEPTEST)
@@ -270,6 +270,11 @@ extern char TJCModelNo[64];
     extern char grbl_arg[30];
     extern bool isHoming;
     extern uint32_t Homing_start;
+    extern bool tlStoped;
+    extern bool weakLaserOn;
+    //extern bool grbl_1stconnected;
+    void grbl_idle();
+    void grbl_report_status();
 #endif
 
 #endif  //TENLOG_TOUCH_LCD
