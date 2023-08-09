@@ -87,6 +87,18 @@ void GcodeSuite::M3_M4(const bool is_M4) {
     return cutter.unitPower;
   };
 
+  //by zyf 
+  if (parser.linearval('F') > 0){
+    float fFR = parser.value_feedrate();
+    //char cmd[32];
+    //sprintf(cmd, "Feedrate:%02f", fFR);
+    //TLDEBUG_PRINTLN(cmd);
+    if(fFR > 80.0) {
+      fFR = 80.0;
+    }
+    feedrate_mm_s = fFR;
+
+  }
   #if ENABLED(LASER_POWER_INLINE)
     if (parser.seen('I') == DISABLED(LASER_POWER_INLINE_INVERT)) {
       // Laser power in inline mode

@@ -23,7 +23,8 @@
 
 // R25 = 100 kOhm, beta25 = 4092 K, 4.7 kOhm pull-up, bed thermistor
 const temp_entry_t temptable_1[] PROGMEM = {
-  { OV(   0 ), 360 },
+  { OV(   0 ), 362 },
+  { OV(   3 ), 355 },
   { OV(   5 ), 348 },
   { OV(  10 ), 339 },
   { OV(  12 ), 334 },

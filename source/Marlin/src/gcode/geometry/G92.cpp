@@ -114,6 +114,7 @@ void GcodeSuite::G92() {
   if   (sync_XYZE) sync_plan_position();
   else if (sync_E) sync_plan_position_e();
 
+  #if DISABLED(TL_GRBL)
   IF_DISABLED(DIRECT_STEPPING, report_current_position());
-
+  #endif
 }

@@ -129,7 +129,9 @@ bool GCodeQueue::enqueue_one(const char *cmd) {
   if (*cmd == 0 || ISEOL(*cmd)) return true;
 
   if (ring_buffer.enqueue(cmd)) {
-    SERIAL_ECHO_MSG(STR_ENQUEUEING, cmd, "\"");
+    #if DISABLED(TL_GRBL)
+      SERIAL_ECHO_MSG(STR_ENQUEUEING, cmd, "\"");
+    #endif
     return true;
   }
   return false;
@@ -452,8 +454,13 @@ void GCodeQueue::get_serial_commands() {
         grbl_report_status();
         safe_delay(5);
         serial_char = '\n';
-      }else if(serial_char == 24){
-        EXECUTE_GCODE("M81");
+      }else if(serial_char == 0x18){
+        //Ctrl+x 
+        tlStoped = false;
+        EXECUTE_GCODE("M999");
+        char str[64];
+        sprintf(str, "Grbl 1.1h \n[uid:%s]", tl_hc_sn);
+        TLECHO_PRINTLN(str);
         serial_char = '\n';
       }
       #endif

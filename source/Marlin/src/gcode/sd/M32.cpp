@@ -66,17 +66,24 @@ void GcodeSuite::M32() {
 #if BOTH(TENLOG_TOUCH_LCD, TENLOG_L)
 void GcodeSuite::M320() {
   static uint32_t lastClick;
-  #if ENABLED(TL_BEEPER)
+  #if ENABLED(TL_BEEPER)  
   start_beeper(0, 0);
   #endif
   char cmd[256];
   if(millis() - lastClick < 2000) return;
+  if(tlStoped) {
+    EXECUTE_GCODE("M999");
+    safe_delay(200);
+    tlStoped = false;  
+  }
   if(!card.isFileOpen()){
     if(strlen(pre_print_file_name)<2){
       card.tl_ls(false);
     }
     if(strlen(pre_print_file_name)>2){
+      tlStoped = false;
       EXECUTE_GCODE("G92 X-3 Y-3");
+      safe_delay(100);
       EXECUTE_GCODE("G0 X0 Y0");
       safe_delay(500);
       sprintf(cmd, "M32 !%s", pre_print_file_name);
@@ -84,11 +91,11 @@ void GcodeSuite::M320() {
       EXECUTE_GCODE(cmd);
       #if ENABLED(TL_BEEPER)
       start_beeper(2, 1); //开始打印
-      #endif      
+      #endif
     }else{
       #if ENABLED(TL_BEEPER)
       start_beeper(0, 0);
-      #endif      
+      #endif
     }
   }else{
     #if ENABLED(TL_BEEPER)

@@ -39,6 +39,7 @@ void GcodeSuite::M999() {
   //ui.reset_alert_level();   //by zyf
 
   if (parser.boolval('S')) return;
-
+  #if DISABLED(TL_GRBL)
   queue.flush_and_request_resend(queue.ring_buffer.command_port());
+  #endif
 }

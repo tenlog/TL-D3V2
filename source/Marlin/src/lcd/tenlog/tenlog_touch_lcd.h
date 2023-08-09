@@ -101,6 +101,7 @@
 #define TLECHO_PRINTLN       SERIAL_ECHOLNPGM_P
 
 #define EXECUTE_GCODE(X)  gcode.process_subcommands_now(X)
+#define ENQUEUE_GCODE(X)  queue.enqueue_one_now(X)
 
 
 

@@ -85,12 +85,12 @@ Version     033
 //TL Medels and version
 //#define TENLOG_H2
 //#define TENLOG_D3HS   //High Speed
-#define TENLOG_D3
+//#define TENLOG_D3
 //#define TENLOG_S2   //single head
 //#define TENLOG_S3   //single head
 //#define TENLOG_M3
 //#define TENLOG_M3S
-//#define TENLOG_L4   //laser only
+#define TENLOG_L4   //laser only
 //#define TENLOG_D5
 //#define TENLOG_D6
 //#define TENLOG_D8     
@@ -154,9 +154,10 @@ Version     033
 #ifdef TENLOG_L
   #define TL_NO_SCREEN
   #define TL_BEEPER
-  //#define ESP32_WIFI
   #define TL_GRBL
   #define LASER_ENDSTOP_WIDTH -2
+  //#define ESP32_WIFI
+#else
   #define ESP32_WIFI
 #endif
 
@@ -1031,7 +1032,7 @@ Version     033
 #endif
 
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
-#if ANY(TENLOG_LW, TENLOG_L)
+#if ANY(TENLOG_LW)
   #define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop. 高电平触发
 #else
   #define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop. 低电平触发
@@ -1040,9 +1041,9 @@ Version     033
 #define Y_MIN_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop. 
 
 #if ENABLED(TENLOG_L)
-#define X_MAX_ENDSTOP_INVERTING !X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
-#define Y_MAX_ENDSTOP_INVERTING !X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
-#define Z_MIN_ENDSTOP_INVERTING !X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
+#define X_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
+#define Y_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
+#define Z_MIN_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
 #else
 #define X_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
 #define Y_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
@@ -1652,7 +1653,7 @@ Version     033
 
 // Min software endstops constrain movement within minimum coordinate bounds
 #if DISABLED(TENLOG_L)
-#define MIN_SOFTWARE_ENDSTOPS
+  #define MIN_SOFTWARE_ENDSTOPS
 #endif
 #if ENABLED(MIN_SOFTWARE_ENDSTOPS)
   #define MIN_SOFTWARE_ENDSTOP_X
@@ -1662,7 +1663,7 @@ Version     033
 
 // Max software endstops constrain movement within maximum coordinate bounds
 #if DISABLED(TENLOG_L)
-#define MAX_SOFTWARE_ENDSTOPS
+  #define MAX_SOFTWARE_ENDSTOPS
 #endif
 #if ENABLED(MAX_SOFTWARE_ENDSTOPS)
   #define MAX_SOFTWARE_ENDSTOP_X

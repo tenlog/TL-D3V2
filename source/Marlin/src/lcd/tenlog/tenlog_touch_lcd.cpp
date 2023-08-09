@@ -1246,7 +1246,9 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
 }
 
 void TLSDPrintFinished(){    
-     
+    
+
+
     #ifdef PRINT_FROM_Z_HEIGHT
     PrintFromZHeightFound = true;
     print_from_z_target = 0.0;
@@ -1276,7 +1278,9 @@ void TLSDPrintFinished(){
 
     }
     #if ENABLED(TL_BEEPER)
-    start_beeper(8, 1); //打印完毕 4长声
+        if(!tlStoped){
+            start_beeper(4, 1); //打印完毕 2长声
+        }
     #endif
 }
 
@@ -3593,14 +3597,6 @@ void tl_sd_abort_on_endstop_hit(){  //only for x & y
         #if ENABLED(TL_GRBL)
         if(hitZ != Z_MIN_ENDSTOP_INVERTING){
             tlStoped = true;
-            /*
-            TLECHO_PRINTLN("ALARM:1");
-            #if ENABLED(TL_BEEPER)
-                start_beeper(6, 0); //倾倒开关
-                safe_delay(2000);
-            #endif
-            stop();
-            */
         }
         #endif
     #endif
@@ -4101,7 +4097,7 @@ void grbl_idle(){
 void grbl_report_status(){
     static char m_static[20];
     if(tl_busy_state){
-        sprintf(m_static, "%s", "Cycle");
+        sprintf(m_static, "%s", "Joy");
     }else if(isHoming){
         sprintf(m_static, "%s", "Homing");
     }else if(IsStopped()){
@@ -4109,8 +4105,9 @@ void grbl_report_status(){
     }else{
         sprintf(m_static, "%s", "Idle");
     }
-    sprintf(message, "<%s|MPos:%02f,%02f,%02f|Fs:%d,0>",m_static,current_position.x,current_position.y,current_position.z,feedrate_mm_s);
+    sprintf(message, "<%s|MPos:%02f,%02f,0.0|Fs:%02f,0>",m_static,current_position.x,current_position.y,feedrate_mm_s);
     TLECHO_PRINTLN(message);
+    TLECHO_PRINTLN("ok");
 }
 #endif //TL_GRBL
 

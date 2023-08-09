@@ -316,7 +316,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
           }else if(parser.codenum == 53){
             G53();
           }
-          
+
         #endif
         G0_G1(TERN_(HAS_FAST_MOVES, parser.codenum == 0)); break;
 
@@ -1166,6 +1166,7 @@ void GcodeSuite::process_subcommands_now(char * gcode) {
         case IN_HANDLER:
         case IN_PROCESS:
           #if ANY(TL_DEBUG, TL_GRBL)
+
           #else 
             SERIAL_ECHO_MSG(STR_BUSY_PROCESSING); //by zyf
           #endif

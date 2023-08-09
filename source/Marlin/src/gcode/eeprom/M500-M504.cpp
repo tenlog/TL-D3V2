@@ -167,11 +167,11 @@ void GcodeSuite::M502() {
         */
         tlStoped = false;
         EXECUTE_GCODE("M999");
-        safe_delay(200);
+        safe_delay(50);
         isHoming = true;
         EXECUTE_GCODE("G28 XY");
-        //safe_delay(500);
-        //EXECUTE_GCODE("G0 X0Y0");
+        safe_delay(200);
+        EXECUTE_GCODE("G0 X0Y0");
         isHoming = false;
       }
     }

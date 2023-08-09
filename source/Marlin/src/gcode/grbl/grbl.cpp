@@ -45,7 +45,7 @@ void GcodeSuite::grbl_dd() {
     TLECHO_PRINTLN("$11=0.01");
     TLECHO_PRINTLN("$12=0.001");
     TLECHO_PRINTLN("$13=0");
-    TLECHO_PRINTLN("$20=1");
+    TLECHO_PRINTLN("$20=0");
     TLECHO_PRINTLN("$21=1");
     TLECHO_PRINTLN("$22=1");
     TLECHO_PRINTLN("$23=-1");
@@ -56,20 +56,20 @@ void GcodeSuite::grbl_dd() {
     TLECHO_PRINTLN("$26=250");
     sprintf(message, "$27=%d", 5);
     TLECHO_PRINTLN(message);
-    TLECHO_PRINTLN("$30=0");
+    TLECHO_PRINTLN("$30=1000");
     TLECHO_PRINTLN("$31=0");
-    TLECHO_PRINTLN("$32=0");
+    TLECHO_PRINTLN("$32=1");
     sprintf(message, "$100=%f", planner.settings.axis_steps_per_mm[0]);
     TLECHO_PRINTLN(message);
     sprintf(message, "$101=%f", planner.settings.axis_steps_per_mm[1]);
     TLECHO_PRINTLN(message);
     sprintf(message, "$102=%f", planner.settings.axis_steps_per_mm[2]);
     TLECHO_PRINTLN(message);
-    sprintf(message, "$110=%f", planner.settings.max_feedrate_mm_s[0]*60.0);
+    sprintf(message, "$110=%f", planner.settings.max_feedrate_mm_s[0]*49.0);
     TLECHO_PRINTLN(message);
-    sprintf(message, "$111=%f", planner.settings.max_feedrate_mm_s[1]*60.0);
+    sprintf(message, "$111=%f", planner.settings.max_feedrate_mm_s[1]*49.0);
     TLECHO_PRINTLN(message);
-    sprintf(message, "$112=%f", planner.settings.max_feedrate_mm_s[2]*60.0);
+    sprintf(message, "$112=%f", planner.settings.max_feedrate_mm_s[2]*30.0);
     TLECHO_PRINTLN(message);
     sprintf(message, "$120=%f", planner.settings.acceleration);
     TLECHO_PRINTLN(message);
@@ -83,6 +83,7 @@ void GcodeSuite::grbl_dd() {
     TLECHO_PRINTLN(message);
     sprintf(message, "$132=%d", 0);
     TLECHO_PRINTLN(message);
+    TLECHO_PRINTLN("ok");
 }
 void GcodeSuite::grbl_j() {
     if(grbl_arg[0]=='J' && grbl_arg[1]=='='){
@@ -93,7 +94,12 @@ void GcodeSuite::grbl_j() {
         }
         if (cmd[0] == 'G') {
             TLDEBUG_PRINTLN(cmd);
-            EXECUTE_GCODE(cmd);        
+            EXECUTE_GCODE(cmd);
+            safe_delay(500);
+            if(cmd[0]=='G' && cmd[1]=='9' && cmd[2]=='1'){
+                EXECUTE_GCODE("G90");
+                safe_delay(500);
+            }
         }
     }
 }
@@ -103,10 +109,13 @@ void GcodeSuite::grbl_d() {
     //sprintf(para, "$%s", parser.string_arg);
     //TLDEBUG_PRINTLN(grbl_arg);
     if(grbl_arg[0] == 'I'){
-        TLECHO_PRINTLN("[VER:2.0.8.045:]");
-        TLECHO_PRINTLN("[OPT:BW$#]");        
-        TLECHO_PRINTLN("[MSG:Using machine:TENLOG_L4]");        
-        TLECHO_PRINTLN("[MSG:No WIFI]");        
+        char str[128];
+        sprintf_P(str, PSTR("[VER:%s.%s]"), SHORT_BUILD_VERSION, TL_SUBVERSION); //VER:2.0.8.038
+        TLECHO_PRINTLN(str);
+        TLECHO_PRINTLN("[MSG:Using machine:Kentoktool_KT1]");
+        sprintf_P(str, PSTR("[MSG:UID:%s]"), tl_hc_sn); //SN
+        TLECHO_PRINTLN(str);
+        TLECHO_PRINTLN("[MSG:No WIFI]");
         TLECHO_PRINTLN("[MSG:No BT]");        
     }else if(grbl_arg[0] == 'H'){
         EXECUTE_GCODE("M1523");

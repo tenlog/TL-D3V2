@@ -2788,7 +2788,6 @@ void Stepper::endstop_triggered(const AxisEnum axis) {
   #if ENABLED(TL_GRBL)
     if(!isHoming){
       tlStoped = true;
-      //TLECHO_PRINTLN("ALARM:1");
     }
   #endif
 
