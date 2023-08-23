@@ -2593,6 +2593,17 @@ void Stepper::init() {
     if (!E_ENABLE_ON) E7_ENABLE_WRITE(HIGH);
   #endif
 
+  #if ENABLED(TENLOG_X)
+    XE0_ENABLE_INIT();
+    XE0_ENABLE_WRITE(LOW);
+    XE1_ENABLE_INIT();
+    XE1_ENABLE_WRITE(LOW);
+    XE2_ENABLE_INIT();
+    XE2_ENABLE_WRITE(LOW);
+    XE3_ENABLE_INIT();
+    XE3_ENABLE_WRITE(LOW);
+  #endif
+
   #define _STEP_INIT(AXIS) AXIS ##_STEP_INIT()
   #define _WRITE_STEP(AXIS, HIGHLOW) AXIS ##_STEP_WRITE(HIGHLOW)
   #define _DISABLE_AXIS(AXIS) DISABLE_AXIS_## AXIS()
@@ -2787,7 +2798,7 @@ void Stepper::endstop_triggered(const AxisEnum axis) {
   quick_stop();
   #if ENABLED(TL_GRBL)
     if(!isHoming){
-      tlStoped = true;
+      tlStopped = 1;
     }
   #endif
 

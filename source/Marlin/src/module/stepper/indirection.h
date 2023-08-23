@@ -337,6 +337,29 @@ void reset_stepper_drivers();    // Called by settings.load / settings.reset
 #endif
 #define E7_STEP_READ() bool(READ(E7_STEP_PIN))
 
+#if ENABLED(TENLOG_X)
+  #ifndef XE0_ENABLE_INIT
+    #define XE0_ENABLE_INIT() SET_OUTPUT(XE0_ENABLE_PIN)
+    #define XE0_ENABLE_WRITE(STATE) WRITE(XE0_ENABLE_PIN,STATE)
+    #define XE0_ENABLE_READ() bool(READ(XE0_ENABLE_PIN))
+  #endif  
+  #ifndef XE1_ENABLE_INIT
+    #define XE1_ENABLE_INIT() SET_OUTPUT(XE1_ENABLE_PIN)
+    #define XE1_ENABLE_WRITE(STATE) WRITE(XE1_ENABLE_PIN,STATE)
+    #define XE1_ENABLE_READ() bool(READ(XE1_ENABLE_PIN))
+  #endif  
+  #ifndef XE2_ENABLE_INIT
+    #define XE2_ENABLE_INIT() SET_OUTPUT(XE2_ENABLE_PIN)
+    #define XE2_ENABLE_WRITE(STATE) WRITE(XE2_ENABLE_PIN,STATE)
+    #define XE2_ENABLE_READ() bool(READ(XE2_ENABLE_PIN))
+  #endif  
+  #ifndef XE3_ENABLE_INIT
+    #define XE3_ENABLE_INIT() SET_OUTPUT(XE3_ENABLE_PIN)
+    #define XE3_ENABLE_WRITE(STATE) WRITE(XE3_ENABLE_PIN,STATE)
+    #define XE3_ENABLE_READ() bool(READ(XE3_ENABLE_PIN))
+  #endif
+#endif
+
 /**
  * Extruder indirection for the single E axis
  */
@@ -837,6 +860,33 @@ void reset_stepper_drivers();    // Called by settings.load / settings.reset
     #define DISABLE_STEPPER_E7() E7_ENABLE_WRITE(!E_ENABLE_ON)
   #else
     #define DISABLE_STEPPER_E7() NOOP
+  #endif
+#endif
+
+#if ENABLED(TENLOG_X)
+  #ifndef ENABLE_STEPPER_XE0
+      #define  ENABLE_STEPPER_XE0() XE0_ENABLE_WRITE( E_ENABLE_ON)
+  #endif
+  #ifndef DISABLE_STEPPER_XE0
+    #define DISABLE_STEPPER_XE0() XE0_ENABLE_WRITE(!E_ENABLE_ON)
+  #endif
+  #ifndef ENABLE_STEPPER_XE0
+      #define  ENABLE_STEPPER_XE1() XE1_ENABLE_WRITE( E_ENABLE_ON)
+  #endif
+  #ifndef DISABLE_STEPPER_XE1
+    #define DISABLE_STEPPER_XE1() XE1_ENABLE_WRITE(!E_ENABLE_ON)
+  #endif
+  #ifndef ENABLE_STEPPER_XE2
+      #define  ENABLE_STEPPER_XE2() XE2_ENABLE_WRITE( E_ENABLE_ON)
+  #endif
+  #ifndef DISABLE_STEPPER_XE2
+    #define DISABLE_STEPPER_XE2() XE2_ENABLE_WRITE(!E_ENABLE_ON)
+  #endif
+  #ifndef ENABLE_STEPPER_XE3
+      #define  ENABLE_STEPPER_XE3() XE3_ENABLE_WRITE( E_ENABLE_ON)
+  #endif
+  #ifndef DISABLE_STEPPER_XE3
+    #define DISABLE_STEPPER_XE3() XE3_ENABLE_WRITE(!E_ENABLE_ON)
   #endif
 #endif
 

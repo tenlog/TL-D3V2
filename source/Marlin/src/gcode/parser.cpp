@@ -179,7 +179,7 @@ void GCodeParser::parse(char *p) {
       #endif
       
       #if ENABLED(TL_GRBL)
-        if(letter == '$' || letter == '?'){
+        if(letter == '$' || letter == '?' || letter == '!'){
           //TLDEBUG_PRINTLN("$ SSeen!"); 
           command_letter = letter;
           break;
@@ -322,15 +322,6 @@ void GCodeParser::parse(char *p) {
   #endif
 
   while (const char param = uppercase(*p++)) {  // Get the next parameter. A NUL ends the loop
-
-     #if 0 // ENABLED(TL_GRBL)
-        if(letter == '$' || letter == '?'){
-          if(param == 'I'){
-            //TLDEBUG_PRINTLN("$I found!");
-            //return;
-          }
-        }
-    #endif
 
     // Special handling for M32 [P] !/path/to/file.g#
     // The path must be the last parameter

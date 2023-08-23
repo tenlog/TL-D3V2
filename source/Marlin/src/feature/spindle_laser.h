@@ -331,12 +331,7 @@ public:
     static inline void inline_disable() {
       isReady = false;
       unitPower = 0;
-      #if ENABLED(HWPWM) 
-        if(laser_power > 20){
-          //set_pwm_hw(0, 1000);  //by zyf temp
-          //laser_power = 0;
-        }
-      #endif
+
       planner.laser_inline.status.isPlanned = false;
       planner.laser_inline.status.isEnabled = false;
       planner.laser_inline.power = 0;
@@ -352,7 +347,7 @@ public:
         planner.laser_inline.status.isPlanned = false;
         TERN(SPINDLE_LASER_PWM, inline_ocr_power, inline_power)(0);
         #if ENABLED(HWPWM)
-          if(laser_power > 10) laser_power = 0;
+          laser_power = 0;
           set_pwm_hw(laser_power, 1000);          
         #endif
       }

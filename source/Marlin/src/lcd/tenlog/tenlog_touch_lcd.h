@@ -26,6 +26,10 @@
 #include "../../inc/MarlinConfig.h"
 #include "../../core/serial.h"
 
+//#if TL_HIGH_SPEED
+    #define TL_HIGHSPEED
+//#endif
+
 //Setting for DWIN touch screen
 #define DWN_P_LOADING 21
 #define DWN_P_MAIN 41
@@ -271,7 +275,7 @@ extern char TJCModelNo[64];
     extern char grbl_arg[30];
     extern bool isHoming;
     extern uint32_t Homing_start;
-    extern bool tlStoped;
+    extern uint8_t tlStopped;
     extern bool weakLaserOn;
     //extern bool grbl_1stconnected;
     void grbl_idle();

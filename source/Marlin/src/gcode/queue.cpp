@@ -456,7 +456,7 @@ void GCodeQueue::get_serial_commands() {
         serial_char = '\n';
       }else if(serial_char == 0x18){
         //Ctrl+x 
-        tlStoped = false;
+        tlStopped = 0;
         EXECUTE_GCODE("M999");
         char str[64];
         sprintf(str, "Grbl 1.1h \n[uid:%s]", tl_hc_sn);
@@ -535,7 +535,11 @@ void GCodeQueue::get_serial_commands() {
                 case 5:
               #endif
                 PORT_REDIRECT(SERIAL_PORTMASK(p));     // Reply to the serial port that sent the command
-                SERIAL_ECHOLNPGM(STR_ERR_STOPPED);
+                #if DISABLED(TL_GRBL)
+                  SERIAL_ERROR_MSG(STR_ERR_STOPPED);
+                #else
+                  SERIAL_ERROR_MSG("Machine Stopped!");    
+                #endif
                 //LCD_MESSAGEPGM(MSG_STOPPED); 
                 break;
             }
@@ -588,8 +592,9 @@ void GCodeQueue::get_serial_commands() {
       const int16_t n = card.get();
       card_eof = card.eof();
       if (n < 0 && !card_eof) { 
-        SERIAL_ERROR_MSG(STR_SD_ERR_READ); 
         HAL_watchdog_refresh();
+        //SERIAL_ERROR_MSG(STR_SD_ERR_READ); 
+        //HAL_watchdog_refresh();
         if(++timerout>20){
             timerout = 0;
             kill(GET_TEXT(MSG_KILL_READCARD_FAILED));

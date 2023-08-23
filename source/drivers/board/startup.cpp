@@ -1,5 +1,6 @@
 #define _BOARD_C_
 #include "startup.h"
+#include "../../Marlin/src/lcd/tenlog/tenlog_touch_lcd.h"
 
 #define APP_START_ADDRESS 0x8000
 uint32_t F_CPU=0;
@@ -59,12 +60,20 @@ static void setup_SysClk(void){
 	/* MPLL config (XTAL / pllmDiv * plln / PllpDiv = 200M)，*/
 	stcMpllCfg.pllmDiv = 1ul;
 	stcMpllCfg.plln = 50ul;
+	#ifdef TL_HIGHSPEED
 	stcMpllCfg.PllpDiv = 2ul;
 	stcMpllCfg.PllqDiv = 2ul;
 	stcMpllCfg.PllrDiv = 2ul;
+	#else
+	stcMpllCfg.PllpDiv = 4ul;
+	stcMpllCfg.PllqDiv = 4ul;
+	stcMpllCfg.PllrDiv = 4ul;
+	#endif
 	CLK_SetPllSource(ClkPllSrcXTAL);
 	CLK_MpllConfig(&stcMpllCfg);
+	#ifdef TL_HIGHSPEED
 	SystemCoreClock = 200000000;	//by zyf
+	#endif
 
 	/* flash read wait cycle setting */
 	EFM_Unlock();
@@ -81,9 +90,9 @@ static void setup_SysClk(void){
 	}
 
 	/* Switch driver ability */
-	//PWC_HS2HP();
-	/* Switch system clock source to MPLL. */
+	PWC_HS2HP();
 	
+	/* Switch system clock source to MPLL. */
 	CLK_SetSysClkSource(CLKSysSrcMPLL);
 	/* Check source and frequence. */
 	//todo: the 2 below are testers and can be delete in the near future 

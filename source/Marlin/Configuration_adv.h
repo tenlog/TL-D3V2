@@ -3205,8 +3205,8 @@
 
     #define SPEED_POWER_INTERCEPT         0    // (%) 0-100 i.e., Minimum power percentage
     #define SPEED_POWER_MIN               0    // (%) 0-100
-    #define SPEED_POWER_MAX             1000    // (%) 0-100
-    #define SPEED_POWER_STARTUP          80    // (%) M3/M4 speed/power default (with no arguments)
+    #define SPEED_POWER_MAX               1000    // (%) 0-100
+    #define SPEED_POWER_STARTUP           20    // (%) M3/M4 speed/power default (with no arguments)
 
     // Define the minimum and maximum test pulse time values for a laser test fire function
     #define LASER_TEST_PULSE_MIN           1   // Used with Laser Control Menu
@@ -3243,9 +3243,7 @@
        * board isn't able to generate steps fast enough (and you are using LASER_POWER_INLINE_TRAPEZOID_CONT), increase this.
        * Note that when this is zero it means it occurs every cycle; 1 means a delay wait one cycle then run, etc.
        */
-      #if ENABLED(TENLOG_L)
       #define LASER_POWER_INLINE_TRAPEZOID_CONT
-      #endif
 
       /**
        * Stepper iterations between power updates. Increase this value if the board
@@ -3287,13 +3285,13 @@
        */
       //#define LASER_POWER_INLINE_CONTINUOUS
 
-    #else
+    #else //LASER_POWER_INLINE
 
       #define SPINDLE_LASER_POWERUP_DELAY     50 // (ms) Delay to allow the spindle/laser to come up to speed/power
       #define SPINDLE_LASER_POWERDOWN_DELAY   50 // (ms) Delay to allow the spindle to stop
 
     #endif
-  #endif
+  #endif //LASER_POWER_INLINE
 #endif //SPINDLE_FEATURE || LASER_FEATURE
 
 /**

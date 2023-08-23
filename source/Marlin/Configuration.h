@@ -94,9 +94,10 @@ Version     033
 //#define TENLOG_D5
 //#define TENLOG_D6
 //#define TENLOG_D8     
-//#define TENLOG_LW8   //发光字 Luminous words
-//#define TENLOG_LW3   //发光字 Luminous words
+//#define TENLOG_LW8   //Luminous words
+//#define TENLOG_LW3   //Luminous words
 //#define TENLOG_X3    //4进2出 Neza
+//#define TENLOG_X2    //4进2出 Neza
 
 //#define TL_DEBUG    //debug
 //#define DUAL_HEAD_BLTOUCH
@@ -105,7 +106,7 @@ Version     033
 #define TENLOG_LW
 #endif
 
-#if ANY(TENLOG_X3, TENLOG_X5, TENLOG_X6, TENLOG_X100)
+#if ANY(TENLOG_X2, TENLOG_X3, TENLOG_X5, TENLOG_X6, TENLOG_X100)
   #define TENLOG_X
 #endif
 
@@ -128,11 +129,11 @@ Version     033
 #endif
 
 #if ENABLED(TENLOG_X)
-  #define MIXING_EXTRUDER
+  //#define MIXING_EXTRUDER
 #endif
 
 //Auto leveling.
-#if ANY(SINGLE_HEAD, DUAL_HEAD_BLTOUCH, TENLOG_X)
+#if ANY(SINGLE_HEAD, DUAL_HEAD_BLTOUCH) //, TENLOG_X
   #ifndef TENLOG_M3S
     #define BLTOUCH
     #define TLTOUCH
@@ -158,7 +159,9 @@ Version     033
   #define LASER_ENDSTOP_WIDTH -2
   //#define ESP32_WIFI
 #else
-  #define ESP32_WIFI
+  #ifndef TENLOG_X
+    #define ESP32_WIFI
+  #endif
 #endif
 
 #ifdef TL_GRBL
@@ -168,8 +171,8 @@ Version     033
 // The size of the printable area
 #if defined(TENLOG_D3) 
   #define TL_MODEL_STR_0 "D3"
-  #define X_BED_SIZE 310
-  #define Y_BED_SIZE 310
+  #define X_BED_SIZE 320
+  #define Y_BED_SIZE 320
   #define Z_LENGTH   350
 #elif defined(TENLOG_D3HS) 
   #define TL_HIGH_SPEED 1
@@ -240,6 +243,11 @@ Version     033
   #define X_BED_SIZE 310
   #define Y_BED_SIZE 310
   #define Z_LENGTH   350
+#elif defined(TENLOG_X2)
+  #define TL_MODEL_STR_0 "X2 Neza!"
+  #define X_BED_SIZE 235
+  #define Y_BED_SIZE 235
+  #define Z_LENGTH   250
 #endif
 
 //#define TL_STEPTEST   //给老范做的挤出机拉力测试

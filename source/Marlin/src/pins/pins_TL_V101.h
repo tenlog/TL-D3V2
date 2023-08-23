@@ -139,7 +139,7 @@
 //
 // Steppers
 //
-#if ENABLED(TL_STEPTEST)
+#if defined(TL_STEPTEST)
 #define X_ENABLE_PIN       PB8
 #define XX_ENABLE_PIN      PB2
 #define XX_STEP_PIN        PA9
@@ -184,8 +184,13 @@
 #else
   #define Z2_STEP_PIN        PB13
   #define Z2_DIR_PIN         PB12
-  #define E0_STEP_PIN        PB4
-  #define E0_DIR_PIN         PB3
+  #ifdef TENLOG_X
+    #define E0_STEP_PIN        PB6
+    #define E0_DIR_PIN         PB5
+  #else
+    #define E0_STEP_PIN        PB4
+    #define E0_DIR_PIN         PB3
+  #endif
   #define E1_STEP_PIN        PB6
   #define E1_DIR_PIN         PB5
 #endif
@@ -226,7 +231,7 @@
 #ifdef TENLOG_LW
   #define FAN4_PIN                PC3   
   #define CHAMEBER_PIN            FAN4_PIN   //机箱风扇口
-#elif ENABLED(TENLOG_L)
+#elif defined(TENLOG_L)
 
 #else
   #define FAN4_PIN                PE3   
@@ -264,9 +269,16 @@
 #define NO_SD_HOST_DRIVE    // This board's SD is only seen by the printer
 
 //Spi wifi
-#if ENABLED(ESP32_WIFI)  
+#if defined(ESP32_WIFI)  
   #define SCK_PIN           PA6
   #define NSS_PIN           PB1
   #define MOSI_PIN          PA7
   #define MISO_PIN          PB0
+#endif
+
+#if defined(TENLOG_X)
+  #define XE0_ENABLE_PIN    PA6  
+  #define XE1_ENABLE_PIN    PB1
+  #define XE2_ENABLE_PIN    PA7
+  #define XE3_ENABLE_PIN    PB0
 #endif

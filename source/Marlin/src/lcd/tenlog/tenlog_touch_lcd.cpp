@@ -166,7 +166,7 @@ char TJCModelNo[64]={""};
  char grbl_arg[30] = {""};
  bool isHoming = false;
  uint32_t Homing_start = 0;
- bool tlStoped = false;
+ uint8_t tlStopped = 0;
  bool weakLaserOn = false;
  //bool grbl_1stconnected = false;
 #endif
@@ -1247,8 +1247,6 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
 
 void TLSDPrintFinished(){    
     
-
-
     #ifdef PRINT_FROM_Z_HEIGHT
     PrintFromZHeightFound = true;
     print_from_z_target = 0.0;
@@ -1278,7 +1276,7 @@ void TLSDPrintFinished(){
 
     }
     #if ENABLED(TL_BEEPER)
-        if(!tlStoped){
+        if(!tlStopped){
             start_beeper(4, 1); //打印完毕 2长声
         }
     #endif
@@ -3512,7 +3510,7 @@ void button_light_handler(){
     lastLightTime = millis();
 
     bool isStepEna = (X_ENABLE_READ() == X_ENABLE_ON || Y_ENABLE_READ() == Y_ENABLE_ON );
-    if(!IS_SD_PRINTING() && laser_power>10 && !isStepEna){
+    if(!IS_SD_PRINTING() && laser_power>100 && !isStepEna){
         laser_power = 0;
         set_pwm_hw(0, 1000);
     }
@@ -3573,7 +3571,7 @@ void tl_sd_abort_on_endstop_hit(){  //only for x & y
         uint8_t hitXMax = READ(X_MAX_PIN);
         uint8_t hitYMax = READ(Y_MAX_PIN);
         uint8_t hitZ = READ(Z_STOP_PIN);
-        if(hitX == last_hitX && hitY == last_hitY && hitXMax == last_hitXMax && hitYMax == last_hitYMax && hitZ == last_hitZ) return;
+        if(hitX == last_hitX && hitY == last_hitY && hitXMax == last_hitXMax && hitYMax == last_hitYMax) return;
         last_hitZ = hitZ;
         last_hitX = hitX;
         last_hitY = hitY;
@@ -3588,16 +3586,22 @@ void tl_sd_abort_on_endstop_hit(){  //only for x & y
                 char cmd[128];
                 sprintf(cmd, "X0:%d, Y0:%d, Z0:%d, X1:%d, Y1:%d", hitX, hitY, hitZ, hitXMax, hitYMax);
                 TLDEBUG_PRINTLN(cmd); //by zyf
-                tlStoped = true;                
+                tlStopped = 1;                
 
                 tlAbortPrinting();
                 //stop();
             }
         }
         #if ENABLED(TL_GRBL)
-        if(hitZ != Z_MIN_ENDSTOP_INVERTING){
-            tlStoped = true;
-        }
+            static uint16_t errCount;
+            if(hitZ != Z_MIN_ENDSTOP_INVERTING){
+                errCount++; //倾倒开关，除抖动
+                if(errCount > 1){
+                    tlStopped = 3;
+                }
+            }else{
+                errCount=0;
+            }
         #endif
     #endif
 }
@@ -3634,17 +3638,19 @@ void read_blt(){
 
 void TL_idle(){
     #if ENABLED(TL_GRBL)
-    static bool i_tlStoped = false;
-    if(i_tlStoped != tlStoped){
-        if(tlStoped){
+    static uint8_t i_tlStoped = 0;
+    if(i_tlStoped != tlStopped){
+        if(tlStopped){
             //planner.finish_and_disable();
             WRITE(X_ENABLE_PIN, HIGH);
-            TLECHO_PRINTLN("ALARM:1");            
+            char cmd[20];
+            sprintf(cmd, "ALARM:%d", tlStopped);
+            TLECHO_PRINTLN(cmd);            
             start_beeper(6, 0);
             safe_delay(2000);
             stop();
         }
-        i_tlStoped = tlStoped;
+        i_tlStoped = tlStopped;
     }
     #endif
 

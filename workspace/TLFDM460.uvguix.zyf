@@ -6,7 +6,7 @@
   <Header>### uVision Project, (C) Keil Software</Header>
 
   <PrjGuiSettings>
-    <LastAddFilePath>D:\Dropbox\Tenlog\Software\FDM\TL-D3V2\source\Marlin\src\gcode\geometry</LastAddFilePath>
+    <LastAddFilePath>D:\Dropbox\Tenlog\Software\FDM\TL-D3V2\source\drivers\board</LastAddFilePath>
   </PrjGuiSettings>
 
   <ViewPool/>
@@ -15,7 +15,7 @@
     <View>
       <WinId>38003</WinId>
       <ViewName>Registers</ViewName>
-      <TableColWidths>161 153</TableColWidths>
+      <TableColWidths>157 157</TableColWidths>
     </View>
     <View>
       <WinId>346</WinId>
@@ -93,8 +93,8 @@
       <flags>2</flags>
       <showCmd>3</showCmd>
       <MinPosition>
-        <xPos>-32000</xPos>
-        <yPos>-32000</yPos>
+        <xPos>-1</xPos>
+        <yPos>-1</yPos>
       </MinPosition>
       <MaxPosition>
         <xPos>-1</xPos>

@@ -71,17 +71,17 @@ void GcodeSuite::M320() {
   #endif
   char cmd[256];
   if(millis() - lastClick < 2000) return;
-  if(tlStoped) {
+  if(tlStopped) {
     EXECUTE_GCODE("M999");
     safe_delay(200);
-    tlStoped = false;  
+    tlStopped = 0;  
   }
   if(!card.isFileOpen()){
     if(strlen(pre_print_file_name)<2){
       card.tl_ls(false);
     }
     if(strlen(pre_print_file_name)>2){
-      tlStoped = false;
+      tlStopped = 0;
       EXECUTE_GCODE("G92 X-3 Y-3");
       safe_delay(100);
       EXECUTE_GCODE("G0 X0 Y0");

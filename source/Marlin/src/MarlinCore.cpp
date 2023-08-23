@@ -1004,7 +1004,11 @@ void stop() {
   #endif
 
   if (IsRunning()) {
+    #if DISABLED(TL_GRBL)
     SERIAL_ERROR_MSG(STR_ERR_STOPPED);
+    #else
+    SERIAL_ERROR_MSG("Machine Stopped!");    
+    #endif
    
     safe_delay(350);       // allow enough time for messages to get out before stopping
     marlin_state = MF_STOPPED;
@@ -1184,8 +1188,10 @@ void setup() {
     while (!MYSERIAL2.connected() && PENDING(millis(), serial_connect_timeout)) { /*nada*/ }
   #endif
   
-  SERIAL_ECHOLNPGM("\n==============MARLIN==============");
-  SERIAL_ECHOLNPGM("start");
+  #if DISABLED(TL_GRBL)
+    SERIAL_ECHOLNPGM("\n==============MARLIN==============");
+    SERIAL_ECHOLNPGM("start");
+  #endif
 
   //tenlog touch screen..
   TERN_(TENLOG_TOUCH_LCD, initTLScreen());
@@ -1291,26 +1297,30 @@ void setup() {
 
   // Check startup - does nothing if bootloader sets MCUSR to 0
   const byte mcu = HAL_get_reset_source();
-  if (mcu & RST_POWER_ON) SERIAL_ECHOLNPGM(STR_POWERUP);
-  if (mcu & RST_EXTERNAL) SERIAL_ECHOLNPGM(STR_EXTERNAL_RESET);
-  if (mcu & RST_BROWN_OUT) SERIAL_ECHOLNPGM(STR_BROWNOUT_RESET);
-  if (mcu & RST_WATCHDOG) SERIAL_ECHOLNPGM(STR_WATCHDOG_RESET);
-  if (mcu & RST_SOFTWARE) SERIAL_ECHOLNPGM(STR_SOFTWARE_RESET);
+  #if DISABLED(TL_GRBL)
+    if (mcu & RST_POWER_ON) SERIAL_ECHOLNPGM(STR_POWERUP);
+    if (mcu & RST_EXTERNAL) SERIAL_ECHOLNPGM(STR_EXTERNAL_RESET);
+    if (mcu & RST_BROWN_OUT) SERIAL_ECHOLNPGM(STR_BROWNOUT_RESET);
+    if (mcu & RST_WATCHDOG) SERIAL_ECHOLNPGM(STR_WATCHDOG_RESET);
+    if (mcu & RST_SOFTWARE) SERIAL_ECHOLNPGM(STR_SOFTWARE_RESET);
+  #endif
   HAL_clear_reset_source();
 
-  SERIAL_ECHOPGM_P(GET_TEXT(MSG_MARLIN));
-  SERIAL_CHAR(' ');
-  SERIAL_ECHOLNPGM(SHORT_BUILD_VERSION);
-  SERIAL_EOL();
-  #if defined(STRING_DISTRIBUTION_DATE) && defined(STRING_CONFIG_H_AUTHOR)
-    SERIAL_ECHO_MSG(
-      " Last Updated: " STRING_DISTRIBUTION_DATE
-      " | Author: " STRING_CONFIG_H_AUTHOR
-    );
+  #if DISABLED(TL_GRBL)
+    SERIAL_ECHOPGM_P(GET_TEXT(MSG_MARLIN));
+    SERIAL_CHAR(' ');
+    SERIAL_ECHOLNPGM(SHORT_BUILD_VERSION);
+    SERIAL_EOL();
+    #if defined(STRING_DISTRIBUTION_DATE) && defined(STRING_CONFIG_H_AUTHOR)
+      SERIAL_ECHO_MSG(
+        " Last Updated: " STRING_DISTRIBUTION_DATE
+        " | Author: " STRING_CONFIG_H_AUTHOR
+      );
+    #endif
+    SERIAL_ECHO_MSG("Compiled Date: " __DATE__ "-" __TIME__);
+    printf("Compiled Date: %s-%s\n",__DATE__,__TIME__);    
+    SERIAL_ECHO_MSG(STR_FREE_MEMORY, freeMemory(), STR_PLANNER_BUFFER_BYTES, sizeof(block_t) * (BLOCK_BUFFER_SIZE));
   #endif
-	SERIAL_ECHO_MSG("Compiled Date: " __DATE__ "-" __TIME__);
-  printf("Compiled Date: %s-%s\n",__DATE__,__TIME__);    
-  SERIAL_ECHO_MSG(STR_FREE_MEMORY, freeMemory(), STR_PLANNER_BUFFER_BYTES, sizeof(block_t) * (BLOCK_BUFFER_SIZE));
 
   // Some HAL need precise delay adjustment
   calibrate_delay_loop();
@@ -1657,7 +1667,9 @@ void setup() {
   #endif
   
   SETUP_LOG("setup() completed.");
-	SERIAL_ECHOLNPGM("=============SETUP FINISH=============\n");
+  #if DISABLED(TL_GRBL)
+  SERIAL_ECHOLNPGM("=============SETUP FINISH=============\n");
+  #endif
 
   #if ENABLED(POWER_LOSS_RECOVERY_TL)
     uint8_t lastPageID = TLTJC_GetLastPage();
@@ -1684,7 +1696,7 @@ void setup() {
   #endif
 
   #if ENABLED(TENLOG_L)
-    //EXECUTE_GCODE("M1523");
+    TLECHO_PRINTLN("ok");
   #endif
 }
 

@@ -125,6 +125,8 @@ void GcodeSuite::grbl_d() {
         grbl_j();
     }else if(grbl_arg[0] == '$'){   //$$ display settins
         grbl_dd();
+    }else if(grbl_arg[0] == '!'){   //$$ display settins
+        grbl_dd();
     }
 }
 #endif

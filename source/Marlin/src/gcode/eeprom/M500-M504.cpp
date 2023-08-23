@@ -25,6 +25,10 @@
 #include "../../core/serial.h"
 #include "../../inc/MarlinConfig.h"
 
+#if ENABLED(TENLOG_L)
+#include "../../gcode/queue.h"
+#endif
+
 //#include "../../../module/planner.h"
 #include "../../../module/motion.h"
 
@@ -165,13 +169,13 @@ void GcodeSuite::M502() {
           delay(200);
         }
         */
-        tlStoped = false;
+        tlStopped = 0;
         EXECUTE_GCODE("M999");
         safe_delay(50);
         isHoming = true;
         EXECUTE_GCODE("G28 XY");
         safe_delay(200);
-        EXECUTE_GCODE("G0 X0Y0");
+        ENQUEUE_GCODE("G0 X0Y0");
         isHoming = false;
       }
     }
