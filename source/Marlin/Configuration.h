@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "045"
+#define TL_SUBVERSION "045.1"
 
 //update log 
 /*
@@ -150,13 +150,15 @@ Version     033
 
 //TL Functions
 //#define ELECTROMAGNETIC_VALUE
+#if DISABLED(TENLOG_L)
 #define PRINT_FROM_Z_HEIGHT
+#endif
 
 #ifdef TENLOG_L
   #define TL_NO_SCREEN
   #define TL_BEEPER
   #define TL_GRBL
-  #define LASER_ENDSTOP_WIDTH -2
+  #define LASER_ENDSTOP_WIDTH 0
   //#define ESP32_WIFI
 #else
   #ifndef TENLOG_X
@@ -212,8 +214,8 @@ Version     033
   #define Z_LENGTH   610
 #elif defined(TENLOG_L4)
   #define TL_MODEL_STR_0 "L4"
-  #define X_BED_SIZE 400
-  #define Y_BED_SIZE 400
+  #define X_BED_SIZE 405
+  #define Y_BED_SIZE 405
   #define Z_LENGTH   10
 #elif defined(TENLOG_S3)
   #define TL_MODEL_STR_0 "S3"

@@ -24,7 +24,6 @@
 #include "../../module/settings.h"
 #include "../../core/serial.h"
 #include "../../inc/MarlinConfig.h"
-
 #if ENABLED(TENLOG_L)
 #include "../../gcode/queue.h"
 #endif
@@ -173,9 +172,7 @@ void GcodeSuite::M502() {
         EXECUTE_GCODE("M999");
         safe_delay(50);
         isHoming = true;
-        EXECUTE_GCODE("G28 XY");
-        safe_delay(200);
-        ENQUEUE_GCODE("G0 X0Y0");
+        queue.inject_P(PSTR("G28 XY"));
         isHoming = false;
       }
     }

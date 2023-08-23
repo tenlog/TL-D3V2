@@ -219,6 +219,7 @@
     #define FAN3_PIN              PE7   //FZ2
   #elif defined(TENLOG_L)
     #define FAN_LASER_PIN         PD3   //FAN2 For laser
+    #define COOLANT_MIST_PIN      PE7
   #else
     #define FAN2_PIN              PA0   //FAN2 FZ1  //PA0
     #define FAN3_PIN              PE7   //FZ2

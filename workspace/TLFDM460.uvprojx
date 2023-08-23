@@ -1214,6 +1214,11 @@
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\gcode\geometry\G53-G59.cpp</FilePath>
             </File>
+            <File>
+              <FileName>M7-M9.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\gcode\control\M7-M9.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

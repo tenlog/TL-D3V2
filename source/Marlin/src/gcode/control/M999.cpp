@@ -25,6 +25,10 @@
 #include "../../MarlinCore.h"   // for marlin_state
 #include "../queue.h"           // for flush_and_request_resend
 
+#if HAS_CUTTER
+  #include "../../feature/spindle_laser.h"
+#endif
+
 /**
  * M999: Restart after being stopped
  *
@@ -36,10 +40,15 @@
  */
 void GcodeSuite::M999() {
   marlin_state = MF_RUNNING;
+  #if ENABLED(TENLOG_L)
+    //queue.clear();
+    quickstop_stepper();    
+    TERN_(HAS_CUTTER, cutter.kill()); // Full cutter shutdown including ISR control
+    TERN_(HAS_CUTTER, cutter.init());
+  #endif
   //ui.reset_alert_level();   //by zyf
-
   if (parser.boolval('S')) return;
   #if DISABLED(TL_GRBL)
-  queue.flush_and_request_resend(queue.ring_buffer.command_port());
+    queue.flush_and_request_resend(queue.ring_buffer.command_port());
   #endif
 }

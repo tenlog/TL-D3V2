@@ -550,5 +550,11 @@ void GcodeSuite::G28() {
     PrintFromZHeightFound = b_temp_PrintFromZHeightFound;
     #endif
 
+    #if ENABLED(TENLOG_L)
+    my_sleep(1.0);
+    EXECUTE_GCODE("G0 X2Y2");
+    my_sleep(0.3);
+    #endif
+
   feedrate_mm_s = original_fr; //restore it.. by zyf
 }

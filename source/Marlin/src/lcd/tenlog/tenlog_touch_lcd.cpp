@@ -3571,7 +3571,7 @@ void tl_sd_abort_on_endstop_hit(){  //only for x & y
         uint8_t hitXMax = READ(X_MAX_PIN);
         uint8_t hitYMax = READ(Y_MAX_PIN);
         uint8_t hitZ = READ(Z_STOP_PIN);
-        if(hitX == last_hitX && hitY == last_hitY && hitXMax == last_hitXMax && hitYMax == last_hitYMax) return;
+        //if(hitX == last_hitX && hitY == last_hitY && hitXMax == last_hitXMax && hitYMax == last_hitYMax) return;
         last_hitZ = hitZ;
         last_hitX = hitX;
         last_hitY = hitY;
@@ -3593,15 +3593,22 @@ void tl_sd_abort_on_endstop_hit(){  //only for x & y
             }
         }
         #if ENABLED(TL_GRBL)
-            static uint16_t errCount;
-            if(hitZ != Z_MIN_ENDSTOP_INVERTING){
-                errCount++; //倾倒开关，除抖动
-                if(errCount > 1){
-                    tlStopped = 3;
-                }
-            }else{
+        static uint16_t errCount;
+        static uint16_t okCount;
+        if(hitZ != Z_MIN_ENDSTOP_INVERTING){
+            //tlStopped = 3;
+            errCount++; //倾倒开关，除抖动
+            if(errCount > 10000){
+                tlStopped = 3;
+            }
+            okCount=0;
+        }else{
+            okCount++;
+            if(okCount > 0){
                 errCount=0;
             }
+        }
+
         #endif
     #endif
 }
@@ -3990,7 +3997,7 @@ void my_sleep(float time){
     unsigned long now_time = millis();
     while(millis() - now_time > time * 1000){
         idle();
-        planner.synchronize();          // Wait for planner moves to finish!      
+        planner.synchronize();          // Wait for planner moves to finish!
     } 
 }
 
