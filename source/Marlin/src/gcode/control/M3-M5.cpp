@@ -74,6 +74,7 @@ void GcodeSuite::M3_M4(const bool is_M4) {
   auto get_s_power = [] {
     if (parser.seenval('S')) {
       const float spwr = parser.value_float();
+      LaserPowerG1 = spwr;
       #if ENABLED(SPINDLE_SERVO)
         cutter.unitPower = spwr;
       #else
@@ -161,11 +162,15 @@ void GcodeSuite::M5() {
   planner.synchronize();
   cutter.set_enabled(false);
   cutter.menuPower = cutter.unitPower;
-  #if ENABLED(TENLOG_L)
-  if(laser_power > 20){
-    set_pwm_hw(0, 1000);
-    laser_power = 0;
-  }
+
+  #if ENABLED(TL_L)
+    grbl_hold = false;
+    LaserPowerG1 = 0;
+    //if(laser_power > 80){
+      set_pwm_hw(0, 1000);
+      laser_power = 0;
+    //}
+    start_beeper(2, 1);
   #endif
 }
 

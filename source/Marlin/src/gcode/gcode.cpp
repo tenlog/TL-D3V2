@@ -200,7 +200,7 @@ void GcodeSuite::get_destination_from_command() {
 
   #if ENABLED(LASER_MOVE_POWER)
     // Set the laser power in the planner to configure this move
-    static float LaserPowerG1;
+    
     if (parser.seen('S')) {
       const float spwr = parser.value_float();
       LaserPowerG1 = spwr;
@@ -320,9 +320,11 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
           }else if(parser.codenum == 53){
             G53();
           }
-
+          wait_ok = true;
         #endif
-        G0_G1(TERN_(HAS_FAST_MOVES, parser.codenum == 0)); break;
+        G0_G1(TERN_(HAS_FAST_MOVES, parser.codenum == 0)); 
+        
+      break;
 
       #if ENABLED(ARC_SUPPORT) && DISABLED(SCARA)
         case 2: case 3: G2_G3(parser.codenum == 2); break;        // G2: CW ARC, G3: CCW ARC
@@ -503,7 +505,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
 
         #if HAS_MEDIA_SUBCALLS
           case 32: M32(); break;                                  // M32: Select file and start SD print
-          #if ENABLED(TENLOG_L)
+          #if ENABLED(TL_L)
           case 320: M320(); break;                                // M320: print a pre selected file.
           #endif
         #endif
@@ -1037,7 +1039,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
       #endif
       #if ENABLED(TENLOG_TOUCH_LCD)
         case 1521: M1521(); break;
-        #if ENABLED(TENLOG_L)
+        #if ENABLED(TL_L)
           case 1522: M1522(); break;
           case 1523: M1523(); break;
         #endif
@@ -1047,7 +1049,19 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
     }
     break;
 
-    case 'T': T(parser.codenum); break;                           // Tn: Tool Change
+    #if ENABLED(TL_X)
+      case 'T': {
+          tl_xe_atv = parser.codenum;
+          if(parser.codenum == 0 || parser.codenum == 1){
+            T(0);
+          }else if(parser.codenum == 2 || parser.codenum == 3){
+            T(1);
+          }
+        break;
+      }
+    #else
+      case 'T': T(parser.codenum); break;                           // Tn: Tool Change
+    #endif
 
     #if ENABLED(MARLIN_DEV_MODE)
       case 'D': D(parser.codenum); break;                         // Dn: Debug codes
@@ -1060,15 +1074,34 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
     #if ENABLED(TL_GRBL)
       case '$':
       {
-        //TLDEBUG_PRINTLN("$ Seen!");
         grbl_d();
       }
       break;
       case '?':
       {
-        //TLDEBUG_PRINTLN("$ Seen!");
         grbl_a();
       }
+      break;
+      case '!':
+        grbl_hold = true;
+        laser_power = 0;
+        set_pwm_hw(0, 1000);
+        //stop();
+      break;
+      case '~':
+        grbl_hold = false;
+        //EXECUTE_GCODE("M999");
+        TLECHO_PRINTLN("ok\n");
+      break;
+      case 0x18:
+        grbl_hold = false;        
+        tlStopped = 0;
+        EXECUTE_GCODE("M999");
+        char str[64];
+        sprintf(str, "Grbl 1.1h \n[uid:%s]", tl_hc_sn);
+        TLECHO_PRINTLN(str);
+        sprintf_P(str, PSTR("[VER%s.%s]\nok"), SHORT_BUILD_VERSION, TL_SUBVERSION); //VER:2.0.8.038
+        TLECHO_PRINTLN(str);
       break;
     #endif
 

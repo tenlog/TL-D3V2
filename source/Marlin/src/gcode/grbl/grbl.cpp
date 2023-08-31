@@ -95,19 +95,16 @@ void GcodeSuite::grbl_j() {
         if (cmd[0] == 'G') {
             TLDEBUG_PRINTLN(cmd);
             EXECUTE_GCODE(cmd);
-            safe_delay(500);
+            safe_delay(200);
             if(cmd[0]=='G' && cmd[1]=='9' && cmd[2]=='1'){
                 EXECUTE_GCODE("G90");
-                safe_delay(500);
+                safe_delay(100);
             }
+            //grbl_hold = false;
         }
     }
 }
 void GcodeSuite::grbl_d() {
-    //grbl_1stconnected = true;
-    //char para[30];
-    //sprintf(para, "$%s", parser.string_arg);
-    //TLDEBUG_PRINTLN(grbl_arg);
     if(grbl_arg[0] == 'I'){
         char str[128];
         sprintf_P(str, PSTR("[VER:%s.%s]"), SHORT_BUILD_VERSION, TL_SUBVERSION); //VER:2.0.8.038
@@ -125,8 +122,10 @@ void GcodeSuite::grbl_d() {
         grbl_j();
     }else if(grbl_arg[0] == '$'){   //$$ display settins
         grbl_dd();
-    }else if(grbl_arg[0] == '!'){   //$$ display settins
+    }else if(grbl_arg[0] == '!'){   //$!
         grbl_dd();
+    }else if(grbl_arg[0] == 'X'){   //$X
+        disable_all_steppers();
     }
 }
 #endif

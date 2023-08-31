@@ -163,7 +163,7 @@ void GCodeParser::parse(char *p) {
    * With Realtime Reporting, commands S000, P000, and R000 are allowed.
    */
   switch (letter) {
-    case 'G': case 'M': case 'T': TERN_(MARLIN_DEV_MODE, case 'D':) TERN_(TL_GRBL, case '$':) TERN_(TL_GRBL, case '?':)
+    case 'G': case 'M': case 'T': TERN_(MARLIN_DEV_MODE, case 'D':) TERN_(TL_GRBL,  case '$': case '?': case '!': case '~': case 0x18:) 
       // Skip spaces to get the numeric part
       while (*p == ' ') p++;
 
@@ -179,8 +179,7 @@ void GCodeParser::parse(char *p) {
       #endif
       
       #if ENABLED(TL_GRBL)
-        if(letter == '$' || letter == '?' || letter == '!'){
-          //TLDEBUG_PRINTLN("$ SSeen!"); 
+        if(letter == '$' || letter == '?' || letter == '!' || letter == '~'|| letter == 0x18){
           command_letter = letter;
           break;
         }else{

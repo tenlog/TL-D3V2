@@ -337,7 +337,7 @@ void reset_stepper_drivers();    // Called by settings.load / settings.reset
 #endif
 #define E7_STEP_READ() bool(READ(E7_STEP_PIN))
 
-#if ENABLED(TENLOG_X)
+#if ENABLED(TL_X)
   #ifndef XE0_ENABLE_INIT
     #define XE0_ENABLE_INIT() SET_OUTPUT(XE0_ENABLE_PIN)
     #define XE0_ENABLE_WRITE(STATE) WRITE(XE0_ENABLE_PIN,STATE)
@@ -863,7 +863,7 @@ void reset_stepper_drivers();    // Called by settings.load / settings.reset
   #endif
 #endif
 
-#if ENABLED(TENLOG_X)
+#if ENABLED(TL_X)
   #ifndef ENABLE_STEPPER_XE0
       #define  ENABLE_STEPPER_XE0() XE0_ENABLE_WRITE( E_ENABLE_ON)
   #endif

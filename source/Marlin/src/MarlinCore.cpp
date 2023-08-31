@@ -1357,7 +1357,7 @@ void setup() {
     SETUP_RUN(probe.tare_init());
   #endif
 
-  #if ENABLED(SDSUPPORT) && ENABLED(TENLOG_L)
+  #if ENABLED(SDSUPPORT) && ENABLED(TL_L)
     TERN_(TENLOG_TOUCH_LCD, TlLoadingMessage("Init SD Reader..."));
     TLDEBUG_PRINTLN("Init SD Reader...");
     SETUP_RUN(card.mount());          // Mount media with settings before first_load
@@ -1695,7 +1695,7 @@ void setup() {
     safe_delay(200); //开机成功
   #endif
 
-  #if ENABLED(TENLOG_L)
+  #if ENABLED(TL_L)
     TLECHO_PRINTLN("ok");
   #endif
 }

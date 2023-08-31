@@ -328,7 +328,7 @@ void Endstops::not_homing() {
   void Endstops::validate_homing_move() {
     if (trigger_state()) hit_on_purpose();
     else {
-      #if DISABLED(TENLOG_L)
+      #if DISABLED(TL_L)
         kill(GET_TEXT(MSG_KILL_HOMING_FAILED));
       #else
         TLECHO_PRINTLN("ALARM:6");

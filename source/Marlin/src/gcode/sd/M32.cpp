@@ -50,7 +50,7 @@ void GcodeSuite::M32() {
     
     card.openFileRead(parser.string_arg, call_procedure);
     
-    #if ENABLED(TENLOG_L)
+    #if ENABLED(TL_L)
     sprintf(pre_print_file_name, "%s", parser.string_arg);
     #endif
 
@@ -63,7 +63,7 @@ void GcodeSuite::M32() {
   }
 }
 
-#if BOTH(TENLOG_TOUCH_LCD, TENLOG_L)
+#if BOTH(TENLOG_TOUCH_LCD, TL_L)
 void GcodeSuite::M320() {
   static uint32_t lastClick;
   #if ENABLED(TL_BEEPER)  

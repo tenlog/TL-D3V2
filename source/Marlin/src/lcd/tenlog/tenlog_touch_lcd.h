@@ -107,8 +107,6 @@
 #define EXECUTE_GCODE(X)  gcode.process_subcommands_now(X)
 #define ENQUEUE_GCODE(X)  queue.enqueue_one_now(X)
 
-
-
 //void tenlog_status_screen();
 void TenlogScreen_begin(long boud);
 void TenlogScreen_end();
@@ -251,7 +249,7 @@ extern float print_from_z_target;
 extern uint32_t wifi_update_interval;
 extern uint8_t sd_OK;
 
-#if ENABLED(TENLOG_L)
+#if ENABLED(TL_L)
     extern char pre_print_file_name[13];
     extern uint32_t last_laser_time;
     extern uint16_t laser_power;
@@ -277,9 +275,15 @@ extern char TJCModelNo[64];
     extern uint32_t Homing_start;
     extern uint8_t tlStopped;
     extern bool weakLaserOn;
-    //extern bool grbl_1stconnected;
+    extern float LaserPowerG1;
+    extern bool grbl_hold;
     void grbl_idle();
     void grbl_report_status();
+    extern bool wait_ok;
+#endif
+
+#if ENABLED(TL_X)
+    extern uint8_t tl_xe_atv;
 #endif
 
 #endif  //TENLOG_TOUCH_LCD

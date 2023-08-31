@@ -250,8 +250,13 @@ void GCodeQueue::RingBuffer::ok_to_send() {
     if (!serial_ind.valid()) return;              // Optimization here, skip processing if it's not going anywhere
     PORT_REDIRECT(SERIAL_PORTMASK(serial_ind));   // Reply to the serial port that sent the command
   #endif
+  #if ENABLED(TL_GRBL)
+    wait_ok = false;
+    if(grbl_hold) return;
+  #endif
   if (command.skip_ok) return;
   SERIAL_ECHOPGM(STR_OK);
+
   #if ENABLED(ADVANCED_OK)
     char* p = command.buffer;
     if (*p == 'N') {
@@ -448,19 +453,35 @@ void GCodeQueue::get_serial_commands() {
       SerialState &serial = serial_state[p];
 
       #if ENABLED(TL_GRBL)
+      bool is_grbl = false;
       if(serial_char == '?' && (serial.line_buffer[0] == '\n' || serial.line_buffer[0] == '\0' || serial.line_buffer[0] == '?'
        || serial.line_buffer[1] == '?' || serial.line_buffer[2] == '?' || serial.line_buffer[3] == '?'
         || serial.line_buffer[4] == '?' || serial.line_buffer[5] == '?' || serial.line_buffer[6] == '?')){ //by zyf
-        grbl_report_status();
-        safe_delay(5);
+        if(!wait_ok){
+          serial.line_buffer[0] = '?';
+          serial.line_buffer[1] = '\n';
+          serial.count = 2;
+          is_grbl = true;
+        }
         serial_char = '\n';
+      }else if(serial_char == '!'){
+        serial.line_buffer[0] = '!';
+        serial.line_buffer[1] = '\n';
+        serial.count = 2;
+        serial_char = '\n';
+        gcode.stepper_inactive_time = SEC_TO_MS(20);
+      }else if(serial_char == '~'){
+        serial.line_buffer[0] = '~';
+        serial.line_buffer[1] = '\n';
+        serial.count = 2;
+        serial_char = '\n';
+        //grbl_hold = false;        
+        gcode.stepper_inactive_time = SEC_TO_MS(DEFAULT_STEPPER_DEACTIVE_TIME);
       }else if(serial_char == 0x18){
         //Ctrl+x 
-        tlStopped = 0;
-        EXECUTE_GCODE("M999");
-        char str[64];
-        sprintf(str, "Grbl 1.1h \n[uid:%s]", tl_hc_sn);
-        TLECHO_PRINTLN(str);
+        serial.line_buffer[0] = 0x18;
+        serial.line_buffer[1] = '\n';
+        serial.count = 2;
         serial_char = '\n';
       }
       #endif
@@ -468,7 +489,7 @@ void GCodeQueue::get_serial_commands() {
       if (ISEOL(serial_char)) {
 
         // Reset our state, continue if the line was empty
-        if (process_line_done(serial.input_state, serial.line_buffer, serial.count))
+        if (process_line_done(serial.input_state, serial.line_buffer, serial.count) TERN_(TL_GRBL, && !is_grbl))
           continue;
 
         char* command = serial.line_buffer;

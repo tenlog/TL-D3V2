@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "045.1"
+#define TL_SUBVERSION "045.4"
 
 //update log 
 /*
@@ -83,58 +83,54 @@ Version     033
 */
 
 //TL Medels and version
-//#define TENLOG_H2
-//#define TENLOG_D3HS   //High Speed
-//#define TENLOG_D3
-//#define TENLOG_S2   //single head
-//#define TENLOG_S3   //single head
-//#define TENLOG_M3
-//#define TENLOG_M3S
-#define TENLOG_L4   //laser only
-//#define TENLOG_D5
-//#define TENLOG_D6
-//#define TENLOG_D8     
-//#define TENLOG_LW8   //Luminous words
-//#define TENLOG_LW3   //Luminous words
-//#define TENLOG_X3    //4进2出 Neza
-//#define TENLOG_X2    //4进2出 Neza
+//#define TL_H2
+//#define TL_D3HS   //High Speed
+//#define TL_D3
+//#define TL_S2   //single head
+//#define TL_S3   //single head
+//#define TL_M3
+//#define TL_M3S
+#define TL_L4   //laser only
+//#define TL_D5
+//#define TL_D6
+//#define TL_D8     
+//#define TL_LW8   //Luminous words
+//#define TL_LW3   //Luminous words
+//#define TL_X3    //Neza
+//#define TL_X2    //Neza
 
 //#define TL_DEBUG    //debug
 //#define DUAL_HEAD_BLTOUCH
 
-#if ANY(TENLOG_LW8, TENLOG_LW3)
-#define TENLOG_LW
+#if ANY(TL_LW8, TL_LW3)
+#define TL_LW
 #endif
 
-#if ANY(TENLOG_X2, TENLOG_X3, TENLOG_X5, TENLOG_X6, TENLOG_X100)
-  #define TENLOG_X
+#if ANY(TL_X2, TL_X3, TL_X5, TL_X6, TL_X1000)
+  #define TL_X
 #endif
 
-#ifdef TENLOG_L4
-  #define TENLOG_L
+#ifdef TL_L4
+  #define TL_L
 #endif
 
 //Headers
-#if ANY(TENLOG_S3,TENLOG_S2,TENLOG_LW,TENLOG_M3S)
+#if ANY(TL_S3,TL_S2,TL_LW,TL_M3S)
   #define SINGLE_HEAD
   #define EXTRUDERS 1
-  #if ENABLED(TENLOG_LW)
+  #if ENABLED(TL_LW)
     #define MIXING_EXTRUDER
   #endif
-#elif ENABLED(TENLOG_L)
+#elif ENABLED(TL_L)
   #define EXTRUDERS 1
 #else
   #define DUAL_X_CARRIAGE
   #define EXTRUDERS 2
 #endif
 
-#if ENABLED(TENLOG_X)
-  //#define MIXING_EXTRUDER
-#endif
-
 //Auto leveling.
-#if ANY(SINGLE_HEAD, DUAL_HEAD_BLTOUCH) //, TENLOG_X
-  #ifndef TENLOG_M3S
+#if ANY(SINGLE_HEAD, DUAL_HEAD_BLTOUCH) //, TL_X
+  #ifndef TL_M3S
     #define BLTOUCH
     #define TLTOUCH
     //#define MESH_BED_LEVELING
@@ -150,18 +146,18 @@ Version     033
 
 //TL Functions
 //#define ELECTROMAGNETIC_VALUE
-#if DISABLED(TENLOG_L)
+#if DISABLED(TL_L)
 #define PRINT_FROM_Z_HEIGHT
 #endif
 
-#ifdef TENLOG_L
+#ifdef TL_L
   #define TL_NO_SCREEN
   #define TL_BEEPER
   #define TL_GRBL
   #define LASER_ENDSTOP_WIDTH 0
   //#define ESP32_WIFI
 #else
-  #ifndef TENLOG_X
+  #ifndef TL_X
     #define ESP32_WIFI
   #endif
 #endif
@@ -171,81 +167,81 @@ Version     033
 #endif
 
 // The size of the printable area
-#if defined(TENLOG_D3) 
+#if defined(TL_D3) 
   #define TL_MODEL_STR_0 "D3"
   #define X_BED_SIZE 320
   #define Y_BED_SIZE 320
   #define Z_LENGTH   350
-#elif defined(TENLOG_D3HS) 
+#elif defined(TL_D3HS) 
   #define TL_HIGH_SPEED 1
   #define TL_MODEL_STR_0 "D3HS"
   #define X_BED_SIZE 310
   #define Y_BED_SIZE 310
   #define Z_LENGTH   350
-#elif defined(TENLOG_M3)
+#elif defined(TL_M3)
   #define TL_MODEL_STR_0 "M3"
   #define X_BED_SIZE 300
   #define Y_BED_SIZE 210
   #define Z_LENGTH   200
-#elif defined(TENLOG_M3S)
+#elif defined(TL_M3S)
   #define TL_MODEL_STR_0 "M3S"
   #define X_BED_SIZE 350
   #define Y_BED_SIZE 210
   #define Z_LENGTH   200
-#elif defined(TENLOG_H2)
+#elif defined(TL_H2)
   #define TL_MODEL_STR_0 "Hands2"
   #define X_BED_SIZE 235
   #define Y_BED_SIZE 240
   #define Z_LENGTH   260
-#elif defined(TENLOG_D5)
+#elif defined(TL_D5)
   #define TL_MODEL_STR_0 "D5"
   #define X_BED_SIZE 505
   #define Y_BED_SIZE 510
   #define Z_LENGTH   610
-#elif defined(TENLOG_D8)
+#elif defined(TL_D8)
   #define TL_MODEL_STR_0 "D8"
   #define X_BED_SIZE 805
   #define Y_BED_SIZE 810
   #define Z_LENGTH   610
-#elif defined(TENLOG_D6)
+#elif defined(TL_D6)
   #define TL_MODEL_STR_0 "D6"
   #define X_BED_SIZE 605
   #define Y_BED_SIZE 610
   #define Z_LENGTH   610
-#elif defined(TENLOG_L4)
+#elif defined(TL_L4)
   #define TL_MODEL_STR_0 "L4"
   #define X_BED_SIZE 405
   #define Y_BED_SIZE 405
   #define Z_LENGTH   10
-#elif defined(TENLOG_S3)
+#elif defined(TL_S3)
   #define TL_MODEL_STR_0 "S3"
   #define X_BED_SIZE 360
   #define Y_BED_SIZE 310
   #define Z_LENGTH   350
-#elif defined(TENLOG_S2)
+#elif defined(TL_S2)
   #define TL_MODEL_STR_0 "S2"
   #define X_BED_SIZE 260
   #define Y_BED_SIZE 235
   #define Z_LENGTH   250
-#elif defined(TENLOG_LW8)
+#elif defined(TL_LW8)
   #define TL_HIGH_SPEED 1
   #define TL_MODEL_STR_0 "LW8"
   #define X_BED_SIZE 820
   #define Y_BED_SIZE 820
   #define Z_LENGTH   100
-#elif defined(TENLOG_LW3)
+#elif defined(TL_LW3)
   //#define TL_HIGH_SPEED 1
   #define TL_MODEL_STR_0 "LW3"
   #define X_BED_SIZE 310
   #define Y_BED_SIZE 310
   #define Z_LENGTH   200
-#elif defined(TENLOG_X3)
+#elif defined(TL_X3)
   //#define TL_HIGH_SPEED 1
   #define TL_MODEL_STR_0 "X3 Neza!"
   #define X_BED_SIZE 310
   #define Y_BED_SIZE 310
   #define Z_LENGTH   350
-#elif defined(TENLOG_X2)
+#elif defined(TL_X2)
   #define TL_MODEL_STR_0 "X2 Neza!"
   #define X_BED_SIZE 235
   #define Y_BED_SIZE 235
@@ -284,13 +280,13 @@ Version     033
   #define WIFI_DEFAULT_IP_SETTINGS {192,168,0,1,255,255,255,0,192,168,0,88}
 #endif
 
-#if defined(TENLOG_M3) || defined(TENLOG_M3S)
+#if defined(TL_M3) || defined(TL_M3S)
   #define INVERT_X_DIR false
 #else
   #define INVERT_X_DIR true
 #endif
 
-#if ENABLED(TENLOG_L)
+#if ENABLED(TL_L)
   #define INVERT_Y_DIR true
 #else
   #define INVERT_Y_DIR false
@@ -419,7 +415,11 @@ Version     033
  *
  * :[2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000]
  */
-#define BAUDRATE 115200
+//#if ENABLED(TL_GRBL)
+//  #define BAUDRATE 115200
+//#else
+  #define BAUDRATE 115200
+//#endif
 
 // Enable the Bluetooth serial interface on AT90USB devices
 //#define BLUETOOTH
@@ -1000,7 +1000,7 @@ Version     033
 #define USE_YMAX_PLUG
 #define USE_ZMAX_PLUG
 
-#if ENABLED(TENLOG_L)
+#if ENABLED(TL_L)
   //#undef USE_XMAX_PLUG
   //#undef USE_YMAX_PLUG
   #undef USE_ZMAX_PLUG
@@ -1042,7 +1042,7 @@ Version     033
 #endif
 
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
-#if ANY(TENLOG_LW)
+#if ANY(TL_LW)
   #define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop. 高电平触发
 #else
   #define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop. 低电平触发
@@ -1050,7 +1050,7 @@ Version     033
 
 #define Y_MIN_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop. 
 
-#if ENABLED(TENLOG_L)
+#if ENABLED(TL_L)
 #define X_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
 #define Y_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
 #define Z_MIN_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
@@ -1106,7 +1106,7 @@ Version     033
 // This will remove the need to poll the interrupt pins, saving many CPU cycles.
 //by zyf 这里没写 BED_PROBE 的部分，导致使用热床探针的时候失效
 //限位器中断
-#if DISABLED(TENLOG_L)
+#if DISABLED(TL_L)
   #define ENDSTOP_INTERRUPTS_FEATURE
 #endif
 
@@ -1152,7 +1152,7 @@ Version     033
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#if ENABLED(TENLOG_LW)
+#if ENABLED(TL_LW)
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 118, 118, 800, 145}
 #else
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 395}
@@ -1167,7 +1167,7 @@ Version     033
 #if TL_HIGH_SPEED
 #define DEFAULT_MAX_FEEDRATE          { 500, 500, 10, 30 }
 #else
-#define DEFAULT_MAX_FEEDRATE          { 200, 200, 5, 25 }
+#define DEFAULT_MAX_FEEDRATE          { 400, 400, 5, 25 }
 #endif
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
@@ -1183,8 +1183,8 @@ Version     033
  */
 #if TL_HIGH_SPEED
   #define DEFAULT_MAX_ACCELERATION      {5000, 5000, 100, 1000}
-#elif ENABLED(TENLOG_L)
-  #define DEFAULT_MAX_ACCELERATION      {500, 500, 20, 500}
+#elif ENABLED(TL_L)
+  #define DEFAULT_MAX_ACCELERATION      {3000, 3000, 20, 500}
 #else
   #define DEFAULT_MAX_ACCELERATION      {800, 800, 100, 800}
 #endif
@@ -1206,9 +1206,14 @@ Version     033
   #define DEFAULT_RETRACT_ACCELERATION  1000    // E acceleration for retracts
   #define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
 #else
-  #define DEFAULT_ACCELERATION          800    // X, Y, Z and E acceleration for printing moves
+  #if ENABLED(TL_L)
+    #define DEFAULT_ACCELERATION          1200    // X, Y, Z and E acceleration for printing moves
+    #define DEFAULT_TRAVEL_ACCELERATION   1200    // X, Y, Z acceleration for travel (non printing) moves
+  #else
+    #define DEFAULT_ACCELERATION          800    // X, Y, Z and E acceleration for printing moves
+    #define DEFAULT_TRAVEL_ACCELERATION   800    // X, Y, Z acceleration for travel (non printing) moves
+  #endif
   #define DEFAULT_RETRACT_ACCELERATION  500    // E acceleration for retracts
-  #define DEFAULT_TRAVEL_ACCELERATION   800    // X, Y, Z acceleration for travel (non printing) moves
 #endif
 /**
  * Default Jerk limits (mm/s)
@@ -1433,7 +1438,7 @@ Version     033
  */
 #if ENABLED(BLTOUCH)
   #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
-    #if ENABLED(TENLOG_LW)
+    #if ENABLED(TL_LW)
     #define NOZZLE_TO_PROBE_OFFSET { -45, 0, 0 }
     #else
     #define NOZZLE_TO_PROBE_OFFSET { 35, 0, 0 }
@@ -1586,7 +1591,7 @@ Version     033
 // @section extruder
 
 // For direct drive extruder v9 set to true, for geared extruder set to false.
-#if ANY(TENLOG_S2, TENLOG_S3)
+#if ANY(TL_S2, TL_S3)
 #define INVERT_E0_DIR false
 #else
 #define INVERT_E0_DIR true
@@ -1623,7 +1628,7 @@ Version     033
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
-//#if ENABLED(TENLOG_L)
+//#if ENABLED(TL_L)
 //  #define X_HOME_DIR 1
 //#else
   #define X_HOME_DIR -1
@@ -1636,13 +1641,13 @@ Version     033
 // Travel limits (mm) after homing, corresponding to endstop positions.
 #if ENABLED(SINGLE_HEAD)
   #define X_MIN_POS 0
-#elif ENABLED(TENLOG_L)
+#elif ENABLED(TL_L)
   #define X_MIN_POS LASER_ENDSTOP_WIDTH
 #else
   #define X_MIN_POS -50
 #endif
 
-#if ENABLED(TENLOG_L)
+#if ENABLED(TL_L)
   #define Y_MIN_POS LASER_ENDSTOP_WIDTH
 #else
   #define Y_MIN_POS 0
@@ -1662,7 +1667,7 @@ Version     033
  */
 
 // Min software endstops constrain movement within minimum coordinate bounds
-#if DISABLED(TENLOG_L)
+#if DISABLED(TL_L)
   #define MIN_SOFTWARE_ENDSTOPS
 #endif
 #if ENABLED(MIN_SOFTWARE_ENDSTOPS)
@@ -1672,7 +1677,7 @@ Version     033
 #endif
 
 // Max software endstops constrain movement within maximum coordinate bounds
-#if DISABLED(TENLOG_L)
+#if DISABLED(TL_L)
   #define MAX_SOFTWARE_ENDSTOPS
 #endif
 #if ENABLED(MAX_SOFTWARE_ENDSTOPS)

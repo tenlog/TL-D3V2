@@ -62,7 +62,7 @@
 //#define SDCARD_EEPROM_EMULATION
 
 #ifdef IIC_BL24CXX_EEPROM
-  #if defined(TENLOG_LW) || defined(TENLOG_L)
+  #if defined(TL_LW) || defined(TL_L)
     #define IIC_EEPROM_SDA       PD12 
     #define IIC_EEPROM_SCL       PD13 
   #else
@@ -81,7 +81,7 @@
   #define Y_STOP_PIN         PC3// y-
   #define X_STOP_PIN         PC13// x-
   #define Z_STOP_PIN         PC15// Z-
-  #if defined(TENLOG_M3)
+  #if defined(TL_M3)
     #define Z_MAX_PIN        PC15//
     //PC14 to hw pwm for bl touch
   #elif defined(BLTOUCH)
@@ -90,7 +90,7 @@
   #else
     #define Z_MAX_PIN        PC14// 14Z+
   #endif
-#elif defined(TENLOG_L)
+#elif defined(TL_L)
   #define X_MIN_PIN           PC13// x-
   #define X_MAX_PIN           PE11// x+
   #define Y_STOP_PIN          PC3// y-
@@ -98,7 +98,7 @@
   #define Z_STOP_PIN          PC15// Z-
   //#define Z_MAX_PIN         PC15// Z-
 #elif defined(BLTOUCH) && defined(SINGLE_HEAD)
-  #ifdef TENLOG_LW
+  #ifdef TL_LW
     #define X_STOP_PIN         PC13// x+
   #else
     #define X_MAX_PIN         PH2// x+
@@ -113,7 +113,7 @@
   #define Z_MAX_PIN          PC15// Z-
 #endif
 
-#ifdef TENLOG_L
+#ifdef TL_L
   #define LASER_FAN_PIN       PD3
   #define RESET_PIN           PA15 
   #define TL_BUTTON_START_PIN       PC14
@@ -128,9 +128,9 @@
 //
 // Filament Runout Sensor
 //
-#if defined(TENLOG_LW) 
+#if defined(TL_LW) 
   #define FIL_RUNOUT_PIN                    PA0   // "Pulled-high"  
-#elif defined(TENLOG_LASER_ONLY)
+#elif defined(TL_LASER_ONLY)
   #define FIL_RUNOUT_PIN                    PD0   // "Pulled-high"
 #else
   #define FIL_RUNOUT_PIN                    PA15   // "Pulled-high" 
@@ -153,7 +153,7 @@
   #endif
 #endif
 
-#if defined(TENLOG_S2) || defined(TENLOG_S3)
+#if defined(TL_S2) || defined(TL_S3)
   #define X_STEP_PIN         PA9
   #define X_DIR_PIN          PA8
 #else
@@ -174,7 +174,7 @@
 #define E0_ENABLE_PIN      X_ENABLE_PIN
 #define E1_ENABLE_PIN      X_ENABLE_PIN
 
-#ifdef TENLOG_LW
+#ifdef TL_LW
   #define E0_STEP_PIN        PB13
   #define E0_DIR_PIN         PB12
   #define E1_STEP_PIN        PB4
@@ -184,7 +184,7 @@
 #else
   #define Z2_STEP_PIN        PB13
   #define Z2_DIR_PIN         PB12
-  #ifdef TENLOG_X
+  #ifdef TL_X
     #define E0_STEP_PIN        PB6
     #define E0_DIR_PIN         PB5
   #else
@@ -214,10 +214,10 @@
   //#define FAN_PIN               PD0   //FAN  FC1 now use hw pwm
   //#define FAN1_PIN              PE8   //FC2 use hw pwm
 
-  #if defined(TENLOG_LW)
+  #if defined(TL_LW)
     #define FAN2_PIN              PD3   //FAN2 FZ1
     #define FAN3_PIN              PE7   //FZ2
-  #elif defined(TENLOG_L)
+  #elif defined(TL_L)
     #define FAN_LASER_PIN         PD3   //FAN2 For laser
     #define COOLANT_MIST_PIN      PE7
   #else
@@ -229,10 +229,10 @@
 #endif
 
 #define LED_PIN                 PE2   //LED 控制管脚
-#ifdef TENLOG_LW
+#ifdef TL_LW
   #define FAN4_PIN                PC3   
   #define CHAMEBER_PIN            FAN4_PIN   //机箱风扇口
-#elif defined(TENLOG_L)
+#elif defined(TL_L)
 
 #else
   #define FAN4_PIN                PE3   
@@ -277,7 +277,7 @@
   #define MISO_PIN          PB0
 #endif
 
-#if defined(TENLOG_X)
+#if defined(TL_X)
   #define XE0_ENABLE_PIN    PA6  
   #define XE1_ENABLE_PIN    PB1
   #define XE2_ENABLE_PIN    PA7

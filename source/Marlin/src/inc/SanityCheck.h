@@ -1076,8 +1076,8 @@ static_assert(Y_MAX_LENGTH >= Y_BED_SIZE, "Movement bounds (Y_MIN_POS, Y_MAX_POS
  * Mixing Extruder requirements
  */
 #if ENABLED(MIXING_EXTRUDER)
-  #if HAS_MULTI_EXTRUDER && DISABLED(TENLOG_X)
-    #error "For MIXING_EXTRUDER set MIXING_STEPPERS > 1 instead of EXTRUDERS > 1." //? by zyf
+  #if HAS_MULTI_EXTRUDER
+    #error "For MIXING_EXTRUDER set MIXING_STEPPERS > 1 instead of EXTRUDERS > 1." 
   #elif MIXING_STEPPERS < 2
     #error "You must set MIXING_STEPPERS >= 2 for a mixing extruder."
   #elif ENABLED(FILAMENT_SENSOR)
@@ -3319,8 +3319,8 @@ static_assert(   _ARR_TEST(3,0) && _ARR_TEST(3,1) && _ARR_TEST(3,2)
 #if ENABLED(MIXING_EXTRUDER) && ENABLED(DISTINCT_E_FACTORS)
   #error "MIXING_EXTRUDER can't be used with DISTINCT_E_FACTORS. But you may use SINGLENOZZLE with DISTINCT_E_FACTORS."
 #endif
-#if ENABLED(MIXING_EXTRUDER) && (HOTENDS!=1) && DISABLED(TENLOG_X)
-  #error "MIXING_EXTRUDER Need 1 Hotend." //? by zyf
+#if ENABLED(MIXING_EXTRUDER) && (HOTENDS!=1)
+  #error "MIXING_EXTRUDER Need 1 Hotend." 
 #endif
 
 /**

@@ -214,7 +214,7 @@ bool CardReader::is_dir_or_gcode(const dir_t &p, bool onlyGcode) {
   return (
     flag.filenameIsDir && !onlyGcode                    // All Directories are ok  //by zyf only gcode
     || (p.name[8] == 'G' && p.name[9] != '~')            // Non-backup *.G* files are accepted
-    #if ENABLED(TENLOG_L)
+    #if ENABLED(TL_L)
     || (p.name[8] == 'N' && p.name[9] == 'C')            // *.NC files are accepted
     #endif      
   );
@@ -326,7 +326,7 @@ void CardReader::ls() {
 //
 
 void CardReader::tl_ls(bool wifi) {
-  TERN_(TENLOG_L, ZERO(pre_print_file_name));
+  TERN_(TL_L, ZERO(pre_print_file_name));
   if(wifi)mount();
   char cmd[96];
   int LastID = 0;
@@ -394,7 +394,7 @@ void CardReader::tl_ls(bool wifi) {
         if(p.fileSize > 5){
           createFilename(filename, p);
           iFileID++;      //start form 1
-          TERN_(TENLOG_L, sprintf(pre_print_file_name, "%s", filename));
+          TERN_(TL_L, sprintf(pre_print_file_name, "%s", filename));
 
           if(wifi){
             tl_print_page_id = pageNum;

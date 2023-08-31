@@ -549,7 +549,7 @@
 #define E7_AUTO_FAN_PIN -1
 #define CHAMBER_AUTO_FAN_PIN -1
 
-#if DISABLED(TENLOG_L)
+#if DISABLED(TL_L)
 #define TLCHAMBER_AUTO_FAN_PIN CHAMEBER_PIN
 #endif
 
@@ -603,7 +603,7 @@
 
 // If you want endstops to stay on (by default) even when not homing
 // enable this option. Override at any time with M120, M121.
-#if ENABLED(TENLOG_L)
+#if ENABLED(TL_L)
 #define ENDSTOPS_ALWAYS_ON_DEFAULT
 #endif
 // @section extras
@@ -656,7 +656,7 @@
 // For Z set the number of stepper drivers
 //
 
-#if DISABLED(TENLOG_L)
+#if DISABLED(TL_L)
   #define NUM_Z_STEPPER_DRIVERS 2   // (1-4) Z options change based on how many
 #endif
 
@@ -753,7 +753,7 @@
 
 //#define HOMING_BACKOFF_POST_MM { 2, 2, 2 }  // (mm) Backoff from endstops after homing
 
-#if ENABLED(TENLOG_L)
+#if ENABLED(TL_L)
 //#define QUICK_HOME                          // If G28 contains XY do a diagonal move first
 #endif
 //#define HOME_Y_BEFORE_X                     // If G28 contains XY home Y before X
@@ -941,7 +941,7 @@
  * Set DISABLE_INACTIVE_? 'true' to shut down axis steppers after an idle period.
  * The Deactive Time can be overridden with M18 and M84. Set to 0 for No Timeout.
  */
-#if defined(TENLOG_L)
+#if defined(TL_L)
 #define DEFAULT_STEPPER_DEACTIVE_TIME 1 //by zyf .. 120 //Release stepper time
 #else
 #define DEFAULT_STEPPER_DEACTIVE_TIME 3 //by zyf .. 120 //Release stepper time
@@ -953,7 +953,7 @@
 #define DISABLE_INACTIVE_E true
 
 // Default Minimum Feedrates for printing and travel moves
-#if ENABLED(TENLOG_L)
+#if ENABLED(TL_L)
   #define DEFAULT_MINIMUMFEEDRATE       10     // (mm/s) Minimum feedrate. Set with M205 S.
   #define DEFAULT_MINTRAVELFEEDRATE     20     // (mm/s) Minimum travel feedrate. Set with M205 T.
 #else
@@ -1424,7 +1424,7 @@
    * To have any effect, endstops must be enabled during SD printing.
    */
   
-  #if ENABLED(TENLOG_L)
+  #if ENABLED(TL_L)
     //#define SD_ABORT_ON_ENDSTOP_HIT //不知道为什么Y轴不生效，试了2天放弃了，自己写一个还快。
     #define TL_SD_ABORT_ON_ENDSTOP_HIT
   #endif
@@ -1992,7 +1992,7 @@
 #endif
 
 // Moves (or segments) with fewer steps than this will be joined with the next move
-#if ENABLED(TENLOG_L)
+#if ENABLED(TL_L)
 #define MIN_STEPS_PER_SEGMENT 6 
 #else
 #define MIN_STEPS_PER_SEGMENT 1 //6 //by zyf 0.0125
@@ -2133,7 +2133,7 @@
  * - During Hold all Emergency Parser commands are available, as usual.
  * - Enable NANODLP_Z_SYNC and NANODLP_ALL_AXIS for move command end-state reports.
  */
-#if ENABLED(TENLOG_L)
+#if ENABLED(TL_L)
   #define REALTIME_REPORTING_COMMANDS
 #endif
 #if ENABLED(REALTIME_REPORTING_COMMANDS)
@@ -3220,7 +3220,7 @@
      * This allows the laser to keep in perfect sync with the planner and removes
      * the powerup/down delay since lasers require negligible time.
      */
-    #ifdef TENLOG_L
+    #ifdef TL_L
     #define LASER_POWER_INLINE
     #endif
 
@@ -3313,7 +3313,9 @@
  *
  * Note: COOLANT_MIST_PIN and/or COOLANT_FLOOD_PIN must also be defined.
  */
+#if ENABLED(TL_L)
 #define COOLANT_CONTROL
+#endif
 #if ENABLED(COOLANT_CONTROL)
   #define COOLANT_MIST                // Enable if mist coolant is present
   //#define COOLANT_FLOOD               // Enable if flood coolant is present
@@ -3493,7 +3495,7 @@
  * High feedrates may cause ringing and harm print quality.
  */
 //#define PAREN_COMMENTS      // Support for parentheses-delimited comments
-#ifdef TENLOG_L
+#ifdef TL_L
   #define GCODE_MOTION_MODES  // Remember the motion mode (G0 G1 G2 G3 G5 G38.X) and apply for X Y Z E F, etc.
 #endif
 
@@ -3593,7 +3595,7 @@
  */
 #define CUSTOM_USER_BUTTONS
 #if ENABLED(CUSTOM_USER_BUTTONS)
-  #if ENABLED(TENLOG_L)
+  #if ENABLED(TL_L)
     #define BUTTON1_PIN RESET_PIN
     #if PIN_EXISTS(BUTTON1)
       #define BUTTON1_HIT_STATE     LOW       // State of the triggered button. NC=LOW. NO=HIGH.

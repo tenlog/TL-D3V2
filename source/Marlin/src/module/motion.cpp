@@ -1695,7 +1695,7 @@ void prepare_line_to_destination() {
           case Z_AXIS: es = Z_ENDSTOP; break;
         }
         if (TEST(endstops.state(), es)) {
-          #if DISABLED(TENLOG_L)
+          #if DISABLED(TL_L)
           SERIAL_ECHO_MSG("Bad ", AS_CHAR(axis_codes[axis]), " Endstop?");
           kill(GET_TEXT(MSG_KILL_HOMING_FAILED));
           #else

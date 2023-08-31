@@ -603,7 +603,7 @@ private:
   #if ENABLED(SDSUPPORT)
     #if ENABLED(HAS_MEDIA_SUBCALLS)
       static void M32();
-      #if ENABLED(TENLOG_L)
+      #if ENABLED(TL_L)
       static void M320();
       #endif
     #endif
@@ -1109,7 +1109,7 @@ private:
 
   #if ENABLED(TENLOG_TOUCH_LCD)
     static void M1521();
-    #if ENABLED(TENLOG_L)
+    #if ENABLED(TL_L)
       static void M1522();
       static void M1523();
     #endif

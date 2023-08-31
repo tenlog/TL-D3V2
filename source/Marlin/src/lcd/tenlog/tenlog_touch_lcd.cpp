@@ -144,13 +144,13 @@ uint8_t beeper_count = 0;
 uint8_t beeper_type = 0;
 #endif
 
-#if ENABLED(TENLOG_L)
+#if ENABLED(TL_L)
 char pre_print_file_name[13]={""};
 #endif
 
 uint32_t wifi_update_interval = 400;
 
-#if ENABLED(TENLOG_L)
+#if ENABLED(TL_L)
 uint32_t last_laser_time = 0;
 uint16_t laser_power = 0;
 #endif
@@ -169,6 +169,13 @@ char TJCModelNo[64]={""};
  uint8_t tlStopped = 0;
  bool weakLaserOn = false;
  //bool grbl_1stconnected = false;
+ float LaserPowerG1=0;
+ bool grbl_hold = false;
+ bool wait_ok = false;
+#endif
+
+#if ENABLED(TL_X)
+    uint8_t tl_xe_atv=0;
 #endif
 
 long ConvertHexLong(long command[], int Len)
@@ -564,7 +571,7 @@ void tlSendSettings(bool only_wifi){
         //wifi_printer_settings[38] = (http_port)%0x100;
         #endif
         
-        #if DISABLED(ELECTROMAGNETIC_VALUE) && DISABLED(TENLOG_L)
+        #if DISABLED(ELECTROMAGNETIC_VALUE) && DISABLED(TL_L)
         sprintf_P(cmd, PSTR("main.vTempMax.val=%d"), tl_E_MAX_TEMP - HOTEND_OVERSHOOT);
         PRINTTJC(cmd);
         TERN_(ESP32_WIFI, wifi_printer_settings[28] = (tl_E_MAX_TEMP-HOTEND_OVERSHOOT) / 0x100);
@@ -697,7 +704,7 @@ void tlSendSettings(bool only_wifi){
         PRINTTJC(cmd); 
         sprintf_P(cmd, PSTR("settings1.xM304D.val=%d"), lPIDDB);
         PRINTTJC(cmd);
-        #if ENABLED(TENLOG_L)
+        #if ENABLED(TL_L)
         sprintf_P(cmd, PSTR("settings2.xM306S.val=%d"), (uint16_t)(tl_LASER_MAX_VALUE));
         #else
         sprintf_P(cmd, PSTR("settings2.xM306S.val=%d"), (uint16_t)(tl_E_MAX_TEMP));
@@ -1003,9 +1010,8 @@ void tlAbortPrinting(){
     queue.clear();
     quickstop_stepper();
     print_job_timer.abort();
-    EXECUTE_GCODE("M106 S0");
     
-    #if ENABLED(TENLOG_L)
+    #if ENABLED(TL_L)
         set_pwm_hw(0, 1000);
         //endstops.enable(true);
         //queue.inject_P(PSTR("G28 X"));
@@ -1016,13 +1022,13 @@ void tlAbortPrinting(){
         queue.enqueue_one_now(PSTR("M5"));
         set_pwm_hw(0, 1000);
     #else
+        EXECUTE_GCODE("M106 S0");
         queue.inject_P(PSTR("G28 XY"));
         queue.enqueue_one_now(PSTR("G92 Y0"));
         queue.enqueue_one_now(PSTR("M84"));
+        IF_DISABLED(SD_ABORT_NO_COOLDOWN, thermalManager.disable_all_heaters());
+        EXECUTE_GCODE("M107");
     #endif
-
-    IF_DISABLED(SD_ABORT_NO_COOLDOWN, thermalManager.disable_all_heaters());
-    EXECUTE_GCODE("M107");
 
     wait_for_heatup = false;
     TERN_(POWER_LOSS_RECOVERY_TL, if(plr_enabled) settings.plr_reset());
@@ -1277,7 +1283,7 @@ void TLSDPrintFinished(){
     }
     #if ENABLED(TL_BEEPER)
         if(!tlStopped){
-            start_beeper(4, 1); //打印完毕 2长声
+            start_beeper(2, 1); //打印完毕 1长声
         }
     #endif
 }
@@ -3024,14 +3030,14 @@ void process_command_gcode(long _tl_command[]) {
                     TLPrintingStatus = 1;
                     settings.plr_fn_save(lF-1);
                     TLDEBUG_PRINTLN(cmd);
-                    #if ENABLED(TENLOG_L)
+                    #if ENABLED(TL_L)
                     EXECUTE_GCODE("G92 X0 Y0");
                     #endif
                     EXECUTE_GCODE(cmd);
                 }
                 #endif
             }else if(lM == 321){
-                #if ENABLED(TENLOG_L)
+                #if ENABLED(TL_L)
                     //M321 pre select print file name
                     //print from wifi
                     NULLZERO(pre_print_file_name);
@@ -3044,7 +3050,7 @@ void process_command_gcode(long _tl_command[]) {
                         #endif
                         //sprintf_P(cmd, PSTR("M%d !%s"), lM, fileNameP);
                     }
-                #endif  //TENLOG_L
+                #endif  //TL_L
             }else if(lM == 19){
                 //M19
                 tl_print_page_id = GCodelng('S', iFrom, _tl_command);
@@ -3086,7 +3092,7 @@ void process_command_gcode(long _tl_command[]) {
                 #endif
             }else if(lM == 1018){
                 //M1018
-                #if ENABLED(TENLOG_L)
+                #if ENABLED(TL_L)
                 tl_LASER_MAX_VALUE= GCodelng('S', iFrom, _tl_command);
                 #else
                 tl_E_MAX_TEMP = GCodelng('S', iFrom, _tl_command);
@@ -3598,7 +3604,7 @@ void tl_sd_abort_on_endstop_hit(){  //only for x & y
         if(hitZ != Z_MIN_ENDSTOP_INVERTING){
             //tlStopped = 3;
             errCount++; //倾倒开关，除抖动
-            if(errCount > 10000){
+            if(errCount > 1500){
                 tlStopped = 3;
             }
             okCount=0;
@@ -3614,22 +3620,28 @@ void tl_sd_abort_on_endstop_hit(){  //only for x & y
 }
 
 void CheckLaserFan(){
-  #if ENABLED(TENLOG_L)  //by zyf auto laser fan 
-    static bool LaserStatus=false;
-    
-    if(millis() - last_laser_time < LASER_FAN_DELAY && millis() > LASER_FAN_DELAY || millis()<LASER_FAN_DELAY && last_laser_time<LASER_FAN_DELAY){
-        if(!LaserStatus){
-            WRITE(LASER_FAN_PIN, 1);
-            LaserStatus = true;
+    #if ENABLED(TL_L)  //by zyf auto laser fan 
+        static bool LaserStatus=false;        
+        if(millis() - last_laser_time < LASER_FAN_DELAY && millis() > LASER_FAN_DELAY || millis()<LASER_FAN_DELAY && last_laser_time<LASER_FAN_DELAY){
+            if(!LaserStatus){
+                WRITE(LASER_FAN_PIN, 1);
+                LaserStatus = true;
+            }
+        }else{
+            if(LaserStatus){
+                WRITE(LASER_FAN_PIN, 0);
+                LaserStatus = false;
+            }
         }
-    }else{
-        if(LaserStatus){
-            WRITE(LASER_FAN_PIN, 0);
-            LaserStatus = false;
-        }
-    }
+        #if ENABLED(TL_L)
+            if(grbl_hold){
+                gcode.reset_stepper_timeout();
+                laser_power = 0;
+                set_pwm_hw(0, 1000);
+            }
+        #endif
     #endif
-  }
+}
 
 /*
 void read_blt(){
@@ -4110,17 +4122,25 @@ void grbl_idle(){
 void grbl_report_status(){
     static char m_static[20];
     if(tl_busy_state){
-        sprintf(m_static, "%s", "Joy");
+        sprintf(m_static, "%s", "Run");
     }else if(isHoming){
-        sprintf(m_static, "%s", "Homing");
+        sprintf(m_static, "%s", "Home");
     }else if(IsStopped()){
         sprintf(m_static, "%s", "Alarm");
+    }else if(grbl_hold){
+        sprintf(m_static, "%s", "Hold:0");
+        laser_power = 0;
+        set_pwm_hw(laser_power, 1000);
     }else{
         sprintf(m_static, "%s", "Idle");
     }
-    sprintf(message, "<%s|MPos:%02f,%02f,0.0|Fs:%02f,0>",m_static,current_position.x,current_position.y,feedrate_mm_s);
-    TLECHO_PRINTLN(message);
-    TLECHO_PRINTLN("ok");
+    if(wait_ok && !grbl_hold){
+        TLECHO_PRINTLN("\nok\n");
+    }
+    if(!wait_ok){
+        sprintf(message, "\n<%s|MPos:%.3f,%.3f,0.0|Fs:%.3f,%.3f>\n",m_static,current_position.x,current_position.y,feedrate_mm_s,feedrate_mm_s);
+        TLECHO_PRINTLN(message);
+    }
 }
 #endif //TL_GRBL
 

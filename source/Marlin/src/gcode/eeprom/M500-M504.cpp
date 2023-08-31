@@ -24,7 +24,7 @@
 #include "../../module/settings.h"
 #include "../../core/serial.h"
 #include "../../inc/MarlinConfig.h"
-#if ENABLED(TENLOG_L)
+#if ENABLED(TL_L)
 #include "../../gcode/queue.h"
 #endif
 
@@ -35,7 +35,7 @@
 #include "../../HAL/ESP32_SPI/esp32_wifi.h"
 #endif
 
-#if ENABLED(TENLOG_L)
+#if ENABLED(TL_L)
 #include "../../HAL/PWM/pwm.h"
 #endif
 
@@ -67,7 +67,7 @@ void GcodeSuite::M502() {
   SPI_RestartWIFI();
   #endif
   #if ENABLED(TL_BEEPER)
-    start_beeper(4, 1); //恢复出厂设置
+    start_beeper(2, 1); //恢复出厂设置
   #endif
 }
 
@@ -132,10 +132,10 @@ void GcodeSuite::M502() {
     int8_t S = parser.seenval('S');
     command_M1521(S);
   }
-  #if ENABLED(TENLOG_L)
+  #if ENABLED(TL_L)
     void GcodeSuite::M1522(){
       if(!weakLaserOn){
-        laser_power = 10;
+        laser_power = 30;
         set_pwm_hw(laser_power, 1000);
         weakLaserOn = true;
         start_beeper(2, 1); //开启弱光
@@ -149,7 +149,7 @@ void GcodeSuite::M502() {
       }
     }
 
-    #if ENABLED(TENLOG_L)
+    #if ENABLED(TL_L)
     void GcodeSuite::M1523(){
       if(!IS_SD_PRINTING()){
         char cmd[20];
@@ -169,6 +169,7 @@ void GcodeSuite::M502() {
         }
         */
         tlStopped = 0;
+        grbl_hold = false;
         EXECUTE_GCODE("M999");
         safe_delay(50);
         isHoming = true;

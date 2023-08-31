@@ -154,9 +154,7 @@ uint8_t Stepper::last_direction_bits, // = 0
 
 bool Stepper::abort_current_block;
 
-#if ENABLED(TENLOG_X) && HAS_MULTI_EXTRUDER
-  uint8_t Stepper::last_moved_extruder = 0xFF;
-#elif DISABLED(MIXING_EXTRUDER) && HAS_MULTI_EXTRUDER
+#if HAS_MULTI_EXTRUDER
   uint8_t Stepper::last_moved_extruder = 0xFF;
 #endif
 
@@ -2593,7 +2591,7 @@ void Stepper::init() {
     if (!E_ENABLE_ON) E7_ENABLE_WRITE(HIGH);
   #endif
 
-  #if ENABLED(TENLOG_X)
+  #if ENABLED(TL_X)
     XE0_ENABLE_INIT();
     XE0_ENABLE_WRITE(LOW);
     XE1_ENABLE_INIT();
