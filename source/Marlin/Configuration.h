@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "045.4"
+#define TL_SUBVERSION "045.6"
 
 //update log 
 /*
@@ -75,47 +75,56 @@ Version     033
             added laser auto fan function. 
             Sub version 041
 20230601    More settings 
-20200619    Bug fixed: E2 side fan speed error. Thank Kai.
+20230619    Bug fixed: E2 side fan speed error. Thank Kai.
             Sub version 043
-20200628    LW系列OK，Fixed some bugs.
+20230628    LW系列OK，Fixed some bugs.
             Sub version 044
             Start Neza.. X Serial.
+20230903    TL_L TL_X..
 */
 
 //TL Medels and version
 //#define TL_H2
 //#define TL_D3HS   //High Speed
-//#define TL_D3
+#define TL_D3
 //#define TL_S2   //single head
 //#define TL_S3   //single head
 //#define TL_M3
 //#define TL_M3S
-#define TL_L4   //laser only
+//#define TL_L4   //laser only
 //#define TL_D5
 //#define TL_D6
 //#define TL_D8     
 //#define TL_LW8   //Luminous words
-//#define TL_LW3   //Luminous words
-//#define TL_X3    //Neza
+//#define TL_LW3   //
+//#define TL_X3    //
 //#define TL_X2    //Neza
 
 //#define TL_DEBUG    //debug
 //#define DUAL_HEAD_BLTOUCH
 
 #if ANY(TL_LW8, TL_LW3)
-#define TL_LW
+//#define TL_LW
 #endif
 
 #if ANY(TL_X2, TL_X3, TL_X5, TL_X6, TL_X1000)
   #define TL_X
 #endif
 
+#if ANY(TL_S2, TL_S3)
+  #define TL_S
+#endif
+
 #ifdef TL_L4
   #define TL_L
 #endif
 
+#ifdef TL_X
+  //#define XEN_IIC
+#endif
+
 //Headers
-#if ANY(TL_S3,TL_S2,TL_LW,TL_M3S)
+#if ANY(TL_S,TL_LW,TL_M3S)
   #define SINGLE_HEAD
   #define EXTRUDERS 1
   #if ENABLED(TL_LW)
@@ -142,7 +151,9 @@ Version     033
 #define TENLOG_TOUCH_LCD
 //#define ESP8266_WIFI
 #define HWPWM
+#if DISABLED(TL_X)
 #define TL_LASER
+#endif
 
 //TL Functions
 //#define ELECTROMAGNETIC_VALUE
@@ -748,11 +759,11 @@ Version     033
 
 #define TEMP_RESIDENCY_TIME           1//5  // (seconds) Time to wait for hotend to "settle" in M109
 #define TEMP_WINDOW                   1  // (��C) Temperature proximity for the "temperature reached" timer
-#define TEMP_HYSTERESIS               3  // (��C) Temperature proximity considered "close enough" to the target
+#define TEMP_HYSTERESIS               5  // (��C) Temperature proximity considered "close enough" to the target
 
 #define TEMP_BED_RESIDENCY_TIME       1//5  // (seconds) Time to wait for bed to "settle" in M190
 #define TEMP_BED_WINDOW               1  // (��C) Temperature proximity for the "temperature reached" timer
-#define TEMP_BED_HYSTERESIS           3  // (��C) Temperature proximity considered "close enough" to the target
+#define TEMP_BED_HYSTERESIS           5  // (��C) Temperature proximity considered "close enough" to the target
 
 #define TEMP_CHAMBER_RESIDENCY_TIME   10  // (seconds) Time to wait for chamber to "settle" in M191
 #define TEMP_CHAMBER_WINDOW           1  // (��C) Temperature proximity for the "temperature reached" timer
@@ -825,9 +836,9 @@ Version     033
     #define DEFAULT_Kp  22.23
     #define DEFAULT_Ki  1.61
     #define DEFAULT_Kd  76.95
-    #define DEFAULT_Kp_MATRII3D  15.86
-    #define DEFAULT_Ki_MATRII3D  0.85
-    #define DEFAULT_Kd_MATRII3D  74.21
+    #define DEFAULT_Kp_MATRII3D  11.09
+    #define DEFAULT_Ki_MATRII3D  0.31
+    #define DEFAULT_Kd_MATRII3D  99.59
   #endif
 #endif // PIDTEMP
 
@@ -1591,7 +1602,7 @@ Version     033
 // @section extruder
 
 // For direct drive extruder v9 set to true, for geared extruder set to false.
-#if ANY(TL_S2, TL_S3)
+#if ANY(TL_S, TL_X)
 #define INVERT_E0_DIR false
 #else
 #define INVERT_E0_DIR true

@@ -262,6 +262,7 @@ extern uint8_t sd_OK;
 
 extern uint8_t tl_com_ID;
 extern char TJCModelNo[64];
+extern float E_Pos_read;
 
 #if ENABLED(BLTOUCH)
     #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
@@ -278,12 +279,14 @@ extern char TJCModelNo[64];
     extern float LaserPowerG1;
     extern bool grbl_hold;
     void grbl_idle();
-    void grbl_report_status();
+    void grbl_report_status(bool isIDLE=false);
     extern bool wait_ok;
+    extern uint32_t last_G01;
 #endif
 
 #if ENABLED(TL_X)
-    extern uint8_t tl_xe_atv;
+    extern int8_t tl_xe_atv;
+    extern bool xe_ena;
 #endif
 
 #endif  //TENLOG_TOUCH_LCD

@@ -74,7 +74,8 @@ void GcodeSuite::M3_M4(const bool is_M4) {
   auto get_s_power = [] {
     if (parser.seenval('S')) {
       const float spwr = parser.value_float();
-      LaserPowerG1 = spwr;
+      TERN_(TL_L, LaserPowerG1 = spwr);
+      TERN_(TL_GRBL, last_G01 = millis());
       #if ENABLED(SPINDLE_SERVO)
         cutter.unitPower = spwr;
       #else
@@ -171,6 +172,8 @@ void GcodeSuite::M5() {
       laser_power = 0;
     //}
     start_beeper(2, 1);
+    //safe_delay(200);
+    grbl_report_status(true);
   #endif
 }
 

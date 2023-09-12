@@ -70,6 +70,7 @@
 #if ENABLED(TENLOG_TOUCH_LCD)
   #include "../sd/cardreader.h"
   #include "../lcd/tenlog/tenlog_touch_lcd.h"
+  #include "../gcode/gcode.h"
 #endif
 
 #if ENABLED(HWPWM)
@@ -2149,12 +2150,59 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
         }while(0);
 
       #else
-
         #define ENABLE_ONE_E(N) ENABLE_AXIS_E##N();
-
       #endif
-
-      REPEAT(EXTRUDERS, ENABLE_ONE_E); // (ENABLE_ONE_E must end with semicolon)
+      
+      #if ENABLED(TL_X)
+        static int last_xe_en[4];
+        int xe_en[4];
+        for(int x=0; x<4; x++){
+          if(tl_xe_atv == x){
+            xe_en[x] = 1;
+          }else{
+            xe_en[x] = 2;
+          }
+          if(last_xe_en[x] != xe_en[x] || !xe_ena){
+            #define _ENA_EX(N) ENABLE_STEPPER_XE##N();
+            #define _DISA_EX(N) DISABLE_STEPPER_XE##N();
+            if(dual_x_carriage_mode <2){
+              if(xe_en[x] == 1){
+                if(x == 0) _ENA_EX(0);
+                if(x == 1) _ENA_EX(1);
+                if(x == 2) _ENA_EX(2);
+                if(x == 3) _ENA_EX(3);              
+              }else if(xe_en[x] == 2){
+                if(x == 0) _DISA_EX(0);
+                if(x == 1) _DISA_EX(1);
+                if(x == 2) _DISA_EX(2);
+                if(x == 3) _DISA_EX(3);              
+              }
+            }else if(x < 2){
+              if(xe_en[x] == 1 && x == 0){
+                _ENA_EX(0);
+                _ENA_EX(2);
+                _DISA_EX(1);
+                _DISA_EX(3);
+              }else if(xe_en[x]==1 && x==1){
+                _ENA_EX(1);
+                _ENA_EX(3);
+                _DISA_EX(0);
+                _DISA_EX(2);
+              }
+            }
+          }
+          last_xe_en[x] = xe_en[x];          
+        }
+        xe_ena = true;
+        /*
+        #define _CASE_EN_XE(N) case N: ENABLE_STEPPER_XE##N(); break;
+        switch (tl_xe_atv) {
+          REPEAT(4, _CASE_EN_XE)
+        }
+        */
+      #else
+        REPEAT(EXTRUDERS, ENABLE_ONE_E); // (ENABLE_ONE_E must end with semicolon)
+      #endif
     }
   #endif // EXTRUDERS
 
@@ -2948,6 +2996,8 @@ bool Planner::buffer_line(const_float_t rx, const_float_t ry, const_float_t rz, 
         SyncFanSpeed();
         #endif
 
+        EXECUTE_GCODE("T0");
+        safe_delay(500);
         feedrate_mm_s = 80;
         /*
         TLDEBUG_PRINTLNPAIR("FF lPrintZStart:", lPrintZStart);

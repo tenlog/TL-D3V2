@@ -114,13 +114,21 @@ uint8_t GcodeSuite::axis_relative = (
 int8_t GcodeSuite::get_target_extruder_from_command() {
   if (parser.seenval('T')) {
     const int8_t e = parser.value_byte();
+    #if ENABLED(TL_X)
+    if (e < 4) return e;
+    #else
     if (e < EXTRUDERS) return e;
+    #endif
     SERIAL_ECHO_START();
     SERIAL_CHAR('M'); SERIAL_ECHO(parser.codenum);
     SERIAL_ECHOLNPAIR(" " STR_INVALID_EXTRUDER " ", e);
     return -1;
   }
-  return active_extruder;
+  #if ENABLED(TL_X)
+    return active_extruder * 2;
+  #else
+    return active_extruder;
+  #endif
 }
 
 /**
@@ -173,6 +181,7 @@ void GcodeSuite::get_destination_from_command() {
   // Get new E position, whether absolute or relative
   if ( (seen.e = parser.seenval('E')) ) {
     const float v = parser.value_axis_units(E_AXIS);
+    E_Pos_read = v;
     destination.e = axis_is_relative(E_AXIS) ? current_position.e + v : v;
   }
   else
@@ -321,6 +330,7 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
             G53();
           }
           wait_ok = true;
+          last_G01 = millis();
         #endif
         G0_G1(TERN_(HAS_FAST_MOVES, parser.codenum == 0)); 
         
@@ -1051,14 +1061,28 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
 
     #if ENABLED(TL_X)
       case 'T': {
+          
+          EXECUTE_GCODE("G4 P100");
+          my_sleep(0.10);
+          EXECUTE_GCODE("G4 P100");
+          my_sleep(0.10);
+          EXECUTE_GCODE("G4 P100");
+          my_sleep(0.10);
+          EXECUTE_GCODE("G4 P100");
+          my_sleep(0.10);
+          
           tl_xe_atv = parser.codenum;
-          if(parser.codenum == 0 || parser.codenum == 1){
+          //char cmd[20];
+          //sprintf(cmd, "T:%d", tl_xe_atv);
+          //TLDEBUG_PRINT(cmd);
+          if(dual_x_carriage_mode>1 && tl_xe_atv>1) tl_xe_atv = 1; 
+          if(active_extruder == 1 && (tl_xe_atv == 0 || tl_xe_atv == 1)){
             T(0);
-          }else if(parser.codenum == 2 || parser.codenum == 3){
+          }else if(active_extruder == 0 && (tl_xe_atv == 2 || tl_xe_atv == 3)){
             T(1);
           }
+        }
         break;
-      }
     #else
       case 'T': T(parser.codenum); break;                           // Tn: Tool Change
     #endif
@@ -1086,12 +1110,16 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         grbl_hold = true;
         laser_power = 0;
         set_pwm_hw(0, 1000);
+        grbl_report_status();
+        my_sleep(1.0);
+        grbl_report_status();
         //stop();
       break;
       case '~':
         grbl_hold = false;
+        grbl_report_status();
         //EXECUTE_GCODE("M999");
-        TLECHO_PRINTLN("ok\n");
+        //TLECHO_PRINTLN("ok\n");
       break;
       case 0x18:
         grbl_hold = false;        
@@ -1102,6 +1130,8 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         TLECHO_PRINTLN(str);
         sprintf_P(str, PSTR("[VER%s.%s]\nok"), SHORT_BUILD_VERSION, TL_SUBVERSION); //VER:2.0.8.038
         TLECHO_PRINTLN(str);
+        safe_delay(50);
+        grbl_report_status();
       break;
     #endif
 

@@ -457,14 +457,12 @@ void GCodeQueue::get_serial_commands() {
       if(serial_char == '?' && (serial.line_buffer[0] == '\n' || serial.line_buffer[0] == '\0' || serial.line_buffer[0] == '?'
        || serial.line_buffer[1] == '?' || serial.line_buffer[2] == '?' || serial.line_buffer[3] == '?'
         || serial.line_buffer[4] == '?' || serial.line_buffer[5] == '?' || serial.line_buffer[6] == '?')){ //by zyf
-        if(!wait_ok){
-          serial.line_buffer[0] = '?';
-          serial.line_buffer[1] = '\n';
-          serial.count = 2;
-          is_grbl = true;
-        }
+        serial.line_buffer[0] = '?';
+        serial.line_buffer[1] = '\n';
+        serial.count = 2;
+        is_grbl = true;
         serial_char = '\n';
-      }else if(serial_char == '!'){
+      }else if(serial_char == '!'){ //GRBL Pause
         serial.line_buffer[0] = '!';
         serial.line_buffer[1] = '\n';
         serial.count = 2;
@@ -475,8 +473,8 @@ void GCodeQueue::get_serial_commands() {
         serial.line_buffer[1] = '\n';
         serial.count = 2;
         serial_char = '\n';
-        //grbl_hold = false;        
-        gcode.stepper_inactive_time = SEC_TO_MS(DEFAULT_STEPPER_DEACTIVE_TIME);
+        //grbl_hold = false;
+        gcode.stepper_inactive_time = SEC_TO_MS(DEFAULT_STEPPER_DEACTIVE_TIME); //GRBL Resume
       }else if(serial_char == 0x18){
         //Ctrl+x 
         serial.line_buffer[0] = 0x18;

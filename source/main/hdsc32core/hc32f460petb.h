@@ -2124,6 +2124,13 @@ typedef struct
 
 typedef struct
 {
+    uint32_t RESERVED0                      :10;
+    __IO uint32_t BUSWAIT                   : 1;
+    uint32_t RESERVED11                     :21;
+} stc_i2c_cr4_field_t;
+
+typedef struct
+{
     __IO uint32_t SLADDR0                   :10;
     uint32_t RESERVED10                     : 2;
     __IO uint32_t SLADDR0EN                 : 1;
@@ -7151,7 +7158,11 @@ typedef struct
         __IO uint32_t CR3;
         stc_i2c_cr3_field_t CR3_f;
     };
-    uint8_t RESERVED3[4];
+    union
+    {
+        __IO uint32_t CR4;
+        stc_i2c_cr4_field_t CR4_f;
+    };
     union
     {
         __IO uint32_t SLR0;
@@ -7179,14 +7190,16 @@ typedef struct
     };
     union
     {
-        __IO uint32_t DTR;
+        __IO uint8_t DTR;
         stc_i2c_dtr_field_t DTR_f;
     };
+    uint8_t RESERVED0[3];
     union
     {
-        __IO uint32_t DRR;
+        __IO uint8_t DRR;
         stc_i2c_drr_field_t DRR_f;
     };
+    uint8_t RESERVED1[3];
     union
     {
         __IO uint32_t CCR;
@@ -7197,7 +7210,7 @@ typedef struct
         __IO uint32_t FLTR;
         stc_i2c_fltr_field_t FLTR_f;
     };
-}M4_I2C_TypeDef;
+} M4_I2C_TypeDef;
 
 typedef struct
 {

@@ -100,6 +100,7 @@ void GcodeSuite::grbl_j() {
                 EXECUTE_GCODE("G90");
                 safe_delay(100);
             }
+            //grbl_report_status(true);
             //grbl_hold = false;
         }
     }
@@ -109,11 +110,11 @@ void GcodeSuite::grbl_d() {
         char str[128];
         sprintf_P(str, PSTR("[VER:%s.%s]"), SHORT_BUILD_VERSION, TL_SUBVERSION); //VER:2.0.8.038
         TLECHO_PRINTLN(str);
-        TLECHO_PRINTLN("[MSG:Using machine:Kentoktool_KT1]");
+        TLECHO_PRINTLN("[MSG:Using machine:Kentoktool_JL5]");
         sprintf_P(str, PSTR("[MSG:UID:%s]"), tl_hc_sn); //SN
         TLECHO_PRINTLN(str);
-        TLECHO_PRINTLN("[MSG:No WIFI]");
-        TLECHO_PRINTLN("[MSG:No BT]");        
+        //TLECHO_PRINTLN("[MSG:No WIFI]");
+        //TLECHO_PRINTLN("[MSG:No BT]");        
     }else if(grbl_arg[0] == 'H'){
         EXECUTE_GCODE("M1523");
     }else if(grbl_arg[0] == '?'){

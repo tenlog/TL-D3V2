@@ -515,6 +515,8 @@ void WIFI_TX_Handler(int8_t control_code){
             uint8_t singleHead=0;
             #ifdef SINGLE_HEAD
                 singleHead = 1;
+            #elif defined(TL_X)
+                singleHead = 4;
             #endif
             uint8_t laser_only=0;
             #ifdef TL_L

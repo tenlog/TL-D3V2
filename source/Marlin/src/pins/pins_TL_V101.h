@@ -153,7 +153,7 @@
   #endif
 #endif
 
-#if defined(TL_S2) || defined(TL_S3)
+#ifdef TL_S
   #define X_STEP_PIN         PA9
   #define X_DIR_PIN          PA8
 #else
@@ -279,7 +279,7 @@
 
 #if defined(TL_X)
   #define XE0_ENABLE_PIN    PA6  
-  #define XE1_ENABLE_PIN    PB1
-  #define XE2_ENABLE_PIN    PA7
+  #define XE1_ENABLE_PIN    PA7
+  #define XE2_ENABLE_PIN    PB1
   #define XE3_ENABLE_PIN    PB0
 #endif

@@ -870,7 +870,7 @@ void reset_stepper_drivers();    // Called by settings.load / settings.reset
   #ifndef DISABLE_STEPPER_XE0
     #define DISABLE_STEPPER_XE0() XE0_ENABLE_WRITE(!E_ENABLE_ON)
   #endif
-  #ifndef ENABLE_STEPPER_XE0
+  #ifndef ENABLE_STEPPER_XE1
       #define  ENABLE_STEPPER_XE1() XE1_ENABLE_WRITE( E_ENABLE_ON)
   #endif
   #ifndef DISABLE_STEPPER_XE1

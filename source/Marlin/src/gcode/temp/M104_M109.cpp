@@ -48,6 +48,10 @@
   #include "../../module/tool_change.h"
 #endif
 
+//#if ENABLED(TENLOG_TOUCH_LCD)
+//  #include "../../lcd/tenlog/tenlog_touch_lcd.h"
+//#endif
+
 /**
  * M104: Set Hotend Temperature target and return immediately
  *
@@ -64,7 +68,18 @@ void GcodeSuite::M104() {
   #if ENABLED(MIXING_EXTRUDER) && MIXING_VIRTUAL_TOOLS > 1
     constexpr int8_t target_extruder = 0;
   #else
-    const int8_t target_extruder = get_target_extruder_from_command();
+    #if ENABLED(TL_X)
+      const int8_t temp_target = get_target_extruder_from_command();
+      int8_t temp_atv = 0;
+      if(temp_target == 0 || temp_target == 1){
+        temp_atv = 0;
+      }else if(temp_target == 2 || temp_target == 3){
+        temp_atv = 1;
+      }
+      const int8_t target_extruder = temp_atv;
+    #else
+      const int8_t target_extruder = get_target_extruder_from_command();
+    #endif
     if (target_extruder < 0) return;
   #endif
 
@@ -142,7 +157,18 @@ void GcodeSuite::M109() {
   #if ENABLED(MIXING_EXTRUDER) && MIXING_VIRTUAL_TOOLS > 1
     constexpr int8_t target_extruder = 0;
   #else
-    const int8_t target_extruder = get_target_extruder_from_command();
+    #if ENABLED(TL_X)
+      const int8_t temp_target = get_target_extruder_from_command();
+      int8_t temp_atv = 0;
+      if(temp_target == 0 || temp_target == 1){
+        temp_atv = 0;
+      }else if(temp_target == 2 || temp_target == 3){
+        temp_atv = 1;
+      }
+      const int8_t target_extruder = temp_atv;
+    #else
+      const int8_t target_extruder = get_target_extruder_from_command();
+    #endif
     if (target_extruder < 0) return;
   #endif
 

@@ -41,7 +41,6 @@ void GcodeSuite::M17() {
     if (TERN0(HAS_E_STEPPER_ENABLE, parser.seen('E'))) enable_e_steppers();
   }
   else {
-    //LCD_MESSAGEPGM(MSG_NO_MOVE);  by zyf
     enable_all_steppers();
   }
 }

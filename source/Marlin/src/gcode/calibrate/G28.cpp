@@ -525,14 +525,13 @@ void GcodeSuite::G28() {
       L64xxManager.set_param((L64XX_axis_t)cv, L6470_ABS_POS, stepper.position(L64XX_axis_xref[cv]));
     }
   #endif
-
-
+    
     #if BOTH(PRINT_FROM_Z_HEIGHT,SDSUPPORT)
     if(!b_temp_PrintFromZHeightFound){
       #if ENABLED(DUAL_X_CARRIAGE)
-      if(dual_x_carriage_mode == DXC_DUPLICATION_MODE ||dual_x_carriage_mode == DXC_MIRRORED_MODE) idex_set_parked();
+        if(dual_x_carriage_mode == DXC_DUPLICATION_MODE ||dual_x_carriage_mode == DXC_MIRRORED_MODE) idex_set_parked();
       #endif
-      EXECUTE_GCODE("G1 X0.0");
+      EXECUTE_GCODE("G1 X0.0 F3600");
       my_sleep(1.0);
     }
     #endif

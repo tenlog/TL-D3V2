@@ -306,8 +306,15 @@ bool pin_is_protected(const pin_t pin) {
 //#pragma GCC diagnostic pop
 
 void enable_e_steppers() {
-  #define _ENA_E(N) ENABLE_AXIS_E##N();
-  REPEAT(E_STEPPERS, _ENA_E)
+  #if ENABLED(TL_X)
+    #define _CASE_EN_XE(N) case N: ENABLE_STEPPER_XE##N(); break;
+    switch (tl_xe_atv) {
+      REPEAT(4, _CASE_EN_XE)
+    }
+  #else
+    #define _ENA_E(N) ENABLE_AXIS_E##N();
+    REPEAT(E_STEPPERS, _ENA_E)
+  #endif
 }
 
 void enable_all_steppers() {
@@ -321,8 +328,14 @@ void enable_all_steppers() {
 }
 
 void disable_e_steppers() {
-  #define _DIS_E(N) DISABLE_AXIS_E##N();
-  REPEAT(E_STEPPERS, _DIS_E)
+  #if ENABLED(TL_X)
+    #define _DIS_XE(N) DISABLE_STEPPER_XE##N();
+    REPEAT(4, _DIS_XE)
+    xe_ena = false;
+  #else
+    #define _DIS_E(N) DISABLE_AXIS_E##N();
+    REPEAT(E_STEPPERS, _DIS_E)
+  #endif
 }
 
 void disable_e_stepper(const uint8_t e) {
@@ -902,10 +915,14 @@ void kill(PGM_P const lcd_error/*=nullptr*/, PGM_P const lcd_component/*=nullptr
         //Do not display some special message
         TJCMessage(1, 1, 24, "", "", "", ErrorMessage);
       }
+      TLSTJC_println("beep 50");
+      safe_delay(100);
+      TLSTJC_println("beep 50");
+      safe_delay(100);
       #if ENABLED(TL_BEEPER)
         start_beeper(4, 0); //重启
         safe_delay(1200);
-      #endif
+      #endif      
     }
   #endif
   thermalManager.disable_all_heaters();
@@ -1693,6 +1710,12 @@ void setup() {
   #if ENABLED(TL_BEEPER)
     start_beeper(2, 1);
     safe_delay(200); //开机成功
+  #endif
+
+  #if ENABLED(TENLOG_TOUCH_LCD)
+    if(tl_TouchScreenType == 1){
+      TLSTJC_println("beep 200");
+    }
   #endif
 
   #if ENABLED(TL_L)
