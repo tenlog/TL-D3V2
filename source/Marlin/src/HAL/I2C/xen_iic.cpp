@@ -6,18 +6,7 @@
 
 #ifdef  XEN_IIC
 
-/*******************************************************************************
- * Global variable definitions (declared in header file with 'extern')
- ******************************************************************************/
-
-/*******************************************************************************
- * Local function prototypes ('static')
- ******************************************************************************/
-
-/*******************************************************************************
- * Local variable definitions ('static')
- ******************************************************************************/
-
+#include "xen_iic.h"
 /*******************************************************************************
  * Function implementation - global ('extern') and local ('static')
  ******************************************************************************/
@@ -61,6 +50,7 @@ static en_result_t I2C_Master_Transmit(uint16_t u16DevAddr, uint8_t *pu8TxData, 
 
     return enRet;
 }
+
 
 /**
  ******************************************************************************
@@ -139,5 +129,78 @@ static en_result_t Master_Initialize(void)
     return enRet;
 }
 
+/**
+ *******************************************************************************
+ ** \brief  Main function of template project
+ ** \param  None
+ ** \retval int32_t return value, if needed
+ ******************************************************************************/
+
+int32_t  _main_(void)
+{
+    uint8_t u8TxBuf[TEST_DATA_LEN];
+    uint8_t u8RxBuf[TEST_DATA_LEN];
+    uint32_t i;
+
+    for(i=0ul; i<TEST_DATA_LEN; i++)
+    {
+        u8TxBuf[i] = (uint8_t)(i+1ul);
+    }
+    memset(u8RxBuf, 0x00, TEST_DATA_LEN);
+
+    /* BSP initialization */
+    //BSP_CLK_Init();
+    //BSP_LED_Init();
+    //BSP_KEY_Init();
+
+    /* Initialize I2C port*/
+    PORT_SetFunc(I2C_SCL_PORT, I2C_SCL_PIN, I2C_GPIO_SCL_FUNC, Disable);
+    PORT_SetFunc(I2C_SDA_PORT, I2C_SDA_PIN, I2C_GPIO_SDA_FUNC, Disable);
+
+    /* Enable I2C Peripheral*/
+    PWC_Fcg1PeriphClockCmd(I2C_FCG_USE, Enable);
+    /* Initialize I2C peripheral and enable function*/
+    Master_Initialize();
+
+    /* Wait key */
+    //while (Reset == BSP_KEY_GetStatus(BSP_KEY_1))
+    //{
+    //    ;
+    //}
+
+    Ddl_Delay1ms(5ul);
+
+    I2C_Master_Transmit(DEVICE_ADDRESS, u8TxBuf, TEST_DATA_LEN, TIMEOUT);
+
+    /* 50mS delay for device*/
+    Ddl_Delay1ms(50ul);
+
+    I2C_Master_Receive(DEVICE_ADDRESS, u8RxBuf, TEST_DATA_LEN, TIMEOUT);
+
+    /* Compare the data */
+    for(i=0ul; i<TEST_DATA_LEN; i++)
+    {
+        if(u8TxBuf[i] != u8RxBuf[i])
+        {
+            /* Data write error*/
+            while(1)
+            {
+                //BSP_LED_Toggle(LED_RED);
+                Ddl_Delay1ms(500ul);
+            }
+        }
+    }
+
+    /* I2C master polling comunication success */
+    while(1)
+    {
+        //BSP_LED_Toggle(LED_GREEN);
+        Ddl_Delay1ms(500ul);
+    }
+}
+
+/*******************************************************************************
+ * EOF (not truncated)
+ ******************************************************************************/
 
 #endif

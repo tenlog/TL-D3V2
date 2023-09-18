@@ -67,7 +67,7 @@ void GcodeSuite::M502() {
   SPI_RestartWIFI();
   #endif
   #if ENABLED(TL_BEEPER)
-    start_beeper(2, 1); //恢复出厂设置
+    start_beeper(4, 1); //恢复出厂设置
   #endif
 }
 

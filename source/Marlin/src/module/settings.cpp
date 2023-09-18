@@ -369,7 +369,7 @@ typedef struct SettingsDataStruct {
   // POWER_LOSS_RECOVERY
   //
   bool recovery_enabled;                                // M413 S
-
+  
   //
   // FWRETRACT
   //
@@ -506,7 +506,9 @@ typedef struct SettingsDataStruct {
     uint8_t ui_tlEFanSpeed;
     uint8_t ui_tlCFanSpeed;
     uint16_t ui_tlLaserMaxValue;
+    #if HAS_HOTEND
     uint16_t ui_tlEMaxTemp;
+    #endif
   #endif
 
   #if (HAS_WIFI)
@@ -1075,12 +1077,14 @@ void MarlinSettings::postprocess() {
     {
       _FIELD_TEST(recovery_enabled);
       #if ENABLED(SDSUPPORT)
-      #if ENABLED(POWER_LOSS_RECOVERY)
-      const bool recovery_enabled = TERN(POWER_LOSS_RECOVERY, recovery.enabled, ENABLED(PLR_ENABLED_DEFAULT));
-      #elif ENABLED(POWER_LOSS_RECOVERY_TL)
-      const bool recovery_enabled = TERN(POWER_LOSS_RECOVERY_TL, plr_enabled, ENABLED(PLR_ENABLED_DEFAULT));
-      #endif
-      EEPROM_WRITE(recovery_enabled);
+        #if ENABLED(POWER_LOSS_RECOVERY)
+          const bool recovery_enabled = TERN(POWER_LOSS_RECOVERY, recovery.enabled, ENABLED(PLR_ENABLED_DEFAULT));
+        #elif ENABLED(POWER_LOSS_RECOVERY_TL)
+          const bool recovery_enabled = TERN(POWER_LOSS_RECOVERY_TL, plr_enabled, ENABLED(PLR_ENABLED_DEFAULT));
+        #else
+          const bool recovery_enabled = false;
+        #endif
+        EEPROM_WRITE(recovery_enabled);
       #endif //SDSUPPORT
     }
 
@@ -1512,7 +1516,9 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(tl_E_FAN_SPEED);
       EEPROM_WRITE(tl_C_FAN_SPEED);
       EEPROM_WRITE(tl_LASER_MAX_VALUE);
+      #if HAS_HOTEND
       EEPROM_WRITE(tl_E_MAX_TEMP);
+      #endif
     #endif
 
     #if (HAS_WIFI)
@@ -2510,13 +2516,16 @@ void MarlinSettings::postprocess() {
         if(ui_tlLASERMAXV > 5000) ui_tlLASERMAXV = 1000;
         tl_LASER_MAX_VALUE = ui_tlLASERMAXV;
 
-        uint16_t ui_tlEMaxTemp;
-        EEPROM_READ(ui_tlEMaxTemp);
-        if(ui_tlEMaxTemp < 0) ui_tlEMaxTemp = 300;
-        if(ui_tlEMaxTemp > 360) ui_tlEMaxTemp = 300;
-        tl_E_MAX_TEMP = ui_tlEMaxTemp;
-        thermalManager.hotend_maxtemp[0] = tl_E_MAX_TEMP;
-        thermalManager.hotend_maxtemp[1] = tl_E_MAX_TEMP;
+        #if HAS_HOTEND
+          uint16_t ui_tlEMaxTemp;
+          EEPROM_READ(ui_tlEMaxTemp);
+          if(ui_tlEMaxTemp < 0) ui_tlEMaxTemp = 300;
+          if(ui_tlEMaxTemp > 360) ui_tlEMaxTemp = 300;
+
+          tl_E_MAX_TEMP = ui_tlEMaxTemp;
+          thermalManager.hotend_maxtemp[0] = tl_E_MAX_TEMP;
+          thermalManager.hotend_maxtemp[1] = tl_E_MAX_TEMP;
+        #endif
         
       #endif
       
@@ -4157,13 +4166,17 @@ void MarlinSettings::reset() {
       TLDEBUG_PRINTLNPAIR("TL ECO Mode:", tl_ECO_MODE);
       TLDEBUG_PRINTLNPAIR("TL Theme ID:", tl_THEME_ID);
       TLDEBUG_PRINTLNPAIR("TL Light:", tl_Light);
+      #if ENABLED(POWER_LOSS_RECOVERY_TL)
       TLDEBUG_PRINTLNPAIR("Power Loss Recovery:", plr_enabled);
+      #endif
       TLDEBUG_PRINTLNPAIR("TL Z Home Pos:", tl_Z_HOME_POS);
       TLDEBUG_PRINTLNPAIR("TL E Fan Temp:", tl_E_FAN_START_TEMP);
       TLDEBUG_PRINTLNPAIR("TL E Fan Speed:", tl_E_FAN_SPEED);
       TLDEBUG_PRINTLNPAIR("TL C Fan Speed:", tl_C_FAN_SPEED);
       TLDEBUG_PRINTLNPAIR("TL Laser Max Value:", tl_LASER_MAX_VALUE);
+      #if HAS_HOTEND
       TLDEBUG_PRINTLNPAIR("TL E Max Temp:", tl_E_MAX_TEMP);
+      #endif
     #endif
 
     #if (HAS_WIFI)

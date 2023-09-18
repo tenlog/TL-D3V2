@@ -72,6 +72,7 @@
 
 #if ENABLED(TENLOG_TOUCH_LCD)
   #include "../lcd/tenlog/tenlog_touch_lcd.h"
+  #include "../sd/cardreader.h"
 #endif
 
 // Relative Mode. Enable with G91, disable with G90.

@@ -557,7 +557,8 @@ void GCodeQueue::get_serial_commands() {
                 #if DISABLED(TL_GRBL)
                   SERIAL_ERROR_MSG(STR_ERR_STOPPED);
                 #else
-                  SERIAL_ERROR_MSG("Machine Stopped!");    
+                  SERIAL_ERROR_MSG("Machine Stopped, please reset!"); 
+                  //TLECHO_PRINTLN("ok");
                 #endif
                 //LCD_MESSAGEPGM(MSG_STOPPED); 
                 break;

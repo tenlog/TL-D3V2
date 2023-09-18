@@ -365,7 +365,8 @@ bool printJobOngoing() {
  * Printing is active when the print job timer is running
  */
 bool printingIsActive() {
-  return !did_pause_print && (print_job_timer.isRunning() || IS_SD_PRINTING());
+  //return !did_pause_print && (print_job_timer.isRunning() || IS_SD_PRINTING()); //by zyf
+  return !did_pause_print &&  IS_SD_PRINTING();
 }
 
 /**
@@ -553,8 +554,8 @@ inline void manage_inactivity(const bool ignore_stepper_queue=false) {
       }                                                                 \
       if (BUTTON##N##_HIT_STATE == !READ(BUTTON##N##_PIN)               \
         && (ENABLED(BUTTON##N##_WHEN_PRINTING) || printer_not_busy)     \
-        && millis()-button_down_##N<1000UL                               \
-        && button_down_b_##N) {                            \
+        && millis()-button_down_##N<1000UL                              \
+        && button_down_b_##N) {                                         \
           button_up_##N=millis();                                       \
           triggered_##N=true;                                           \
           triggered_1_##N=false;                                        \
@@ -562,7 +563,7 @@ inline void manage_inactivity(const bool ignore_stepper_queue=false) {
         && (ENABLED(BUTTON##N##_WHEN_PRINTING) || printer_not_busy)     \
         && millis()-button_down_##N>1000UL                              \
         && millis()-button_down_##N<5000UL                              \
-        && button_down_b_##N) {                                        \
+        && button_down_b_##N) {                                         \
           button_up_##N=millis();                                       \
           triggered_1_##N=true;                                         \
           triggered_##N=false;                                          \
@@ -577,22 +578,22 @@ inline void manage_inactivity(const bool ignore_stepper_queue=false) {
         const millis_t ms = millis();                                   \
         if (ELAPSED(ms, next_cub_ms_##N)) {                             \
           next_cub_ms_##N = ms + CUB_DEBOUNCE_DELAY_##N;                \
-          TLDEBUG_PRINT(PSTR(BUTTON##N##_DESC));                      \
+          TLDEBUG_PRINT(PSTR(BUTTON##N##_DESC));                        \
           EXECUTE_GCODE(PSTR(BUTTON##N##_GCODE));                       \
         }                                                               \
         triggered_##N=false;                                            \
         triggered_1_##N=false;                                          \
-      }else if (triggered_1_##N) {                                           \
+      }else if (triggered_1_##N) {                                      \
         const millis_t ms = millis();                                   \
         if (ELAPSED(ms, next_cub_ms_##N)) {                             \
           next_cub_ms_##N = ms + CUB_DEBOUNCE_DELAY_##N;                \
-          if (PSTR(BUTTON##N##_GCODE_1)!="") {                             \
-            TLDEBUG_PRINTLN(PSTR(BUTTON##N##_DESC_1));                    \
-            EXECUTE_GCODE(PSTR(BUTTON##N##_GCODE_1));                     \
-          }                                                               \
+          if (PSTR(BUTTON##N##_GCODE_1)!="") {                          \
+            TLDEBUG_PRINTLN(PSTR(BUTTON##N##_DESC_1));                  \
+            EXECUTE_GCODE(PSTR(BUTTON##N##_GCODE_1));                   \
+          }                                                             \
         }                                                               \
-        triggered_##N=false;                                           \
-        triggered_1_##N=false;                                           \
+        triggered_##N=false;                                            \
+        triggered_1_##N=false;                                          \
       }                                                                 \
     }while(0)
 
@@ -1024,7 +1025,8 @@ void stop() {
     #if DISABLED(TL_GRBL)
     SERIAL_ERROR_MSG(STR_ERR_STOPPED);
     #else
-    SERIAL_ERROR_MSG("Machine Stopped!");    
+    SERIAL_ERROR_MSG("Machine Stopped, please reset!");
+    //TLECHO_PRINTLN("ok");
     #endif
    
     safe_delay(350);       // allow enough time for messages to get out before stopping
@@ -1719,6 +1721,7 @@ void setup() {
   #endif
 
   #if ENABLED(TL_L)
+    feedrate_mm_s = 80.0;
     TLECHO_PRINTLN("ok");
   #endif
 }

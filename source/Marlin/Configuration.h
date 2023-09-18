@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "045.6"
+#define TL_SUBVERSION "045.8"
 
 //update log 
 /*
@@ -86,12 +86,12 @@ Version     033
 //TL Medels and version
 //#define TL_H2
 //#define TL_D3HS   //High Speed
-#define TL_D3
+//#define TL_D3
 //#define TL_S2   //single head
 //#define TL_S3   //single head
 //#define TL_M3
 //#define TL_M3S
-//#define TL_L4   //laser only
+#define TL_L4   //laser only
 //#define TL_D5
 //#define TL_D6
 //#define TL_D8     
@@ -104,7 +104,7 @@ Version     033
 //#define DUAL_HEAD_BLTOUCH
 
 #if ANY(TL_LW8, TL_LW3)
-//#define TL_LW
+  #define TL_W
 #endif
 
 #if ANY(TL_X2, TL_X3, TL_X5, TL_X6, TL_X1000)
@@ -120,18 +120,18 @@ Version     033
 #endif
 
 #ifdef TL_X
-  //#define XEN_IIC
+  #define XEN_IIC
 #endif
 
 //Headers
-#if ANY(TL_S,TL_LW,TL_M3S)
+#if ANY(TL_S,TL_W,TL_M3S)
   #define SINGLE_HEAD
   #define EXTRUDERS 1
-  #if ENABLED(TL_LW)
+  #if ENABLED(TL_W)
     #define MIXING_EXTRUDER
   #endif
 #elif ENABLED(TL_L)
-  #define EXTRUDERS 1
+  #define EXTRUDERS 0
 #else
   #define DUAL_X_CARRIAGE
   #define EXTRUDERS 2
@@ -142,7 +142,6 @@ Version     033
   #ifndef TL_M3S
     #define BLTOUCH
     #define TLTOUCH
-    //#define MESH_BED_LEVELING
     #define AUTO_BED_LEVELING_UBL
   #endif
 #endif
@@ -1017,7 +1016,10 @@ Version     033
   #undef USE_ZMAX_PLUG
 #elif ENABLED(BLTOUCH)
   #undef USE_YMAX_PLUG
-  #if ENABLED(SINGLE_HEAD)
+  #if ANY(TL_W, TL_S)
+    #undef USE_ZMAX_PLUG
+    #undef USE_XMIN_PLUG
+  #elif ENABLED(SINGLE_HEAD)
     #undef USE_ZMAX_PLUG
     #undef USE_XMAX_PLUG
   #endif
@@ -1053,8 +1055,9 @@ Version     033
 #endif
 
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
-#if ANY(TL_LW)
+#if ENABLED(TL_W)
   #define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop. 高电平触发
+  #define X_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
 #else
   #define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop. 低电平触发
 #endif
@@ -1163,7 +1166,7 @@ Version     033
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#if ENABLED(TL_LW)
+#if ENABLED(TL_W)
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 118, 118, 800, 145}
 #else
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 395}
@@ -1449,10 +1452,10 @@ Version     033
  */
 #if ENABLED(BLTOUCH)
   #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
-    #if ENABLED(TL_LW)
+    #if ENABLED(TL_W)
     #define NOZZLE_TO_PROBE_OFFSET { -45, 0, 0 }
     #else
-    #define NOZZLE_TO_PROBE_OFFSET { 35, 0, 0 }
+    #define NOZZLE_TO_PROBE_OFFSET { -35, 0, 0 }
     #endif
   #else
     #define NOZZLE_TO_PROBE_OFFSET { 35, 15, -3.3 }
@@ -1639,11 +1642,11 @@ Version     033
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
-//#if ENABLED(TL_L)
-//  #define X_HOME_DIR 1
-//#else
+#if ANY(TL_W, TL_S)
+  #define X_HOME_DIR 1
+#else
   #define X_HOME_DIR -1
-//#endif
+#endif
 
 #define Y_HOME_DIR -1
 #define Z_HOME_DIR -1
@@ -2032,7 +2035,7 @@ Version     033
 // - Move the Z probe (or nozzle) to a defined XY point before Z Homing.
 // - Prevent Z homing when the Z probe is outside bed area.
 //
-#if ENABLED(USE_PROBE_FOR_Z_HOMING) && DISABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
+#if ENABLED(USE_PROBE_FOR_Z_HOMING) // && DISABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
   #define Z_SAFE_HOMING
 #endif
 

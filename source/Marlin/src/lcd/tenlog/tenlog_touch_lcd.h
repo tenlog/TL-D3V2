@@ -170,7 +170,9 @@ void flash_read(uint32_t *readData);
 void flash_write(uint32_t *buffer);
 void flash_earea();
 
+#if ENABLED(POWER_LOSS_RECOVERY_TL)
 extern bool plr_enabled;
+#endif
 extern unsigned long startPrintTime;
 
 extern int tl_print_page_id;
@@ -217,7 +219,9 @@ extern bool tl_E_FAN_CHANGED;
 extern bool tl_C_FAN_CHANGED;
 extern int8_t tl_E_FAN_START_TEMP;
 extern int16_t tl_LASER_MAX_VALUE;
-extern int16_t tl_E_MAX_TEMP;
+#if HAS_HOTEND
+    extern int16_t tl_E_MAX_TEMP;
+#endif
 extern int8_t tl_ECO_MODE;
 extern int8_t tl_THEME_ID;
 extern int8_t tl_Light;

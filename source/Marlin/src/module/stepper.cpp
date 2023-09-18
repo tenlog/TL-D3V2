@@ -524,7 +524,7 @@ void Stepper::set_directions() {
         REV_E_DIR(stepper_extruder);
         count_direction.e = -1;
       } else {
-        NORM_E_DIR(stepper_extruder); //By tenlog zyf
+        NORM_E_DIR(stepper_extruder); //By zyf
         count_direction.e = 1; 
       }
     #endif

@@ -1947,6 +1947,7 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
     constexpr uint32_t esteps = 0;
   #endif
 
+
   // Clear all flags, including the "busy" bit
   block->flag = 0x00;
 
@@ -1958,6 +1959,10 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
     laser_inline.status.isPlanned = true;
     block->laser.status = laser_inline.status;
     block->laser.power = laser_inline.power;
+  #endif
+
+  #if ENABLED(TL_L)
+    const uint16_t laser_power =  block->laser.power;
   #endif
 
   // Number of steps for each axis
@@ -2206,7 +2211,11 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
     }
   #endif // EXTRUDERS
 
+  #if ENABLED(TL_L)
+  if (laser_power > 50)
+  #else
   if (esteps)
+  #endif
     NOLESS(fr_mm_s, settings.min_feedrate_mm_s);
   else
     NOLESS(fr_mm_s, settings.min_travel_feedrate_mm_s);
@@ -2947,11 +2956,14 @@ bool Planner::buffer_line(const_float_t rx, const_float_t ry, const_float_t rz, 
       uint32_t sdPos = card.getIndex();      
       
       //if ((fabs(deltaZ)>0.5 && deltaPoint > 2048) || lPrintZEnd == 0)
-      if ((fabs(deltaZ)>0.3) || lPrintZEnd == 0)
-      {
+      if ((fabs(deltaZ)>0.5) || lPrintZEnd == 0)
+      {        
         //Seaching ....
+        TLDEBUG_PRINTLN("Serching 1...");
+        TLDEBUG_PRINTLNPAIR("1 rz:", rz);
         if(rz == 0) return false;
         bool setIndex = true;
+        TLDEBUG_PRINTLN("Serching 1.1...");
         if (lPrintZEnd == 0)
         {
           lPrintZEnd = card.my_filesize() - 10;
@@ -2969,22 +2981,24 @@ bool Planner::buffer_line(const_float_t rx, const_float_t ry, const_float_t rz, 
         {
           lPrintZStart = lPrintZMid + 10;
         }       
-        zLast = rz;      
+        zLast = rz; 
+        TLDEBUG_PRINTLN("Serching 1.2...");
 
         if (setIndex){
           lPrintZMid = lPrintZStart + (lPrintZEnd - lPrintZStart) / 2;
           PrintFromZHeightFound = false;
           card.setIndex(lPrintZMid);
-          /*
-          TLDEBUG_PRINTLNPAIR("rz:", rz);
-          TLDEBUG_PRINTLNPAIR("print_from_z_target:", print_from_z_target);
-          TLDEBUG_PRINTLNPAIR("lPrintZStart:", lPrintZStart);
-          TLDEBUG_PRINTLNPAIR("lPrintZEnd:", lPrintZEnd);
-          TLDEBUG_PRINTLNPAIR("lPrintZMid:", lPrintZMid);
-          */
+          
+          TLDEBUG_PRINTLNPAIR("1 rz:", rz);
+          TLDEBUG_PRINTLNPAIR("1 print_from_z_target:", print_from_z_target);
+          TLDEBUG_PRINTLNPAIR("1 lPrintZStart:", lPrintZStart);
+          TLDEBUG_PRINTLNPAIR("1 lPrintZEnd:", lPrintZEnd);
+          TLDEBUG_PRINTLNPAIR("1 lPrintZMid:", lPrintZMid);
+          
         }
-      }else if(fabs(deltaZ) < 0.15){
+      }else if(fabs(deltaZ) < 0.2){
         //found!
+        TLDEBUG_PRINTLN("Serching Found");
         PrintFromZHeightFound = true;
         current_position.x = 0;
         current_position.y = 0;
@@ -2996,21 +3010,27 @@ bool Planner::buffer_line(const_float_t rx, const_float_t ry, const_float_t rz, 
         SyncFanSpeed();
         #endif
 
-        EXECUTE_GCODE("T0");
-        safe_delay(500);
-        feedrate_mm_s = 80;
-        /*
+        #if ENABLED(DUAL_X_CARRIAGE)
+          active_extruder = 0;        
+          safe_delay(500);
+        #endif
+        feedrate_mm_s = 30;
+        
         TLDEBUG_PRINTLNPAIR("FF lPrintZStart:", lPrintZStart);
         TLDEBUG_PRINTLNPAIR("FF lPrintZEnd:", lPrintZEnd);
         TLDEBUG_PRINTLNPAIR("FF lPrintZMid:", lPrintZMid);
         TLDEBUG_PRINTLNPAIR("FF rz:", rz);
-        */
+        
         zLast = rz;
-      }else if(deltaZ < 0.1 && (deltaPoint < 2048 || deltaZ > -0.3 )){
+      }else if(deltaZ < 0.0 && (deltaPoint < 200000 || deltaZ > -1.0 )){
+        TLDEBUG_PRINTLN("Serching 2...");
         return false;
-      }else if(deltaZ > -0.1 && deltaZ < 0.3){
-        card.setIndex(sdPos - 512);
+      }else if(deltaZ > 0.0 && deltaZ < 0.5){
+        TLDEBUG_PRINTLN("Serching 3...");
+        card.setIndex(sdPos - 100000);
         return false;
+      }else{
+        TLDEBUG_PRINTLN("Serching 4...");
       }
       return false;
     }else if(IS_SD_PRINTING()){
@@ -3022,7 +3042,7 @@ bool Planner::buffer_line(const_float_t rx, const_float_t ry, const_float_t rz, 
         #if HAS_FAN
         thermalManager.fan_speed[0] = 255;
         #endif
-        feedrate_mm_s = 80;
+        feedrate_mm_s = 30;
       }
 
       if(lPrintZStart > 0 || lPrintZMid > 0 || lPrintZEnd > 0){

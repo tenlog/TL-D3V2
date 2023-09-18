@@ -24,6 +24,7 @@
 #include "../../gcode/gcode.h"
 #include "../../gcode/queue.h"
 #include "../../module/motion.h"
+#include "../../module/stepper/indirection.h"
 #include "../../module/planner.h"
 #include "../../module/settings.h"
 #include "../../module/temperature.h"
@@ -72,7 +73,9 @@ bool tl_E_FAN_CHANGED = false;
 bool tl_C_FAN_CHANGED = false;
 int8_t tl_E_FAN_START_TEMP = 80;
 int16_t tl_LASER_MAX_VALUE = 1000;
+#if HAS_HOTEND
 int16_t tl_E_MAX_TEMP = HEATER_0_MAXTEMP;
+#endif
 int8_t tl_ECO_MODE = 0;
 int8_t tl_THEME_ID = 0;
 int8_t tl_Light = 0;
@@ -110,7 +113,10 @@ long lAtvCode = 0;
 
 bool tl_busy_state = false;
 
+#if ENABLED(POWER_LOSS_RECOVERY_TL)
 bool plr_enabled = false;
+#endif
+
 int tl_TouchScreenType = 0;
 
 char file_name_list[7][13]={""};
@@ -416,16 +422,20 @@ void tlResetEEPROM(){
     tl_C_FAN_SPEED = 80;
     tl_E_FAN_START_TEMP = 80;
     tl_LASER_MAX_VALUE = 1000;
-    if(tl_com_ID==107){
-        tl_E_MAX_TEMP = HEATER_0_MAXTEMP_MATRII3D;
-    }else{
-        tl_E_MAX_TEMP = HEATER_0_MAXTEMP;
-    }
+    #if HAS_HOTEND
+        if(tl_com_ID==107){
+            tl_E_MAX_TEMP = HEATER_0_MAXTEMP_MATRII3D;
+        }else{
+            tl_E_MAX_TEMP = HEATER_0_MAXTEMP;
+        }
+    #endif
     tl_ECO_MODE = 0;
     tl_THEME_ID = 0;
     tl_Light = 0;
     tl_Z_HOME_POS = Z_HOME_POS;
-    plr_enabled = false;
+    #if ENABLED(POWER_LOSS_RECOVERY_TL)
+        plr_enabled = false;
+    #endif
 }
 
 void TLVersion(){
@@ -461,9 +471,11 @@ void tlSendSettings(bool only_wifi){
         sprintf_P(cmd, PSTR("settings2.cLight.val=%d"), tl_Light);
         PRINTTJC(cmd);
         TERN_(ESP32_WIFI, wifi_printer_settings[4] = tl_Light);
-        sprintf_P(cmd, PSTR("settings.cPLR.val=%d"), plr_enabled);
-        PRINTTJC(cmd);
-        TERN_(ESP32_WIFI, wifi_printer_settings[37] = plr_enabled);
+        #if ENABLED(POWER_LOSS_RECOVERY_TL)
+            sprintf_P(cmd, PSTR("settings.cPLR.val=%d"), plr_enabled);
+            PRINTTJC(cmd);
+            TERN_(ESP32_WIFI, wifi_printer_settings[37] = plr_enabled);
+        #endif
         sprintf_P(cmd, PSTR("settings2.nEFT.val=%d"), tl_E_FAN_START_TEMP);
         PRINTTJC(cmd);
         TERN_(ESP32_WIFI, wifi_printer_settings[5] = tl_E_FAN_START_TEMP);
@@ -579,14 +591,14 @@ void tlSendSettings(bool only_wifi){
         //wifi_printer_settings[38] = (http_port)%0x100;
         #endif
         
-        #if DISABLED(ELECTROMAGNETIC_VALUE) && DISABLED(TL_L)
-        sprintf_P(cmd, PSTR("main.vTempMax.val=%d"), tl_E_MAX_TEMP - HOTEND_OVERSHOOT);
-        PRINTTJC(cmd);
-        TERN_(ESP32_WIFI, wifi_printer_settings[28] = (tl_E_MAX_TEMP-HOTEND_OVERSHOOT) / 0x100);
-        TERN_(ESP32_WIFI, wifi_printer_settings[29] = (tl_E_MAX_TEMP-HOTEND_OVERSHOOT) % 0x100);
-        TERN_(ESP32_WIFI, wifi_printer_settings[30] = (BED_MAXTEMP - BED_OVERSHOOT));
-        sprintf_P(cmd, PSTR("main.vBedMax.val=%d"), BED_MAXTEMP - BED_OVERSHOOT);
-        PRINTTJC(cmd);
+        #if HAS_HOTEND
+            sprintf_P(cmd, PSTR("main.vTempMax.val=%d"), tl_E_MAX_TEMP - HOTEND_OVERSHOOT);
+            PRINTTJC(cmd);
+            TERN_(ESP32_WIFI, wifi_printer_settings[28] = (tl_E_MAX_TEMP-HOTEND_OVERSHOOT) / 0x100);
+            TERN_(ESP32_WIFI, wifi_printer_settings[29] = (tl_E_MAX_TEMP-HOTEND_OVERSHOOT) % 0x100);
+            TERN_(ESP32_WIFI, wifi_printer_settings[30] = (BED_MAXTEMP - BED_OVERSHOOT));
+            sprintf_P(cmd, PSTR("main.vBedMax.val=%d"), BED_MAXTEMP - BED_OVERSHOOT);
+            PRINTTJC(cmd);
         #endif
         
         sprintf_P(cmd, PSTR("main.vXMax.val=%d"), X_MAX_POS * 10);
@@ -626,13 +638,25 @@ void tlSendSettings(bool only_wifi){
         TERN_(ESP32_WIFI, wifi_printer_settings[52] =  (uint16_t)planner.settings.max_feedrate_mm_s[E_AXIS]/0x100);
         TERN_(ESP32_WIFI, wifi_printer_settings[53] =  (uint16_t)planner.settings.max_feedrate_mm_s[E_AXIS]%0x100);
         
+        #if HAS_HOTEND
         uint32_t lPIDP = (uint32_t)(PID_PARAM(Kp, 0) * 100.0f + 0.5f);
         uint32_t lPIDI = (uint32_t)(unscalePID_i(PID_PARAM(Ki, 0)) * 100.0f + 0.5f);
         uint32_t lPIDD = (uint32_t)(unscalePID_d(PID_PARAM(Kd, 0)) * 100.0f + 0.5f);
+        #else
+        uint32_t lPIDP = 0;
+        uint32_t lPIDI = 0;
+        uint32_t lPIDD = 0;
+        #endif
 
+        #if HAS_TEMP_BED
         uint32_t lPIDPB = (uint32_t)(thermalManager.temp_bed.pid.Kp * 100.0f + 0.5f);
         uint32_t lPIDIB = (uint32_t)(unscalePID_i(thermalManager.temp_bed.pid.Ki) * 100.0f + 0.5f);
         uint32_t lPIDDB = (uint32_t)(unscalePID_d(thermalManager.temp_bed.pid.Kd) * 100.0f + 0.5f);
+        #else
+        uint32_t lPIDPB = 0;
+        uint32_t lPIDIB = 0;
+        uint32_t lPIDDB = 0;
+        #endif
 
         uint16_t lMXJerk = (uint16_t)(planner.max_jerk.x * 100.0f + 0.5f);
         uint16_t lMYJerk = (uint16_t)(planner.max_jerk.y * 100.0f + 0.5f);
@@ -657,8 +681,10 @@ void tlSendSettings(bool only_wifi){
         TERN_(ESP32_WIFI, wifi_printer_settings[64] = lPIDDB/0x100);
         TERN_(ESP32_WIFI, wifi_printer_settings[65] = lPIDDB%0x100);
 
-        TERN_(ESP32_WIFI, wifi_printer_settings[66] = tl_E_MAX_TEMP/0x100);
-        TERN_(ESP32_WIFI, wifi_printer_settings[67] = tl_E_MAX_TEMP%0x100);
+        #if HAS_HOTEND
+            TERN_(ESP32_WIFI, wifi_printer_settings[66] = tl_E_MAX_TEMP/0x100);
+            TERN_(ESP32_WIFI, wifi_printer_settings[67] = tl_E_MAX_TEMP%0x100);
+        #endif
 
         TERN_(ESP32_WIFI, wifi_printer_settings[68] = (uint16_t)(planner.settings.acceleration)/0x100);
         TERN_(ESP32_WIFI, wifi_printer_settings[69] = (uint16_t)(planner.settings.acceleration)%0x100);
@@ -1007,57 +1033,64 @@ float GCodelng(const char Header, const long FromPostion, long _command[], const
 
 void tlAbortPrinting(){
     #if ENABLED(SDSUPPORT)
-    EXECUTE_GCODE("M107");
-    #ifdef PRINT_FROM_Z_HEIGHT
-    PrintFromZHeightFound = true;
-    print_from_z_target = 0.0;
-    #endif
-    IF_DISABLED(NO_SD_AUTOSTART, card.autofile_cancel());
-    card.endFilePrint(TERN_(SD_RESORT, true));
-
-    queue.clear();
-    quickstop_stepper();
-    print_job_timer.abort();
-    
-    #if ENABLED(TL_L)
-        set_pwm_hw(0, 1000);
-        //endstops.enable(true);
-        //queue.inject_P(PSTR("G28 X"));
-        //queue.enqueue_one_now(PSTR("G4 P10"));
-        queue.enqueue_one_now(PSTR("M84"));
-        queue.enqueue_one_now(PSTR("G4 P1"));
-        queue.enqueue_one_now(PSTR("G4 P1"));
-        queue.enqueue_one_now(PSTR("M5"));
-        set_pwm_hw(0, 1000);
-    #else
-        #if ENABLED(TL_X)
-            my_sleep(3.0);
-            EXECUTE_GCODE("G91");
-            EXECUTE_GCODE("G1 E-85 F2000");
-            my_sleep(4.0);
-            EXECUTE_GCODE("G90");
+        
+        #if DISABLED(TL_L)
+            EXECUTE_GCODE("M107");
         #endif
-        EXECUTE_GCODE("M106 S0");
 
-        queue.inject_P(PSTR("G28 XY"));
-        queue.enqueue_one_now(PSTR("G92 Y0"));
-        queue.enqueue_one_now(PSTR("M84"));
-        IF_DISABLED(SD_ABORT_NO_COOLDOWN, thermalManager.disable_all_heaters());
-        EXECUTE_GCODE("M107");
-    #endif
+        #ifdef PRINT_FROM_Z_HEIGHT
+            PrintFromZHeightFound = true;
+            print_from_z_target = 0.0;
+        #endif
+        
+        IF_DISABLED(NO_SD_AUTOSTART, card.autofile_cancel());
+        card.endFilePrint(TERN_(SD_RESORT, true));
 
-    wait_for_heatup = false;
-    TERN_(POWER_LOSS_RECOVERY_TL, if(plr_enabled) settings.plr_reset());
-    disable_all_steppers();
-    TLPrintingStatus = 0;
-    EXECUTE_GCODE("M999");
-    TlPageMain();
-		
-	#if HAS_FAN
-    thermalManager.setTargetHotend(0, 0);
-    thermalManager.setTargetHotend(0, 1);
-    thermalManager.setTargetBed(0);
-	#endif
+        queue.clear();
+        quickstop_stepper();
+        #if EXTRUDERS > 0
+            print_job_timer.abort();
+        #endif
+        
+        #if ENABLED(TL_L)
+            set_pwm_hw(0, 1000);
+            //endstops.enable(true);
+            //queue.inject_P(PSTR("G28 X"));
+            //queue.enqueue_one_now(PSTR("G4 P10"));
+            queue.enqueue_one_now(PSTR("M84"));
+            queue.enqueue_one_now(PSTR("G4 P1"));
+            queue.enqueue_one_now(PSTR("G4 P1"));
+            queue.enqueue_one_now(PSTR("M5"));
+            set_pwm_hw(0, 1000);
+        #else
+            #if ENABLED(TL_X)
+                my_sleep(3.0);
+                EXECUTE_GCODE("G91");
+                EXECUTE_GCODE("G1 E-85 F2000");
+                my_sleep(4.0);
+                EXECUTE_GCODE("G90");
+            #endif
+            EXECUTE_GCODE("M106 S0");
+
+            queue.inject_P(PSTR("G28 XY"));
+            queue.enqueue_one_now(PSTR("G92 Y0"));
+            queue.enqueue_one_now(PSTR("M84"));
+            IF_DISABLED(SD_ABORT_NO_COOLDOWN, thermalManager.disable_all_heaters());
+            EXECUTE_GCODE("M107");
+        #endif
+
+        wait_for_heatup = false;
+        TERN_(POWER_LOSS_RECOVERY_TL, if(plr_enabled) settings.plr_reset());
+        disable_all_steppers();
+        TLPrintingStatus = 0;
+        EXECUTE_GCODE("M999");
+        TlPageMain();
+            
+        #if HAS_FAN
+        thermalManager.setTargetHotend(0, 0);
+        thermalManager.setTargetHotend(0, 1);
+        thermalManager.setTargetBed(0);
+        #endif
     #endif//SDSUPPORT
 }
 
@@ -1128,7 +1161,7 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
             TLSTJC_println("reload.vaFromPageID.val=6");
             sprintf_P(cmd, PSTR("reload.sT1T2.txt=\"%d\""), active_extruder + 1);
             TLSTJC_println(cmd);
-			#ifndef ELECTROMAGNETIC_VALUE
+			#if !defined(ELECTROMAGNETIC_VALUE) &&  EXTRUDERS 
             sprintf_P(cmd, PSTR("reload.vaTargetTemp0.val=%d"), int(thermalManager.degTargetHotend(0) + 0.5f));
             TLSTJC_println(cmd);
             sprintf_P(cmd, PSTR("reload.vaTargetTemp1.val=%d"), int(thermalManager.degTargetHotend(1) + 0.5f));
@@ -1150,10 +1183,12 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
             //ePos_Pause = current_position[E_AXIS]; //save e pos for resume
             ePos_Pause = E_Pos_read; //save e pos for resume
 
+            #if EXTRUDERS > 0
             if(FilaRunout){
 				thermalManager.setTargetHotend(0,0);
                 thermalManager.setTargetHotend(0,1);
             }
+            #endif
             queue.clear();
 
             //planner.quick_stop();
@@ -1240,8 +1275,10 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
             feedrate_mm_s = feed_rate_Pause;
             safe_delay(50);
         }
-
+        
+        #if EXTRUDERS > 0
         runout.reset();
+        #endif
 
         EXECUTE_GCODE(PSTR("M24"));
         //TLDEBUG_PRINTLN("M24");
@@ -2100,10 +2137,11 @@ void DWN_MessageHandler(const bool ISOK){
 
 
 void Setting_ECO_MODE(){
-    #if ENABLED(SDSUPPORT)
-	#ifndef ELECTROMAGNETIC_VALUE
+  #if ENABLED(SDSUPPORT)
+	#if !defined(ELECTROMAGNETIC_VALUE) && HAS_TEMP_BED
     static bool bECOSeted;
     static int iECOBedT;
+    
     if (current_position[Z_AXIS] >= ECO_HEIGHT && !bECOSeted && IS_SD_PRINTING() && tl_ECO_MODE == 1)
     {
         iECOBedT = thermalManager.degTargetBed();
@@ -2121,7 +2159,7 @@ void Setting_ECO_MODE(){
         bECOSeted = false;
     }
 	#endif
-    #endif
+  #endif
 }
 
 void tenlog_screen_update_dwn()
@@ -2363,20 +2401,20 @@ void tenlog_status_update(bool isTJC)
     const int16_t ln2  = current_position[Z_AXIS] * 10.0f;
     const int16_t ln3  = 0;
 		
-	#ifdef ELECTROMAGNETIC_VALUE
-    const int16_t ln4  = 0;
-    const int16_t ln5  = 0;
-    const int16_t ln6  = 0;
-    const int16_t ln7  = 0;
-    const int8_t ln8  = 0;
-    const int8_t ln9  = 0;		
-	#else
+	#if HAS_HOTEND
     const int16_t ln4  = int(thermalManager.degTargetHotend(0) + 0.5f);
     const int16_t ln5  = int(thermalManager.degHotend(0) + 0.5f);
     const int16_t ln6  = int(thermalManager.degTargetHotend(1) + 0.5f);
     const int16_t ln7  = int(thermalManager.degHotend(1) + 0.5f);
     const int8_t ln8  = int(thermalManager.degTargetBed() + 0.5f);
     const int8_t ln9  = int(thermalManager.degBed() + 0.5f);
+	#else
+    const int16_t ln4  = 0;
+    const int16_t ln5  = 0;
+    const int16_t ln6  = 0;
+    const int16_t ln7  = 0;
+    const int8_t ln8  = 0;
+    const int8_t ln9  = 0;		
 	#endif
 		
     #if HAS_FAN
@@ -2457,12 +2495,16 @@ void tenlog_status_update(bool isTJC)
     const int8_t ln20 = 0;
 	#endif
 
-
-    uint8_t e0_flow = planner.flow_percentage[0];
-    #if ENABLED(SINGLE_HEAD)
-        uint8_t e1_flow = 0;
+    #if EXTRUDERS > 0
+        uint8_t e0_flow = planner.flow_percentage[0];
+        #if ENABLED(SINGLE_HEAD)
+            uint8_t e1_flow = 0;
+        #else
+            uint8_t e1_flow = planner.flow_percentage[1];
+        #endif
     #else
-        uint8_t e1_flow = planner.flow_percentage[1];
+        uint8_t e0_flow = 0;
+        uint8_t e1_flow = 0;
     #endif
 
     if(e0_flow < 0 || e0_flow > 250) e0_flow = 100;
@@ -2546,7 +2588,7 @@ void tenlog_status_update(bool isTJC)
         wifi_printer_status[35] =  lnSeconds; //SD OK
         
         WIFI_TX_Handler(0x07);
-        TLDEBUG_PRINTLNPAIR("Wifi Send: 0x07: ", wifiFirstSend);
+        //TLDEBUG_PRINTLNPAIR("Wifi Send: 0x07: ", wifiFirstSend);
 
         if(!wifi_resent && wifi_connected){
            #if ENABLED(SDSUPPORT)
@@ -2914,7 +2956,7 @@ void process_command_gcode(long _tl_command[]) {
                 my_sleep(1.0);
                 SetBusyMoving(false);
             }else if(lM == 1022){
-                //M1022
+                //M1022 
                 SetBusyMoving(true);
                 long lS = GCodelng('S', iFrom, _tl_command);
                 long lT = GCodelng('T', iFrom, _tl_command);
@@ -3065,15 +3107,20 @@ void process_command_gcode(long _tl_command[]) {
                 #if ENABLED(SDSUPPORT)
                 if(strlen(cmd)){  
                     TLPrintingStatus = 1;
-                    settings.plr_fn_save(lF-1);
+                    #if ENABLED(POWER_LOSS_RECOVERY_TL)
+                        settings.plr_fn_save(lF-1);
+                    #endif
                     TLDEBUG_PRINTLN(cmd);
                     #if ENABLED(TL_L)
                     EXECUTE_GCODE("G92 X0 Y0");
                     #endif
+                    #if ENABLED(PRINT_FROM_Z_HEIGHT)
                     if(print_from_z_target > 0){
+                        TLSTJC_println("page printing");
                         EXECUTE_GCODE("T0");
                         safe_delay(500);
                     }
+                    #endif
                     EXECUTE_GCODE(cmd);
                 }
                 #endif
@@ -3121,10 +3168,12 @@ void process_command_gcode(long _tl_command[]) {
                 tl_Light = GCodelng('S', iFrom, _tl_command);
                 command_M1521(tl_Light);
                 EXECUTE_GCODE(PSTR("M500"));
+          #if ENABLED(POWER_LOSS_RECOVERY_TL)
             }else if(lM == 413){
                 //M413 PLR
                 plr_enabled = GCodelng('S', iFrom, _tl_command);
                 EXECUTE_GCODE(PSTR("M500"));
+          #endif
             }else if(lM == 1023){
                 //M1023
                 #ifdef FILAMENT_RUNOUT_SENSOR
@@ -3134,13 +3183,13 @@ void process_command_gcode(long _tl_command[]) {
             }else if(lM == 1018){
                 //M1018
                 #if ENABLED(TL_L)
-                tl_LASER_MAX_VALUE= GCodelng('S', iFrom, _tl_command);
+                    tl_LASER_MAX_VALUE= GCodelng('S', iFrom, _tl_command);
                 #else
-                tl_E_MAX_TEMP = GCodelng('S', iFrom, _tl_command);
-                thermalManager.hotend_maxtemp[0] = tl_E_MAX_TEMP;
-                thermalManager.hotend_maxtemp[1] = tl_E_MAX_TEMP;
-                sprintf_P(cmd, PSTR("main.vTempMax.val=%d"), tl_E_MAX_TEMP - HOTEND_OVERSHOOT);
-                TLSTJC_println(cmd);
+                    tl_E_MAX_TEMP = GCodelng('S', iFrom, _tl_command);
+                    thermalManager.hotend_maxtemp[0] = tl_E_MAX_TEMP;
+                    thermalManager.hotend_maxtemp[1] = tl_E_MAX_TEMP;
+                    sprintf_P(cmd, PSTR("main.vTempMax.val=%d"), tl_E_MAX_TEMP - HOTEND_OVERSHOOT);
+                    TLSTJC_println(cmd);
                 #endif
                 EXECUTE_GCODE(PSTR("M500"));
             }else if(lM == 1016){
@@ -3248,25 +3297,25 @@ void process_command_gcode(long _tl_command[]) {
                 wifi_resent = false;
                                     #endif
             }else if(lM == 1021){
-                //Pre heat //M1021
-                #ifndef ELECTROMAGNETIC_VALUE
-                long lS = GCodelng('S',iFrom, _tl_command);
-                if(lS == 0){
-                    //Pre heat ABS
-                    thermalManager.setTargetHotend(PREHEAT_2_TEMP_HOTEND, 0);
-                    thermalManager.setTargetHotend(PREHEAT_2_TEMP_HOTEND, 1);
-                    thermalManager.setTargetBed(PREHEAT_2_TEMP_BED);
-                }else if(lS == 1){
-                    //Pre heat PLA
-                    thermalManager.setTargetHotend(PREHEAT_1_TEMP_HOTEND, 0);
-                    thermalManager.setTargetHotend(PREHEAT_1_TEMP_HOTEND, 1);
-                    thermalManager.setTargetBed(PREHEAT_1_TEMP_BED);
-                }else if(lS == 2){
-                    thermalManager.setTargetHotend(0, 0);
-                    thermalManager.setTargetHotend(0, 1);
-                    thermalManager.setTargetBed(0);
-                    disable_all_steppers();
-                }
+                //Pre heat //M1021                
+                #if !defined(ELECTROMAGNETIC_VALUE) && EXTRUDERS > 0
+                    long lS = GCodelng('S',iFrom, _tl_command);
+                    if(lS == 0){
+                        //Pre heat ABS
+                        thermalManager.setTargetHotend(PREHEAT_2_TEMP_HOTEND, 0);
+                        thermalManager.setTargetHotend(PREHEAT_2_TEMP_HOTEND, 1);
+                        thermalManager.setTargetBed(PREHEAT_2_TEMP_BED);
+                    }else if(lS == 1){
+                        //Pre heat PLA
+                        thermalManager.setTargetHotend(PREHEAT_1_TEMP_HOTEND, 0);
+                        thermalManager.setTargetHotend(PREHEAT_1_TEMP_HOTEND, 1);
+                        thermalManager.setTargetBed(PREHEAT_1_TEMP_BED);
+                    }else if(lS == 2){
+                        thermalManager.setTargetHotend(0, 0);
+                        thermalManager.setTargetHotend(0, 1);
+                        thermalManager.setTargetBed(0);
+                        disable_all_steppers();
+                    }
                 #endif
             }else if(lM == 1011 || lM == 1012 || lM == 1013){
                 #if (EXTRUDERS==2)
@@ -3329,16 +3378,14 @@ void process_command_gcode(long _tl_command[]) {
                         EXECUTE_GCODE(PSTR("M500"));
                     }
                 #endif //(HAS_BED_PROBE)
+          #if BOTH(SDSUPPORT, POWER_LOSS_RECOVERY_TL)
             }else if(lM == 1004){
-                #if ENABLED(SDSUPPORT)
                 //M1004
                 settings.plr_reset();//cancel power loss resume.
-                #endif
             }else if(lM == 1003){
-                #if ENABLED(SDSUPPORT)
                 //M1003
                 settings.plr_recovery();//do power loss resume.
-                #endif
+          #endif
             }else if(lM == 1040){
                 //M1040
                 #ifdef PRINT_FROM_Z_HEIGHT
@@ -3646,7 +3693,7 @@ void tl_sd_abort_on_endstop_hit(){  //only for x & y
         if(hitZ != Z_MIN_ENDSTOP_INVERTING){
             //tlStopped = 3;
             errCount++; //倾倒开关，除抖动
-            if(errCount > 1500){
+            if(errCount > 750){
                 tlStopped = 3;
             }
             okCount=0;
@@ -4032,13 +4079,6 @@ void plr_outage() {
     }
 }
 
-/*
-void plr_outage_test(){
-    if (plr_enabled){
-        _outage();
-    }
-}
-*/
 void plr_setup() {
     #if ENABLED(POWER_LOSS_PULLUP)
         SET_INPUT_PULLUP(POWER_LOSS_PIN);
@@ -4174,7 +4214,7 @@ void grbl_report_status(bool isIDLE){
         sprintf(m_static, "%s", "Hold:0");
         laser_power = 0;
         set_pwm_hw(laser_power, 1000);
-    }else if(tl_busy_state || millis()-last_G01<100 || wait_ok){
+    }else if((tl_busy_state || millis()-last_G01<100 || wait_ok) && !isIDLE){
         sprintf(m_static, "%s", "Run");
         isRun = true;
     }else if(isHoming){

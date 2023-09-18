@@ -954,8 +954,8 @@
 
 // Default Minimum Feedrates for printing and travel moves
 #if ENABLED(TL_L)
-  #define DEFAULT_MINIMUMFEEDRATE       10     // (mm/s) Minimum feedrate. Set with M205 S.
-  #define DEFAULT_MINTRAVELFEEDRATE     20     // (mm/s) Minimum travel feedrate. Set with M205 T.
+  #define DEFAULT_MINIMUMFEEDRATE       0.3     // (mm/s) Minimum feedrate. Set with M205 S.
+  #define DEFAULT_MINTRAVELFEEDRATE     80     // (mm/s) Minimum travel feedrate. Set with M205 T.
 #else
   #define DEFAULT_MINIMUMFEEDRATE       0     // (mm/s) Minimum feedrate. Set with M205 S.
   #define DEFAULT_MINTRAVELFEEDRATE     0     // (mm/s) Minimum travel feedrate. Set with M205 T.
@@ -1344,7 +1344,12 @@
    */
   
   //#define POWER_LOSS_RECOVERY
-  #define POWER_LOSS_RECOVERY_TL
+  #if ENABLED(SDSUPPORT)
+    #if DISABLED(TL_L)
+    #define POWER_LOSS_RECOVERY_TL
+    #endif
+  #endif
+  
   #if ENABLED(POWER_LOSS_RECOVERY) || ENABLED(POWER_LOSS_RECOVERY_TL)
     #define PLR_ENABLED_DEFAULT   false // Power Loss Recovery enabled by default. (Set with 'M413 Sn' & M500)
     //#define BACKUP_POWER_SUPPLY       // Backup power / UPS to move the steppers on power loss
@@ -3600,7 +3605,7 @@
     #if PIN_EXISTS(BUTTON1)
       #define BUTTON1_HIT_STATE     LOW       // State of the triggered button. NC=LOW. NO=HIGH.
       #define BUTTON1_WHEN_PRINTING false     // Button allowed to trigger during printing?
-      #define BUTTON1_GCODE         "M1522"
+      #define BUTTON1_GCODE         "M1522"   //M1522 weak Laser light on /off
       #define BUTTON1_GCODE_1       "M502"
       #define BUTTON1_DESC          "Weak Laser Light"  // Optional string to set the LCD status
       #define BUTTON1_DESC_1        "Reset default(M502)"  // Optional string to set the LCD status
@@ -3620,7 +3625,7 @@
     #if PIN_EXISTS(BUTTON3)
       #define BUTTON3_HIT_STATE     LOW
       #define BUTTON3_WHEN_PRINTING false
-      #define BUTTON3_GCODE         "M1523"
+      #define BUTTON3_GCODE         "M1523"   //M1523  //$H //G28
       #define BUTTON3_DESC          "Home XY"
       #define BUTTON3_GCODE_1       ""  //G28.
       #define BUTTON3_DESC_1        ""

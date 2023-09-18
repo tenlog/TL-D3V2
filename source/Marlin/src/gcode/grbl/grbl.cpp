@@ -113,6 +113,7 @@ void GcodeSuite::grbl_d() {
         TLECHO_PRINTLN("[MSG:Using machine:Kentoktool_JL5]");
         sprintf_P(str, PSTR("[MSG:UID:%s]"), tl_hc_sn); //SN
         TLECHO_PRINTLN(str);
+        //TLECHO_PRINTLN("ok");
         //TLECHO_PRINTLN("[MSG:No WIFI]");
         //TLECHO_PRINTLN("[MSG:No BT]");        
     }else if(grbl_arg[0] == 'H'){

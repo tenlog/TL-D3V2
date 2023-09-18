@@ -736,12 +736,14 @@ void unified_bed_leveling::shift_mesh_height() {
       BLTouch_G28 = false;
       float z_min_endstop_probe_offset = 0;
       xy_pos_t firstProbeXY;
-      #if(X_HOME_DIR==1)
-        firstProbeXY.x = X_MAX_POS - MESH_INSET;
-      #else
-        firstProbeXY.x = MESH_INSET;
-      #endif
-      firstProbeXY.y = MESH_INSET + probe.offset_xy.y;
+      //#if(X_HOME_DIR==1)
+      //  firstProbeXY.x = X_MAX_POS - MESH_INSET;
+      //#else
+      //  firstProbeXY.x = MESH_INSET;
+      //#endif
+      //firstProbeXY.y = MESH_INSET + probe.offset_xy.y;
+      firstProbeXY.x = X_CENTER;
+      firstProbeXY.y = Y_CENTER;
       const float es_probe_z = probe.probe_at_point(
                   firstProbeXY,
                   PROBE_PT_STOW);

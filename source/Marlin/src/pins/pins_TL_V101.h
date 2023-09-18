@@ -62,7 +62,7 @@
 //#define SDCARD_EEPROM_EMULATION
 
 #ifdef IIC_BL24CXX_EEPROM
-  #if defined(TL_LW) || defined(TL_L)
+  #if defined(TL_W) || defined(TL_L)
     #define IIC_EEPROM_SDA       PD12 
     #define IIC_EEPROM_SCL       PD13 
   #else
@@ -98,8 +98,10 @@
   #define Z_STOP_PIN          PC15// Z-
   //#define Z_MAX_PIN         PC15// Z-
 #elif defined(BLTOUCH) && defined(SINGLE_HEAD)
-  #ifdef TL_LW
-    #define X_STOP_PIN         PC13// x+
+  #if defined(TL_S) 
+    #define X_MAX_PIN         PH2// x+
+  #elif defined(TL_W)
+    #define X_MAX_PIN        PC13// x+
   #else
     #define X_MAX_PIN         PH2// x+
   #endif
@@ -128,7 +130,7 @@
 //
 // Filament Runout Sensor
 //
-#if defined(TL_LW) 
+#if defined(TL_W) 
   #define FIL_RUNOUT_PIN                    PA0   // "Pulled-high"  
 #elif defined(TL_LASER_ONLY)
   #define FIL_RUNOUT_PIN                    PD0   // "Pulled-high"
@@ -169,19 +171,22 @@
 #define Z2_ENABLE_PIN      X_ENABLE_PIN
 #define Z_STEP_PIN         PE13
 #define Z_DIR_PIN          PE12
-#define HEATER_BED_PIN     PE10 
+
+#ifndef TL_L
+  #define HEATER_BED_PIN     PE10 
+#endif
 
 #define E0_ENABLE_PIN      X_ENABLE_PIN
 #define E1_ENABLE_PIN      X_ENABLE_PIN
 
-#ifdef TL_LW
+#ifdef TL_W
   #define E0_STEP_PIN        PB13
   #define E0_DIR_PIN         PB12
   #define E1_STEP_PIN        PB4
   #define E1_DIR_PIN         PB3
   #define Z2_STEP_PIN        PB6
   #define Z2_DIR_PIN         PB5
-#else
+#elif !defined(TL_L)
   #define Z2_STEP_PIN        PB13
   #define Z2_DIR_PIN         PB12
   #ifdef TL_X
@@ -214,7 +219,7 @@
   //#define FAN_PIN               PD0   //FAN  FC1 now use hw pwm
   //#define FAN1_PIN              PE8   //FC2 use hw pwm
 
-  #if defined(TL_LW)
+  #if defined(TL_W)
     #define FAN2_PIN              PD3   //FAN2 FZ1
     #define FAN3_PIN              PE7   //FZ2
   #elif defined(TL_L)
@@ -224,12 +229,15 @@
     #define FAN2_PIN              PA0   //FAN2 FZ1  //PA0
     #define FAN3_PIN              PE7   //FZ2
   #endif
-  #define HEATER_0_PIN          PA5   // HEATER0
-  #define HEATER_1_PIN          PA4   // HEATER1
+
+  #ifndef TL_L
+    #define HEATER_0_PIN          PA5   // HEATER0
+    #define HEATER_1_PIN          PA4   // HEATER1
+  #endif
 #endif
 
 #define LED_PIN                 PE2   //LED 控制管脚
-#ifdef TL_LW
+#ifdef TL_W
   #define FAN4_PIN                PC3   
   #define CHAMEBER_PIN            FAN4_PIN   //机箱风扇口
 #elif defined(TL_L)
@@ -241,9 +249,11 @@
 //
 // Temperature Sensors
 //
-#define TEMP_0_PIN		     PC1
-#define TEMP_1_PIN		     PC2    //PC2
-#define TEMP_BED_PIN       PC0
+#ifndef TL_L
+  #define TEMP_0_PIN		     PC1
+  #define TEMP_1_PIN		     PC2    //PC2
+  #define TEMP_BED_PIN       PC0
+#endif
 
 #define  ADC_CHANNEL_COUNT 3u
 

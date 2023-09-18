@@ -20,7 +20,7 @@
  *
  */
 
-//By tenlo zyf
+//By zyf
 
 #include "watchdog.h"
 #include "../../MarlinCore.h"
