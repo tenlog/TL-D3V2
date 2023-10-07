@@ -58,6 +58,9 @@ class MarlinSettings {
       static void plr_recovery();
     #endif
 
+    static void cid_write();
+    static void cid_read();
+
     /*
     #if ENABLED(TENLOG_TOUCH_LCD)
       static void killFlagSet(uint8_t Flag);
@@ -114,7 +117,7 @@ class MarlinSettings {
 
     #if ENABLED(EEPROM_SETTINGS)
 
-      static bool eeprom_error, validating;
+      static bool eeprom_error, validating, validating_plr, validating_cid;
 
       #if ENABLED(AUTO_BED_LEVELING_UBL)  // Eventually make these available if any leveling system
                                           // That can store is enabled
@@ -127,6 +130,8 @@ class MarlinSettings {
 
       static int eeprom_index;
       static uint16_t working_crc;
+      static uint16_t working_crc_plr;
+      static uint16_t working_crc_cid;
 
       /*
       #if ENABLED(TENLOG_TOUCH_LCD)
@@ -160,18 +165,18 @@ class MarlinSettings {
 
         static bool PLR_EEPROM_START(int eeprom_offset){
           plr_eeprom_index = eeprom_offset;
-          working_crc = 0;
+          working_crc_plr = 0;
           return true;
         }
 
         template<typename T>
         static void PLR_EEPROM_WRITE(const T &VAR) {
-          persistentStore.write_data(plr_eeprom_index, (const uint8_t *) &VAR, sizeof(VAR), &working_crc);
+          persistentStore.write_data(plr_eeprom_index, (const uint8_t *) &VAR, sizeof(VAR), &working_crc_plr);
         }
 
         template<typename T>
         static void PLR_EEPROM_READ(T &VAR) {
-          persistentStore.read_data(plr_eeprom_index, (uint8_t *) &VAR, sizeof(VAR), &working_crc, !validating);
+          persistentStore.read_data(plr_eeprom_index, (uint8_t *) &VAR, sizeof(VAR), &working_crc_plr, !validating_plr);
         }
 
       #endif //POWER_LOSS_RECOVERY_TL
@@ -205,6 +210,25 @@ class MarlinSettings {
       template<typename T>
       static void EEPROM_READ_ALWAYS(T &VAR) {
         persistentStore.read_data(eeprom_index, (uint8_t *) &VAR, sizeof(VAR), &working_crc);
+      }
+
+
+      static int cid_eeprom_offset;
+      static bool CID_EEPROM_START(int eeprom_offset){
+        cid_eeprom_offset = eeprom_offset;
+        working_crc_cid = 0;
+        return true;
+      }
+
+
+      template<typename T>
+      static void CID_EEPROM_READ(T &VAR) {
+        persistentStore.read_data(cid_eeprom_offset, (uint8_t *) &VAR, sizeof(VAR), &working_crc_cid, !validating_cid);
+      }
+
+      template<typename T>
+      static void CID_EEPROM_WRITE(const T &VAR) {
+        persistentStore.write_data(cid_eeprom_offset, (const uint8_t *) &VAR, sizeof(VAR), &working_crc_cid);
       }
 
     #endif // EEPROM_SETTINGS

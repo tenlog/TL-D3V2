@@ -180,6 +180,7 @@ float E_Pos_read = 0;
  bool grbl_hold = false;
  bool wait_ok = false;
  uint32_t last_G01 = 0;
+ bool grbl_no_button = false;
 #endif
 
 #if ENABLED(TL_X)
@@ -798,12 +799,12 @@ void tlSendSettings(bool only_wifi){
         DWN_Data(0x6021, lOffsetZ, 2);
         DWN_DELAY;
 
-        /*
-        DWN_Data(0x6023, tl_FAN2_VALUE, 2);
-        DWN_DELAY;
-        DWN_Data(0x6022, tl_FAN2_START_TEMP, 2);
-        DWN_DELAY;
-        */ //to be done
+        
+        //DWN_Data(0x6023, tl_FAN2_VALUE, 2);
+        //DWN_DELAY;
+        //DWN_Data(0x6022, tl_FAN2_START_TEMP, 2);
+        //DWN_DELAY;
+        // //to be done
 
         DWN_Data(0x8015, 1, 2); //replace auto power off
 
@@ -1066,7 +1067,7 @@ void tlAbortPrinting(){
             #if ENABLED(TL_X)
                 my_sleep(3.0);
                 EXECUTE_GCODE("G91");
-                EXECUTE_GCODE("G1 E-85 F2000");
+                EXECUTE_GCODE("G1 E-55 F2000");
                 my_sleep(4.0);
                 EXECUTE_GCODE("G90");
             #endif
@@ -1131,6 +1132,13 @@ int feed_rate_Pause = 0;
 float zPos_Pause = 0.0;
 float ePos_Pause = 0.0;
 
+uint16_t T0T_Pause = 0;
+uint16_t T1T_Pause = 0;
+uint16_t TBT_Pause = 0;
+int8_t T01_Pause =  -1;
+
+uint_t Idex_Mode_Pause = -1;
+uint16_t Idex_Dup_XOffset_Pause = DEFAULT_DUPLICATION_X_OFFSET;
 //M1031
 void TJCPauseResumePrinting(bool PR, int FromPos){
     #ifdef PRINT_FROM_Z_HEIGHT
@@ -1138,6 +1146,24 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
         return;
     #endif
     
+    T0T_Pause = thermalManager.degHotend(0);
+    T1T_Pause = thermalManager.degHotend(1);
+    TBT_Pause = thermalManager.degBed();
+    zPos_Pause = current_position[Z_AXIS];
+
+    #if ENABLED(TL_X)
+        T01_Pause = tl_xe_atv;
+    #elif ENABLED(DUAL_X_CARRIAGE)
+        T01_Pause = active_extruder;
+    #endif
+
+    #if ENABLED(DUAL_X_CARRIAGE)
+    Idex_Mode_Pause = dual_x_carriage_mode;
+    if(Idex_Mode_Pause == 2){
+        Idex_Dup_XOffset_Pause = duplicate_extruder_x_offset;
+    }
+    #endif
+
     long lO = GCodelng('O', 0, tl_command); //点击了OK
     if(PR) {
         //Pause clicked!
@@ -1152,33 +1178,34 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
         if(lO == 0 || lO == 1 || lO == -9999){
 
             bool FilaRunout = false;
-            if(lO == 1) FilaRunout = true;  //runout from lcd message box
-            
-            zPos_Pause = current_position[Z_AXIS];
+            if(lO == 1) FilaRunout = true;  //runout from lcd message box            
             feed_rate_Pause = feedrate_mm_s;
 
             TLSTJC_println("sleep=0");
             TLSTJC_println("reload.vaFromPageID.val=6");
-            sprintf_P(cmd, PSTR("reload.sT1T2.txt=\"%d\""), active_extruder + 1);
-            TLSTJC_println(cmd);
-			#if !defined(ELECTROMAGNETIC_VALUE) &&  EXTRUDERS 
-            sprintf_P(cmd, PSTR("reload.vaTargetTemp0.val=%d"), int(thermalManager.degTargetHotend(0) + 0.5f));
-            TLSTJC_println(cmd);
-            sprintf_P(cmd, PSTR("reload.vaTargetTemp1.val=%d"), int(thermalManager.degTargetHotend(1) + 0.5f));
-            TLSTJC_println(cmd);
-            sprintf_P(cmd, PSTR("reload.vaTargetBed.val=%d"), int(thermalManager.degTargetBed() + 0.5f));
-            TLSTJC_println(cmd);
-			#endif //!ELECTROMAGNETIC_VALUE
-            #if ENABLED(DUAL_X_CARRIAGE)
-            sprintf_P(cmd, PSTR("reload.vaMode.val=%d"), dual_x_carriage_mode);            
-            TLSTJC_println(cmd);
-            if (duplicate_extruder_x_offset != DEFAULT_DUPLICATION_X_OFFSET) {
-                sprintf_P(cmd, PSTR("reload.vaMode2Offset.val=%d"), duplicate_extruder_x_offset);
+
+            #if 0 //Disabled by zyf 231007
+                sprintf_P(cmd, PSTR("reload.sT1T2.txt=\"%d\""), active_extruder + 1);
                 TLSTJC_println(cmd);
-            } else{
-                TLSTJC_println("reload.vaMode2Offset.val=-1");
-            }
-            #endif //DUAL_X_CARRIAGE
+                #if !defined(ELECTROMAGNETIC_VALUE) &&  EXTRUDERS 
+                sprintf_P(cmd, PSTR("reload.vaTargetTemp0.val=%d"), int(thermalManager.degTargetHotend(0) + 0.5f));
+                TLSTJC_println(cmd);
+                sprintf_P(cmd, PSTR("reload.vaTargetTemp1.val=%d"), int(thermalManager.degTargetHotend(1) + 0.5f));
+                TLSTJC_println(cmd);
+                sprintf_P(cmd, PSTR("reload.vaTargetBed.val=%d"), int(thermalManager.degTargetBed() + 0.5f));
+                TLSTJC_println(cmd);
+                #endif //!ELECTROMAGNETIC_VALUE
+                #if ENABLED(DUAL_X_CARRIAGE)
+                sprintf_P(cmd, PSTR("reload.vaMode.val=%d"), dual_x_carriage_mode);            
+                TLSTJC_println(cmd);
+                if (duplicate_extruder_x_offset != DEFAULT_DUPLICATION_X_OFFSET) {
+                    sprintf_P(cmd, PSTR("reload.vaMode2Offset.val=%d"), duplicate_extruder_x_offset);
+                    TLSTJC_println(cmd);
+                } else{
+                    TLSTJC_println("reload.vaMode2Offset.val=-1");
+                }
+                #endif //DUAL_X_CARRIAGE
+            #endif
 
             //ePos_Pause = current_position[E_AXIS]; //save e pos for resume
             ePos_Pause = E_Pos_read; //save e pos for resume
@@ -3401,8 +3428,8 @@ void process_command_gcode(long _tl_command[]) {
             }else if (lM == 1050){
                 //M1050
                 int8_t KillFlag = GCodelng('S',iFrom, _tl_command);
-            }else if(lM > 1499 && lM < 1599){
-                //1500-1599
+            }else if(lM > 1499 && lM < 1559){
+                //1500-1559
                 if(lM == 1550){//M1550
                     delay(100);
                     sprintf_P(cmd, "tUI.txt=\"UI %s\"", TJCModelNo);
@@ -3411,7 +3438,7 @@ void process_command_gcode(long _tl_command[]) {
                     TLSTJC_println(cmd);
                     sprintf_P(cmd, PSTR("about.tVer.txt=\"%s V%s.%s\""), TL_MODEL_STR, SHORT_BUILD_VERSION, TL_SUBVERSION);
                     TLSTJC_println(cmd);
-                    //TLDEBUG_PRINTLN(cmd);
+                    TLDEBUG_PRINTLN(cmd);
                 }
                 #if (HAS_WIFI)
                     if(lM == 1551){//M1551
@@ -3516,7 +3543,13 @@ void process_command_gcode(long _tl_command[]) {
                     safe_delay(500);
                     TLSTJC_println("vOK.val=1");
                 }
-
+            }else if(lM == 1560){
+                uint8_t lS = GCodelng('S', iFrom, _tl_command);
+                //M1560 update CID
+                tl_com_ID = lS;
+                settings.cid_write();
+                sprintf(cmd, "M%dS%d", lM, tl_com_ID);
+                TLDEBUG_PRINTLN(cmd);
             }else if(lM == 30){
                 //M30 delete file from sd card.
                 char fileNameP[13];
@@ -3692,14 +3725,14 @@ void tl_sd_abort_on_endstop_hit(){  //only for x & y
         static uint16_t okCount;
         if(hitZ != Z_MIN_ENDSTOP_INVERTING){
             //tlStopped = 3;
-            errCount++; //倾倒开关，除抖动
-            if(errCount > 750){
+            errCount++; //倾倒开关，除抖动 高电平触发
+            if(errCount > 50){ // 除上尖峰， 数字越小，灵敏度越高 
                 tlStopped = 3;
             }
             okCount=0;
         }else{
             okCount++;
-            if(okCount > 0){
+            if(okCount > 1){    //除下尖峰 数字越大，灵敏度越高
                 errCount=0;
             }
         }
@@ -4114,18 +4147,31 @@ uint8_t TLTJC_GetLastPage(){
 void TLTJC_GetTJCVersion(){
     ZERO(tl_tjc_ver);
     TLSTJC_println("prints loading.tUIVer.txt,0");
-    delay(200);
+    safe_delay(200);
     get_lcd_command(1);
     for(int i=0;i<10;i++){
         tl_tjc_ver[i]=tl_command[i];
     }
 
+    uint8_t lcd_com_ID = 0;
     TLSTJC_println("prints main.vComID.val,0");
-    delay(200);
+    safe_delay(200);
     get_lcd_command(1);
     if(tl_command[1]==0x00 && tl_command[2]==0x00)
     {
-        tl_com_ID = tl_command[0];
+        lcd_com_ID = tl_command[0];
+    }
+
+    settings.cid_read();
+    if(tl_com_ID > 99 && tl_com_ID < 120 && tl_com_ID != lcd_com_ID){
+        char cmd[64];
+        sprintf(cmd, "tl com id:%d", tl_com_ID);
+        TLDEBUG_PRINTLN(cmd);
+        sprintf(cmd, "lcd com id:%d", lcd_com_ID);
+        TLDEBUG_PRINTLN(cmd);
+        sprintf(cmd, "wepo %d,8", tl_com_ID);
+        TLSTJC_println(cmd);
+        safe_delay(200);        
     }
 }
 
@@ -4208,21 +4254,26 @@ void grbl_idle(){
 void grbl_report_status(bool isIDLE){
     static char m_static[20];
     bool isRun = false;    
+    grbl_no_button = false;
     if(IsStopped()){
         sprintf(m_static, "%s", "Alarm");
     }else if(grbl_hold){
         sprintf(m_static, "%s", "Hold:0");
         laser_power = 0;
         set_pwm_hw(laser_power, 1000);
+        grbl_no_button = true;
     }else if((tl_busy_state || millis()-last_G01<100 || wait_ok) && !isIDLE){
         sprintf(m_static, "%s", "Run");
         isRun = true;
+        grbl_no_button = true;
     }else if(isHoming){
         sprintf(m_static, "%s", "Home");
     }else{
         sprintf(m_static, "%s", "Idle");
     }
     
+    if(millis()-last_G01<2000) grbl_no_button = true;
+
     if(isIDLE){isRun = false;}
 
     if(isRun){

@@ -69,6 +69,10 @@ GcodeSuite gcode;
 #include "../lcd/tenlog/tenlog_touch_lcd.h"
 #endif
 
+#if ENABLED(SDSUPPORT)
+  #include "../sd/cardreader.h"
+#endif
+
 #if ENABLED(HWPWM)
 #include "../HAL/PWM/pwm.h"
 #endif
@@ -329,8 +333,10 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
           }else if(parser.codenum == 53){
             G53();
           }
-          wait_ok = true;
-          last_G01 = millis();
+          if(!IS_SD_PRINTING()){
+            wait_ok = true;
+            last_G01 = millis();
+          }
         #endif
         G0_G1(TERN_(HAS_FAST_MOVES, parser.codenum == 0)); 
         
@@ -1111,12 +1117,16 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         laser_power = 0;
         set_pwm_hw(0, 1000);
         grbl_report_status();
-        my_sleep(1.0);
+        my_sleep(0.1);
         grbl_report_status();
+        laser_power = 0;
+        set_pwm_hw(0, 1000);
         //stop();
       break;
       case '~':
         grbl_hold = false;
+        grbl_report_status();
+        my_sleep(0.5);
         grbl_report_status();
         //EXECUTE_GCODE("M999");
         //TLECHO_PRINTLN("ok\n");
@@ -1126,12 +1136,15 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         tlStopped = 0;
         EXECUTE_GCODE("M999");
         char str[64];
-        sprintf(str, "Grbl 1.1h \n[uid:%s]", tl_hc_sn);
+
+        sprintf(str, "Grbl 1.1h \n[msg:uid:%s]", tl_hc_sn);
         TLECHO_PRINTLN(str);
-        sprintf_P(str, PSTR("[VER%s.%s]\nok"), SHORT_BUILD_VERSION, TL_SUBVERSION); //VER:2.0.8.038
+        sprintf_P(str, PSTR("[ver:TL-L5V%s.%s]"), SHORT_BUILD_VERSION, TL_SUBVERSION); //VER:2.0.8.038
         TLECHO_PRINTLN(str);
+        TLECHO_PRINTLN("[msg:Using machine:JL5]");
         safe_delay(50);
         grbl_report_status();
+        gcode.stepper_inactive_time = SEC_TO_MS(DEFAULT_STEPPER_DEACTIVE_TIME);
       break;
     #endif
 

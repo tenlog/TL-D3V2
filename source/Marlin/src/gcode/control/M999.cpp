@@ -41,6 +41,8 @@
 void GcodeSuite::M999() {
   marlin_state = MF_RUNNING;
   #if ENABLED(TL_L)
+    grbl_hold = false;        
+    tlStopped = 0;
     //queue.clear();
     quickstop_stepper();    
     TERN_(HAS_CUTTER, cutter.kill()); // Full cutter shutdown including ISR control

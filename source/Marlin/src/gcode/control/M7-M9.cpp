@@ -26,14 +26,14 @@
 
 #include "../gcode.h"
 #include "../../module/planner.h"
-
+//disabled by zyf
 #if ENABLED(COOLANT_MIST)
   /**
    * M7: Mist Coolant On
    */
   void GcodeSuite::M7() {
-    planner.synchronize();                            // Wait for move to arrive
-    WRITE(COOLANT_MIST_PIN, !(COOLANT_MIST_INVERT));  // Turn on Mist coolant
+    //planner.synchronize();                            // Wait for move to arrive
+    //WRITE(COOLANT_MIST_PIN, !(COOLANT_MIST_INVERT));  // Turn on Mist coolant
   }
 #endif
 
@@ -42,8 +42,8 @@
    * M8: Flood Coolant On
    */
   void GcodeSuite::M8() {
-    planner.synchronize();                              // Wait for move to arrive
-    WRITE(COOLANT_FLOOD_PIN, !(COOLANT_FLOOD_INVERT));  // Turn on Flood coolant
+    //planner.synchronize();                              // Wait for move to arrive
+    //WRITE(COOLANT_FLOOD_PIN, !(COOLANT_FLOOD_INVERT));  // Turn on Flood coolant
   }
 #endif
 
@@ -51,6 +51,7 @@
  * M9: Coolant OFF
  */
 void GcodeSuite::M9() {
+  /*
   planner.synchronize();                            // Wait for move to arrive
   #if ENABLED(COOLANT_MIST)
     WRITE(COOLANT_MIST_PIN, COOLANT_MIST_INVERT);   // Turn off Mist coolant
@@ -58,6 +59,7 @@ void GcodeSuite::M9() {
   #if ENABLED(COOLANT_FLOOD)
     WRITE(COOLANT_FLOOD_PIN, COOLANT_FLOOD_INVERT); // Turn off Flood coolant
   #endif
+  */
 }
 
 #endif // COOLANT_CONTROL
@@ -72,16 +74,16 @@ void GcodeSuite::M9() {
  * M8: Air Assist On
  */
 void GcodeSuite::M8() {
-  planner.synchronize();
-  cutter.air_assist_enable();   // Turn on Air Assist pin
+  //planner.synchronize();
+  //cutter.air_assist_enable();   // Turn on Air Assist pin
 }
 
 /**
  * M9: Air Assist Off
  */
 void GcodeSuite::M9() {
-  planner.synchronize();
-  cutter.air_assist_disable();  // Turn off Air Assist pin
+  //planner.synchronize();
+  //cutter.air_assist_disable();  // Turn off Air Assist pin
 }
 
 #endif // AIR_ASSIST

@@ -286,6 +286,7 @@ extern float E_Pos_read;
     void grbl_report_status(bool isIDLE=false);
     extern bool wait_ok;
     extern uint32_t last_G01;
+    extern bool grbl_no_button;
 #endif
 
 #if ENABLED(TL_X)

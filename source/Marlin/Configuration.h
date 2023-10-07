@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "045.8"
+#define TL_SUBVERSION "046.2"
 
 //update log 
 /*
@@ -91,7 +91,7 @@ Version     033
 //#define TL_S3   //single head
 //#define TL_M3
 //#define TL_M3S
-#define TL_L4   //laser only
+#define TL_L5   //laser only
 //#define TL_D5
 //#define TL_D6
 //#define TL_D8     
@@ -115,7 +115,7 @@ Version     033
   #define TL_S
 #endif
 
-#ifdef TL_L4
+#ifdef TL_L5
   #define TL_L
 #endif
 
@@ -165,11 +165,8 @@ Version     033
   #define TL_BEEPER
   #define TL_GRBL
   #define LASER_ENDSTOP_WIDTH 0
-  //#define ESP32_WIFI
 #else
-  #ifndef TL_X
-    #define ESP32_WIFI
-  #endif
+  #define ESP32_WIFI
 #endif
 
 #ifdef TL_GRBL
@@ -218,11 +215,11 @@ Version     033
   #define X_BED_SIZE 605
   #define Y_BED_SIZE 610
   #define Z_LENGTH   610
-#elif defined(TL_L4)
+#elif defined(TL_L5)
   #define TL_MODEL_STR_0 "L4"
-  #define X_BED_SIZE 405
-  #define Y_BED_SIZE 405
-  #define Z_LENGTH   10
+  #define X_BED_SIZE 400
+  #define Y_BED_SIZE 400
+  #define Z_LENGTH   1
 #elif defined(TL_S3)
   #define TL_MODEL_STR_0 "S3"
   #define X_BED_SIZE 360

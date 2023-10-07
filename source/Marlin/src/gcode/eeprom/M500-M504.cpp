@@ -175,6 +175,7 @@ void GcodeSuite::M502() {
         isHoming = true;
         queue.inject_P(PSTR("G28 XY"));
         isHoming = false;
+        gcode.stepper_inactive_time = SEC_TO_MS(DEFAULT_STEPPER_DEACTIVE_TIME);
       }
     }
     #endif

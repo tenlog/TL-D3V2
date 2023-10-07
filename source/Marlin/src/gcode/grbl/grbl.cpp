@@ -108,7 +108,7 @@ void GcodeSuite::grbl_j() {
 void GcodeSuite::grbl_d() {
     if(grbl_arg[0] == 'I'){
         char str[128];
-        sprintf_P(str, PSTR("[VER:%s.%s]"), SHORT_BUILD_VERSION, TL_SUBVERSION); //VER:2.0.8.038
+        sprintf_P(str, PSTR("[VER:TL-L5V%s.%s]"), SHORT_BUILD_VERSION, TL_SUBVERSION); //VER:2.0.8.038
         TLECHO_PRINTLN(str);
         TLECHO_PRINTLN("[MSG:Using machine:Kentoktool_JL5]");
         sprintf_P(str, PSTR("[MSG:UID:%s]"), tl_hc_sn); //SN
@@ -116,6 +116,7 @@ void GcodeSuite::grbl_d() {
         //TLECHO_PRINTLN("ok");
         //TLECHO_PRINTLN("[MSG:No WIFI]");
         //TLECHO_PRINTLN("[MSG:No BT]");        
+        gcode.stepper_inactive_time = SEC_TO_MS(DEFAULT_STEPPER_DEACTIVE_TIME);
     }else if(grbl_arg[0] == 'H'){
         EXECUTE_GCODE("M1523");
     }else if(grbl_arg[0] == '?'){

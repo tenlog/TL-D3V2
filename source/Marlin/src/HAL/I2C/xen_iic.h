@@ -2,38 +2,30 @@
 #pragma once
 
 #ifdef XEN_IIC
-#define I2C_UNIT                        (M4_I2C3)
-/* Define slave device address for example */
-#define DEVICE_ADDRESS                  (0x06u)
-//#define I2C_10BITS_ADDRESS              (1u)
+    #define I2C_UNIT                        (M4_I2C3)
+    /* Define slave device address for example */
+    #define DEVICE_ADDRESS                  (0x41)
+    //#define I2C_10BITS_ADDRESS              (1u)
 
-/* Define port and pin for SDA and SCL */
-#define I2C_SCL_PORT                    (PortE)
-#define I2C_SCL_PIN                     (Pin15)
-#define I2C_SDA_PORT                    (PortB)
-#define I2C_SDA_PIN                     (Pin05)
-#define I2C_GPIO_SCL_FUNC               (Func_I2c3_Scl)
-#define I2C_GPIO_SDA_FUNC               (Func_I2c3_Sda)
+    //SDA=PB3 SCL=PB4
+    /* Define port and pin for SDA and SCL */
+    #define I2C_SCL_PORT                    (PortB)
+    #define I2C_SCL_PIN                     (Pin04)
+    #define I2C_SDA_PORT                    (PortB)
+    #define I2C_SDA_PIN                     (Pin03)
+    #define I2C_GPIO_SCL_FUNC               (Func_I2c3_Scl)
+    #define I2C_GPIO_SDA_FUNC               (Func_I2c3_Sda)
 
-#define I2C_FCG_USE                     (PWC_FCG1_PERIPH_I2C3)
+    #define I2C_FCG_USE                     (PWC_FCG1_PERIPH_I2C3)
 
-#define TIMEOUT                         (0x10000ul)
+    #define EXI2C_TIMEOUT                   (10000ul)
 
-/* Define Write and read data length for the example */
-#define TEST_DATA_LEN                   (256u)
-/* Define i2c baudrate */
-#define I2C_BAUDRATE                    (400000ul)
+    #define I2C_BAUDRATE                    (400000ul)
+    #define I2C_CLK_DIV                     I2C_CLK_DIV2
 
-/*******************************************************************************
- * Global variable definitions (declared in header file with 'extern')
- ******************************************************************************/
+    en_result_t XEI2C_Init(void);
+    void XEI2C_Write(uint8_t reg, uint8_t data);
+    void XE_Enable();
 
-/*******************************************************************************
- * Local function prototypes ('static')
- ******************************************************************************/
-
-/*******************************************************************************
- * Local variable definitions ('static')
- ******************************************************************************/
-
+    extern bool XE_ENA[4];
 #endif

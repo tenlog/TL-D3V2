@@ -173,6 +173,7 @@ void GcodeSuite::M5() {
     //}
     start_beeper(2, 1);
     //safe_delay(200);
+    gcode.stepper_inactive_time = SEC_TO_MS(DEFAULT_STEPPER_DEACTIVE_TIME);
     grbl_report_status(true);
   #endif
 }

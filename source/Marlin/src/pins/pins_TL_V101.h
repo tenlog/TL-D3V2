@@ -132,7 +132,7 @@
 //
 #if defined(TL_W) 
   #define FIL_RUNOUT_PIN                    PA0   // "Pulled-high"  
-#elif defined(TL_LASER_ONLY)
+#elif defined(TL_L)
   #define FIL_RUNOUT_PIN                    PD0   // "Pulled-high"
 #else
   #define FIL_RUNOUT_PIN                    PA15   // "Pulled-high" 
@@ -285,11 +285,4 @@
   #define NSS_PIN           PB1
   #define MOSI_PIN          PA7
   #define MISO_PIN          PB0
-#endif
-
-#if defined(TL_X)
-  #define XE0_ENABLE_PIN    PA6  
-  #define XE1_ENABLE_PIN    PA7
-  #define XE2_ENABLE_PIN    PB1
-  #define XE3_ENABLE_PIN    PB0
 #endif

@@ -2196,7 +2196,7 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
               }
             }
           }
-          last_xe_en[x] = xe_en[x];          
+          last_xe_en[x] = xe_en[x];
         }
         xe_ena = true;
         /*

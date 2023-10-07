@@ -653,7 +653,12 @@ void MarlinSettings::postprocess() {
 
 #if ENABLED(POWER_LOSS_RECOVERY_TL)
   int MarlinSettings::plr_eeprom_index;
-#endif 
+  uint16_t MarlinSettings::working_crc_plr;
+  bool MarlinSettings::validating_plr;
+ #endif 
+  int MarlinSettings::cid_eeprom_offset;
+  uint16_t MarlinSettings::working_crc_cid;
+  bool MarlinSettings::validating_cid;
 
 /*
 #if ENABLED(TENLOG_TOUCH_LCD)
@@ -2564,7 +2569,7 @@ void MarlinSettings::postprocess() {
       else if (working_crc != stored_crc) {
         eeprom_error = true;
         DEBUG_ERROR_START();
-        DEBUG_ECHOLNPAIR("EEPROM CRC mismatch - (stored) ", stored_crc, " != ", working_crc, " (calculated)!");
+        TLDEBUG_PRINTLNPAIR("EEPROM CRC mismatch - (stored) ", stored_crc, " != ", working_crc, " (calculated)!");
         IF_DISABLED(EEPROM_AUTO_INIT, ui.eeprom_alert_crc());
       }
       else if (!validating) {
@@ -4216,6 +4221,16 @@ void MarlinSettings::reset() {
     }   
   #endif
   */
+
+ void MarlinSettings::cid_write(){
+   CID_EEPROM_START(1300);
+   CID_EEPROM_WRITE(tl_com_ID); 
+ }
+
+ void MarlinSettings::cid_read(){
+   CID_EEPROM_START(1300);
+   CID_EEPROM_READ(tl_com_ID); 
+ }
 
   #if ENABLED(POWER_LOSS_RECOVERY_TL)
 

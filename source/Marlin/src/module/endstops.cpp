@@ -332,6 +332,11 @@ void Endstops::not_homing() {
         kill(GET_TEXT(MSG_KILL_HOMING_FAILED));
       #else
         TLECHO_PRINTLN("ALARM:6");
+        TLECHO_PRINTLN("Please check the machine with following point");
+        TLECHO_PRINTLN("1. Whether the control box is activated");
+        TLECHO_PRINTLN("2. Whether the limit switch or motor wire loose");
+        //
+        //打印过程中不能触碰复位键。
       #endif
     }
   }

@@ -60,6 +60,10 @@
 #include "feature/pause.h"
 #include "sd/cardreader.h"
 
+#if ENABLED(TL_X)
+  #include "HAL/I2C/xen_iic.h"
+#endif
+
 #if ENABLED(TENLOG_TOUCH_LCD)
   #include "lcd/tenlog/tenlog_touch_lcd.h"
   #include "module/settings.h"
@@ -307,10 +311,11 @@ bool pin_is_protected(const pin_t pin) {
 
 void enable_e_steppers() {
   #if ENABLED(TL_X)
-    #define _CASE_EN_XE(N) case N: ENABLE_STEPPER_XE##N(); break;
-    switch (tl_xe_atv) {
-      REPEAT(4, _CASE_EN_XE)
-    }
+    XE_ENA[0]=0;
+    XE_ENA[1]=0;
+    XE_ENA[2]=0;
+    XE_ENA[3]=0;
+    XE_Enable();
   #else
     #define _ENA_E(N) ENABLE_AXIS_E##N();
     REPEAT(E_STEPPERS, _ENA_E)
@@ -329,8 +334,11 @@ void enable_all_steppers() {
 
 void disable_e_steppers() {
   #if ENABLED(TL_X)
-    #define _DIS_XE(N) DISABLE_STEPPER_XE##N();
-    REPEAT(4, _DIS_XE)
+    XE_ENA[0]=1;
+    XE_ENA[1]=1;
+    XE_ENA[2]=1;
+    XE_ENA[3]=1;
+    XE_Enable();
     xe_ena = false;
   #else
     #define _DIS_E(N) DISABLE_AXIS_E##N();
@@ -539,6 +547,10 @@ inline void manage_inactivity(const bool ignore_stepper_queue=false) {
     const bool printer_not_busy = !printingIsActive();
     #define HAS_CUSTOM_USER_BUTTON(N) (PIN_EXISTS(BUTTON##N) && defined(BUTTON##N##_HIT_STATE) && defined(BUTTON##N##_GCODE) && defined(BUTTON##N##_GCODE_1) && defined(BUTTON##N##_DESC))
     #define CHECK_CUSTOM_USER_BUTTON(N) do{                             \
+      if(!card.isFileOpen()) {                                         \
+        if(grbl_no_button) break;                                       \
+        if(millis() - last_G01 < 2000) break;                           \
+      }                                                                 \
       constexpr millis_t CUB_DEBOUNCE_DELAY_##N = 1000UL;               \
       static millis_t next_cub_ms_##N;                                  \
       static millis_t button_up_##N;                                    \
@@ -1212,6 +1224,11 @@ void setup() {
     SERIAL_ECHOLNPGM("start");
   #endif
 
+  //I2c init..
+  #if ENABLED(TL_X)
+    XEI2C_Init();
+  #endif
+
   //tenlog touch screen..
   TERN_(TENLOG_TOUCH_LCD, initTLScreen());
 
@@ -1328,7 +1345,9 @@ void setup() {
   #if DISABLED(TL_GRBL)
     SERIAL_ECHOPGM_P(GET_TEXT(MSG_MARLIN));
     SERIAL_CHAR(' ');
-    SERIAL_ECHOLNPGM(SHORT_BUILD_VERSION);
+    SERIAL_ECHOPGM(SHORT_BUILD_VERSION);
+    SERIAL_CHAR('.');
+    SERIAL_ECHOLNPGM(TL_SUBVERSION);
     SERIAL_EOL();
     #if defined(STRING_DISTRIBUTION_DATE) && defined(STRING_CONFIG_H_AUTHOR)
       SERIAL_ECHO_MSG(

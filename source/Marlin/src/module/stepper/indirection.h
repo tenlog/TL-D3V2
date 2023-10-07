@@ -32,6 +32,10 @@
 
 #include "../../inc/MarlinConfig.h"
 
+#if ENABLED(XEN_IIC)
+  #include "../../HAL/I2C/xen_iic.h"
+#endif
+
 #if HAS_L64XX
   #include "L64xx.h"
 #endif
@@ -339,24 +343,24 @@ void reset_stepper_drivers();    // Called by settings.load / settings.reset
 
 #if ENABLED(TL_X)
   #ifndef XE0_ENABLE_INIT
-    #define XE0_ENABLE_INIT() SET_OUTPUT(XE0_ENABLE_PIN)
-    #define XE0_ENABLE_WRITE(STATE) WRITE(XE0_ENABLE_PIN,STATE)
-    #define XE0_ENABLE_READ() bool(READ(XE0_ENABLE_PIN))
+    #define XE0_ENABLE_INIT() NOOP // SET_OUTPUT(XE0_ENABLE_PIN)
+    #define XE0_ENABLE_WRITE(STATE) XE_ENA[0]=STATE; XE_Enable()// NOOP //WRITE(XE0_ENABLE_PIN,STATE)
+    //#define XE0_ENABLE_READ() bool(READ(XE0_ENABLE_PIN))
   #endif  
   #ifndef XE1_ENABLE_INIT
-    #define XE1_ENABLE_INIT() SET_OUTPUT(XE1_ENABLE_PIN)
-    #define XE1_ENABLE_WRITE(STATE) WRITE(XE1_ENABLE_PIN,STATE)
-    #define XE1_ENABLE_READ() bool(READ(XE1_ENABLE_PIN))
+    #define XE1_ENABLE_INIT() NOOP //SET_OUTPUT(XE1_ENABLE_PIN)
+    #define XE1_ENABLE_WRITE(STATE) XE_ENA[1]=STATE; XE_Enable()// WRITE(XE1_ENABLE_PIN,STATE)
+    //#define XE1_ENABLE_READ() bool(READ(XE1_ENABLE_PIN))
   #endif  
   #ifndef XE2_ENABLE_INIT
-    #define XE2_ENABLE_INIT() SET_OUTPUT(XE2_ENABLE_PIN)
-    #define XE2_ENABLE_WRITE(STATE) WRITE(XE2_ENABLE_PIN,STATE)
-    #define XE2_ENABLE_READ() bool(READ(XE2_ENABLE_PIN))
+    #define XE2_ENABLE_INIT() NOOP // SET_OUTPUT(XE2_ENABLE_PIN)
+    #define XE2_ENABLE_WRITE(STATE) XE_ENA[2]=STATE; XE_Enable()//WRITE(XE2_ENABLE_PIN,STATE)
+    //#define XE2_ENABLE_READ() bool(READ(XE2_ENABLE_PIN))
   #endif  
   #ifndef XE3_ENABLE_INIT
-    #define XE3_ENABLE_INIT() SET_OUTPUT(XE3_ENABLE_PIN)
-    #define XE3_ENABLE_WRITE(STATE) WRITE(XE3_ENABLE_PIN,STATE)
-    #define XE3_ENABLE_READ() bool(READ(XE3_ENABLE_PIN))
+    #define XE3_ENABLE_INIT() NOOP // SET_OUTPUT(XE3_ENABLE_PIN)
+    #define XE3_ENABLE_WRITE(STATE) XE_ENA[3]=STATE; XE_Enable()// WRITE(XE3_ENABLE_PIN,STATE)
+    //#define XE3_ENABLE_READ() bool(READ(XE3_ENABLE_PIN))
   #endif
 #endif
 

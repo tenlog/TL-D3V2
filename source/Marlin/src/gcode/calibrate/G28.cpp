@@ -552,9 +552,9 @@ void GcodeSuite::G28() {
     #endif
 
     #if ENABLED(TL_L)
-      my_sleep(0.5);
+      safe_delay(50);
       EXECUTE_GCODE("G0 X2Y2");
-      my_sleep(0.2);
+      safe_delay(50);
       EXECUTE_GCODE("G92 X0Y0");
     #endif
 
