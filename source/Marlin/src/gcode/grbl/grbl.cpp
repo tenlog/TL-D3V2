@@ -45,7 +45,7 @@ void GcodeSuite::grbl_dd() {
     TLECHO_PRINTLN("$11=0.01");
     TLECHO_PRINTLN("$12=0.001");
     TLECHO_PRINTLN("$13=0");
-    TLECHO_PRINTLN("$20=0");
+    TLECHO_PRINTLN("$20=1");
     TLECHO_PRINTLN("$21=1");
     TLECHO_PRINTLN("$22=1");
     TLECHO_PRINTLN("$23=-1");

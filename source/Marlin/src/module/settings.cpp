@@ -524,6 +524,17 @@ typedef struct SettingsDataStruct {
     uint32_t steptest_hz;
   #endif
 
+  #if ENABLED(TL_X)
+    uint16_t x_exchange_fila_length;
+    uint16_t x_extra_fila_length;
+    uint16_t x_sweeping_times;
+    uint16_t x_sweeping_speed;
+    uint16_t x_exchange_speed;
+    uint16_t x_extra_speed;
+    uint16_t  x_retract_fila_length;
+    uint16_t x_retract_fila_speed;
+  #endif
+
 } SettingsData;
 
 //static_assert(sizeof(SettingsData) <= MARLIN_EEPROM_SIZE, "EEPROM too small to contain SettingsData!");
@@ -1537,6 +1548,16 @@ void MarlinSettings::postprocess() {
 
     #if ENABLED(TL_STEPTEST)
       EEPROM_WRITE(STEPTEST_HZ);
+    #endif
+    #if ENABLED(TL_X)
+      EEPROM_WRITE(exchange_fila_length);  
+      EEPROM_WRITE(extra_fila_length);  
+      EEPROM_WRITE(sweeping_times);  
+      EEPROM_WRITE(sweeping_speed);  
+      EEPROM_WRITE(exchange_speed);  
+      EEPROM_WRITE(extra_speed);  
+      EEPROM_WRITE(retract_fila_length);  
+      EEPROM_WRITE(retract_fila_speed);  
     #endif
     tlSendSettings(false);  //Show in ui
     //
@@ -2553,6 +2574,17 @@ void MarlinSettings::postprocess() {
         TLDEBUG_PRINTLNPAIR("STEPTEST_HZ", STEPTEST_HZ);
         EEPROM_READ(STEPTEST_HZ);
       #endif
+      
+      #if ENABLED(TL_X)
+        EEPROM_READ(exchange_fila_length);  
+        EEPROM_READ(extra_fila_length);  
+        EEPROM_READ(sweeping_times);
+        EEPROM_READ(sweeping_speed);  
+        EEPROM_READ(exchange_speed);  
+        EEPROM_READ(extra_speed);  
+        EEPROM_READ(retract_fila_length);  
+        EEPROM_READ(retract_fila_speed);  
+      #endif
 
       #if ENABLED(TENLOG_TOUCH_LCD)
         tlSendSettings(false);  //Show in ui //resend to wifi
@@ -3232,7 +3264,16 @@ void MarlinSettings::reset() {
     STEPTEST_HZ = STEPTEST_HZ_DEFAULT;
   #endif
 
-  
+  #if ENABLED(TL_X)
+    exchange_fila_length = DEFAULT_EXCHANGE_FILA_LENGTH;  
+    extra_fila_length = DEFAULT_EXTRA_FILA_LENGTH;
+    sweeping_times = DEFAULT_SWEEPING_TIMES;
+    sweeping_speed = DEFAULT_SWEEPING_SPEED;
+    exchange_speed = DEFAULT_EXCHANGE_SPEED;
+    extra_speed = DEFAULT_EXTRA_SPEED;
+    retract_fila_length = DEFAULT_RETRACT_LENGTH;
+    retract_fila_speed = DEFAULT_RETRACT_SPEED;
+  #endif
   postprocess();
 
   //DEBUG_ECHO_START();
@@ -4242,22 +4283,19 @@ void MarlinSettings::reset() {
       }
     }
 
-    void MarlinSettings::plr_save(uint32_t FPos, int8_t T01, float ZPos){
+    #if ENABLED(TL_X)
+    void MarlinSettings::plr_save(uint32_t FPos, int8_t T01, uint8_t old_xe_0, uint8_t old_xe_1){
+    #else
+    void MarlinSettings::plr_save(uint32_t FPos, int8_t T01){
+    #endif
       //char cmd[32];
       PLR_EEPROM_START(PLR_EEPROM_OFFSET);
       int32_t startSave = millis();
       if(FPos > 2048){
         PLR_EEPROM_WRITE(FPos);
-        //PLR_EEPROM_WRITE(fEPos);
-        //PLR_EEPROM_WRITE(iTPos0);
-        //PLR_EEPROM_WRITE(iTPos1);
         PLR_EEPROM_WRITE(T01);
-        //PLR_EEPROM_WRITE(ZPos);
-        //PLR_EEPROM_WRITE(iFan);
-
-        //int32_t saveTime = millis() - startSave;
-        //TLDEBUG_PRINTLNPAIR("Save Use ", saveTime);
-        //sprintf_P(cmd, PSTR("ZPos:%f, EPos %f"), fZPos, fEPos);
+        PLR_EEPROM_WRITE(old_xe_0);
+        PLR_EEPROM_WRITE(old_xe_1);
       }
     }
 
@@ -4279,6 +4317,7 @@ void MarlinSettings::reset() {
 
     void MarlinSettings::plr_pre_save(uint32_t lFPos, int16_t iBPos, int16_t iTPos0, int16_t iTPos1, int16_t i_dual_x_carriage_mode, float f_duplicate_extruder_x_offset, int16_t i_feedrate){
       static bool PRE_Write_PLR_Done;
+      //only save for 1 time.
       if(lFPos > 2048 && !PRE_Write_PLR_Done){
         PLR_EEPROM_START(PLR_PRE_EEPROM_OFFSET);
         PLR_EEPROM_WRITE(iBPos);
@@ -4325,6 +4364,9 @@ void MarlinSettings::reset() {
       int8_t iT01 = 0;
       int16_t iFan = 255;
       float fZPos = 0;
+
+      uint8_t old_xe_0 = 0;
+      uint8_t old_xe_1 = 0;
       //float fEPos = 0;
 
       PLR_EEPROM_START(PLR_PRE_EEPROM_OFFSET);
@@ -4340,7 +4382,11 @@ void MarlinSettings::reset() {
       
       PLR_EEPROM_READ(lFPos);
       PLR_EEPROM_READ(iT01);
-      //PLR_EEPROM_READ(fZPos);
+      
+      #if ENABLED(TL_X)
+        PLR_EEPROM_READ(old_xe_0);
+        PLR_EEPROM_READ(old_xe_1);
+      #endif
 
       TLPrintingStatus = 2;
       
@@ -4372,54 +4418,93 @@ void MarlinSettings::reset() {
       
       //handling headers
       #if (EXTRUDERS == 2)
-      if(iT01 == 1){
-          if(iTPos0 > 0){
-              sprintf_P(cmd, PSTR("M104 T0 S%i"), iTPos0);
+        #if ENABLED(TL_X)
+          if(iT01 == 1 || iT01 == 0){
+            if(iTPos1 > 0){
+              sprintf_P(cmd, PSTR("M104 T2 S%i"), iTPos1);
               gcode.process_subcommands_now(cmd);
-          }
-          active_extruder = 1;
-          //gcode.process_subcommands_now(PSTR("T1"));
-          if(iTPos1 > 0){
+            }
+            active_extruder = 0;
+            if(iTPos0 > 0){
+              sprintf_P(cmd, PSTR("M109 S%i"), iTPos0);
+              gcode.process_subcommands_now(cmd);
+            }
+            sprintf_P(cmd, PSTR("T%d"), iT01);            
+            gcode.process_subcommands_now(cmd);
+          }else if(iT01 == 2 || iT01 == 3){
+            if(iTPos0 > 0){
+              sprintf_P(cmd, PSTR("M104 T0 S%i"), iTPos1);
+              gcode.process_subcommands_now(cmd);
+            }
+            active_extruder = 1;
+            if(iTPos1 > 0){
               sprintf_P(cmd, PSTR("M109 S%i"), iTPos1);
               gcode.process_subcommands_now(cmd);
+            }
+            sprintf_P(cmd, PSTR("T%d"), iT01);            
+            gcode.process_subcommands_now(cmd);
           }
-          active_extruder = 0;
-          delay(100);
-          gcode.process_subcommands_now(PSTR("T1"));
-      }else{
-          if(iTPos1 > 0){
+        #else
+          if(iT01 == 1){
+            //T1
+            if(iTPos0 > 0){
+              sprintf_P(cmd, PSTR("M104 T0 S%i"), iTPos0);
+              gcode.process_subcommands_now(cmd);
+            }
+            active_extruder = 1;
+            //gcode.process_subcommands_now(PSTR("T1"));
+            if(iTPos1 > 0){
+              sprintf_P(cmd, PSTR("M109 S%i"), iTPos1);
+              gcode.process_subcommands_now(cmd);
+            }
+            active_extruder = 0;
+            delay(100);
+            gcode.process_subcommands_now(PSTR("T1"));
+          }else{
+            //T0
+            if(iTPos1 > 0){
               NULLZERO(cmd);
               sprintf_P(cmd, PSTR("M104 T1 S%i"), iTPos1);
               gcode.process_subcommands_now(cmd);
-          }
-          active_extruder = 0;
-          //gcode.process_subcommands_now(PSTR("T0"));
-          if(iTPos0 > 0){
+            }
+            active_extruder = 0;
+            //gcode.process_subcommands_now(PSTR("T0"));
+            if(iTPos0 > 0){
               sprintf_P(cmd, PSTR("M109 S%i"), iTPos0);
               gcode.process_subcommands_now(cmd);
+            }
+            gcode.process_subcommands_now(PSTR("T0"));
           }
-          gcode.process_subcommands_now(PSTR("T0"));
-      }
-      //handling fan
+        #endif //!TL_X
       #endif //(EXTRUDERS == 2)
       
+      //handling fan
       sprintf_P(cmd, PSTR("M106 S%i"), iFan);
       gcode.process_subcommands_now(cmd);
       
       //homging XY
       gcode.process_subcommands_now(PSTR("G28 XY"));
 
+      #if ENABLED(TL_X)
+        if(iT01 == 0 || iT01 == 1){
+          tl_xe_atv = old_xe_1;
+          sprintf(cmd, "G1 E-%d F2400", exchange_fila_length);
+          EXECUTE_GCODE(cmd);
+          my_sleep(0.2);
+        }else if(iT01 == 2 || iT01 == 3){
+          tl_xe_atv = old_xe_0;
+          sprintf(cmd, "G1 E-%d F2400", exchange_fila_length);
+          EXECUTE_GCODE(cmd);
+          my_sleep(0.2);
+        }
+        sprintf(cmd, "T%d", iT01);
+        EXECUTE_GCODE(cmd);        
+      #endif
+
       my_sleep(1.5);
       
       feedrate_mm_s = i_feedrate / 60.0;
       
-      //sprintf_P(cmd, PSTR("G92.9 Z%.2f "), fZPos);
-      //gcode.process_subcommands_now(cmd);
-
-      //current_position[Z_AXIS] = -66.66;
-      //planner.set_position_mm(current_position);
-      //current_position[E_AXIS] = -66.66;
-      //planner.set_e_position_mm(current_position.e);
       plr1stE = true;
       plr1stZ = true;
 

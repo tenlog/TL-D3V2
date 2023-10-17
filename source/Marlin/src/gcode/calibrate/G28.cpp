@@ -555,7 +555,8 @@ void GcodeSuite::G28() {
       safe_delay(50);
       EXECUTE_GCODE("G0 X2Y2");
       safe_delay(50);
-      EXECUTE_GCODE("G92 X0Y0");
+      EXECUTE_GCODE("G92.9 X0Y0");
+      safe_delay(50);
     #endif
 
   feedrate_mm_s = original_fr; //restore it.. by zyf

@@ -724,7 +724,11 @@ void restore_feedrate_and_scaling() {
 
       if (axis_was_homed(X_AXIS)) {
         #if !HAS_SOFTWARE_ENDSTOPS || ENABLED(MIN_SOFTWARE_ENDSTOP_X)
-          NOLESS(target.x, soft_endstop.min.x);
+          #if ENABLED(TL_L)
+            NOLESS(target.x, 0.0);
+          #else
+            NOLESS(target.x, soft_endstop.min.x);
+          #endif
         #endif
         #if !HAS_SOFTWARE_ENDSTOPS || ENABLED(MAX_SOFTWARE_ENDSTOP_X)
           NOMORE(target.x, soft_endstop.max.x);
@@ -733,7 +737,11 @@ void restore_feedrate_and_scaling() {
 
       if (axis_was_homed(Y_AXIS)) {
         #if !HAS_SOFTWARE_ENDSTOPS || ENABLED(MIN_SOFTWARE_ENDSTOP_Y)
-          NOLESS(target.y, soft_endstop.min.y);
+          #if ENABLED(TL_L)
+            NOLESS(target.y, 0.0);
+          #else
+            NOLESS(target.y, soft_endstop.min.y);
+          #endif
         #endif
         #if !HAS_SOFTWARE_ENDSTOPS || ENABLED(MAX_SOFTWARE_ENDSTOP_Y)
           NOMORE(target.y, soft_endstop.max.y);

@@ -184,8 +184,20 @@ float E_Pos_read = 0;
 #endif
 
 #if ENABLED(TL_X)
+    uint8_t old_xe_atv_0 = 0;
+    uint8_t old_xe_atv_1 = 0;
     int8_t tl_xe_atv=0;
     bool xe_ena = false;
+
+    uint16_t exchange_fila_length = DEFAULT_EXCHANGE_FILA_LENGTH;  
+    uint16_t extra_fila_length = DEFAULT_EXTRA_FILA_LENGTH;
+    uint16_t retract_fila_length = DEFAULT_RETRACT_LENGTH;
+    uint16_t sweeping_times = DEFAULT_SWEEPING_TIMES;
+    uint16_t sweeping_speed = DEFAULT_SWEEPING_SPEED;
+    uint16_t exchange_speed = DEFAULT_EXCHANGE_SPEED;
+    uint16_t extra_speed = DEFAULT_EXTRA_SPEED;
+    uint16_t retract_fila_speed = DEFAULT_RETRACT_SPEED;
+    
 #endif
 
 long ConvertHexLong(long command[], int Len)
@@ -761,6 +773,27 @@ void tlSendSettings(bool only_wifi){
         sprintf_P(cmd, PSTR("settings2.xM205E.val=%d"), lMEJerk);
         PRINTTJC(cmd);
 
+        #if ENABLED(TL_X)
+            sprintf_P(cmd, PSTR("settings2.nFilaLength.val=%d"), exchange_fila_length);
+            PRINTTJC(cmd);
+            sprintf_P(cmd, PSTR("fila_settings.nFilaLength.val=%d"), exchange_fila_length);
+            PRINTTJC(cmd);
+            sprintf_P(cmd, PSTR("fila_settings.nExtraLength.val=%d"), extra_fila_length);
+            PRINTTJC(cmd);
+            sprintf_P(cmd, PSTR("fila_settings.nSweepingTimes.val=%d"), sweeping_times);
+            PRINTTJC(cmd);
+            sprintf_P(cmd, PSTR("fila_settings.nSweepingSpeed.val=%d"), sweeping_speed);
+            PRINTTJC(cmd);
+            sprintf_P(cmd, PSTR("fila_settings.nExchangeSpeed.val=%d"), exchange_speed);
+            PRINTTJC(cmd);
+            sprintf_P(cmd, PSTR("fila_settings.nExtraSpeed.val=%d"), extra_speed);
+            PRINTTJC(cmd);
+            sprintf_P(cmd, PSTR("fila_settings.nRetractLength.val=%d"), retract_fila_length);
+            PRINTTJC(cmd);
+            sprintf_P(cmd, PSTR("fila_settings.nRetractSpeed.val=%d"), retract_fila_speed);
+            PRINTTJC(cmd);
+        #endif
+
         #if HAS_BED_PROBE
         sprintf_P(cmd, PSTR("main.vAutoLevel.val=%d"), GRID_MAX_POINTS_X);
         PRINTTJC(cmd);
@@ -1095,25 +1128,20 @@ void tlAbortPrinting(){
     #endif//SDSUPPORT
 }
 
+#if ENABLED(FILAMENT_RUNOUT_SENSOR)
 void TLFilamentRunout(){
-    queue.inject_P(PSTR(FILAMENT_RUNOUT_SCRIPT));
-    my_sleep(1.5);
-    //EXECUTE_GCODE("M25");
-    //while(queue.has_commands_queued() || planner.movesplanned() > 1){
-    //    idle();
-    //}
     if(tl_TouchScreenType == 1){
-        iBeepCount = 10;
         TLSTJC_println("main.vCC.val=1");
-        //EXECUTE_GCODE("M25");
-        my_sleep(1.5);
-        TJCMessage(15, 15, 6, "G28 X", "G28 X", "M1031 O1", "");
+        TJCMessage(15, 15, 6, "", "", "", ""); //filament run out.
+        TJCPauseResumePrinting(true, true);
     }
 }
+#endif
 
 void SetBusyMoving(bool Busy){
     if(Busy){
         TLMoving = true;
+        TLSTJC_println("sleep=0");
         TLSTJC_println("main.vCC.val=1");
     }else{
         while(tl_busy_state){
@@ -1128,6 +1156,7 @@ void SetBusyMoving(bool Busy){
 	#endif
 }
 
+#if ENABLED(FILAMENT_RUNOUT_SENSOR)
 int feed_rate_Pause = 0;
 float zPos_Pause = 0.0;
 float ePos_Pause = 0.0;
@@ -1137,48 +1166,49 @@ uint16_t T1T_Pause = 0;
 uint16_t TBT_Pause = 0;
 int8_t T01_Pause =  -1;
 
-uint_t Idex_Mode_Pause = -1;
-uint16_t Idex_Dup_XOffset_Pause = DEFAULT_DUPLICATION_X_OFFSET;
+uint8_t Idex_Mode_Pause = -1;
+float Idex_Dup_XOffset_Pause = DEFAULT_DUPLICATION_X_OFFSET;
+
 //M1031
-void TJCPauseResumePrinting(bool PR, int FromPos){
+void TJCPauseResumePrinting(bool PR, bool isRunOut){
     #ifdef PRINT_FROM_Z_HEIGHT
     if (!PrintFromZHeightFound)
         return;
     #endif
     
-    T0T_Pause = thermalManager.degHotend(0);
-    T1T_Pause = thermalManager.degHotend(1);
-    TBT_Pause = thermalManager.degBed();
-    zPos_Pause = current_position[Z_AXIS];
-
-    #if ENABLED(TL_X)
-        T01_Pause = tl_xe_atv;
-    #elif ENABLED(DUAL_X_CARRIAGE)
-        T01_Pause = active_extruder;
-    #endif
-
-    #if ENABLED(DUAL_X_CARRIAGE)
-    Idex_Mode_Pause = dual_x_carriage_mode;
-    if(Idex_Mode_Pause == 2){
-        Idex_Dup_XOffset_Pause = duplicate_extruder_x_offset;
-    }
-    #endif
-
-    long lO = GCodelng('O', 0, tl_command); //点击了OK
     if(PR) {
+        SetBusyMoving(true);
+        T0T_Pause = thermalManager.degHotend(0);
+        T1T_Pause = thermalManager.degHotend(1);
+        TBT_Pause = thermalManager.degBed();
+        zPos_Pause = current_position[Z_AXIS];
+
+        #if ENABLED(TL_X)
+            T01_Pause = tl_xe_atv;
+        #elif ENABLED(DUAL_X_CARRIAGE)
+            T01_Pause = active_extruder;
+        #endif
+
+        #if ENABLED(DUAL_X_CARRIAGE)
+        Idex_Mode_Pause = dual_x_carriage_mode;
+        if(Idex_Mode_Pause == 2){
+            Idex_Dup_XOffset_Pause = duplicate_extruder_x_offset;
+        }
+        #endif
+
         //Pause clicked!
-        if(lO == -9999){
+        //if(lO == -9999){
             //click pause from lcd
             EXECUTE_GCODE("M25");
             
             SetBusyMoving(true);
             TJC_DELAY;
-        } 
+        //} 
 
-        if(lO == 0 || lO == 1 || lO == -9999){
+        if(true) {   // (lO == 0 || lO == 1 || lO == -9999){
 
             bool FilaRunout = false;
-            if(lO == 1) FilaRunout = true;  //runout from lcd message box            
+            if(isRunOut) FilaRunout = true;  //runout from lcd message box            
             feed_rate_Pause = feedrate_mm_s;
 
             TLSTJC_println("sleep=0");
@@ -1205,7 +1235,7 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
                     TLSTJC_println("reload.vaMode2Offset.val=-1");
                 }
                 #endif //DUAL_X_CARRIAGE
-            #endif
+            #endif //disabled by zyf
 
             //ePos_Pause = current_position[E_AXIS]; //save e pos for resume
             ePos_Pause = E_Pos_read; //save e pos for resume
@@ -1243,78 +1273,112 @@ void TJCPauseResumePrinting(bool PR, int FromPos){
         SetBusyMoving(true);
         delay(50);
 
-        long lT = GCodelng('T', FromPos, tl_command);  //M1032 T0 H200 I0
-        long lH = GCodelng('H', FromPos, tl_command);  //Temp 0 
-        long lI = GCodelng('I', FromPos, tl_command);  //Temp 1
-        sprintf_P(cmd, PSTR("M1032 T%i H%i I%i"), lT, lH, lI);
-        TLDEBUG_PRINTLN(cmd);
-        
         #if ENABLED(DUAL_X_CARRIAGE)
-        if(dual_x_carriage_mode == DXC_DUPLICATION_MODE || DXC_MIRRORED_MODE == 3){
-            EXECUTE_GCODE("G28 X");
-            safe_delay(100);
-            my_sleep(2.5);
-        }
+            if(dual_x_carriage_mode != Idex_Mode_Pause && Idex_Mode_Pause > 0){
+                if(Idex_Dup_XOffset_Pause != DEFAULT_DUPLICATION_X_OFFSET && Idex_Mode_Pause == 2){
+                    sprintf_P(cmd, PSTR("M605 S2 X%.2f"), Idex_Dup_XOffset_Pause);
+                    EXECUTE_GCODE(cmd);
+                }else{
+                    sprintf_P(cmd, PSTR("M605 S%d"), Idex_Mode_Pause);
+                    EXECUTE_GCODE(cmd);
+                }
+                safe_delay(100);
+            }
+            if(dual_x_carriage_mode >= DXC_DUPLICATION_MODE){
+                EXECUTE_GCODE("G28 X");
+                safe_delay(100);
+                my_sleep(2.5);
+            }
         #endif
 
-        if(lT == 0){
-            if(lI > 0){
-                sprintf_P(cmd, PSTR("M104 T1 S%i"), lI);
+        #if ENABLED(TL_X)
+            if(T01_Pause == 0 || T01_Pause == 1){
+                if(T1T_Pause > 20){
+                    sprintf_P(cmd, PSTR("M104 T1 S%d"), T1T_Pause);
+                    EXECUTE_GCODE(cmd);
+                    safe_delay(100);
+                }
+                sprintf_P(cmd, PSTR("T%d"), T01_Pause);
                 EXECUTE_GCODE(cmd);
                 safe_delay(100);
+                if(T0T_Pause > 20){
+                    sprintf_P(cmd, PSTR("M109 S%d"), T0T_Pause);
+                    EXECUTE_GCODE(cmd);
+                    safe_delay(100);
+                }
+            }else if(T01_Pause == 2 || T01_Pause == 3){
+                if(T0T_Pause > 20){
+                    sprintf_P(cmd, PSTR("M104 T0 S%d"), T0T_Pause);
+                    EXECUTE_GCODE(cmd);
+                    safe_delay(100);
+                }
+                sprintf_P(cmd, PSTR("T%d"), T01_Pause);
+                EXECUTE_GCODE(cmd);
+                safe_delay(100);
+                if(T1T_Pause > 20){
+                    sprintf_P(cmd, PSTR("M109 S%d"), T1T_Pause);
+                    EXECUTE_GCODE(cmd);
+                    safe_delay(100);
+                }
             }
-            EXECUTE_GCODE(PSTR("T0"));
-            delay(100);
-            if(lH > 0){
-                sprintf_P(cmd, PSTR("M109 S%i"), lH);
-                EXECUTE_GCODE(cmd);
-                safe_delay(100);
-        }    
-        }
-        if(lT == 1){
-            if(lH > 0){
-                sprintf_P(cmd, PSTR("M104 T0 S%i"), lH);
-                EXECUTE_GCODE(cmd);
-                safe_delay(100);
+        #else
+            if(T01_Pause == 0){
+                if(T1T_Pause > 20){
+                    sprintf_P(cmd, PSTR("M104 T1 S%d"), T1T_Pause);
+                    EXECUTE_GCODE(cmd);
+                    safe_delay(100);
+                }
+                EXECUTE_GCODE(PSTR("T0"));
+                delay(100);
+                if(T0T_Pause > 20){
+                    sprintf_P(cmd, PSTR("M109 S%d"), T0T_Pause);
+                    EXECUTE_GCODE(cmd);
+                    safe_delay(100);
+                }    
             }
-            delay(100);
-            EXECUTE_GCODE(PSTR("T1"));
-            delay(100);
-            if(lI > 0){
-                sprintf_P(cmd, PSTR("M109 S%i"), lI);
-                EXECUTE_GCODE(cmd);
-                TLDEBUG_PRINTLN(cmd);
-                safe_delay(100);
+            if(T01_Pause == 1){
+                if(T0T_Pause > 20){
+                    sprintf_P(cmd, PSTR("M104 T0 S%i"), T0T_Pause);
+                    EXECUTE_GCODE(cmd);
+                    safe_delay(100);
+                }
+                delay(100);
+                EXECUTE_GCODE(PSTR("T1"));
+                delay(100);
+                if(T1T_Pause > 0){
+                    sprintf_P(cmd, PSTR("M109 S%d"), T1T_Pause);
+                    EXECUTE_GCODE(cmd);
+                    safe_delay(100);
+                }
             }
-        }
+        #endif
 
         if(zPos_Pause > 0.0f){
-            sprintf_P(cmd, PSTR("G1 Z%f F4500"), zPos_Pause);
+            sprintf_P(cmd, PSTR("G1 Z%f F600"), zPos_Pause);
             EXECUTE_GCODE(cmd);
             safe_delay(100);
-            //TLDEBUG_PRINTLN(cmd);
         }
 
-        if(ePos_Pause > 0.0f){
+        if(ePos_Pause != 0.0f){
             sprintf_P(cmd, PSTR("G92 E%.2ff"), ePos_Pause);
             EXECUTE_GCODE(cmd);
             //TLDEBUG_PRINTLN(cmd);
-            feedrate_mm_s = feed_rate_Pause;
             safe_delay(50);
         }
+        feedrate_mm_s = feed_rate_Pause;
         
         #if EXTRUDERS > 0
         runout.reset();
         #endif
 
         EXECUTE_GCODE(PSTR("M24"));
-        //TLDEBUG_PRINTLN("M24");
         safe_delay(100);
         
         SetBusyMoving(false);
         TLPrintingStatus = 1;
     }
 }
+#endif
 
 void TLSDPrintFinished(){    
     
@@ -1338,6 +1402,8 @@ void TLSDPrintFinished(){
     TLPrintingStatus = 0;
 
     tenlog_status_update(true);
+
+    //tl_abort_finished();
 
     if(tl_TouchScreenType == 1){
         char time[10];
@@ -3016,40 +3082,40 @@ void process_command_gcode(long _tl_command[]) {
                     my_sleep(0.8);
                 }
                 #if ENABLED(TL_X)
-                else if(lS == 6){
-                    if(lT > -1 && lT < 4){
-                        if(tl_xe_atv != lT){
-                            float fEPos = current_position[E_AXIS];
-                            my_sleep(0.5);
-                            fEPos += 5.0;
-                            sprintf_P(cmd, PSTR("G1 E%2f. F400"), fEPos);
-                            TLDEBUG_PRINTLN(cmd);
-                            EXECUTE_GCODE(cmd);
-                            safe_delay(1000);
+                    else if(lS == 6){
+                        if(lT > -1 && lT < 4){
+                            if(tl_xe_atv != lT){
+                                float fEPos = current_position[E_AXIS];
+                                my_sleep(0.5);
+                                fEPos += 5.0;
+                                sprintf_P(cmd, PSTR("G1 E%2f. F400"), fEPos);
+                                TLDEBUG_PRINTLN(cmd);
+                                EXECUTE_GCODE(cmd);
+                                safe_delay(1000);
 
-                            fEPos -= 80.0;
-                            sprintf_P(cmd, PSTR("G1 E%2f. F3000"), fEPos);
-                            TLDEBUG_PRINTLN(cmd);
-                            EXECUTE_GCODE(cmd);
-                            safe_delay(2500);
-                            sprintf_P(cmd, PSTR("T%d"), lT);
-                            TLDEBUG_PRINTLN(cmd);
-                            EXECUTE_GCODE(cmd);
-                            safe_delay(1000);
+                                fEPos -= 80.0;
+                                sprintf_P(cmd, PSTR("G1 E%2f. F3000"), fEPos);
+                                TLDEBUG_PRINTLN(cmd);
+                                EXECUTE_GCODE(cmd);
+                                safe_delay(2500);
+                                sprintf_P(cmd, PSTR("T%d"), lT);
+                                TLDEBUG_PRINTLN(cmd);
+                                EXECUTE_GCODE(cmd);
+                                safe_delay(1000);
 
-                            fEPos += 60.0;
-                            sprintf_P(cmd, PSTR("G1 E%2f. F2000"), fEPos);
-                            TLDEBUG_PRINTLN(cmd);
-                            EXECUTE_GCODE(cmd);
-                            safe_delay(2000);
-                            fEPos += 25.0;
-                            sprintf_P(cmd, PSTR("G1 E%2f. 400"), fEPos);
-                            TLDEBUG_PRINTLN(cmd);
-                            EXECUTE_GCODE(cmd);
-                            safe_delay(2000);
+                                fEPos += 60.0;
+                                sprintf_P(cmd, PSTR("G1 E%2f. F2000"), fEPos);
+                                TLDEBUG_PRINTLN(cmd);
+                                EXECUTE_GCODE(cmd);
+                                safe_delay(2000);
+                                fEPos += 25.0;
+                                sprintf_P(cmd, PSTR("G1 E%2f. 400"), fEPos);
+                                TLDEBUG_PRINTLN(cmd);
+                                EXECUTE_GCODE(cmd);
+                                safe_delay(2000);
+                            }
                         }
                     }
-                }
                 #endif
                 SetBusyMoving(false);
             }else if(lM == 104 || lM == 221){
@@ -3307,12 +3373,14 @@ void process_command_gcode(long _tl_command[]) {
                 sprintf_P(cmd, PSTR("M%d %s%s%s"), lM, sS, sX, sR);
                 TLDEBUG_PRINTLN(cmd);
                 EXECUTE_GCODE(cmd);
+          #if DISABLED(TL_L)  
             }else if(lM == 1031){                
                 //pause from lcd or runout //M1031
-                TJCPauseResumePrinting(true, 0);
+                TJCPauseResumePrinting(true, false);
             }else if(lM == 1032){
                 //Resume from lcd M1032
-                TJCPauseResumePrinting(false, iFrom);
+                TJCPauseResumePrinting(false, false);
+          #endif
             }else if(lM == 1033){
                 //M1033
                 //abortSDPrinting
@@ -3543,6 +3611,40 @@ void process_command_gcode(long _tl_command[]) {
                     safe_delay(500);
                     TLSTJC_println("vOK.val=1");
                 }
+          #if ENABLED(TL_X)
+            }else if(lM == 1061){
+                //M1061 exchange_fila_length
+                exchange_fila_length  = GCodelng('S', iFrom, _tl_command);
+                EXECUTE_GCODE(PSTR("M500"));
+            }else if(lM == 1062){
+                //M1062 extra_fila_length
+                extra_fila_length  = GCodelng('S', iFrom, _tl_command);
+                EXECUTE_GCODE(PSTR("M500"));
+            }else if(lM == 1063){
+                //M1063 sweeping_times
+                sweeping_times  = GCodelng('S', iFrom, _tl_command);
+                EXECUTE_GCODE(PSTR("M500"));
+            }else if(lM == 1064){
+                //M1064 sweeping_speed
+                sweeping_speed  = GCodelng('S', iFrom, _tl_command);
+                EXECUTE_GCODE(PSTR("M500"));
+            }else if(lM == 1065){
+                //M1065 exchange_speed
+                exchange_speed  = GCodelng('S', iFrom, _tl_command);
+                EXECUTE_GCODE(PSTR("M500"));
+            }else if(lM == 1066){
+                //M1066 extra_speed
+                extra_speed  = GCodelng('S', iFrom, _tl_command);
+                EXECUTE_GCODE(PSTR("M500"));
+            }else if(lM == 1067){
+                //M1066 retract_fila_length
+                retract_fila_length  = GCodelng('S', iFrom, _tl_command);
+                EXECUTE_GCODE(PSTR("M500"));
+            }else if(lM == 1068){
+                //M1068 retract_fila_speed
+                retract_fila_speed  = GCodelng('S', iFrom, _tl_command);
+                EXECUTE_GCODE(PSTR("M500"));
+          #endif
             }else if(lM == 1560){
                 uint8_t lS = GCodelng('S', iFrom, _tl_command);
                 //M1560 update CID
@@ -4074,7 +4176,12 @@ void _outage() {
     // Save,
     if(IS_SD_PRINTING()){
         uint32_t sdPos = card.getIndex();
-        settings.plr_save(sdPos, active_extruder);
+        #if ENABLED(TL_X)
+            uint8_t T01 = tl_xe_atv;
+        #else
+            uint8_t T01 = active_extruder;
+        #endif
+        settings.plr_save(sdPos, T01);
     }
 
     if(tl_TouchScreenType == 1){
@@ -4098,12 +4205,12 @@ void plr_outage() {
         if(IS_SD_PRINTING()){
             uint32_t sdPos = card.getIndex();
             #if ENABLED(DUAL_X_CARRIAGE)
-            uint8_t _dual_x_carriage_mode = dual_x_carriage_mode;
-            float _duplicate_extruder_x_offset = duplicate_extruder_x_offset;
-            if(_duplicate_extruder_x_offset == DEFAULT_DUPLICATION_X_OFFSET) _duplicate_extruder_x_offset = 0.0;
+                uint8_t _dual_x_carriage_mode = dual_x_carriage_mode;
+                float _duplicate_extruder_x_offset = duplicate_extruder_x_offset;
+                if(_duplicate_extruder_x_offset == DEFAULT_DUPLICATION_X_OFFSET) _duplicate_extruder_x_offset = 0.0;                
             #else
-            float _duplicate_extruder_x_offset = 0.0;
-            uint8_t _dual_x_carriage_mode = 0;
+                float _duplicate_extruder_x_offset = 0.0;
+                uint8_t _dual_x_carriage_mode = 0;
             #endif
             #ifndef ELECTROMAGNETIC_VALUE
             settings.plr_pre_save(sdPos, thermalManager.degTargetBed(), thermalManager.degTargetHotend(0), thermalManager.degTargetHotend(1), _dual_x_carriage_mode, _duplicate_extruder_x_offset, uint16_t(feedrate_mm_s * 60.0f));
@@ -4246,9 +4353,9 @@ void grbl_breathe(){
 }
 
 void grbl_idle(){
-    //if(!grbl_1stconnected){
-        //grbl_breathe();
-    //}
+    if(millis() - last_laser_time > 3 && (X_ENABLE_READ() != X_ENABLE_ON) && !weakLaserOn && laser_power > 30){
+        set_pwm_hw(0, 1000);
+    }
 }
 
 void grbl_report_status(bool isIDLE){
@@ -4265,14 +4372,14 @@ void grbl_report_status(bool isIDLE){
     }else if((tl_busy_state || millis()-last_G01<100 || wait_ok) && !isIDLE){
         sprintf(m_static, "%s", "Run");
         isRun = true;
-        grbl_no_button = true;
+        //grbl_no_button = true;
     }else if(isHoming){
         sprintf(m_static, "%s", "Home");
     }else{
         sprintf(m_static, "%s", "Idle");
     }
     
-    if(millis()-last_G01<2000) grbl_no_button = true;
+    //if(millis()-last_G01<2000) grbl_no_button = true;
 
     if(isIDLE){isRun = false;}
 
@@ -4284,5 +4391,11 @@ void grbl_report_status(bool isIDLE){
     }
 }
 #endif //TL_GRBL
+
+float CalDelay(float Length, uint16_t uSpeed){
+    float dTime = Length / (float)uSpeed * 60.0;
+    dTime += 0.1;
+    return dTime;
+}
 
 #endif  //TENLOG_TOUCH_LCD

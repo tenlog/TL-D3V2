@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "046.2"
+#define TL_SUBVERSION "046.3"
 
 //update log 
 /*
@@ -81,6 +81,7 @@ Version     033
             Sub version 044
             Start Neza.. X Serial.
 20230903    TL_L TL_X..
+20230921    disabled some funcitons of TL_L 
 */
 
 //TL Medels and version
@@ -93,6 +94,7 @@ Version     033
 //#define TL_M3S
 #define TL_L5   //laser only
 //#define TL_D5
+//#define TL_D5HS
 //#define TL_D6
 //#define TL_D8     
 //#define TL_LW8   //Luminous words
@@ -205,6 +207,12 @@ Version     033
   #define X_BED_SIZE 505
   #define Y_BED_SIZE 510
   #define Z_LENGTH   610
+#elif defined(TL_D5HS)
+  #define TL_HIGH_SPEED 1
+  #define TL_MODEL_STR_0 "D5HS"
+  #define X_BED_SIZE 505
+  #define Y_BED_SIZE 510
+  #define Z_LENGTH   610
 #elif defined(TL_D8)
   #define TL_MODEL_STR_0 "D8"
   #define X_BED_SIZE 805
@@ -216,7 +224,7 @@ Version     033
   #define Y_BED_SIZE 610
   #define Z_LENGTH   610
 #elif defined(TL_L5)
-  #define TL_MODEL_STR_0 "L4"
+  #define TL_MODEL_STR_0 "L5"
   #define X_BED_SIZE 400
   #define Y_BED_SIZE 400
   #define Z_LENGTH   1
@@ -1678,9 +1686,7 @@ Version     033
  */
 
 // Min software endstops constrain movement within minimum coordinate bounds
-#if DISABLED(TL_L)
-  #define MIN_SOFTWARE_ENDSTOPS
-#endif
+#define MIN_SOFTWARE_ENDSTOPS
 #if ENABLED(MIN_SOFTWARE_ENDSTOPS)
   #define MIN_SOFTWARE_ENDSTOP_X
   #define MIN_SOFTWARE_ENDSTOP_Y
@@ -1688,9 +1694,7 @@ Version     033
 #endif
 
 // Max software endstops constrain movement within maximum coordinate bounds
-#if DISABLED(TL_L)
-  #define MAX_SOFTWARE_ENDSTOPS
-#endif
+#define MAX_SOFTWARE_ENDSTOPS
 #if ENABLED(MAX_SOFTWARE_ENDSTOPS)
   #define MAX_SOFTWARE_ENDSTOP_X
   #define MAX_SOFTWARE_ENDSTOP_Y
@@ -1714,7 +1718,9 @@ Version     033
  * RAMPS-based boards use SERVO3_PIN for the first runout sensor.
  * For other boards you may need to define FIL_RUNOUT_PIN, FIL_RUNOUT2_PIN, etc.
  */
-#define FILAMENT_RUNOUT_SENSOR
+#if DISABLED(TL_L)
+  #define FILAMENT_RUNOUT_SENSOR
+#endif
 #if ENABLED(FILAMENT_RUNOUT_SENSOR)
   #define FIL_RUNOUT_ENABLED_DEFAULT false // Enable the sensor on startup. Override with M412 followed by M500.  
   #define NUM_RUNOUT_SENSORS   1          // Number of sensors, up to one per extruder. Define a FIL_RUNOUT#_PIN for each.

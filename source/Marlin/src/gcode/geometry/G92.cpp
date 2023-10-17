@@ -68,7 +68,7 @@ void GcodeSuite::G92() {
         break;
     #endif
 
-    #if ENABLED(POWER_LOSS_RECOVERY) || ENABLED(POWER_LOSS_RECOVERY_TL)
+    #if ENABLED(POWER_LOSS_RECOVERY) || ENABLED(POWER_LOSS_RECOVERY_TL) || ENABLED(TL_L)
       case 9:                                                         // G92.9 - Set Current Position directly (like Marlin 1.0)
         LOOP_XYZE(i) {
           if (parser.seenval(axis_codes[i])) {

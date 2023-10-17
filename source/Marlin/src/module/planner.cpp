@@ -2199,12 +2199,6 @@ bool Planner::_populate_block(block_t * const block, bool split_move,
           last_xe_en[x] = xe_en[x];
         }
         xe_ena = true;
-        /*
-        #define _CASE_EN_XE(N) case N: ENABLE_STEPPER_XE##N(); break;
-        switch (tl_xe_atv) {
-          REPEAT(4, _CASE_EN_XE)
-        }
-        */
       #else
         REPEAT(EXTRUDERS, ENABLE_ONE_E); // (ENABLE_ONE_E must end with semicolon)
       #endif
@@ -2951,38 +2945,41 @@ bool Planner::buffer_line(const_float_t rx, const_float_t ry, const_float_t rz, 
     //bool setIndex = false;
 
     if (!PrintFromZHeightFound && IS_SD_PRINTING()){
+      if (lPrintZEnd == 0){
+        lPrintZEnd = card.my_filesize() - 10;
+      }
       int32_t deltaPoint = lPrintZEnd - lPrintZStart;
       float deltaZ = rz - print_from_z_target;
       uint32_t sdPos = card.getIndex();      
       
       //if ((fabs(deltaZ)>0.5 && deltaPoint > 2048) || lPrintZEnd == 0)
-      if ((fabs(deltaZ)>0.5) || lPrintZEnd == 0)
-      {        
+      if(deltaZ > 0.2 && sdPos > 100000){
+        TLDEBUG_PRINTLN("Serching 3...");
+        card.setIndex(sdPos - 100000);
+        return false;
+      }else if (deltaZ < -0.20 && deltaPoint < 200000){
+        TLDEBUG_PRINTLN("Serching 0...");
+        return false;        
+      } else if ((fabs(deltaZ)>0.5) && deltaPoint > 0){        
         //Seaching ....
         TLDEBUG_PRINTLN("Serching 1...");
         TLDEBUG_PRINTLNPAIR("1 rz:", rz);
         if(rz == 0) return false;
         bool setIndex = true;
         TLDEBUG_PRINTLN("Serching 1.1...");
-        if (lPrintZEnd == 0)
-        {
+        if (lPrintZEnd == 0) {
           lPrintZEnd = card.my_filesize() - 10;
-        }
-        else if (rz == zLast || rz == 0.0 || rz == 15.0)
-        {
+        }else if (rz == zLast || rz == 0.0 || rz == 15.0){
           return false;
           //setIndex = false;
-        }
-        else if (deltaZ > 0)
-        {
+        }else if (deltaZ > 0){
           lPrintZEnd = lPrintZMid - 10;
-        }
-        else if (deltaZ < 0)
-        {
+        }else if (deltaZ < 0){
           lPrintZStart = lPrintZMid + 10;
-        }       
+        }
         zLast = rz; 
         TLDEBUG_PRINTLN("Serching 1.2...");
+        if(lPrintZStart > lPrintZEnd) return false;
 
         if (setIndex){
           lPrintZMid = lPrintZStart + (lPrintZEnd - lPrintZStart) / 2;
@@ -3024,13 +3021,10 @@ bool Planner::buffer_line(const_float_t rx, const_float_t ry, const_float_t rz, 
         zLast = rz;
       }else if(deltaZ < 0.0 && (deltaPoint < 200000 || deltaZ > -1.0 )){
         TLDEBUG_PRINTLN("Serching 2...");
-        return false;
-      }else if(deltaZ > 0.0 && deltaZ < 0.5){
-        TLDEBUG_PRINTLN("Serching 3...");
-        card.setIndex(sdPos - 100000);
-        return false;
+        return false;      
       }else{
         TLDEBUG_PRINTLN("Serching 4...");
+        //return false;
       }
       return false;
     }else if(IS_SD_PRINTING()){

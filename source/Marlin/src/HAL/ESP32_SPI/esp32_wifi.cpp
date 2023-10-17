@@ -512,7 +512,7 @@ void WIFI_TX_Handler(int8_t control_code){
                 send[i+42]=str[i];
             }
 
-            uint8_t singleHead=0;
+            uint8_t singleHead=2;
             #ifdef SINGLE_HEAD
                 singleHead = 1;
             #elif defined(TL_X)

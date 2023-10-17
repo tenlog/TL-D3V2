@@ -162,6 +162,9 @@ void command_M1521(int8_t Status);
 void my_sleep(float time);
 void SyncFanSpeed();
 void TLTJC_GetTJCVersion();
+#if DISABLED(TL_L)
+void TJCPauseResumePrinting(bool PR, bool isRunOut);
+#endif
 
 //flash read write
 #define FLASH_READ_ADDRESS 0x00070000
@@ -267,6 +270,7 @@ extern uint8_t sd_OK;
 extern uint8_t tl_com_ID;
 extern char TJCModelNo[64];
 extern float E_Pos_read;
+float CalDelay(float Length, uint16_t uSpeed);
 
 #if ENABLED(BLTOUCH)
     #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
@@ -290,8 +294,29 @@ extern float E_Pos_read;
 #endif
 
 #if ENABLED(TL_X)
+    #define DEFAULT_EXCHANGE_FILA_LENGTH    50
+    #define DEFAULT_EXTRA_FILA_LENGTH       25
+    #define DEFAULT_RETRACT_LENGTH          8
+    #define DEFAULT_SWEEPING_TIMES          2
+    #define DEFAULT_SWEEPING_SPEED          9000
+    #define DEFAULT_EXCHANGE_SPEED          2400
+    #define DEFAULT_EXTRA_SPEED             200
+    #define DEFAULT_RETRACT_SPEED           2000
+
+    extern uint8_t old_xe_atv_0;
+    extern uint8_t old_xe_atv_1;
     extern int8_t tl_xe_atv;
     extern bool xe_ena;
+    
+    extern uint16_t exchange_fila_length;
+    extern uint16_t extra_fila_length;
+    extern uint16_t retract_fila_length;
+    extern uint16_t sweeping_times;
+
+    extern uint16_t sweeping_speed;
+    extern uint16_t exchange_speed;
+    extern uint16_t extra_speed;
+    extern uint16_t retract_fila_speed;
 #endif
 
 #endif  //TENLOG_TOUCH_LCD

@@ -1,5 +1,5 @@
 Dim Version
-Version="TL-L5V2.0.8.046.2"
+Version="TL-L5V2.0.8.046.3"
 Set fso=CreateObject("Scripting.filesystemobject")  
 SrcFile = createobject("Scripting.FileSystemObject").GetFile(Wscript.ScriptFullName).ParentFolder.Path&"\firmware.bin"  
 DstFile = "E:\user\"&Version&".bin"  
@@ -14,4 +14,4 @@ fso.CopyFile SrcFile,DstFile,True
 
 WScript.Sleep 1000
 
-msgbox "Done!"
+msgbox "Done!" 

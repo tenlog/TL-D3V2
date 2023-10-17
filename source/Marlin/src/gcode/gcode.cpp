@@ -1076,17 +1076,117 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
           my_sleep(0.10);
           EXECUTE_GCODE("G4 P100");
           my_sleep(0.10);
-          
-          tl_xe_atv = parser.codenum;
-          //char cmd[20];
-          //sprintf(cmd, "T:%d", tl_xe_atv);
-          //TLDEBUG_PRINT(cmd);
-          if(dual_x_carriage_mode>1 && tl_xe_atv>1) tl_xe_atv = 1; 
-          if(active_extruder == 1 && (tl_xe_atv == 0 || tl_xe_atv == 1)){
+                  
+          uint8_t new_atv = parser.codenum;
+
+          if(dual_x_carriage_mode>1 && new_atv>1) new_atv = 1; 
+          if(active_extruder == 1 && (new_atv == 0 || new_atv == 1)){
             T(0);
-          }else if(active_extruder == 0 && (tl_xe_atv == 2 || tl_xe_atv == 3)){
+          }else if(active_extruder == 0 && (new_atv == 2 || new_atv == 3)){
             T(1);
           }
+
+          char cmd[64];
+          uint16_t X50Speed = sweeping_speed;
+          if(X50Speed > 6000) X50Speed = 6000;
+
+          if(exchange_fila_length > 0 && IS_SD_PRINTING()){
+            if(new_atv == 0 || new_atv == 1){
+              sprintf(cmd, "G0 X-50 F%d", X50Speed);
+              EXECUTE_GCODE(cmd);
+              my_sleep(CalDelay(70.0, X50Speed));
+              if(old_xe_atv_0 != new_atv){
+                EXECUTE_GCODE("G91");
+                my_sleep(0.1);
+                
+                tl_xe_atv = old_xe_atv_0;
+                sprintf(cmd, "G1 E-%d F%d", exchange_fila_length, exchange_speed);
+                EXECUTE_GCODE(cmd);
+                my_sleep(CalDelay((float)exchange_fila_length, exchange_speed));
+                
+                tl_xe_atv = new_atv;
+                sprintf(cmd, "G1 E%d F%d", exchange_fila_length, exchange_speed);
+                EXECUTE_GCODE(cmd);
+                my_sleep(CalDelay((float)exchange_fila_length, exchange_speed));
+                if(extra_fila_length){
+                  sprintf(cmd, "G1 E%d F%d", extra_fila_length, extra_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(CalDelay((float)extra_fila_length, extra_speed));
+                  sprintf(cmd, "G1 E-%d F%d", retract_fila_length, retract_fila_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(CalDelay((float)retract_fila_length, retract_fila_speed));
+                }
+                EXECUTE_GCODE("G90");
+                my_sleep(0.1);
+              }
+              my_sleep(2.0);
+              if(sweeping_times > 0){
+                for(uint8_t u8L = 0; u8L < sweeping_times; u8L++){
+                  sprintf(cmd, "G0 X-10 F%d", sweeping_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(CalDelay(40.0, sweeping_speed));
+                  sprintf(cmd, "G0 X-50 F%d", sweeping_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(CalDelay(40.0, sweeping_speed));
+                }
+              }
+            }else if(new_atv == 2 || new_atv == 3){
+
+              float fXMax = hotend_offset[1].x;
+              sprintf(cmd, "G1 X%.2f F%d", fXMax, X50Speed);
+              EXECUTE_GCODE(cmd);
+              my_sleep(CalDelay(70.0, X50Speed));
+
+              if(old_xe_atv_1 != new_atv){
+
+                EXECUTE_GCODE("G91");
+                my_sleep(0.2);
+
+                if(old_xe_atv_1 > 1){
+                  tl_xe_atv = old_xe_atv_1;
+                  sprintf(cmd, "G1 E-%d F%d", exchange_fila_length, exchange_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(CalDelay((float)exchange_fila_length, exchange_speed));
+                }
+              
+                tl_xe_atv = new_atv;
+                sprintf(cmd, "G1 E%d F%d", exchange_fila_length, exchange_speed);
+                EXECUTE_GCODE(cmd);
+                my_sleep(CalDelay((float)exchange_fila_length, exchange_speed));
+                
+                if(extra_fila_length){
+                  sprintf(cmd, "G1 E%d F%d", extra_fila_length, extra_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(CalDelay((float)extra_fila_length, extra_speed));
+                  sprintf(cmd, "G1 E-%d F%d", retract_fila_length, retract_fila_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(CalDelay((float)retract_fila_length, retract_fila_speed));
+                }
+
+                EXECUTE_GCODE("G90");
+                my_sleep(0.2);                
+              }
+              my_sleep(2.0);
+              if(sweeping_times > 0){
+                for(uint8_t u8L = 0; u8L < sweeping_times; u8L++){
+                  sprintf(cmd, "G0 X%.2f F%d", fXMax-40.0, sweeping_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(CalDelay(40.0, sweeping_speed));
+                  sprintf(cmd, "G0 X%.2f F%d", fXMax, sweeping_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(CalDelay(40.0, sweeping_speed));
+                }
+              }
+            }
+          }
+
+          tl_xe_atv = new_atv;
+          if(new_atv == 0 || new_atv == 1){
+            old_xe_atv_0 = new_atv;
+          }else if(new_atv == 2 || new_atv == 3){
+            old_xe_atv_1 = new_atv;
+          }
+
         }
         break;
     #else
@@ -1117,10 +1217,12 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         laser_power = 0;
         set_pwm_hw(0, 1000);
         grbl_report_status();
-        my_sleep(0.1);
+        my_sleep(0.5);
         grbl_report_status();
         laser_power = 0;
         set_pwm_hw(0, 1000);
+        my_sleep(0.5);
+        grbl_report_status();
         //stop();
       break;
       case '~':

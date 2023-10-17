@@ -51,7 +51,11 @@ class MarlinSettings {
 
     #if ENABLED(POWER_LOSS_RECOVERY_TL)
       static void plr_reset();
-      static void plr_save(uint32_t FPos=0, int8_t T01=0, float ZPos=0.0);
+      #if ENABLED(TL_X)
+        static void plr_save(uint32_t FPos=0, int8_t T01=0, uint8_t old_xe_0=0, uint8_t old_xe_1=0);
+      #else
+        static void plr_save(uint32_t FPos=0, int8_t T01=0);
+      #endif
       static void plr_fn_save(int fileIndex);
       static void plr_pre_save(uint32_t lFPos = 0, int16_t iBPos = 0, int16_t iTPos0 = 0, int16_t iTPos1 = 0, int16_t i_dual_x_carriage_mode = 0, float f_duplicate_extruder_x_offset = 0.0, int16_t f_feedrate = 0);
       static uint32_t plr_is_pl();
