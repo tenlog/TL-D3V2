@@ -59,6 +59,10 @@
 #if ENABLED(TENLOG_TOUCH_LCD)
 #include "tenlog_touch_lcd.h"
 
+#if ENABLED(TL_L)
+#include "../../gcode/gcode.h"
+#endif
+
 #define TJC_BAUD    115200
 #define DWN_BAUD    115200
 
@@ -181,11 +185,12 @@ float E_Pos_read = 0;
  bool wait_ok = false;
  uint32_t last_G01 = 0;
  bool grbl_no_button = false;
+ bool grbl_laser_off=true;
 #endif
 
 #if ENABLED(TL_X)
-    uint8_t old_xe_atv_0 = 0;
-    uint8_t old_xe_atv_1 = 0;
+    int8_t old_xe_atv_0 = -1;
+    int8_t old_xe_atv_1 = -1;
     int8_t tl_xe_atv=0;
     bool xe_ena = false;
 
@@ -1079,18 +1084,16 @@ void tlAbortPrinting(){
         
         IF_DISABLED(NO_SD_AUTOSTART, card.autofile_cancel());
         card.endFilePrint(TERN_(SD_RESORT, true));
-
+        my_sleep(0.5);
         queue.clear();
         quickstop_stepper();
+        my_sleep(0.5);
         #if EXTRUDERS > 0
             print_job_timer.abort();
         #endif
         
         #if ENABLED(TL_L)
             set_pwm_hw(0, 1000);
-            //endstops.enable(true);
-            //queue.inject_P(PSTR("G28 X"));
-            //queue.enqueue_one_now(PSTR("G4 P10"));
             queue.enqueue_one_now(PSTR("M84"));
             queue.enqueue_one_now(PSTR("G4 P1"));
             queue.enqueue_one_now(PSTR("G4 P1"));
@@ -1098,14 +1101,40 @@ void tlAbortPrinting(){
             set_pwm_hw(0, 1000);
         #else
             #if ENABLED(TL_X)
-                my_sleep(3.0);
+                /*
+                quickstop_stepper();
+                my_sleep(0.1);
+                EXECUTE_GCODE("G4 P100");
+                my_sleep(0.1);
+                EXECUTE_GCODE("G4 P100");
+                my_sleep(0.1);
+                EXECUTE_GCODE("G4 P100");
+                my_sleep(0.1);
+                EXECUTE_GCODE("G4 P100");
+                my_sleep(0.1);
+                EXECUTE_GCODE("G4 P100");
+                my_sleep(0.1);
                 EXECUTE_GCODE("G91");
+                my_sleep(0.1);
                 EXECUTE_GCODE("G1 E-55 F2000");
-                my_sleep(4.0);
+                my_sleep(1.0);
+                if(thermalManager.degTargetHotend(1) > 180 &&  (tl_xe_atv == 0 || tl_xe_atv == 1)){
+                    sprintf(cmd, "T%d", old_xe_atv_1);
+                    EXECUTE_GCODE(cmd);
+                    my_sleep(0.1);
+                    EXECUTE_GCODE("G1 E-55 F2000");
+                    my_sleep(1.0);
+                }else if(thermalManager.degTargetHotend(0) > 180 &&  (tl_xe_atv == 2 || tl_xe_atv == 3)){
+                    sprintf(cmd, "T%d", old_xe_atv_0);
+                    EXECUTE_GCODE(cmd);
+                    my_sleep(0.1);
+                    EXECUTE_GCODE("G1 E-55 F2000");
+                    my_sleep(1.0);
+                }
                 EXECUTE_GCODE("G90");
+                */
             #endif
             EXECUTE_GCODE("M106 S0");
-
             queue.inject_P(PSTR("G28 XY"));
             queue.enqueue_one_now(PSTR("G92 Y0"));
             queue.enqueue_one_now(PSTR("M84"));
@@ -1287,7 +1316,7 @@ void TJCPauseResumePrinting(bool PR, bool isRunOut){
             if(dual_x_carriage_mode >= DXC_DUPLICATION_MODE){
                 EXECUTE_GCODE("G28 X");
                 safe_delay(100);
-                my_sleep(2.5);
+                my_sleep(0.5);
             }
         #endif
 
@@ -1391,7 +1420,7 @@ void TLSDPrintFinished(){
     #if ENABLED(HWPWM)
     set_pwm_hw(0, 1000);
     #endif
-    my_sleep(1.5);
+    my_sleep(0.5);
 
     unsigned long stoptime = millis();
     long t = (stoptime - startPrintTime) / 1000;
@@ -4232,11 +4261,13 @@ void plr_setup() {
 #endif //POWER_LOSS_RECOVERY_TL
 
 void my_sleep(float time){
-    uint32_t start_time = millis();
-    while(millis() - start_time < time * 1000){
-        idle();
-        planner.synchronize();          // Wait for planner moves to finish!
-    } 
+    safe_delay((uint32_t)(time * 1000.0));
+    planner.synchronize(); 
+    //uint32_t start_time = millis();
+    //while(millis() - start_time < (uint32_t)(time * 1000.0)){
+    //    planner.synchronize();          // Wait for planner moves to finish!
+    //    idle();
+    //} 
 }
 
 uint8_t TLTJC_GetLastPage(){
@@ -4353,8 +4384,11 @@ void grbl_breathe(){
 }
 
 void grbl_idle(){
-    if(millis() - last_laser_time > 3 && (X_ENABLE_READ() != X_ENABLE_ON) && !weakLaserOn && laser_power > 30){
-        set_pwm_hw(0, 1000);
+    if(millis() - last_laser_time > 3 && (X_ENABLE_READ() != X_ENABLE_ON) && !weakLaserOn && !grbl_laser_off){
+        set_pwm_hw(0,1000);
+        laser_power = 0;
+        grbl_laser_off = true;
+        EXECUTE_GCODE("M5");
     }
 }
 

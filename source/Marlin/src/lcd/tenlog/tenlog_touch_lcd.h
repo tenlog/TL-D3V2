@@ -291,6 +291,7 @@ float CalDelay(float Length, uint16_t uSpeed);
     extern bool wait_ok;
     extern uint32_t last_G01;
     extern bool grbl_no_button;
+    extern bool grbl_laser_off;
 #endif
 
 #if ENABLED(TL_X)
@@ -303,8 +304,8 @@ float CalDelay(float Length, uint16_t uSpeed);
     #define DEFAULT_EXTRA_SPEED             200
     #define DEFAULT_RETRACT_SPEED           2000
 
-    extern uint8_t old_xe_atv_0;
-    extern uint8_t old_xe_atv_1;
+    extern int8_t old_xe_atv_0;
+    extern int8_t old_xe_atv_1;
     extern int8_t tl_xe_atv;
     extern bool xe_ena;
     

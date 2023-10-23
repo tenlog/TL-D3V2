@@ -32,6 +32,9 @@
 #include "../../HAL/PWM/pwm.h"
 #endif
 
+#if ENABLED(TL_GRBL)
+#include "../../lcd/tenlog/tenlog_touch_lcd.h"
+#endif
 
 /**
  * Laser:
@@ -72,10 +75,13 @@
  */
 void GcodeSuite::M3_M4(const bool is_M4) {
   auto get_s_power = [] {
+    #if ENABLED(TL_GRBL)
+      last_G01 = millis();
+      grbl_laser_off = false;
+    #endif
     if (parser.seenval('S')) {
       const float spwr = parser.value_float();
       TERN_(TL_L, LaserPowerG1 = spwr);
-      TERN_(TL_GRBL, last_G01 = millis());
       #if ENABLED(SPINDLE_SERVO)
         cutter.unitPower = spwr;
       #else
@@ -83,9 +89,9 @@ void GcodeSuite::M3_M4(const bool is_M4) {
                               cutter.power_to_range(cutter_power_t(round(spwr))),
                               spwr > 0 ? 255 : 0);
       #endif
-    }
-    else
+    }else{
       cutter.unitPower = cutter.cpwr_to_upwr(SPEED_POWER_STARTUP);
+    }
     return cutter.unitPower;
   };
 

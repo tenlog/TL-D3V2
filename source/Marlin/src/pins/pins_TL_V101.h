@@ -141,6 +141,19 @@
 //
 // Steppers
 //
+
+#ifdef TMC_USE_SW_SPI
+  #define X_CS_PIN          PA9
+  #define Y_CS_PIN          PA8
+  #define Z_CS_PIN          PB15
+  #define X2_CS_PIN         PB14
+  #define Z2_CS_PIN         PC6
+
+  #define TMC_SW_MOSI       PC7
+  #define TMC_SW_MISO       PB12
+  #define TMC_SW_SCK        PB13
+#endif
+
 #if defined(TL_STEPTEST)
 #define X_ENABLE_PIN       PB8
 #define XX_ENABLE_PIN      PB2
@@ -200,6 +213,8 @@
   #define E1_DIR_PIN         PB5
 #endif
 
+
+//FANS
 #ifdef ELECTROMAGNETIC_VALUE
   #define ELECTROMAGNETIC_VALUE_ON            1
   #define ELECTROMAGNETIC_VALUE_OFF           0

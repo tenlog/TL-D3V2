@@ -82,6 +82,7 @@ Version     033
             Start Neza.. X Serial.
 20230903    TL_L TL_X..
 20230921    disabled some funcitons of TL_L 
+20231023    try TMC2130 spi
 */
 
 //TL Medels and version
@@ -92,7 +93,7 @@ Version     033
 //#define TL_S3   //single head
 //#define TL_M3
 //#define TL_M3S
-#define TL_L5   //laser only
+//#define TL_L5   //laser only
 //#define TL_D5
 //#define TL_D5HS
 //#define TL_D6
@@ -100,9 +101,9 @@ Version     033
 //#define TL_LW8   //Luminous words
 //#define TL_LW3   //
 //#define TL_X3    //
-//#define TL_X2    //Neza
+#define TL_X2    //Neza
 
-//#define TL_DEBUG    //debug
+#define TL_DEBUG    //debug
 //#define DUAL_HEAD_BLTOUCH
 
 #if ANY(TL_LW8, TL_LW3)
@@ -117,12 +118,13 @@ Version     033
   #define TL_S
 #endif
 
-#ifdef TL_L5
+#if ENABLED(TL_L5)
   #define TL_L
 #endif
 
-#ifdef TL_X
+#if ENABLED(TL_X)
   #define XEN_IIC
+  //#define TL_2130
 #endif
 
 //Headers
@@ -1100,16 +1102,25 @@ Version     033
  *          TMC5130, TMC5130_STANDALONE, TMC5160, TMC5160_STANDALONE
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'L6470', 'L6474', 'POWERSTEP01', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC2209', 'TMC2209_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
-#define X_DRIVER_TYPE  TMC2209_STANDALONE
-#if X_BED_SIZE > 480
-#define Y_DRIVER_TYPE  TB6600
+#if ENABLED(TL_2130)
+  #define X_DRIVER_TYPE  TMC2130
+  #define X2_DRIVER_TYPE TMC2130
+  #define Y_DRIVER_TYPE  TMC2130
+  #define Z_DRIVER_TYPE  TMC2130
+  #define Z2_DRIVER_TYPE TMC2130
 #else
-#define Y_DRIVER_TYPE  TMC2209_STANDALONE
+  #define X_DRIVER_TYPE  TMC2209_STANDALONE
+  #define X2_DRIVER_TYPE TMC2209_STANDALONE
+  #if X_BED_SIZE > 480
+    #define Y_DRIVER_TYPE  TB6600
+  #else
+    #define Y_DRIVER_TYPE  TMC2209_STANDALONE
+  #endif
+
+  #define Z_DRIVER_TYPE  TMC2209_STANDALONE
+  #define Z2_DRIVER_TYPE TMC2209_STANDALONE
 #endif
-#define Z_DRIVER_TYPE  TMC2209_STANDALONE
-#define X2_DRIVER_TYPE TMC2209_STANDALONE
 //#define Y2_DRIVER_TYPE TMC2208
-#define Z2_DRIVER_TYPE TMC2209_STANDALONE
 //#define Z3_DRIVER_TYPE TMC2208
 //#define Z4_DRIVER_TYPE TMC2208
 #define E0_DRIVER_TYPE TMC2209_STANDALONE
@@ -1184,7 +1195,7 @@ Version     033
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
 #if TL_HIGH_SPEED
-#define DEFAULT_MAX_FEEDRATE          { 500, 500, 10, 30 }
+#define DEFAULT_MAX_FEEDRATE          { 500, 500, 15, 50 }
 #else
 #define DEFAULT_MAX_FEEDRATE          { 400, 400, 5, 25 }
 #endif

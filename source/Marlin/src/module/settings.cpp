@@ -4294,8 +4294,10 @@ void MarlinSettings::reset() {
       if(FPos > 2048){
         PLR_EEPROM_WRITE(FPos);
         PLR_EEPROM_WRITE(T01);
+        #if ENABLED(TL_X)
         PLR_EEPROM_WRITE(old_xe_0);
         PLR_EEPROM_WRITE(old_xe_1);
+        #endif
       }
     }
 
@@ -4365,8 +4367,10 @@ void MarlinSettings::reset() {
       int16_t iFan = 255;
       float fZPos = 0;
 
-      uint8_t old_xe_0 = 0;
-      uint8_t old_xe_1 = 0;
+      #if ENABLED(TL_X)
+      int8_t old_xe_0 = 0;
+      int8_t old_xe_1 = 0;
+      #endif
       //float fEPos = 0;
 
       PLR_EEPROM_START(PLR_PRE_EEPROM_OFFSET);

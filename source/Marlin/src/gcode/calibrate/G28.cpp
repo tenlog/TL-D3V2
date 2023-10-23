@@ -534,7 +534,7 @@ void GcodeSuite::G28() {
       EXECUTE_GCODE("T0");
       my_sleep(0.5);
       EXECUTE_GCODE("G1 X0.0 F3600");
-      my_sleep(1.0);
+      my_sleep(0.5);
     }
     #endif
 
@@ -546,7 +546,7 @@ void GcodeSuite::G28() {
     #if BOTH(PRINT_FROM_Z_HEIGHT, SDSUPPORT)
     if(!b_temp_PrintFromZHeightFound){
       EXECUTE_GCODE("G92.9 Z0.0");
-      my_sleep(1.0);
+      my_sleep(0.5);
     }
     PrintFromZHeightFound = b_temp_PrintFromZHeightFound;
     #endif

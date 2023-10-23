@@ -2945,53 +2945,79 @@ bool Planner::buffer_line(const_float_t rx, const_float_t ry, const_float_t rz, 
     //bool setIndex = false;
 
     if (!PrintFromZHeightFound && IS_SD_PRINTING()){
+      //static uint8_t last_serching;
+      static uint32_t size_fw;
       if (lPrintZEnd == 0){
         lPrintZEnd = card.my_filesize() - 10;
+        size_fw = lPrintZEnd / 100;
       }
+      uint32_t sdPos = card.getIndex();
+
       int32_t deltaPoint = lPrintZEnd - lPrintZStart;
       float deltaZ = rz - print_from_z_target;
-      uint32_t sdPos = card.getIndex();      
-      
-      //if ((fabs(deltaZ)>0.5 && deltaPoint > 2048) || lPrintZEnd == 0)
-      if(deltaZ > 0.2 && sdPos > 100000){
-        TLDEBUG_PRINTLN("Serching 3...");
-        card.setIndex(sdPos - 100000);
-        return false;
-      }else if (deltaZ < -0.20 && deltaPoint < 200000){
-        TLDEBUG_PRINTLN("Serching 0...");
-        return false;        
-      } else if ((fabs(deltaZ)>0.5) && deltaPoint > 0){        
-        //Seaching ....
+      //if(size_fw > deltaPoint) size_fw = deltaPoint;
+      if(size_fw < 50000) size_fw = 50000;
+
+      lPrintZMid = lPrintZStart + (lPrintZEnd - lPrintZStart) / 2;
+
+      TLDEBUG_PRINTLNPAIR("rz:", rz);
+      TLDEBUG_PRINTLNPAIR("print_from_z_target:", print_from_z_target);
+      TLDEBUG_PRINTLNPAIR("deltaZ:", deltaZ);
+      TLDEBUG_PRINTLNPAIR("lPrintZStart:", lPrintZStart);
+      TLDEBUG_PRINTLNPAIR("lPrintZEnd:", lPrintZEnd);
+      TLDEBUG_PRINTLNPAIR("deltaPoint:", deltaPoint);
+
+      static float zNewFW;
+      if (deltaZ < -0.20 && deltaPoint < size_fw){
+        //if(last_serching != 1) 
         TLDEBUG_PRINTLN("Serching 1...");
+        //sdPos+=20;
+        //card.setIndex(sdPos);
+        lPrintZStart = sdPos;
+        zLast = rz;
+        return false;
+      }else if(deltaZ > 0.2 && sdPos > size_fw && deltaPoint < size_fw && lPrintZEnd > lPrintZStart){
+        if(zNewFW == rz) {
+          TLDEBUG_PRINTLN("Serching 0...0"); 
+          TLDEBUG_PRINTLNPAIR("zNewFW:", zNewFW);
+          //sdPos+=20;
+          //card.setIndex(sdPos);
+          zNewFW = rz;
+          lPrintZStart = sdPos;
+          return false;
+        }
+        TLDEBUG_PRINTLN("Serching 0...1"); 
+        TLDEBUG_PRINTLNPAIR("zNewFW:", zNewFW);
+        sdPos-=size_fw;
+        card.setIndex(sdPos);
+        lPrintZStart = sdPos;
+        zNewFW = rz;
+        //zNewFW = 0;
+        return false;
+      } else if ((fabs(deltaZ)>0.5) && deltaPoint > size_fw){        
+        //Seaching ....
+        TLDEBUG_PRINTLN("Serching 2...");
         TLDEBUG_PRINTLNPAIR("1 rz:", rz);
         if(rz == 0) return false;
         bool setIndex = true;
-        TLDEBUG_PRINTLN("Serching 1.1...");
+        TLDEBUG_PRINTLN("Serching 2.1...");
         if (lPrintZEnd == 0) {
           lPrintZEnd = card.my_filesize() - 10;
         }else if (rz == zLast || rz == 0.0 || rz == 15.0){
           return false;
-          //setIndex = false;
         }else if (deltaZ > 0){
           lPrintZEnd = lPrintZMid - 10;
         }else if (deltaZ < 0){
           lPrintZStart = lPrintZMid + 10;
         }
         zLast = rz; 
-        TLDEBUG_PRINTLN("Serching 1.2...");
+        TLDEBUG_PRINTLN("Serching 2.2...");
         if(lPrintZStart > lPrintZEnd) return false;
 
         if (setIndex){
           lPrintZMid = lPrintZStart + (lPrintZEnd - lPrintZStart) / 2;
           PrintFromZHeightFound = false;
-          card.setIndex(lPrintZMid);
-          
-          TLDEBUG_PRINTLNPAIR("1 rz:", rz);
-          TLDEBUG_PRINTLNPAIR("1 print_from_z_target:", print_from_z_target);
-          TLDEBUG_PRINTLNPAIR("1 lPrintZStart:", lPrintZStart);
-          TLDEBUG_PRINTLNPAIR("1 lPrintZEnd:", lPrintZEnd);
-          TLDEBUG_PRINTLNPAIR("1 lPrintZMid:", lPrintZMid);
-          
+          card.setIndex(lPrintZMid);          
         }
       }else if(fabs(deltaZ) < 0.2){
         //found!
@@ -3018,14 +3044,14 @@ bool Planner::buffer_line(const_float_t rx, const_float_t ry, const_float_t rz, 
         TLDEBUG_PRINTLNPAIR("FF lPrintZMid:", lPrintZMid);
         TLDEBUG_PRINTLNPAIR("FF rz:", rz);
         
-        zLast = rz;
-      }else if(deltaZ < 0.0 && (deltaPoint < 200000 || deltaZ > -1.0 )){
-        TLDEBUG_PRINTLN("Serching 2...");
-        return false;      
+        zLast = rz;      
       }else{
-        TLDEBUG_PRINTLN("Serching 4...");
-        //return false;
+        lPrintZStart = sdPos;
+        TLDEBUG_PRINTLN("Serching 3...");
+        zLast = rz;
+        return false;
       }
+      zLast = rz;
       return false;
     }else if(IS_SD_PRINTING()){
       if(rz < zLast && zLast > 0){

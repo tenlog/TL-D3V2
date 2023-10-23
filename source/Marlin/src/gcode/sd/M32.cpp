@@ -55,6 +55,10 @@ void GcodeSuite::M32() {
     #endif
 
     if (parser.seenval('S')) card.setIndex(parser.value_long());
+    #if ENABLED(TL_X)
+      old_xe_atv_0 = -1;
+      old_xe_atv_1 = -1;
+    #endif
     card.startFileprint();
     TERN_(TENLOG_TOUCH_LCD, startPrintTime=millis());
 

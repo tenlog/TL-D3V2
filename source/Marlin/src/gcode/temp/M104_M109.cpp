@@ -48,9 +48,10 @@
   #include "../../module/tool_change.h"
 #endif
 
-//#if ENABLED(TENLOG_TOUCH_LCD)
-//  #include "../../lcd/tenlog/tenlog_touch_lcd.h"
-//#endif
+#if BOTH(TENLOG_TOUCH_LCD, TL_X)
+  #include "../../lcd/tenlog/tenlog_touch_lcd.h"
+  #include "../../sd/cardreader.h"
+#endif
 
 /**
  * M104: Set Hotend Temperature target and return immediately
@@ -101,7 +102,13 @@ void GcodeSuite::M104() {
     if (got_temp) temp = parser.value_celsius();
   }
 
-  if (got_temp) {
+  #if ENABLED(TL_X)
+    if(got_temp && IS_SD_PRINTING() && temp==0){
+      got_temp = false;
+    }
+  #endif
+
+  if (got_temp) {    
     #if ENABLED(SINGLENOZZLE_STANDBY_TEMP)
       thermalManager.singlenozzle_temp[target_extruder] = temp;
       if (target_extruder != active_extruder) return;

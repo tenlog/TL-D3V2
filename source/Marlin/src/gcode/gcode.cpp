@@ -77,6 +77,11 @@ GcodeSuite gcode;
 #include "../HAL/PWM/pwm.h"
 #endif
 
+#if ENABLED(TL_X)
+  #include "../../module/temperature.h"
+#endif
+
+
 #include "../MarlinCore.h" // for idle, kill
 
 // Inactivity shutdown
@@ -1091,43 +1096,126 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
           if(X50Speed > 6000) X50Speed = 6000;
 
           if(exchange_fila_length > 0 && IS_SD_PRINTING()){
+            //1st T after start printing
+            if(old_xe_atv_0 == -1){
+              if(new_atv == 0 || new_atv == 1){
+                if(thermalManager.degHotend(0) < 180.0){
+                  EXECUTE_GCODE("M109 T0 S200");
+                  my_sleep(0.1);
+                }
+                EXECUTE_GCODE("G91");
+                my_sleep(0.1);
+                for(int i=0; i<2; i++){
+                  tl_xe_atv = i;
+                  sprintf(cmd, "G1 E%d F%d", retract_fila_length, extra_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(0.1);
+                  sprintf(cmd, "G1 E-%d F%d", exchange_fila_length, exchange_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(0.2);
+                }
+
+                for(int i=1; i>-1; i--){
+                  tl_xe_atv = i;
+                  sprintf(cmd, "G1 E%d F%d", exchange_fila_length, exchange_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(0.2);
+                  sprintf(cmd, "G1 E%d F%d", exchange_fila_length, extra_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(0.2);
+                  sprintf(cmd, "G1 E%d F%d", extra_fila_length, extra_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(0.2);
+                  sprintf(cmd, "G1 E-%d F%d", exchange_fila_length, exchange_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(0.2);
+                }
+                //old_xe_atv_0 = 0;
+              }
+            }
+
+            if(old_xe_atv_1 == -1){
+              if(new_atv == 2 || new_atv == 3){
+                if(thermalManager.degHotend(1) < 180.0){
+                  EXECUTE_GCODE("M109 T2 S200");
+                  my_sleep(0.1);
+                }
+
+                EXECUTE_GCODE("G91");
+                my_sleep(0.1);
+
+                for(int i=2; i<4; i++){
+                  tl_xe_atv = i;
+                  sprintf(cmd, "G1 E%d F%d", retract_fila_length, extra_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(0.1);
+                  sprintf(cmd, "G1 E-%d F%d", exchange_fila_length, exchange_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(0.2);
+                }
+
+                for(int i=3; i>1; i--){
+                  tl_xe_atv = i;
+                  sprintf(cmd, "G1 E%d F%d", exchange_fila_length, exchange_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(0.2);
+                  sprintf(cmd, "G1 E%d F%d", exchange_fila_length, extra_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(0.2);
+                  sprintf(cmd, "G1 E%d F%d", extra_fila_length, extra_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(0.2);
+                  sprintf(cmd, "G1 E-%d F%d", exchange_fila_length, exchange_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(0.2);
+                }
+                //old_xe_atv_1 = 2;
+              }
+            }
+
             if(new_atv == 0 || new_atv == 1){
-              sprintf(cmd, "G0 X-50 F%d", X50Speed);
-              EXECUTE_GCODE(cmd);
-              my_sleep(CalDelay(70.0, X50Speed));
+              if(old_xe_atv_0 != -1){
+                sprintf(cmd, "G0 X-50 F%d", X50Speed);
+                EXECUTE_GCODE(cmd);
+                my_sleep(0.1);
+              }
               if(old_xe_atv_0 != new_atv){
                 EXECUTE_GCODE("G91");
                 my_sleep(0.1);
-                
                 tl_xe_atv = old_xe_atv_0;
+
+                sprintf(cmd, "G1 E%d F%d", retract_fila_length, extra_speed);
+                EXECUTE_GCODE(cmd);
+                my_sleep(0.1);
+                
                 sprintf(cmd, "G1 E-%d F%d", exchange_fila_length, exchange_speed);
                 EXECUTE_GCODE(cmd);
-                my_sleep(CalDelay((float)exchange_fila_length, exchange_speed));
+                my_sleep(0.2);
                 
                 tl_xe_atv = new_atv;
                 sprintf(cmd, "G1 E%d F%d", exchange_fila_length, exchange_speed);
                 EXECUTE_GCODE(cmd);
-                my_sleep(CalDelay((float)exchange_fila_length, exchange_speed));
+                my_sleep(1.0);
                 if(extra_fila_length){
                   sprintf(cmd, "G1 E%d F%d", extra_fila_length, extra_speed);
                   EXECUTE_GCODE(cmd);
-                  my_sleep(CalDelay((float)extra_fila_length, extra_speed));
+                  my_sleep(1.0);
                   sprintf(cmd, "G1 E-%d F%d", retract_fila_length, retract_fila_speed);
                   EXECUTE_GCODE(cmd);
-                  my_sleep(CalDelay((float)retract_fila_length, retract_fila_speed));
+                  my_sleep(0.1);
                 }
                 EXECUTE_GCODE("G90");
                 my_sleep(0.1);
               }
-              my_sleep(2.0);
-              if(sweeping_times > 0){
+              my_sleep(1.0);
+              if(sweeping_times > 0 && old_xe_atv_0 != -1){
                 for(uint8_t u8L = 0; u8L < sweeping_times; u8L++){
                   sprintf(cmd, "G0 X-10 F%d", sweeping_speed);
                   EXECUTE_GCODE(cmd);
-                  my_sleep(CalDelay(40.0, sweeping_speed));
+                  my_sleep(0.1);
                   sprintf(cmd, "G0 X-50 F%d", sweeping_speed);
                   EXECUTE_GCODE(cmd);
-                  my_sleep(CalDelay(40.0, sweeping_speed));
+                  my_sleep(0.1);
                 }
               }
             }else if(new_atv == 2 || new_atv == 3){
@@ -1135,46 +1223,52 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
               float fXMax = hotend_offset[1].x;
               sprintf(cmd, "G1 X%.2f F%d", fXMax, X50Speed);
               EXECUTE_GCODE(cmd);
-              my_sleep(CalDelay(70.0, X50Speed));
+              my_sleep(0.5);
 
               if(old_xe_atv_1 != new_atv){
 
                 EXECUTE_GCODE("G91");
-                my_sleep(0.2);
+                my_sleep(0.1);
 
                 if(old_xe_atv_1 > 1){
                   tl_xe_atv = old_xe_atv_1;
+                  sprintf(cmd, "G1 E%d F%d", retract_fila_length, extra_speed);
+                  EXECUTE_GCODE(cmd);
+                  my_sleep(0.1);
+                  
                   sprintf(cmd, "G1 E-%d F%d", exchange_fila_length, exchange_speed);
                   EXECUTE_GCODE(cmd);
-                  my_sleep(CalDelay((float)exchange_fila_length, exchange_speed));
+                  my_sleep(0.2);
                 }
               
                 tl_xe_atv = new_atv;
                 sprintf(cmd, "G1 E%d F%d", exchange_fila_length, exchange_speed);
                 EXECUTE_GCODE(cmd);
-                my_sleep(CalDelay((float)exchange_fila_length, exchange_speed));
+                my_sleep(0.2);
                 
                 if(extra_fila_length){
                   sprintf(cmd, "G1 E%d F%d", extra_fila_length, extra_speed);
                   EXECUTE_GCODE(cmd);
-                  my_sleep(CalDelay((float)extra_fila_length, extra_speed));
+                  my_sleep(0.2);
                   sprintf(cmd, "G1 E-%d F%d", retract_fila_length, retract_fila_speed);
                   EXECUTE_GCODE(cmd);
-                  my_sleep(CalDelay((float)retract_fila_length, retract_fila_speed));
+                  my_sleep(0.1);
                 }
 
                 EXECUTE_GCODE("G90");
-                my_sleep(0.2);                
+                my_sleep(0.1);                
               }
-              my_sleep(2.0);
+              my_sleep(1.0);
               if(sweeping_times > 0){
                 for(uint8_t u8L = 0; u8L < sweeping_times; u8L++){
                   sprintf(cmd, "G0 X%.2f F%d", fXMax-40.0, sweeping_speed);
                   EXECUTE_GCODE(cmd);
-                  my_sleep(CalDelay(40.0, sweeping_speed));
+                  my_sleep(0.1);
+                  //my_sleep(CalDelay(40.0, sweeping_speed));
                   sprintf(cmd, "G0 X%.2f F%d", fXMax, sweeping_speed);
                   EXECUTE_GCODE(cmd);
-                  my_sleep(CalDelay(40.0, sweeping_speed));
+                  my_sleep(0.1);
+                  //my_sleep(CalDelay(40.0, sweeping_speed));
                 }
               }
             }
