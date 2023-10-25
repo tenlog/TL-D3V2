@@ -1120,15 +1120,15 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
                   sprintf(cmd, "G1 E%d F%d", exchange_fila_length, exchange_speed);
                   EXECUTE_GCODE(cmd);
                   my_sleep(0.2);
-                  sprintf(cmd, "G1 E%d F%d", exchange_fila_length, extra_speed);
+                  sprintf(cmd, "G1 E%f F%d", (float)exchange_fila_length * 0.5, extra_speed);
                   EXECUTE_GCODE(cmd);
                   my_sleep(0.2);
-                  sprintf(cmd, "G1 E%d F%d", extra_fila_length, extra_speed);
+                  sprintf(cmd, "G1 E%d F%d", extra_fila_length * 0.5, extra_speed);
                   EXECUTE_GCODE(cmd);
                   my_sleep(0.2);
                   sprintf(cmd, "G1 E-%d F%d", exchange_fila_length, exchange_speed);
                   EXECUTE_GCODE(cmd);
-                  my_sleep(0.2);
+                  my_sleep(1.5);
                 }
                 //old_xe_atv_0 = 0;
               }
@@ -1159,15 +1159,15 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
                   sprintf(cmd, "G1 E%d F%d", exchange_fila_length, exchange_speed);
                   EXECUTE_GCODE(cmd);
                   my_sleep(0.2);
-                  sprintf(cmd, "G1 E%d F%d", exchange_fila_length, extra_speed);
+                  sprintf(cmd, "G1 E%f F%d", (float)exchange_fila_length * 0.5, extra_speed);
                   EXECUTE_GCODE(cmd);
                   my_sleep(0.2);
-                  sprintf(cmd, "G1 E%d F%d", extra_fila_length, extra_speed);
+                  sprintf(cmd, "G1 E%d F%d", extra_fila_length * 0.5, extra_speed);
                   EXECUTE_GCODE(cmd);
                   my_sleep(0.2);
                   sprintf(cmd, "G1 E-%d F%d", exchange_fila_length, exchange_speed);
                   EXECUTE_GCODE(cmd);
-                  my_sleep(0.2);
+                  my_sleep(1.5);
                 }
                 //old_xe_atv_1 = 2;
               }

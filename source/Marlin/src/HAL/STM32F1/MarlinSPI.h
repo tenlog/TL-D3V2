@@ -21,7 +21,7 @@
  */
 #pragma once
 
-#include <SPI.h>
+#include "../SPI/HW_SPI.h"
 
 /**
  * Marlin currently requires 3 SPI classes:
@@ -42,4 +42,4 @@
  *
  */
 
-using MarlinSPI = SPIClass;
+//using MarlinSPI = SPIClass;

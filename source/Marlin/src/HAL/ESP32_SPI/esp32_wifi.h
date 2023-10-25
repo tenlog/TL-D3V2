@@ -60,7 +60,6 @@
 #define BUFFER_SIZE 1024
 #define WIFI_MSG_LENGTH BUFFER_SIZE-4
 #define WIFI_FILE_DATA_LENGTH WIFI_MSG_LENGTH-4
-#define ESP_SPI_CLK_DIV SpiClkDiv16
 
 extern char wifi_ssid[20];
 extern char wifi_pswd[20];
@@ -89,52 +88,12 @@ extern uint32_t resend_file_block_id;
 
 #define HEAD_OK(a)	(a[0]==0xFF && a[1]==0xFF)
 
-/* SPI_SCK Port/Pin definition */
-#define SPI1_SCK_PORT                    (PortA)
-#define SPI1_SCK_PIN                     (Pin06)
-#define SPI1_SCK_FUNC                    (Func_Spi1_Sck)
-
-/* SPI_NSS Port/Pin definition */
-#define SPI1_NSS_PORT                    (PortB)
-#define SPI1_NSS_PIN                     (Pin01)
-#define SPI1_NSS_HIGH()                  (PORT_SetBits(SPI1_NSS_PORT, SPI1_NSS_PIN))
-#define SPI1_NSS_LOW()                   (PORT_ResetBits(SPI1_NSS_PORT, SPI1_NSS_PIN))
-
-/* SPI_MOSI Port/Pin definition */
-#define SPI1_MOSI_PORT                   (PortA)
-#define SPI1_MOSI_PIN                    (Pin07)
-#define SPI1_MOSI_FUNC                   (Func_Spi1_Mosi)
-
-/* SPI_MISO Port/Pin definition */
-#define SPI1_MISO_PORT                   (PortB)
-#define SPI1_MISO_PIN                    (Pin00)
-#define SPI1_MISO_FUNC                   (Func_Spi1_Miso)
-
-/* SPI unit and clock definition */
-#define SPI1_UNIT                        (M4_SPI1)
-#define SPI1_UNIT_CLOCK                  (PWC_FCG1_PERIPH_SPI1)
-
-//spi DMA
-//#define SPI_DMA_UNIT                     (M4_DMA2)
-//#define SPI_DMA_CLOCK_UNIT               (PWC_FCG0_PERIPH_DMA1)
-//#define SPI_DMA_TX_CHANNEL               (DmaCh0)
-//#define SPI_DMA_TX_TRIG_SOURCE           (EVT_SPI1_SPII)//(EVT_SPI1_SPTI)     
-
-void WIFI_InitGPIO(void);
-void WIFI_InitSPI1(void);
-uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data);
-
 void WIFI_Init(void);
 void SPI_ConnectWIFI();
 void SPI_RestartWIFI();
 void SPI_resent_wifi_info();
 
 void WIFI_TX_Handler(int8_t control_code);
-
-//uint8_t get_control_code();
-//void get_data_code(uint8_t control_code);
-
-//void WIFI_InitDMA(void);
 
 void wifiResetEEPROM();
 #endif

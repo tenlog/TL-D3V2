@@ -31,6 +31,7 @@
 #ifdef ESP32_WIFI
 #include "esp32_wifi.h"
 
+#include "../SPI/HW_SPI.h"
 
 char wifi_ssid[20] = WIFI_DEFAULT_SSID;
 char wifi_pswd[20] = WIFI_DEFAULT_PSWD;
@@ -62,140 +63,6 @@ uint8_t upload_file_data1[WIFI_FILE_DATA_LENGTH]={0};
 uint32_t received_file_block_id = 0;
 uint32_t resend_file_block_id = 0;
 
-/*
-void WIFI_InitDMA(void)
-{
-    stc_dma_config_t stcDmaCfg;
-    stc_irq_regi_conf_t stcIrqRegiCfg;
-       
-    // configuration structure initialization 
-    MEM_ZERO_STRUCT(stcDmaCfg);
-    // Configuration peripheral clock 
-    PWC_Fcg0PeriphClockCmd(SPI_DMA_CLOCK_UNIT, Enable);
-    //PWC_Fcg0PeriphClockCmd(PWC_FCG0_PERIPH_AOS, Enable);
-    // Configure TX DMA 
-    stcDmaCfg.u16BlockSize = 1u;
-    stcDmaCfg.u16TransferCnt = 128;
-    stcDmaCfg.u32SrcAddr = 0;
-    stcDmaCfg.u32DesAddr = (uint32_t)(&SPI1_UNIT->DR);
-    stcDmaCfg.stcDmaChCfg.enSrcInc = AddressIncrease;
-    stcDmaCfg.stcDmaChCfg.enDesInc = AddressFix;
-    stcDmaCfg.stcDmaChCfg.enTrnWidth = Dma8Bit;
-    stcDmaCfg.stcDmaChCfg.enIntEn = Disable;
-    DMA_InitChannel(SPI_DMA_UNIT, SPI_DMA_TX_CHANNEL, &stcDmaCfg);
-    DMA_SetTriggerSrc(SPI_DMA_UNIT, SPI_DMA_TX_CHANNEL, SPI_DMA_TX_TRIG_SOURCE);
-    // Enable DMA. 
-    DMA_Cmd(SPI_DMA_UNIT, Enable);
-}
-*/
-
-//其次是GPIO口初始化（这边将SPI的CS脚当作GPIO进行初始化）：
-
-/**************************************************************************
-* 函数名称： WIFI_InitGPIO
-* 功能描述： WIFI初始化GPIO引脚
-* 输入参数： 
-* 输出参数： 
-* 返 回 值： 
-* 其它说明： 初始化WIFI用到的GPIO口，包括RES、DC、BL以及SPI的NSS引脚
-**************************************************************************/
-void WIFI_InitGPIO(void)
-{
-    stc_port_init_t stcPortInit;
-
-    /* configure structure initialization */
-    MEM_ZERO_STRUCT(stcPortInit);
-    stcPortInit.enPinMode = Pin_Mode_Out;
-	//stcPortInit.enPullUp = Enable;
-	//stcPortInit.enPinDrv = Pin_Drv_H;		//high drive
-    /* SPI NSS */
-    PORT_Init(SPI1_NSS_PORT, SPI1_NSS_PIN, &stcPortInit);
-    PORT_Init(SPI1_MOSI_PORT, SPI1_MOSI_PIN, &stcPortInit);
-    PORT_Init(SPI1_SCK_PORT, SPI1_SCK_PIN, &stcPortInit);
-    MEM_ZERO_STRUCT(stcPortInit);
-    stcPortInit.enPinMode = Pin_Mode_In;
-    PORT_Init(SPI1_MISO_PORT, SPI1_MISO_PIN, &stcPortInit);
-    SPI1_NSS_HIGH();
-}
-
-//SPI初始化：
-/**************************************************************************
-* 函数名称： WIFI_InitSPI1
-* 功能描述： WIFI初始化SPI
-* 输入参数： 
-* 输出参数： 
-* 返 回 值： 
-* 其它说明： 初始化SPI用到的口，包括MOSI、MISO、SCK
-**************************************************************************/
-void WIFI_InitSPI1(void)
-{
-    stc_spi_init_t stcSpiInit;
-
-    /* configuration structure initialization */
-    MEM_ZERO_STRUCT(stcSpiInit);
-
-    /* Configuration peripheral clock */
-    PWC_Fcg1PeriphClockCmd(SPI1_UNIT_CLOCK, Enable);
-
-    /* Configuration SPI pin */
-    //PORT_SetFunc(SPI1_NSS_PORT, SPI1_NSS_PIN, SPI1_NSS_FUNC,  Disable);
-    PORT_SetFunc(SPI1_SCK_PORT, SPI1_SCK_PIN, SPI1_SCK_FUNC,  Disable);
-    PORT_SetFunc(SPI1_MOSI_PORT, SPI1_MOSI_PIN, SPI1_MOSI_FUNC, Disable);
-    PORT_SetFunc(SPI1_MISO_PORT, SPI1_MISO_PIN, SPI1_MISO_FUNC, Disable);
-
-    /* Configuration SPI structure */
-    stcSpiInit.enClkDiv                 = ESP_SPI_CLK_DIV;
-    stcSpiInit.enFrameNumber            = SpiFrameNumber1;
-    stcSpiInit.enDataLength             = SpiDataLengthBit8;
-    stcSpiInit.enFirstBitPosition       = SpiFirstBitPositionMSB;
-    stcSpiInit.enSckPolarity            = SpiSckIdleLevelLow;
-    stcSpiInit.enSckPhase               = SpiSckOddSampleEvenChange;
-    stcSpiInit.enReadBufferObject       = SpiReadReceiverBuffer;
-    stcSpiInit.enWorkMode               = SpiWorkMode4Line;
-    stcSpiInit.enTransMode              = SpiTransFullDuplex;
-    stcSpiInit.enCommAutoSuspendEn      = Disable;
-    stcSpiInit.enModeFaultErrorDetectEn = Disable;
-    stcSpiInit.enParitySelfDetectEn     = Disable;
-    stcSpiInit.enParityEn               = Disable;
-    stcSpiInit.enParity                 = SpiParityEven;
-
-    /* SPI master mode */
-    stcSpiInit.enMasterSlaveMode                     = SpiModeMaster;
-    stcSpiInit.stcDelayConfig.enSsSetupDelayOption   = SpiSsSetupDelayCustomValue;
-    stcSpiInit.stcDelayConfig.enSsSetupDelayTime     = SpiSsSetupDelaySck1;
-    stcSpiInit.stcDelayConfig.enSsHoldDelayOption    = SpiSsHoldDelayCustomValue;
-    stcSpiInit.stcDelayConfig.enSsHoldDelayTime      = SpiSsHoldDelaySck3;
-    stcSpiInit.stcDelayConfig.enSsIntervalTimeOption = SpiSsIntervalCustomValue;
-    stcSpiInit.stcDelayConfig.enSsIntervalTime       = SpiSsIntervalSck1PlusPck2;
-    stcSpiInit.stcSsConfig.enSsValidBit              = SpiSsValidChannel0;
-    stcSpiInit.stcSsConfig.enSs0Polarity             = SpiSsLowValid;
-
-    SPI_Init(SPI1_UNIT, &stcSpiInit);
-    SPI_Cmd(SPI1_UNIT, Enable);
-}
-
-//SPI的读写功能：
-/**************************************************************************
-* 函数名称： SPI_RW
-* 功能描述： SPI读写功能
-* 输入参数：
-* 输出参数：
-* 返 回 值：
-* 其它说明：
-**************************************************************************/
-uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data)
-{
-    while (Reset == SPI_GetFlag(SPIx, SpiFlagSendBufferEmpty))
-    {
-        NOOP;
-    }
-    SPI_SendData8(SPIx, data);
-    while (Reset == SPI_GetFlag(SPIx, SpiFlagReceiveBufferFull))
-    {
-        NOOP;
-    }
-    return SPI_ReceiveData8(SPIx);
-}
 
 uint8_t get_control_code(){
 	if(HEAD_OK(spi_rx)){
@@ -222,32 +89,8 @@ uint8_t get_control_code(){
 	return 0;
 }
 
-/*
-void test_write_file(){
-    card.openFileWrite("test.gco");
-    if (!card.isFileOpen()) {
-        TLDEBUG_PRINTLN("Failed to open test.gco to write.");
-        return;
-    }
-    __attribute__((aligned(sizeof(size_t)))) uint8_t buf[512];
-
-    uint16_t c;
-    for (c = 0; c < COUNT(buf); c++)
-        buf[c] = 'A' + (c % ('Z' - 'A'));
-
-    c = 1024 * 4;
-    while (c--) {
-        TERN_(USE_WATCHDOG, watchdog_refresh());
-        card.write(buf, COUNT(buf));
-    }
-    TLDEBUG_PRINTLN(" done");
-    card.closefile();
-}
-*/
-
 uint32_t blockCount = 0;
 uint32_t lostCount = 0;
-//uint32_t CRCerrorCount = 0;
 void SPI_RX_Handler(){
     char cmd[64];
 	HAL_watchdog_refresh();
@@ -260,13 +103,6 @@ void SPI_RX_Handler(){
             ret[i] = spi_rx[i+3];
         }
     }
-
-    /*
-    if(file_writing){
-        upload_switch_flag++;
-        if(upload_switch_flag > 2) upload_switch_flag -= 2;
-    }
-    */
 
     if(control_code== 0x06){
         if(ret[0] == '1' || ret[0] == '2' || ret[0] == '3' || ret[0] == '4' || ret[0] == '5' || ret[0] == '6' || ret[0] == '7' || ret[0] == '8' || ret[0] == '9' || ret[0] == '0') {
@@ -423,41 +259,25 @@ uint16_t check_upload_block_size(){
                 return blockSize;
             }
         }
-    /*    
-    }else if(switch_flag == 2){
-        for(uint16_t i=WIFI_FILE_DATA_LENGTH-1; i>=0; i--){
-            if(upload_file_data2[i] != 0x00){
-                blockSize = i + 1;
-                return blockSize;
-            }
-        }
-    }else{
-        return WIFI_FILE_DATA_LENGTH;
-    }
-    */
+
     return WIFI_FILE_DATA_LENGTH;
 }
 
 void wifi_upload_write_data(){    
     if(upload_file_data1[0] != 0x00){
         uint16_t blockSize = check_upload_block_size();
-        //if(upload_switch_flag == 1 && upload_file_data1[0] != 0x00){
         card.write(upload_file_data1, blockSize);
         ZERO(upload_file_data1);
-        //}else if(upload_switch_flag == 2  && upload_file_data2[0] != 0x00){
-        //    card.write(upload_file_data2, blockSize);
-        //    ZERO(upload_file_data2);
-        //}
     }
 }
 
 void SPI_RW_Message(){
     ZERO(spi_rx);
-    SPI1_NSS_LOW();
+    SPI1_WIFI_NSS_LOW();
     for(uint16_t i=0; i<BUFFER_SIZE; i++){
         spi_rx[i] = SPI_RW(SPI1_UNIT, spi_tx[i]); 
     }
-    SPI1_NSS_HIGH();
+    SPI1_WIFI_NSS_HIGH();
     SPI_RX_Handler();
 }
 
@@ -566,10 +386,8 @@ void WIFI_TX_Handler(int8_t control_code){
             spi_tx[3] = resend_file_block_id / 0x10000;
             spi_tx[4] = resend_file_block_id / 0x100;
             spi_tx[5] = resend_file_block_id % 0x100;
-            //resend_file_block_id = 0;
         }
         break;        
-        //0x0B //=reboot
     }
 
     for(uint16_t i=0; i<BUFFER_SIZE-1; i++){
@@ -611,21 +429,6 @@ void SPI_RestartWIFI(){
     }
 }
 
-/**************************************************************************
-* 函数名称： WIFI_InitSPI
-* 功能描述： WIFI初始化
-* 输入参数： 
-* 输出参数： 
-* 返 回 值： 
-* 其它说明： 
-**************************************************************************/
-void WIFI_Init(void)
-{
-    WIFI_InitGPIO();    //初始化几个GPIO口，
-    WIFI_InitSPI1();    //初始化SPI的几个口，包括SCK、MOSI以及MISO
-    //WIFI_InitDMA();     //初始化SPI DMA
-}
-
 ///////////zyf
 void wifiResetEEPROM(){
     wifi_mode = WIFI_DEFAULT_MODE;
@@ -636,6 +439,10 @@ void wifiResetEEPROM(){
     uint8_t WIFI_IP[12] = WIFI_DEFAULT_IP_SETTINGS;
     memcpy_P(wifi_ip_settings, WIFI_IP, 12);
     http_port = WIFI_DEFAULT_PORT;
+}
+
+void WIFI_Init(void){
+    TL_SPI_Init();
 }
 
 #endif

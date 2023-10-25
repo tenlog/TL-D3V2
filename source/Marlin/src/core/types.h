@@ -48,6 +48,55 @@ enum AxisEnum : uint8_t {
   ALL_AXES = 0xFE, NO_AXIS = 0xFF
 };
 
+
+#define NUM_AXIS_GANG(V...) GANG_N(NUM_AXES, V)
+#define NUM_AXIS_CODE(V...) CODE_N(NUM_AXES, V)
+#define NUM_AXIS_LIST(V...) LIST_N(NUM_AXES, V)
+#define NUM_AXIS_LIST_1(V)  LIST_N_1(NUM_AXES, V)
+#define NUM_AXIS_ARRAY(V...) { NUM_AXIS_LIST(V) }
+#define NUM_AXIS_ARRAY_1(V)  { NUM_AXIS_LIST_1(V) }
+#define NUM_AXIS_ARGS(T...) NUM_AXIS_LIST(T x, T y, T z, T i, T j, T k)
+#define NUM_AXIS_ELEM(O)    NUM_AXIS_LIST(O.x, O.y, O.z, O.i, O.j, O.k)
+#define NUM_AXIS_DEFS(T,V)  NUM_AXIS_LIST(T x=V, T y=V, T z=V, T i=V, T j=V, T k=V)
+
+#define MAIN_AXIS_NAMES     NUM_AXIS_LIST(X, Y, Z, I, J, K)
+#define MAIN_AXIS_MAP(F)    MAP(F, MAIN_AXIS_NAMES)
+#define STR_AXES_MAIN       NUM_AXIS_GANG("X", "Y", "Z", STR_I, STR_J, STR_K)
+
+#define LOGICAL_AXIS_GANG(E,V...) NUM_AXIS_GANG(V) GANG_ITEM_E(E)
+#define LOGICAL_AXIS_CODE(E,V...) NUM_AXIS_CODE(V) CODE_ITEM_E(E)
+#define LOGICAL_AXIS_LIST(E,V...) NUM_AXIS_LIST(V) LIST_ITEM_E(E)
+#define LOGICAL_AXIS_LIST_1(V)    NUM_AXIS_LIST_1(V) LIST_ITEM_E(V)
+#define LOGICAL_AXIS_ARRAY(E,V...) { LOGICAL_AXIS_LIST(E,V) }
+#define LOGICAL_AXIS_ARRAY_1(V)    { LOGICAL_AXIS_LIST_1(V) }
+#define LOGICAL_AXIS_ARGS(T...) LOGICAL_AXIS_LIST(T e, T x, T y, T z, T i, T j, T k)
+#define LOGICAL_AXIS_ELEM(O)    LOGICAL_AXIS_LIST(O.e, O.x, O.y, O.z, O.i, O.j, O.k)
+#define LOGICAL_AXIS_DECL(T,V)  LOGICAL_AXIS_LIST(T e=V, T x=V, T y=V, T z=V, T i=V, T j=V, T k=V)
+
+#define LOGICAL_AXIS_NAMES      LOGICAL_AXIS_LIST(E, X, Y, Z, I, J, K)
+#define LOGICAL_AXIS_MAP(F)     MAP(F, LOGICAL_AXIS_NAMES)
+
+#define STR_AXES_LOGICAL LOGICAL_AXIS_GANG("E", "X", "Y", "Z", STR_I, STR_J, STR_K)
+
+#define XYZ_GANG(V...) GANG_N(PRIMARY_LINEAR_AXES, V)
+#define XYZ_CODE(V...) CODE_N(PRIMARY_LINEAR_AXES, V)
+
+#define SECONDARY_AXIS_GANG(V...) GANG_N(SECONDARY_AXES, V)
+#define SECONDARY_AXIS_CODE(V...) CODE_N(SECONDARY_AXES, V)
+
+#if HAS_EXTRUDERS
+  #define LIST_ITEM_E(N) , N
+  #define CODE_ITEM_E(N) ; N
+  #define GANG_ITEM_E(N) N
+#else
+  #define LIST_ITEM_E(N)
+  #define CODE_ITEM_E(N)
+  #define GANG_ITEM_E(N)
+#endif
+
+#define AXIS_COLLISION(L) (AXIS4_NAME == L || AXIS5_NAME == L || AXIS6_NAME == L)
+
+
 //
 // Loop over XYZE axes
 //

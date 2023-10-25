@@ -483,6 +483,11 @@
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\feature\z_stepper_align.cpp</FilePath>
             </File>
+            <File>
+              <FileName>tmc_util.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\feature\tmc_util.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1008,6 +1013,21 @@
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\gcode\control\M7-M9.cpp</FilePath>
             </File>
+            <File>
+              <FileName>M122.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\gcode\feature\trinamic\M122.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>M569.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\gcode\feature\trinamic\M569.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>M906.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\gcode\feature\trinamic\M906.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1378,6 +1398,11 @@
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\module\probe.cpp</FilePath>
             </File>
+            <File>
+              <FileName>trinamic.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\trinamic.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1461,7 +1486,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>HC32</GroupName>
+          <GroupName>hc32</GroupName>
           <Files>
             <File>
               <FileName>sdio_f1.cpp</FileName>
@@ -1487,6 +1512,11 @@
               <FileName>xen_iic.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\HAL\I2C\xen_iic.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>HW_SPI.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\HAL\SPI\HW_SPI.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -1727,6 +1757,141 @@
               <FileName>hc32f46x_wdt.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\source\drivers\library\src\hc32f46x_wdt.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>marlin_tmc</GroupName>
+          <Files>
+            <File>
+              <FileName>TMCStepper.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\TMCStepper.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>SERIAL_SWITCH.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\SERIAL_SWITCH.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>CHOPCONF.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\CHOPCONF.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>COOLCONF.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\COOLCONF.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>DRV_CONF.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\DRV_CONF.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>DRV_STATUS.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\DRV_STATUS.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>DRVCONF.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\DRVCONF.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>DRVCTRL.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\DRVCTRL.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>DRVSTATUS.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\DRVSTATUS.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>ENCMODE.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\ENCMODE.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>GCONF.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\GCONF.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>IHOLD_IRUN.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\IHOLD_IRUN.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>PWMCONF.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\PWMCONF.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>RAMP_STAT.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\RAMP_STAT.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>SGCSCONF.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\SGCSCONF.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>SHORT_CONF.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\SHORT_CONF.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>SMARTEN.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\SMARTEN.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>SW_MODE.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\SW_MODE.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>TMC2130Stepper.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\TMC2130Stepper.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>TMC2160Stepper.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\TMC2160Stepper.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>TMC2208Stepper.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\TMC2208Stepper.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>TMC2209Stepper.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\TMC2209Stepper.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>TMC2660Stepper.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\TMC2660Stepper.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>TMC5130Stepper.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\TMC5130Stepper.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>TMC5160Stepper.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\TMC5160Stepper.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>SW_SPI.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\module\stepper\tmc_source\SW_SPI.cpp</FilePath>
             </File>
           </Files>
         </Group>

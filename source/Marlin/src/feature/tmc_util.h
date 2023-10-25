@@ -44,6 +44,12 @@ constexpr uint16_t _tmc_thrs(const uint16_t msteps, const uint32_t thrs, const u
   return 12650000UL * msteps / (256 * thrs * spmm);
 }
 
+typedef struct {
+  uint8_t toff;
+  int8_t hend;
+  uint8_t hstrt;
+} chopper_timing_t;
+
 template<char AXIS_LETTER, char DRIVER_ID>
 class TMCStorage {
   protected:

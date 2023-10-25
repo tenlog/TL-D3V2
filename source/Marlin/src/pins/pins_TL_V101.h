@@ -142,23 +142,23 @@
 // Steppers
 //
 
-#ifdef TMC_USE_SW_SPI
-  #define X_CS_PIN          PA9
-  #define Y_CS_PIN          PA8
-  #define Z_CS_PIN          PB15
-  #define X2_CS_PIN         PB14
-  #define Z2_CS_PIN         PC6
+#ifdef TL_SPI_DRIVE
+  //#define X_CS_PIN          PA9
+  #define Y_CS_PIN          PB15
+  //#define Z_CS_PIN          PB15
+  //#define X2_CS_PIN         PB14
+  //#define Z2_CS_PIN         PC6
 
-  #define TMC_SW_MOSI       PC7
-  #define TMC_SW_MISO       PB12
-  #define TMC_SW_SCK        PB13
+  #define TMC_SW_MOSI       PA7
+  #define TMC_SW_MISO       PB0
+  #define TMC_SW_SCK        PA6
 #endif
 
 #if defined(TL_STEPTEST)
-#define X_ENABLE_PIN       PB8
-#define XX_ENABLE_PIN      PB2
-#define XX_STEP_PIN        PA9
-#define XX_DIR_PIN         PA8
+  #define X_ENABLE_PIN       PB8
+  #define XX_ENABLE_PIN      PB2
+  #define XX_STEP_PIN        PA9
+  #define XX_DIR_PIN         PA8
 #else
   #define X_ENABLE_PIN     PB2
   #if !defined(SINGLE_HEAD)
@@ -295,7 +295,7 @@
 #define NO_SD_HOST_DRIVE    // This board's SD is only seen by the printer
 
 //Spi wifi
-#if defined(ESP32_WIFI)  
+#if defined(ESP32_WIFI)
   #define SCK_PIN           PA6
   #define NSS_PIN           PB1
   #define MOSI_PIN          PA7
