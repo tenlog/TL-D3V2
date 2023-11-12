@@ -654,6 +654,18 @@ EXTRUDERS
 #endif
 
 /**
+ * Number of Logical Axes (e.g., XYZIJKUVWE)
+ * All logical axes that can be commanded directly by G-code.
+ * Delta maps stepper-specific values to ABC steppers.
+ */
+#if HAS_EXTRUDERS
+  #define LOGICAL_AXES INCREMENT(NUM_AXES)
+#else
+  #define LOGICAL_AXES NUM_AXES
+#endif
+
+
+/**
  * DISTINCT_E_FACTORS affects how some E factors are accessed
  */
 #if ENABLED(DISTINCT_E_FACTORS) && E_STEPPERS > 1

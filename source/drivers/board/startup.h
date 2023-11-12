@@ -51,11 +51,17 @@ static inline __always_inline void nvic_globalirq_enable() {
 static inline __always_inline void nvic_globalirq_disable() {
     asm volatile("cpsid i");
 }
+static bool _interrupts_status;
+static inline __always_inline bool interrupts_status() {
+    return _interrupts_status;
+}
 static inline __always_inline void interrupts() {
     nvic_globalirq_enable();
+    _interrupts_status = false;
 }
 static inline __always_inline void noInterrupts() {
     nvic_globalirq_disable();
+    _interrupts_status = true;
 }
 void init(void);
 extern void setup_Extinterrupt(void);

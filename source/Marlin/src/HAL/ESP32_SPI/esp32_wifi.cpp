@@ -51,8 +51,8 @@ uint8_t wifi_file_name[WIFI_MSG_LENGTH]={0};
 
 uint8_t wifi_version[3]={0};
 
-uint8_t spi_tx[BUFFER_SIZE]="";
-uint8_t spi_rx[BUFFER_SIZE]="";
+uint8_t wifi_spi_tx[WIFI_BUFFER_SIZE]="";
+uint8_t wifi_spi_rx[WIFI_BUFFER_SIZE]="";
 
 bool file_uploading = false;
 bool file_writing = false;
@@ -65,14 +65,14 @@ uint32_t resend_file_block_id = 0;
 
 
 uint8_t get_control_code(){
-	if(HEAD_OK(spi_rx)){
-        uint8_t code = spi_rx[2];
+	if(HEAD_OK(wifi_spi_rx)){
+        uint8_t code = wifi_spi_rx[2];
 		if(code == 0x0A) return code;
         uint8_t verify=0;
-		for(uint16_t i=0; i<BUFFER_SIZE-1; i++){
-			verify += spi_rx[i];
+		for(uint16_t i=0; i<WIFI_BUFFER_SIZE-1; i++){
+			verify += wifi_spi_rx[i];
 		}
-		if(verify % 0x100 == spi_rx[BUFFER_SIZE-1]){
+		if(verify % 0x100 == wifi_spi_rx[WIFI_BUFFER_SIZE-1]){
 			return code;
 		}
 	}
@@ -91,16 +91,17 @@ uint8_t get_control_code(){
 
 uint32_t blockCount = 0;
 uint32_t lostCount = 0;
-void SPI_RX_Handler(){
+void SPI_WIFI_RX_Handler(){
     char cmd[64];
 	HAL_watchdog_refresh();
     char ret[WIFI_MSG_LENGTH];
 	NULLZERO(ret);
     uint8_t control_code = get_control_code();
-
+    static millis_t upload_start_time;
+    static millis_t upload_last_time;
     if(control_code > 0){
         for(uint16_t i=0; i<WIFI_MSG_LENGTH; i++){
-            ret[i] = spi_rx[i+3];
+            ret[i] = wifi_spi_rx[i+3];
         }
     }
 
@@ -118,7 +119,7 @@ void SPI_RX_Handler(){
             sprintf_P(wifi_tjc_cmd, PSTR("settings.tIP.txt=\"%s\""), ret);
             TLSTJC_println(wifi_tjc_cmd);
         }
-        ZERO(spi_rx);
+        ZERO(wifi_spi_rx);
     }else if(control_code == 0x01){
         TLSTJC_println("sleep=0");        
         sprintf_P(wifi_tjc_cmd, PSTR("wifisetting.tIP.txt=\"Connecting...\""), ret);
@@ -170,6 +171,9 @@ void SPI_RX_Handler(){
             ZERO(pre_print_file_name);
             sprintf(pre_print_file_name, "%s", fname);
             #endif
+            TJCMessage(1, 1, 28, "", "", "", "");
+            upload_start_time = millis();
+            upload_last_time = upload_start_time;
         }
         TLDEBUG_PRINTLN(cmd);
         //upload_switch_flag = 0;
@@ -202,17 +206,26 @@ void SPI_RX_Handler(){
                 //TLECHO_PRINTLN(cmd);
                 resend_file_block_id = 0;
             }
-    
+
             if(resend_file_block_id == 0){
                 uint8_t received_block[WIFI_FILE_DATA_LENGTH];
                 for(uint16_t i=0; i<WIFI_FILE_DATA_LENGTH; i++){
                     received_block[i] = ret[i+4];
                 }
                  memcpy(upload_file_data1, received_block, WIFI_FILE_DATA_LENGTH);
-                //if(upload_switch_flag == 1) memcpy(upload_file_data1, received_block, WIFI_FILE_DATA_LENGTH);
-                //else if(upload_switch_flag == 2) memcpy(upload_file_data2, received_block, WIFI_FILE_DATA_LENGTH);
+
                 old_block_id = received_file_block_id;
             }
+
+            if(millis() - upload_last_time > 3000){
+                uint32_t uploadTotal = blockCount;//WIFI_FILE_DATA_LENGTH * blockCount / 1024;
+                uint32_t uploadTotalS = (millis() - upload_start_time);
+                float fSpeed = ((float)uploadTotal)*1016.0/((float)uploadTotalS);
+                sprintf(cmd, " %.2fKB/s ", fSpeed);
+                TJCMessage(1, 1, 28, "", "", "", cmd);
+                upload_last_time = millis();
+            }   
+
         }
     }else if(control_code == 0x0B){
         if(file_writing){
@@ -221,27 +234,35 @@ void SPI_RX_Handler(){
             TLECHO_PRINTLN(cmd);
             #endif
             uint32_t delay_time = blockCount / 10;
-            if(delay_time < 50) delay_time = 50;
-            if(delay_time > 1000) delay_time = 1000;
+            if(delay_time < 500) delay_time = 500;
+            if(delay_time > 5000) delay_time = 5000;
             uint32_t wait_start = millis();
-            
             while (millis()-wait_start < delay_time)
             {
                 watchdog_refresh();
+                delay(1);
             }
-            
+            delay(50);
             card.closefile();
             delay(50);
             card.release();
-            delay(50);
+            delay(10);
             card.tl_ls(true);
             delay(50);
             received_file_block_id = 0;
             resend_file_block_id = 0;
             lostCount = 0;
+            TLDEBUG_PRINTLN("Upload done!");
+            TLSTJC_println("beep 200");
             #if ENABLED(TL_BEEPER)
             start_beeper(16, 1);
             #endif
+
+            millis_t upload_tss = (millis() - upload_start_time) / 1000;
+            millis_t upload_mm = upload_tss / 60;
+            uint8_t upload_ss = upload_tss % 60;
+            sprintf(cmd, " %d:%d ", upload_mm, upload_ss);
+            TJCMessage(1, 1, 29, "", "", "", cmd);
             //CRCerrorCount = 0;
         }
         file_writing = false;
@@ -271,22 +292,23 @@ void wifi_upload_write_data(){
     }
 }
 
-void SPI_RW_Message(){
-    ZERO(spi_rx);
+void SPI_RW_WIFI_Message(){
+    //TL_SPI_Init();
+    ZERO(wifi_spi_rx);
     SPI1_WIFI_NSS_LOW();
-    for(uint16_t i=0; i<BUFFER_SIZE; i++){
-        spi_rx[i] = SPI_RW(SPI1_UNIT, spi_tx[i]); 
+    for(uint16_t i=0; i<WIFI_BUFFER_SIZE; i++){
+        wifi_spi_rx[i] = SPI_RW(SPI1_UNIT, wifi_spi_tx[i]); 
     }
     SPI1_WIFI_NSS_HIGH();
-    SPI_RX_Handler();
+    SPI_WIFI_RX_Handler();
 }
 
 void WIFI_TX_Handler(int8_t control_code){
     HAL_watchdog_refresh();
-    ZERO(spi_tx);
+    ZERO(wifi_spi_tx);
     uint8_t verify = 0;
     for(uint8_t i=0; i<2; i++){
-        spi_tx[i]=0xFF;
+        wifi_spi_tx[i]=0xFF;
     }
     uint8_t send[WIFI_MSG_LENGTH];
     ZERO(send);
@@ -332,11 +354,11 @@ void WIFI_TX_Handler(int8_t control_code){
                 send[i+42]=str[i];
             }
 
-            uint8_t singleHead=2;
+            uint8_t singleHead=0;
             #ifdef SINGLE_HEAD
                 singleHead = 1;
             #elif defined(TL_X)
-                singleHead = 4;
+                singleHead = 0;
             #endif
             uint8_t laser_only=0;
             #ifdef TL_L
@@ -353,20 +375,20 @@ void WIFI_TX_Handler(int8_t control_code){
         }
         break;
     }
-    spi_tx[2] = control_code;
+    wifi_spi_tx[2] = control_code;
 
     switch (control_code){
         case 0x01:
         {
-            spi_tx[3] = wifi_mode;
+            wifi_spi_tx[3] = wifi_mode;
             for(uint16_t i=0; i<WIFI_MSG_LENGTH; i++){
-                spi_tx[i+4]=send[i];
+                wifi_spi_tx[i+4]=send[i];
             }
         }
         break;
         case 0x02:
-        spi_tx[3] = http_port / 0x100;
-        spi_tx[4] = http_port % 0x100;
+        wifi_spi_tx[3] = http_port / 0x100;
+        wifi_spi_tx[4] = http_port % 0x100;
         break;
         case 0x03:        
         case 0x04:        
@@ -377,27 +399,27 @@ void WIFI_TX_Handler(int8_t control_code){
         case 0x0A:  //file name
         {
             for(uint16_t i=0; i<WIFI_MSG_LENGTH; i++){
-                spi_tx[i+3]=send[i];
+                wifi_spi_tx[i+3]=send[i];
             }
         }
         break;
         case 0x0C:  //feed back upload file 3,4,5
         {
-            spi_tx[3] = resend_file_block_id / 0x10000;
-            spi_tx[4] = resend_file_block_id / 0x100;
-            spi_tx[5] = resend_file_block_id % 0x100;
+            wifi_spi_tx[3] = resend_file_block_id / 0x10000;
+            wifi_spi_tx[4] = resend_file_block_id / 0x100;
+            wifi_spi_tx[5] = resend_file_block_id % 0x100;
         }
         break;        
     }
 
-    for(uint16_t i=0; i<BUFFER_SIZE-1; i++){
-        verify += spi_tx[i];
+    for(uint16_t i=0; i<WIFI_BUFFER_SIZE-1; i++){
+        verify += wifi_spi_tx[i];
     }
 
     uint8_t verify8 = verify % 0x100;
-    spi_tx[BUFFER_SIZE-1]=verify8;
+    wifi_spi_tx[WIFI_BUFFER_SIZE-1]=verify8;
     delay(3);//why need this?
-    SPI_RW_Message();
+    SPI_RW_WIFI_Message();
 }
 
 /**************************************************************************/

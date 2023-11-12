@@ -168,6 +168,12 @@
   #endif
 #endif
 
+#define Y_ENABLE_PIN       X_ENABLE_PIN
+#define Z_ENABLE_PIN       X_ENABLE_PIN
+#define Z2_ENABLE_PIN      X_ENABLE_PIN
+#define E0_ENABLE_PIN      X_ENABLE_PIN
+#define E1_ENABLE_PIN      X_ENABLE_PIN
+
 #ifdef TL_S
   #define X_STEP_PIN         PA9
   #define X_DIR_PIN          PA8
@@ -176,21 +182,13 @@
   #define X_DIR_PIN          PC6
 #endif
 
-#define Y_ENABLE_PIN       X_ENABLE_PIN
 #define Y_STEP_PIN         PB15
 #define Y_DIR_PIN          PB14
 
-#define Z_ENABLE_PIN       X_ENABLE_PIN
-#define Z2_ENABLE_PIN      X_ENABLE_PIN
 #define Z_STEP_PIN         PE13
 #define Z_DIR_PIN          PE12
 
-#ifndef TL_L
-  #define HEATER_BED_PIN     PE10 
-#endif
 
-#define E0_ENABLE_PIN      X_ENABLE_PIN
-#define E1_ENABLE_PIN      X_ENABLE_PIN
 
 #ifdef TL_W
   #define E0_STEP_PIN        PB13
@@ -212,7 +210,6 @@
   #define E1_STEP_PIN        PB6
   #define E1_DIR_PIN         PB5
 #endif
-
 
 //FANS
 #ifdef ELECTROMAGNETIC_VALUE
@@ -246,6 +243,7 @@
   #endif
 
   #ifndef TL_L
+    #define HEATER_BED_PIN     PE10 
     #define HEATER_0_PIN          PA5   // HEATER0
     #define HEATER_1_PIN          PA4   // HEATER1
   #endif

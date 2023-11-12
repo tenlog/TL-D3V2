@@ -423,6 +423,17 @@ public:
 
   static void dwell(millis_t time);
 
+  #if HAS_SHAPING
+    static void M593_report(const bool forReplay=true);
+  #endif
+
+  static void report_echo_start(const bool forReplay);
+  static void report_heading(const bool forReplay, FSTR_P const fstr, const bool eol=true);
+  static void report_heading_etc(const bool forReplay, FSTR_P const fstr, const bool eol=true) {
+    report_heading(forReplay, fstr, eol);
+    report_echo_start(forReplay);
+  }
+
 private:
 
   #if ENABLED(MARLIN_DEV_MODE)
@@ -949,6 +960,10 @@ private:
 
   #if ENABLED(BAUD_RATE_GCODE)
     static void M575();
+  #endif
+
+  #if HAS_SHAPING
+    static void M593();
   #endif
 
   #if ENABLED(ADVANCED_PAUSE_FEATURE)

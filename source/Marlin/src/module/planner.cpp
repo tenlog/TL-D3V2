@@ -1696,6 +1696,14 @@ float Planner::triggered_position_mm(const AxisEnum axis) {
   return stepper.triggered_position(axis) * steps_to_mm[axis];
 }
 
+//by zyf
+bool Planner::busy() {
+  return (has_blocks_queued() || cleaning_buffer_counter
+      || TERN0(EXTERNAL_CLOSED_LOOP_CONTROLLER, CLOSED_LOOP_WAITING())
+      || TERN0(HAS_SHAPING, stepper.input_shaping_busy())
+  );
+}
+
 void Planner::finish_and_disable() {
   while (has_blocks_queued() || cleaning_buffer_counter) idle();
   disable_all_steppers();

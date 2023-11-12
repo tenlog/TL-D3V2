@@ -92,14 +92,14 @@ void SPI_InitGPIO(void)
 
 //SPI初始化：
 /**************************************************************************
-* 函数名称： SPI_InitSPI1
+* 函数名称： SPI_InitSPI
 * 功能描述： WIFI初始化SPI
 * 输入参数： 
 * 输出参数： 
 * 返 回 值： 
 * 其它说明： 初始化SPI用到的口，包括MOSI、MISO、SCK
 **************************************************************************/
-void SPI_InitSPI1(void)
+void SPI_InitSPI(void)
 {
     stc_spi_init_t stcSpiInit;
 
@@ -180,7 +180,7 @@ uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data)
 void TL_SPI_Init(void)
 {
     SPI_InitGPIO();    //初始化几个GPIO口，
-    SPI_InitSPI1();    //初始化SPI的几个口，包括SCK、MOSI以及MISO
+    SPI_InitSPI();    //初始化SPI的几个口，包括SCK、MOSI以及MISO
     //WIFI_InitDMA();     //初始化SPI DMA
 }
 

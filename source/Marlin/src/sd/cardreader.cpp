@@ -326,6 +326,10 @@ void CardReader::ls() {
 //
 
 void CardReader::tl_ls(bool wifi) {
+  //if(wifi && file_uploading) {
+  //  TLDEBUG_PRINTLN("ls when uploading.");
+  //  return;
+  //}
   TERN_(TL_L, ZERO(pre_print_file_name));
   if(wifi)mount();
   char cmd[96];
@@ -977,7 +981,10 @@ void CardReader::write_command(char * const buf) {
   end[3] = '\0';
   file.write(begin);
 
-  if (file.writeError) SERIAL_ERROR_MSG(STR_SD_ERR_WRITE_TO_FILE);
+  if (file.writeError) {
+    TLDEBUG_PRINTLN(STR_SD_ERR_WRITE_TO_FILE);
+    //SERIAL_ERROR_MSG(STR_SD_ERR_WRITE_TO_FILE);
+  }
 }
 
 #if DISABLED(NO_SD_AUTOSTART)
@@ -1025,7 +1032,10 @@ void CardReader::write_command(char * const buf) {
 
 void CardReader::closefile(const bool store_location/*=false*/) {
   file.sync();
-  file.close();
+  bool fclosed =  file.close();
+  if(!fclosed){
+    TLDEBUG_PRINTLN("Close file fail..");
+  }  
   flag.saving = flag.logging = false;
   sdpos = 0;
   TERN_(EMERGENCY_PARSER, emergency_parser.enable());

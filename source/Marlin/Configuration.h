@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "046.3"
+#define TL_SUBVERSION "047"
 
 //update log 
 /*
@@ -83,11 +83,16 @@ Version     033
 20230903    TL_L TL_X..
 20230921    disabled some funcitons of TL_L 
 20231023    try TMC2130 spi
+20231030    Fixed bug: File upload failed when large file size. need UI:version 2.2.33
+            sub version:047
+20231103    Start input shaping....
+            Port input shaping from 2.1.1.2
+20231104    input shaping done, test..
 */
 
 //TL Medels and version
 //#define TL_H2
-//#define TL_D3HS   //High Speed
+#define TL_D3HS   //High Speed
 //#define TL_D3
 //#define TL_S2   //single head
 //#define TL_S3   //single head
@@ -101,11 +106,11 @@ Version     033
 //#define TL_LW8   //Luminous words
 //#define TL_LW3   //
 //#define TL_X3    //
-#define TL_X2    //Neza
+//#define TL_X2    //Neza
 
 //#define TL_DEBUG    //debug
 //#define DUAL_HEAD_BLTOUCH
-#define HW_SPI
+//#define INPUT_SHAPING
 
 #if ANY(TL_LW8, TL_LW3)
   #define TL_W
@@ -126,6 +131,10 @@ Version     033
 #if ENABLED(TL_X)
   #define XEN_IIC
   //#define TL_SPI_DRIVE
+#endif
+
+#if ENABLED(XEN_IIC)
+  #define HW_IIC
 #endif
 
 //Headers
@@ -172,6 +181,10 @@ Version     033
   #define LASER_ENDSTOP_WIDTH 0
 #else
   #define ESP32_WIFI
+#endif
+
+#if ENABLED(ESP32_WIFI)
+#define HW_SPI
 #endif
 
 #ifdef TL_GRBL

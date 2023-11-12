@@ -36,10 +36,10 @@
 #define SPI1_WIFI_NSS_PIN                (Pin01)
 
 #ifdef TL_SPI_DRIVE
-#define SPI1_Y_NSS_PORT                  (PortB)
-#define SPI1_Y_NSS_PIN                   (Pin15)
-#define SPI1_Y_NSS_HIGH()                (PORT_SetBits(SPI1_Y_NSS_PORT, SPI1_Y_NSS_PIN))
-#define SPI1_Y_NSS_LOW()                 (PORT_ResetBits(SPI1_Y_NSS_PORT, SPI1_Y_NSS_PIN))
+    #define SPI1_Y_NSS_PORT                  (PortB)
+    #define SPI1_Y_NSS_PIN                   (Pin15)
+    #define SPI1_Y_NSS_HIGH()                (PORT_SetBits(SPI1_Y_NSS_PORT, SPI1_Y_NSS_PIN))
+    #define SPI1_Y_NSS_LOW()                 (PORT_ResetBits(SPI1_Y_NSS_PORT, SPI1_Y_NSS_PIN))
 #endif
 
 #define SPI1_WIFI_NSS_HIGH()             (PORT_SetBits(SPI1_WIFI_NSS_PORT, SPI1_WIFI_NSS_PIN))
@@ -60,7 +60,7 @@
 #define SPI1_UNIT_CLOCK                  (PWC_FCG1_PERIPH_SPI1)
 
 void SPI_InitGPIO(void);
-void SPI_InitSPI1(void);
+void SPI_InitSPI(void);
 uint8_t SPI_RW(M4_SPI_TypeDef *SPIx, uint8_t data);
 void TL_SPI_Init(void);
 #endif

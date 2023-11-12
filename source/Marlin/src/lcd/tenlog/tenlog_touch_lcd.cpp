@@ -510,21 +510,26 @@ void tlSendSettings(bool only_wifi){
         #endif
 
         uint32_t lX = planner.settings.axis_steps_per_mm[X_AXIS] * 100;
-        TERN_(ESP32_WIFI, wifi_printer_settings[7] = lX / 0x10000);
-        TERN_(ESP32_WIFI, wifi_printer_settings[8] = lX / 0x100);
-        TERN_(ESP32_WIFI, wifi_printer_settings[9] = lX % 0x100);
         uint32_t lY = planner.settings.axis_steps_per_mm[Y_AXIS] * 100;
-        TERN_(ESP32_WIFI, wifi_printer_settings[10] = lY / 0x10000);
-        TERN_(ESP32_WIFI, wifi_printer_settings[11] = lY / 0x100);
-        TERN_(ESP32_WIFI, wifi_printer_settings[12] = lY % 0x100);
         uint32_t lZ = planner.settings.axis_steps_per_mm[Z_AXIS] * 100;
-        TERN_(ESP32_WIFI, wifi_printer_settings[13] = lZ / 0x10000);
-        TERN_(ESP32_WIFI, wifi_printer_settings[14] = lZ / 0x100);
-        TERN_(ESP32_WIFI, wifi_printer_settings[15] = lZ % 0x100);
         uint32_t lE = planner.settings.axis_steps_per_mm[E_AXIS] * 100;
-        TERN_(ESP32_WIFI, wifi_printer_settings[16] = lE / 0x10000);
-        TERN_(ESP32_WIFI, wifi_printer_settings[17] = lE / 0x100);
-        TERN_(ESP32_WIFI, wifi_printer_settings[18] = lE % 0x100);
+        #if ENABLED(ESP32_WIFI)
+            wifi_printer_settings[7] = lX / 0x10000;
+            wifi_printer_settings[8] = lX / 0x100;
+            wifi_printer_settings[9] = lX % 0x100;
+            
+            wifi_printer_settings[10] = lY / 0x10000;
+            wifi_printer_settings[11] = lY / 0x100;
+            wifi_printer_settings[12] = lY % 0x100;
+
+            wifi_printer_settings[13] = lZ / 0x10000;
+            wifi_printer_settings[14] = lZ / 0x100;
+            wifi_printer_settings[15] = lZ % 0x100;
+
+            wifi_printer_settings[16] = lE / 0x10000;
+            wifi_printer_settings[17] = lE / 0x100;
+            wifi_printer_settings[18] = lE % 0x100;
+        #endif
 
         #ifdef SINGLE_HEAD
             PRINTTJC(PSTR("main.vHeadNum.val=1"));
@@ -3169,10 +3174,11 @@ void process_command_gcode(long _tl_command[]) {
                 char sS[10];
                 NULLZERO(sS);
                 if(lS > -9999) {
-                    sprintf_P(sS, PSTR("S%d "), lS);
+                    sprintf_P(sS, PSTR("S%d"), lS);
                 }
                 sprintf_P(cmd, PSTR("M%d %s"), lM, sS);
                 EXECUTE_GCODE(cmd);
+                TLDEBUG_PRINTLN(cmd);
             }else if(lM == 106){
                 //M106
                 float fS = GCodelng('S', iFrom, _tl_command);
@@ -3262,12 +3268,16 @@ void process_command_gcode(long _tl_command[]) {
                     }
                 #endif  //TL_L
             }else if(lM == 19){
-                //M19
+                //M19  List files
                 tl_print_page_id = GCodelng('S', iFrom, _tl_command);
                 bool wifi = false;
                 if(GCodelng('R', iFrom, _tl_command) == 1) wifi=true;
-                #if ENABLED(SDSUPPORT)                    
-                card.tl_ls(wifi);
+                #if BOTH(SDSUPPORT, ESP32_WIFI)
+                if(!file_uploading) {
+                    card.tl_ls(wifi);
+                }else{
+                    TLDEBUG_PRINTLN("M19 when uploading");
+                }
                 #endif
             }else if(lM == 1001){
                 //M1001
@@ -3692,13 +3702,15 @@ void process_command_gcode(long _tl_command[]) {
                     sprintf_P(cmd, PSTR("M%d %s"), lM, fileNameP);
                 }
                 #if ENABLED(SDSUPPORT)
-                if(strlen(cmd)){                        
+                if(strlen(cmd)){
                     TLDEBUG_PRINTLN(cmd);
                     EXECUTE_GCODE(cmd);
                     uint32_t wait_start = millis();
-                    while (millis()-wait_start < 300) //delay 300ms
-                    {
+                    delay(50);
+                    while (millis()-wait_start < 500) //delay 500ms
+                    {                        
                         watchdog_refresh();
+                        delay(10);
                     }
                     card.tl_ls(true);
                     sd_OK = 2;

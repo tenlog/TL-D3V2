@@ -5,7 +5,9 @@
 #include "sdmmc_cmd.h"
 #include "sd_card.h"
 
-#define sdio_timeout 100u
+#define sd_read_timeout 100u	//by zyf 100u
+#define dele_timeout 100u	//by zyf 100u
+#define writ_timeout 1000u	//by zyf 100u
 
 class Sdioc_Class
 {

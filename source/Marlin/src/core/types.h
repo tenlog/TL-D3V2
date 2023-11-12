@@ -30,24 +30,22 @@
 class __FlashStringHelper;
 typedef const __FlashStringHelper *progmem_str;
 
-//
-// Enumerated axis indices
-//
-//  - X_AXIS, Y_AXIS, and Z_AXIS should be used for axes in Cartesian space
-//  - A_AXIS, B_AXIS, and C_AXIS should be used for Steppers, corresponding to XYZ on Cartesians
-//  - X_HEAD, Y_HEAD, and Z_HEAD should be used for Steppers on Core kinematics
-//
-enum AxisEnum : uint8_t {
-  X_AXIS   = 0, A_AXIS = 0,
-  Y_AXIS   = 1, B_AXIS = 1,
-  Z_AXIS   = 2, C_AXIS = 2,
-  E_AXIS   = 3,
-  X_HEAD   = 4, Y_HEAD = 5, Z_HEAD = 6,
-  E0_AXIS  = 3,
-  E1_AXIS, E2_AXIS, E3_AXIS, E4_AXIS, E5_AXIS, E6_AXIS, E7_AXIS,
-  ALL_AXES = 0xFE, NO_AXIS = 0xFF
-};
+typedef const __FlashStringHelper* FSTR_P;
+#ifndef FPSTR
+  #define FPSTR(S) (reinterpret_cast<FSTR_P>(S))
+#endif
+#define FTOP(S) (reinterpret_cast<const char*>(S))
 
+
+//
+// Conditional type assignment magic. For example...
+//
+// typename IF<(MYOPT==12), int, float>::type myvar;
+//
+template <bool, class L, class R>
+struct IF { typedef R type; };
+template <class L, class R>
+struct IF<true, L, R> { typedef L type; };
 
 #define NUM_AXIS_GANG(V...) GANG_N(NUM_AXES, V)
 #define NUM_AXIS_CODE(V...) CODE_N(NUM_AXES, V)
@@ -96,6 +94,97 @@ enum AxisEnum : uint8_t {
 
 #define AXIS_COLLISION(L) (AXIS4_NAME == L || AXIS5_NAME == L || AXIS6_NAME == L)
 
+// Helpers
+#define _RECIP(N) ((N) ? 1.0f / static_cast<float>(N) : 0.0f)
+#define _ABS(N) ((N) < 0 ? -(N) : (N))
+#define _LS(N)  (N = (T)(uint32_t(N) << v))
+#define _RS(N)  (N = (T)(uint32_t(N) >> v))
+#define FI FORCE_INLINE
+
+
+// Define types based on largest bit width stored value required
+#define bits_t(W)   typename IF<((W)>   16), uint32_t, typename IF<((W)>  8), uint16_t, uint8_t>::type>::type
+#define uvalue_t(V) typename IF<((V)>65535), uint32_t, typename IF<((V)>255), uint16_t, uint8_t>::type>::type
+#define value_t(V)  typename IF<((V)>32767),  int32_t, typename IF<((V)>127),  int16_t,  int8_t>::type>::type
+
+
+// General Flags for some number of states
+template<size_t N>
+struct Flags {
+  typedef value_t(N) flagbits_t;
+  typedef struct { bool b0:1, b1:1, b2:1, b3:1, b4:1, b5:1, b6:1, b7:1; } N8;
+  typedef struct { bool b0:1, b1:1, b2:1, b3:1, b4:1, b5:1, b6:1, b7:1, b8:1, b9:1, b10:1, b11:1, b12:1, b13:1, b14:1, b15:1; } N16;
+  typedef struct { bool b0:1,  b1:1,  b2:1,  b3:1,  b4:1,  b5:1,  b6:1,  b7:1,  b8:1,  b9:1, b10:1, b11:1, b12:1, b13:1, b14:1, b15:1,
+                       b16:1, b17:1, b18:1, b19:1, b20:1, b21:1, b22:1, b23:1, b24:1, b25:1, b26:1, b27:1, b28:1, b29:1, b30:1, b31:1; } N32;
+  union {
+    flagbits_t b;
+    typename IF<(N>16), N32, typename IF<(N>8), N16, N8>::type>::type flag;
+  };
+  FI void reset()                            { b = 0; }
+  FI void set(const int n, const bool onoff) { onoff ? set(n) : clear(n); }
+  FI void set(const int n)                   { b |=  (flagbits_t)_BV(n); }
+  FI void clear(const int n)                 { b &= ~(flagbits_t)_BV(n); }
+  FI bool test(const int n) const            { return TEST(b, n); }
+  FI bool operator[](const int n)            { return test(n); }
+  FI bool operator[](const int n) const      { return test(n); }
+  FI int size() const                        { return sizeof(b); }
+  FI operator bool() const                   { return b; }
+};
+
+// Specialization for a single bool flag
+template<>
+struct Flags<1> {
+  bool b;
+  FI void reset()                            { b = false; }
+  FI void set(const int n, const bool onoff) { onoff ? set(n) : clear(n); }
+  FI void set(const int)                     { b = true; }
+  FI void clear(const int)                   { b = false; }
+  FI bool test(const int) const              { return b; }
+  FI bool& operator[](const int)             { return b; }
+  FI bool  operator[](const int) const       { return b; }
+  FI int size() const                        { return sizeof(b); }
+  FI operator bool() const                   { return b; }
+};
+
+typedef Flags<8> flags_8_t;
+typedef Flags<16> flags_16_t;
+
+// Flags for some axis states, with per-axis aliases xyzijkuvwe
+typedef struct AxisFlags {
+  union {
+    struct Flags<LOGICAL_AXES> flags;
+    struct { bool LOGICAL_AXIS_LIST(e:1, x:1, y:1, z:1, i:1, j:1, k:1, u:1, v:1, w:1); };
+  };
+  FI void reset()                            { flags.reset(); }
+  FI void set(const int n)                   { flags.set(n); }
+  FI void set(const int n, const bool onoff) { flags.set(n, onoff); }
+  FI void clear(const int n)                 { flags.clear(n); }
+  FI bool test(const int n) const            { return flags.test(n); }
+  FI bool operator[](const int n)            { return flags[n]; }
+  FI bool operator[](const int n) const      { return flags[n]; }
+  FI int size() const                        { return sizeof(flags); }
+  FI operator bool() const                   { return flags; }
+} axis_flags_t;
+
+
+//
+// Enumerated axis indices
+//
+//  - X_AXIS, Y_AXIS, and Z_AXIS should be used for axes in Cartesian space
+//  - A_AXIS, B_AXIS, and C_AXIS should be used for Steppers, corresponding to XYZ on Cartesians
+//  - X_HEAD, Y_HEAD, and Z_HEAD should be used for Steppers on Core kinematics
+//
+enum AxisEnum : uint8_t {
+  X_AXIS   = 0, A_AXIS = 0,
+  Y_AXIS   = 1, B_AXIS = 1,
+  Z_AXIS   = 2, C_AXIS = 2,
+  E_AXIS   = 3,
+  X_HEAD   = 4, Y_HEAD = 5, Z_HEAD = 6,
+  E0_AXIS  = 3,
+  E1_AXIS, E2_AXIS, E3_AXIS, E4_AXIS, E5_AXIS, E6_AXIS, E7_AXIS,
+  ALL_AXES = 0xFE, NO_AXIS = 0xFF
+};
+
 
 //
 // Loop over XYZE axes
@@ -106,16 +195,6 @@ enum AxisEnum : uint8_t {
 #define LOOP_ABC(VAR) LOOP_S_LE_N(VAR, A_AXIS, C_AXIS)
 #define LOOP_ABCE(VAR) LOOP_S_LE_N(VAR, A_AXIS, E_AXIS)
 #define LOOP_ABCE_N(VAR) LOOP_S_L_N(VAR, A_AXIS, XYZE_N)
-
-//
-// Conditional type assignment magic. For example...
-//
-// typename IF<(MYOPT==12), int, float>::type myvar;
-//
-template <bool, class L, class R>
-struct IF { typedef R type; };
-template <class L, class R>
-struct IF<true, L, R> { typedef L type; };
 
 //
 // feedRate_t is just a humble float
@@ -147,13 +226,6 @@ typedef const_float_t const_celsius_float_t;
 //
 // Coordinates structures for XY, XYZ, XYZE...
 //
-
-// Helpers
-#define _RECIP(N) ((N) ? 1.0f / static_cast<float>(N) : 0.0f)
-#define _ABS(N) ((N) < 0 ? -(N) : (N))
-#define _LS(N)  (N = (T)(uint32_t(N) << v))
-#define _RS(N)  (N = (T)(uint32_t(N) >> v))
-#define FI FORCE_INLINE
 
 // Forward declarations
 template<typename T> struct XYval;

@@ -535,6 +535,18 @@ typedef struct SettingsDataStruct {
     uint16_t x_retract_fila_speed;
   #endif
 
+  //
+  // Input Shaping
+  //
+  #if ENABLED(INPUT_SHAPING_X)
+    float shaping_x_frequency, // M593 X F
+          shaping_x_zeta;      // M593 X D
+  #endif
+  #if ENABLED(INPUT_SHAPING_Y)
+    float shaping_y_frequency, // M593 Y F
+          shaping_y_zeta;      // M593 Y D
+  #endif
+
 } SettingsData;
 
 //static_assert(sizeof(SettingsData) <= MARLIN_EEPROM_SIZE, "EEPROM too small to contain SettingsData!");
@@ -1559,6 +1571,21 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(retract_fila_length);  
       EEPROM_WRITE(retract_fila_speed);  
     #endif
+
+    //
+    // Input Shaping
+    ///
+    #if HAS_SHAPING
+      #if ENABLED(INPUT_SHAPING_X)
+        EEPROM_WRITE(stepper.get_shaping_frequency(X_AXIS));
+        EEPROM_WRITE(stepper.get_shaping_damping_ratio(X_AXIS));
+      #endif
+      #if ENABLED(INPUT_SHAPING_Y)
+        EEPROM_WRITE(stepper.get_shaping_frequency(Y_AXIS));
+        EEPROM_WRITE(stepper.get_shaping_damping_ratio(Y_AXIS));
+      #endif
+    #endif
+
     tlSendSettings(false);  //Show in ui
     //
     // Report final CRC and Data Size
@@ -2586,6 +2613,26 @@ void MarlinSettings::postprocess() {
         EEPROM_READ(retract_fila_speed);  
       #endif
 
+      //
+      // Input Shaping
+      //
+      #if ENABLED(INPUT_SHAPING_X)
+      {
+        float _data[2];
+        EEPROM_READ(_data);
+        stepper.set_shaping_frequency(X_AXIS, _data[0]);
+        stepper.set_shaping_damping_ratio(X_AXIS, _data[1]);
+      }
+      #endif
+      #if ENABLED(INPUT_SHAPING_Y)
+      {
+        float _data[2];
+        EEPROM_READ(_data);
+        stepper.set_shaping_frequency(Y_AXIS, _data[0]);
+        stepper.set_shaping_damping_ratio(Y_AXIS, _data[1]);
+      }
+      #endif
+
       #if ENABLED(TENLOG_TOUCH_LCD)
         tlSendSettings(false);  //Show in ui //resend to wifi
       #endif
@@ -3274,6 +3321,21 @@ void MarlinSettings::reset() {
     retract_fila_length = DEFAULT_RETRACT_LENGTH;
     retract_fila_speed = DEFAULT_RETRACT_SPEED;
   #endif
+
+  //
+  // Input Shaping
+  //
+  #if HAS_SHAPING
+    #if ENABLED(INPUT_SHAPING_X)
+      stepper.set_shaping_frequency(X_AXIS, SHAPING_FREQ_X);
+      stepper.set_shaping_damping_ratio(X_AXIS, SHAPING_ZETA_X);
+    #endif
+    #if ENABLED(INPUT_SHAPING_Y)
+      stepper.set_shaping_frequency(Y_AXIS, SHAPING_FREQ_Y);
+      stepper.set_shaping_damping_ratio(Y_AXIS, SHAPING_ZETA_Y);
+    #endif
+  #endif
+
   postprocess();
 
   //DEBUG_ECHO_START();
@@ -4109,6 +4171,11 @@ void MarlinSettings::reset() {
       #endif // HAS_STEALTHCHOP
 
     #endif // HAS_TRINAMIC_CONFIG
+
+
+    // Input Shaping
+    //
+    TERN_(HAS_SHAPING, gcode.M593_report(forReplay));
 
     /**
      * Linear Advance

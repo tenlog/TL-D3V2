@@ -886,6 +886,9 @@ class Planner {
     // Triggered position of an axis in mm (not core-savvy)
     static float triggered_position_mm(const AxisEnum axis);
 
+    // Blocks are queued, or we're running out moves, or the closed loop controller is waiting
+    static bool busy();
+    
     // Block until all buffered steps are executed / cleaned
     static void synchronize();
 

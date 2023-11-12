@@ -71,9 +71,9 @@ static void setup_SysClk(void){
 	#endif
 	CLK_SetPllSource(ClkPllSrcXTAL);
 	CLK_MpllConfig(&stcMpllCfg);
-	#ifdef TL_HIGHSPEED
-	SystemCoreClock = 200000000;	//by zyf
-	#endif
+	//#ifdef TL_HIGHSPEED
+	//SystemCoreClock = 200000000;	//by zyf
+	//#endif
 
 	/* flash read wait cycle setting */
 	EFM_Unlock();

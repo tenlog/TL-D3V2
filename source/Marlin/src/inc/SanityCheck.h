@@ -3379,5 +3379,60 @@ static_assert(   _ARR_TEST(3,0) && _ARR_TEST(3,1) && _ARR_TEST(3,2)
 #endif
 #undef _BAD_DRIVER
 
+
+/**
+ * Input Shaping requirements
+ */
+#if HAS_SHAPING
+  #if ENABLED(DELTA)
+    #error "Input Shaping is not compatible with DELTA kinematics."
+  #elif ENABLED(SCARA)
+    #error "Input Shaping is not compatible with SCARA kinematics."
+  #elif ENABLED(TPARA)
+    #error "Input Shaping is not compatible with TPARA kinematics."
+  #elif ENABLED(POLAR)
+    #error "Input Shaping is not compatible with POLAR kinematics."
+  #elif ENABLED(POLARGRAPH)
+    #error "Input Shaping is not compatible with POLARGRAPH kinematics."
+  #elif ENABLED(DIRECT_STEPPING)
+    #error "Input Shaping is not compatible with DIRECT_STEPPING."
+  #elif BOTH(INPUT_SHAPING_X, CORE_IS_XZ)
+    #error "INPUT_SHAPING_X is not supported with COREXZ."
+  #elif BOTH(INPUT_SHAPING_Y, CORE_IS_YZ)
+    #error "INPUT_SHAPING_Y is not supported with COREYZ."
+  #elif ANY(CORE_IS_XY, MARKFORGED_XY, MARKFORGED_YX)
+    #if !BOTH(INPUT_SHAPING_X, INPUT_SHAPING_Y)
+      #error "INPUT_SHAPING_X and INPUT_SHAPING_Y must both be enabled for COREXY, COREYX, or MARKFORGED_*."
+    #else
+      static_assert(SHAPING_FREQ_X == SHAPING_FREQ_Y, "SHAPING_FREQ_X and SHAPING_FREQ_Y must be the same for COREXY / COREYX / MARKFORGED_*.");
+      static_assert(SHAPING_ZETA_X == SHAPING_ZETA_Y, "SHAPING_ZETA_X and SHAPING_ZETA_Y must be the same for COREXY / COREYX / MARKFORGED_*.");
+    #endif
+  #endif
+
+  #ifdef __AVR__
+    #ifdef SHAPING_MIN_FREQ
+      static_assert((SHAPING_MIN_FREQ) > 0, "SHAPING_MIN_FREQ must be > 0.");
+    #else
+      TERN_(INPUT_SHAPING_X, static_assert((SHAPING_FREQ_X) > 0, "SHAPING_FREQ_X must be > 0 or SHAPING_MIN_FREQ must be set."));
+      TERN_(INPUT_SHAPING_Y, static_assert((SHAPING_FREQ_Y) > 0, "SHAPING_FREQ_Y must be > 0 or SHAPING_MIN_FREQ must be set."));
+    #endif
+    #if ENABLED(INPUT_SHAPING_X)
+      #if F_CPU > 16000000
+        static_assert((SHAPING_FREQ_X) == 0 || (SHAPING_FREQ_X) * 2 * 0x10000 >= (STEPPER_TIMER_RATE), "SHAPING_FREQ_X is below the minimum (20) for AVR 20MHz.");
+      #else
+        static_assert((SHAPING_FREQ_X) == 0 || (SHAPING_FREQ_X) * 2 * 0x10000 >= (STEPPER_TIMER_RATE), "SHAPING_FREQ_X is below the minimum (16) for AVR 16MHz.");
+      #endif
+    #endif
+    #if ENABLED(INPUT_SHAPING_Y)
+      #if F_CPU > 16000000
+        static_assert((SHAPING_FREQ_Y) == 0 || (SHAPING_FREQ_Y) * 2 * 0x10000 >= (STEPPER_TIMER_RATE), "SHAPING_FREQ_Y is below the minimum (20) for AVR 20MHz.");
+      #else
+        static_assert((SHAPING_FREQ_Y) == 0 || (SHAPING_FREQ_Y) * 2 * 0x10000 >= (STEPPER_TIMER_RATE), "SHAPING_FREQ_Y is below the minimum (16) for AVR 16MHz.");
+      #endif
+    #endif
+  #endif
+#endif
+
 // Misc. Cleanup
 #undef _TEST_PWM
+

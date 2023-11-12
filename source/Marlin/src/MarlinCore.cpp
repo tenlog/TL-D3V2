@@ -928,9 +928,9 @@ void kill(PGM_P const lcd_error/*=nullptr*/, PGM_P const lcd_component/*=nullptr
         //Do not display some special message
         TJCMessage(1, 1, 24, "", "", "", ErrorMessage);
       }
-      TLSTJC_println("beep 50");
-      safe_delay(100);
-      TLSTJC_println("beep 50");
+      //TLSTJC_println("beep 50");
+      //safe_delay(100);
+      TLSTJC_println("beep 100");
       safe_delay(100);
       #if ENABLED(TL_BEEPER)
         start_beeper(4, 0); //重启
@@ -1187,6 +1187,7 @@ inline void tmc_standby_setup() {
  */
 void setup() {
 
+  
   #if ENABLED(HWPWM)
     pwm_init();
   #endif
@@ -1222,6 +1223,9 @@ void setup() {
   #if DISABLED(TL_GRBL)
     SERIAL_ECHOLNPGM("\n==============MARLIN==============");
     SERIAL_ECHOLNPGM("start");
+    char cmd[32];
+    sprintf(cmd, "Clock:%d", SystemCoreClock);
+    TLECHO_PRINTLN(cmd);
   #endif
 
   //I2c init..

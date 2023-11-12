@@ -188,6 +188,11 @@ extern uint16_t HAL_adc_result;
 // Enable interrupts
 #define sei() interrupts()
 
+// Interrupts
+static bool isr_state() { return interrupts_status(); }
+static void isr_on()  { ((void)interrupts()); }
+static void isr_off() { ((void)noInterrupts()); }
+
 // Memory related
 #define __bss_end __bss_end__
 

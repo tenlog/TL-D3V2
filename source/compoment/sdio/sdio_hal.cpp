@@ -7,11 +7,13 @@
 
 static stc_sd_handle_t stcSdhandle;
 #ifdef TL_HIGHSPEED
-#define TLSDIOSPEEDMODE SdiocHighSpeedMode
+#define TLSDIOSPEEDMODE SdiocHighSpeedMode//SdiocHighSpeedMode
+#define TLSDIOCLOCK	SdiocClk2M
 #else
 #define TLSDIOSPEEDMODE SdiocNormalSpeedMode
+#define TLSDIOCLOCK	SdiocClk2M
 #endif
-stc_sdcard_init_t stcCardInitCfg = {SdiocBusWidth4Bit, SdiocClk2M, TLSDIOSPEEDMODE, NULL,}; //SdiocHighSpeedMode SdiocNormalSpeedMode Normal speed will cause mainboard reboot when print speed > 200;
+stc_sdcard_init_t stcCardInitCfg = {SdiocBusWidth4Bit, TLSDIOCLOCK, TLSDIOSPEEDMODE, NULL,}; //SdiocHighSpeedMode SdiocNormalSpeedMode Normal speed will cause mainboard reboot when print speed > 200;
 stc_sdcard_dma_init_t stcDmaInitCfg = {M4_DMA2, DmaCh0,};//M4_DMA2 DmaCh0 //by zyf dma2 ch2 is woriking...
 Sdioc_Class::Sdioc_Class(M4_SDIOC_TypeDef *SDIOCx){
 	MEM_ZERO_STRUCT(stcSdhandle);
@@ -48,18 +50,18 @@ void Sdioc_Class::end(M4_SDIOC_TypeDef *SDIOCx){
 }
 
 en_result_t Sdioc_Class::erase(uint32_t BlkStartAddr,uint32_t BlkEndAddr){
-	return SDCARD_Erase(&stcSdhandle, BlkStartAddr, BlkEndAddr, sdio_timeout);
+	return SDCARD_Erase(&stcSdhandle, BlkStartAddr, BlkEndAddr, dele_timeout);
 }
 
 /**attention: min dataunit: 4byte or 32bit **/
 en_result_t Sdioc_Class::read(uint32_t BlockAddr,uint16_t BlockCnt,uint8_t *dest){
-	return SDCARD_ReadBlocks(&stcSdhandle, BlockAddr, BlockCnt, (uint8_t *)dest, sdio_timeout);
+	return SDCARD_ReadBlocks(&stcSdhandle, BlockAddr, BlockCnt, (uint8_t *)dest, sd_read_timeout);
 }
 
 /**attention: min dataunit: 4byte or 32bit **/
 en_result_t Sdioc_Class::write(uint32_t BlockAddr,uint16_t BlockCnt, const uint8_t *dest)
 {
-    return SDCARD_WriteBlocks(&stcSdhandle, BlockAddr, BlockCnt, (uint8_t *)dest, sdio_timeout);
+    return SDCARD_WriteBlocks(&stcSdhandle, BlockAddr, BlockCnt, (uint8_t *)dest, writ_timeout);
 }
 
 /*****************end of file*******************/

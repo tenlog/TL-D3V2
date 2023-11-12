@@ -16,7 +16,7 @@
         <TargetCommonOption>
           <Device>HC32F460PETB</Device>
           <Vendor>HDSC</Vendor>
-          <PackID>HDSC.HC32F460.1.0.7</PackID>
+          <PackID>HDSC.HC32F460.1.0.10</PackID>
           <PackURL>https://raw.githubusercontent.com/hdscmcu/pack/master/</PackURL>
           <Cpu>IRAM(0x1FFF8000,0x2F000) IRAM2(0x200F0000,0x1000) IROM(0x00000000,0x80000) IROM2(0x03000C00,0x003FC) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -186,6 +186,7 @@
             <RvdsVP>2</RvdsVP>
             <RvdsMve>0</RvdsMve>
             <RvdsCdeCp>0</RvdsCdeCp>
+            <nBranchProt>0</nBranchProt>
             <hadIRAM2>1</hadIRAM2>
             <hadIROM2>1</hadIROM2>
             <StupSel>8</StupSel>
@@ -539,11 +540,6 @@
               <FilePath>..\source\Marlin\src\gcode\config\M309.cpp</FilePath>
             </File>
             <File>
-              <FileName>M17_M18_M84.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\source\Marlin\src\gcode\control\M17_M18_M84.cpp</FilePath>
-            </File>
-            <File>
               <FileName>M80_M81.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\gcode\control\M80_M81.cpp</FilePath>
@@ -592,6 +588,11 @@
               <FileName>M999.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\gcode\control\M999.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>M17_M18_M84.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\gcode\control\M17_M18_M84.cpp</FilePath>
             </File>
             <File>
               <FileName>T.cpp</FileName>
@@ -1027,6 +1028,11 @@
               <FileName>M906.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\gcode\feature\trinamic\M906.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>M593.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\gcode\input_shaping\M593.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -1509,14 +1515,19 @@
               <FilePath>..\source\Marlin\src\HAL\PWM\pwm.cpp</FilePath>
             </File>
             <File>
-              <FileName>xen_iic.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\source\Marlin\src\HAL\I2C\xen_iic.cpp</FilePath>
-            </File>
-            <File>
               <FileName>HW_SPI.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\HAL\SPI\HW_SPI.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>hw_iic.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\HAL\I2C\hw_iic.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>xen_iic.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\HAL\I2C\xen_iic.cpp</FilePath>
             </File>
           </Files>
         </Group>

@@ -116,6 +116,18 @@ uint8_t GcodeSuite::axis_relative = (
   xyz_pos_t GcodeSuite::coordinate_system[MAX_COORDINATE_SYSTEMS];
 #endif
 
+void GcodeSuite::report_echo_start(const bool forReplay) { if (!forReplay) SERIAL_ECHO_START(); }
+void GcodeSuite::report_heading(const bool forReplay, FSTR_P const fstr, const bool eol/*=true*/) {
+  if (forReplay) return;
+  if (fstr) {
+    SERIAL_ECHO_START();
+    SERIAL_ECHOPGM("; ");
+    SERIAL_ECHO(fstr);
+  }
+  if (eol) { SERIAL_CHAR(':'); SERIAL_EOL(); }
+}
+
+
 /**
  * Get the target extruder from the T parameter or the active_extruder
  * Return -1 if the T parameter is out of range
@@ -887,6 +899,10 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
 
       #if ENABLED(BAUD_RATE_GCODE)
         case 575: M575(); break;                                  // M575: Set serial baudrate
+      #endif
+
+      #if HAS_SHAPING
+        case 593: M593(); break;                                  // M593: Set Input Shaping parameters
       #endif
 
       #if ENABLED(ADVANCED_PAUSE_FEATURE)
