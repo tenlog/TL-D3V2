@@ -92,7 +92,7 @@ Version     033
 
 //TL Medels and version
 //#define TL_H2
-#define TL_D3HS   //High Speed
+//#define TL_D3HS   //High Speed
 //#define TL_D3
 //#define TL_S2   //single head
 //#define TL_S3   //single head
@@ -106,9 +106,9 @@ Version     033
 //#define TL_LW8   //Luminous words
 //#define TL_LW3   //
 //#define TL_X3    //
-//#define TL_X2    //Neza
+#define TL_X2    //Neza
 
-//#define TL_DEBUG    //debug
+#define TL_DEBUG    //debug
 //#define DUAL_HEAD_BLTOUCH
 //#define INPUT_SHAPING
 
@@ -129,11 +129,12 @@ Version     033
 #endif
 
 #if ENABLED(TL_X)
-  #define XEN_IIC
+  //#define XEN_IIC
+  #define EMB_IIC
   //#define TL_SPI_DRIVE
 #endif
 
-#if ENABLED(XEN_IIC)
+#if ANY(XEN_IIC, EMB_IIC)
   #define HW_IIC
 #endif
 

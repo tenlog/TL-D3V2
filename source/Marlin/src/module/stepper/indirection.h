@@ -36,6 +36,10 @@
   #include "../../HAL/I2C/xen_iic.h"
 #endif
 
+#if ENABLED(EMB_IIC)
+  #include "../../HAL/I2C/emb_iic.h"
+#endif
+
 #if HAS_L64XX
   #include "L64xx.h"
 #endif

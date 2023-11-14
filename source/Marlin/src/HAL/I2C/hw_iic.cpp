@@ -46,13 +46,13 @@ en_result_t I2C_Transmit(uint16_t u16DevAddr, uint8_t *pu8TxData, uint32_t u32Si
             if(Ok == enRet){
                 //TLDEBUG_PRINTLN("XE I2C TransData OK!");
             }else{
-                TLDEBUG_PRINTLN("XE I2C TransData Error!");
+                TLDEBUG_PRINTLN("HW I2C TransData Error!");
             }
         }else{
-            TLDEBUG_PRINTLN("XE I2C Address Error!");
+            TLDEBUG_PRINTLN("HW I2C Address Error!");
         }
     }else{
-        TLDEBUG_PRINTLN("XE I2C Start Error!");
+        TLDEBUG_PRINTLN("WH I2C Start Error!");
     }
 
     I2C_Stop(I2C_UNIT,u32TimeOut);
@@ -122,7 +122,7 @@ en_result_t I2C_Receive(uint16_t u16DevAddr, uint8_t *pu8RxData, uint32_t u32Siz
  **          - Ok:                     Success
  **          - ErrorInvalidParameter:  Invalid parameter
  ******************************************************************************/
-en_result_t HWI2C_Init(void)
+en_result_t HWI2C_Init(uint32_t Buadrate)
 {
     /* Initialize I2C port*/
     PORT_SetFunc(I2C_SCL_PORT, I2C_SCL_PIN, I2C_GPIO_SCL_FUNC, Disable);
@@ -139,7 +139,7 @@ en_result_t HWI2C_Init(void)
 
     MEM_ZERO_STRUCT(stcI2cInit);
     stcI2cInit.u32ClockDiv = I2C_CLK_DIV;
-    stcI2cInit.u32Baudrate = I2C_BAUDRATE;
+    stcI2cInit.u32Baudrate = Buadrate;
     stcI2cInit.u32SclTime = 0ul;
     enRet = I2C_Init(I2C_UNIT, &stcI2cInit, &fErr);
     if(Ok == enRet)
