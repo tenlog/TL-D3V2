@@ -13,8 +13,9 @@
 
     #define I2C_FCG_USE                     (PWC_FCG1_PERIPH_I2C3)
     
-    #define I2C_BAUDRATE                    (400000ul)
+    //#define I2C_BAUDRATE                    (400000ul)
     #define I2C_CLK_DIV                     I2C_CLK_DIV2
+    //#define I2C_CLK_DIV                     I2C_CLK_DIV4
 
     en_result_t HWI2C_Init(uint32_t Buadrate);
     en_result_t I2C_Transmit(uint16_t u16DevAddr, uint8_t *pu8TxData, uint32_t u32Size, uint32_t u32TimeOut);

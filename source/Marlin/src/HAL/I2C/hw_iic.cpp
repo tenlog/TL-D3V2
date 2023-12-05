@@ -140,17 +140,19 @@ en_result_t HWI2C_Init(uint32_t Buadrate)
     MEM_ZERO_STRUCT(stcI2cInit);
     stcI2cInit.u32ClockDiv = I2C_CLK_DIV;
     stcI2cInit.u32Baudrate = Buadrate;
-    stcI2cInit.u32SclTime = 0ul;
+    stcI2cInit.u32SclTime = 1ul;
+    //stcI2cInit.u32SclTime = 0ul;
     enRet = I2C_Init(I2C_UNIT, &stcI2cInit, &fErr);
     if(Ok == enRet)
     {
         //TLDEBUG_PRINTLN("XE I2C Init OK!");
     }else{
-        TLDEBUG_PRINTLN("XE I2C Init Error!");
+        char cmd[32];
+        sprintf(cmd, "HW I2C Init Error, No:%d", enRet);
+        TLDEBUG_PRINTLN(cmd);
     }
 
-    I2C_BusWaitCmd(I2C_UNIT, Enable);
-    
+    I2C_BusWaitCmd(I2C_UNIT, Enable);    
     return enRet;
 }
 

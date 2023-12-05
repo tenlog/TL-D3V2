@@ -617,6 +617,9 @@ private:
       #if ENABLED(TL_L)
       static void M320();
       #endif
+      #if ENABLED(CONVEYOR_BELT)
+      static void M321(); //Print Next
+      #endif
     #endif
     #if ENABLED(LONG_FILENAME_HOST_SUPPORT)
       static void M33();

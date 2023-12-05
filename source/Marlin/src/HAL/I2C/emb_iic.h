@@ -9,7 +9,7 @@
     extern bool FAN_STA[4];
     extern bool HEA_STA[2];
 
-    void XEI2C_Init(void);
+    void EMBI2C_Init(void);
     void EMB_WRITE();
 
 #endif

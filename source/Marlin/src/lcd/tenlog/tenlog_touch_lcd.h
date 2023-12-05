@@ -267,6 +267,15 @@ extern uint8_t sd_OK;
     extern uint32_t STEPTEST_HZ;
 #endif
 
+#if ENABLED(CONVEYOR_BELT)
+    extern uint32_t belt_print_end_time_start;
+    extern uint8_t  belt_next_print_file_no;
+    void belt_idle();
+    void belt_start();
+    void belt_stop();
+    extern char shortFileNameSearched[13];
+#endif
+
 extern uint8_t tl_com_ID;
 extern char TJCModelNo[64];
 extern float E_Pos_read;

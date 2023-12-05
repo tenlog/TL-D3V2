@@ -109,5 +109,16 @@ void GcodeSuite::M320() {
   }
   lastClick = millis();
 }
+#endif//
+
+#if BOTH(TENLOG_TOUCH_LCD, CONVEYOR_BELT)
+void GcodeSuite::M321() {
+  belt_next_print_file_no = parser.intval('S');
+  belt_print_end_time_start = millis();
+  TLSTJC_println("page msgbox");
+  TLSTJC_println("vis b0,0");
+  TLSTJC_println("vis b1,0");
+  TLSTJC_println("tMsg.txt=\"Please wait next print.\"");
+}
 #endif
 #endif // HAS_MEDIA_SUBCALLS

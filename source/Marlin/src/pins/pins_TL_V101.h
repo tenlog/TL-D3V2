@@ -299,3 +299,9 @@
   #define MOSI_PIN          PA7
   #define MISO_PIN          PB0
 #endif
+
+#ifdef CONVEYOR_BELT
+  #define BELT_STEP_PIN     PB0
+  #define BELT_DIR_PIN      PB1
+  #define BELT_ENABLE_PIN   PA6 //?PA7
+#endif

@@ -93,7 +93,7 @@ Version     033
 //TL Medels and version
 //#define TL_H2
 //#define TL_D3HS   //High Speed
-//#define TL_D3
+#define TL_D3
 //#define TL_S2   //single head
 //#define TL_S3   //single head
 //#define TL_M3
@@ -103,14 +103,17 @@ Version     033
 //#define TL_D5HS
 //#define TL_D6
 //#define TL_D8     
+//#define TL_D1000
 //#define TL_LW8   //Luminous words
 //#define TL_LW3   //
 //#define TL_X3    //
-#define TL_X2    //Neza
+//#define TL_X2    //Neza
 
-#define TL_DEBUG    //debug
+//#define TL_DEBUG    //debug
 //#define DUAL_HEAD_BLTOUCH
-//#define INPUT_SHAPING
+#define INPUT_SHAPING
+
+//#define CONVEYOR_BELT
 
 #if ANY(TL_LW8, TL_LW3)
   #define TL_W
@@ -129,8 +132,8 @@ Version     033
 #endif
 
 #if ENABLED(TL_X)
-  //#define XEN_IIC
-  #define EMB_IIC
+  #define XEN_IIC
+  //#define EMB_IIC
   //#define TL_SPI_DRIVE
 #endif
 
@@ -147,7 +150,7 @@ Version     033
   #endif
 #elif ENABLED(TL_L)
   #define EXTRUDERS 0
-#else
+#else //D系列独立双喷头
   #define DUAL_X_CARRIAGE
   #define EXTRUDERS 2
 #endif
@@ -180,7 +183,7 @@ Version     033
   #define TL_BEEPER
   #define TL_GRBL
   #define LASER_ENDSTOP_WIDTH 0
-#else
+#elif !defined(CONVEYOR_BELT) //传送带用了Wifi管脚做驱动
   #define ESP32_WIFI
 #endif
 
@@ -192,8 +195,25 @@ Version     033
   #define GRBL_BREATHE  1000
 #endif
 
+
+// Travel limits (mm) after homing, corresponding to endstop positions.
+#if ENABLED(SINGLE_HEAD)
+  #define X_MIN_POS 0
+#elif ENABLED(TL_L)
+  #define X_MIN_POS LASER_ENDSTOP_WIDTH
+#elif ENABLED(CONVEYOR_BELT)
+  #define X_MIN_POS -100
+#else
+  #define X_MIN_POS -50
+#endif
+
 // The size of the printable area
-#if defined(TL_D3) 
+#if defined(CONVEYOR_BELT)
+  #define TL_MODEL_STR_0 "X2B"
+  #define X_BED_SIZE 185
+  #define Y_BED_SIZE 240
+  #define Z_LENGTH   250
+#elif defined(TL_D3) 
   #define TL_MODEL_STR_0 "D3"
   #define X_BED_SIZE 320
   #define Y_BED_SIZE 320
@@ -240,6 +260,11 @@ Version     033
   #define X_BED_SIZE 605
   #define Y_BED_SIZE 610
   #define Z_LENGTH   610
+#elif defined(TL_D1000)
+  #define TL_MODEL_STR_0 "D1000"
+  #define X_BED_SIZE 1000
+  #define Y_BED_SIZE 1000
+  #define Z_LENGTH   1000
 #elif defined(TL_L5)
   #define TL_MODEL_STR_0 "L5"
   #define X_BED_SIZE 400
@@ -1210,14 +1235,14 @@ Version     033
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
 #if TL_HIGH_SPEED
-#define DEFAULT_MAX_FEEDRATE          { 500, 500, 15, 50 }
+#define DEFAULT_MAX_FEEDRATE          { 200, 200, 20, 30 }
 #else
-#define DEFAULT_MAX_FEEDRATE          { 400, 400, 5, 25 }
+#define DEFAULT_MAX_FEEDRATE          { 200, 200, 10, 25 }
 #endif
 
-//#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
+#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
-  #define MAX_FEEDRATE_EDIT_VALUES    { 600, 600, 10, 50 } // ...or, set your own edit limits
+  #define MAX_FEEDRATE_EDIT_VALUES    { 200, 200, 20, 30 } // ...or, set your own edit limits
 #endif
 
 /**
@@ -1227,15 +1252,16 @@ Version     033
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
 #if TL_HIGH_SPEED
-  #define DEFAULT_MAX_ACCELERATION      {5000, 5000, 100, 1000}
+  #define DEFAULT_MAX_ACCELERATION          {5000, 5000, 100, 1000}
+  #define DEFAULT_MAX_ACCELERATION_MATRII3D {20000, 20000, 500, 5000}
 #elif ENABLED(TL_L)
   #define DEFAULT_MAX_ACCELERATION      {3000, 3000, 20, 500}
 #else
   #define DEFAULT_MAX_ACCELERATION      {800, 800, 100, 800}
 #endif
-//#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
+#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
-  #define MAX_ACCEL_EDIT_VALUES       { 6000, 6000, 200, 20000 } // ...or, set your own edit limits
+  #define MAX_ACCEL_EDIT_VALUES       { 20000, 20000, 500, 5000 } // ...or, set your own edit limits
 #endif
 
 /**
@@ -1250,6 +1276,9 @@ Version     033
   #define DEFAULT_ACCELERATION          3000    // X, Y, Z and E acceleration for printing moves
   #define DEFAULT_RETRACT_ACCELERATION  1000    // E acceleration for retracts
   #define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
+  #define DEFAULT_ACCELERATION_MATRII3D          10000    // X, Y, Z and E acceleration for printing moves
+  #define DEFAULT_RETRACT_ACCELERATION_MATRII3D  5000    // E acceleration for retracts
+  #define DEFAULT_TRAVEL_ACCELERATION_MATRII3D   10000    // X, Y, Z acceleration for travel (non printing) moves  
 #else
   #if ENABLED(TL_L)
     #define DEFAULT_ACCELERATION          1200    // X, Y, Z and E acceleration for printing moves
@@ -1277,14 +1306,14 @@ Version     033
   #else
     #define DEFAULT_XJERK 10.0
     #define DEFAULT_YJERK 10.0
-    #define DEFAULT_ZJERK  0.3
+    #define DEFAULT_ZJERK  0.6
   #endif
 
   //#define TRAVEL_EXTRA_XYJERK 0.0     // Additional jerk allowance for all travel moves
 
-  //#define LIMITED_JERK_EDITING        // Limit edit via M205 or LCD to DEFAULT_aJERK * 2
+  #define LIMITED_JERK_EDITING        // Limit edit via M205 or LCD to DEFAULT_aJERK * 2
   #if ENABLED(LIMITED_JERK_EDITING)
-    #define MAX_JERK_EDIT_VALUES { 20, 20, 0.6, 10 } // ...or, set your own edit limits
+    #define MAX_JERK_EDIT_VALUES { 30, 30, 1.0, 10 } // ...or, set your own edit limits
   #endif
 #endif
 
@@ -1681,16 +1710,6 @@ Version     033
 
 #define Y_HOME_DIR -1
 #define Z_HOME_DIR -1
-
-
-// Travel limits (mm) after homing, corresponding to endstop positions.
-#if ENABLED(SINGLE_HEAD)
-  #define X_MIN_POS 0
-#elif ENABLED(TL_L)
-  #define X_MIN_POS LASER_ENDSTOP_WIDTH
-#else
-  #define X_MIN_POS -50
-#endif
 
 #if ENABLED(TL_L)
   #define Y_MIN_POS LASER_ENDSTOP_WIDTH

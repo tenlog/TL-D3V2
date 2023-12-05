@@ -1230,7 +1230,7 @@ void setup() {
 
   //I2c init..
   TERN_(XEN_IIC, XEI2C_Init());
-  TERN_(EMB_IIC, XEI2C_Init());
+  TERN_(EMB_IIC, EMBI2C_Init());
 
   //tenlog touch screen..
   TERN_(TENLOG_TOUCH_LCD, initTLScreen());

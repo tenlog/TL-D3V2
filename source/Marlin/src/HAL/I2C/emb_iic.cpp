@@ -26,7 +26,7 @@
     #define  EMB_CONFIG_PORT1_REG       7
     #define  EMB_CONFIG_VAL0            0b00001100 //I07 FC1 FZ1 HE1 DJ1 DJ2 EN0 EN1
     #define  EMB_CONFIG_VAL1            0b00110001 //EN2 EN3 DJ3 DJ4 HE2 FC2 FZ2 I10
-    #define  IIC_BUADRATE               20000
+    #define  IIC_BUADRATE                (50000ul)
 
     bool XE_ENA[4] = {1,1,1,1};
     bool FAN_STA[4] = {1,0,1,0};    //FC1 FZ1 FC1 FZ2
@@ -135,7 +135,8 @@
     **          - Ok:                     Success
     **          - ErrorInvalidParameter:  Invalid parameter
     ******************************************************************************/
-    void XEI2C_Init(void) {
+    void EMBI2C_Init(void) {
+
         if(Ok == HWI2C_Init(IIC_BUADRATE)){
             Ddl_Delay1ms(200); 
             uint8_t data_r = EMBI2C_Read(0);

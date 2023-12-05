@@ -192,6 +192,7 @@ typedef struct {     bool X, Y, Z, X2, Y2, Z2, Z3, Z4, E0, E1, E2, E3, E4, E5, E
 
 // Defaults for reset / fill in on load
 static const uint32_t   _DMA[] PROGMEM = DEFAULT_MAX_ACCELERATION;
+static const uint32_t   _DMA_MT[] PROGMEM = DEFAULT_MAX_ACCELERATION_MATRII3D;
 static const float     _DASU[] PROGMEM = DEFAULT_AXIS_STEPS_PER_UNIT;
 static const float     _DASU_MT[] PROGMEM = DEFAULT_AXIS_STEPS_PER_UNIT_MATRII3D;
 static const feedRate_t _DMF[] PROGMEM = DEFAULT_MAX_FEEDRATE;
@@ -1670,12 +1671,14 @@ void MarlinSettings::postprocess() {
 
         if (!validating) LOOP_XYZE_N(i) {
           const bool in = (i < esteppers + XYZ);
-          planner.settings.max_acceleration_mm_per_s2[i] = in ? tmp1[i] : pgm_read_dword(&_DMA[ALIM(i, _DMA)]);
           if(tl_com_ID==107){
+            planner.settings.max_acceleration_mm_per_s2[i] = in ? tmp1[i] : pgm_read_dword(&_DMA_MT[ALIM(i, _DMA_MT)]);
             planner.settings.axis_steps_per_mm[i]          = in ? tmp2[i] : pgm_read_float(&_DASU_MT[ALIM(i, _DASU_MT)]);
           }else{
+            planner.settings.max_acceleration_mm_per_s2[i] = in ? tmp1[i] : pgm_read_dword(&_DMA[ALIM(i, _DMA)]);
             planner.settings.axis_steps_per_mm[i]          = in ? tmp2[i] : pgm_read_float(&_DASU[ALIM(i, _DASU)]);
           }
+
           planner.settings.max_feedrate_mm_s[i]          = in ? tmp3[i] : pgm_read_float(&_DMF[ALIM(i, _DMF)]);
         }
 
@@ -2880,11 +2883,20 @@ void MarlinSettings::reset() {
   }
 
   planner.settings.min_segment_time_us = DEFAULT_MINSEGMENTTIME;
-  planner.settings.acceleration = DEFAULT_ACCELERATION;
-  planner.settings.retract_acceleration = DEFAULT_RETRACT_ACCELERATION;
-  planner.settings.travel_acceleration = DEFAULT_TRAVEL_ACCELERATION;
+
+  if(tl_com_ID!=107){
+    planner.settings.acceleration = DEFAULT_ACCELERATION;
+    planner.settings.retract_acceleration = DEFAULT_RETRACT_ACCELERATION;
+    planner.settings.travel_acceleration = DEFAULT_TRAVEL_ACCELERATION;
+  }else{
+    planner.settings.acceleration = DEFAULT_ACCELERATION_MATRII3D;
+    planner.settings.retract_acceleration = DEFAULT_RETRACT_ACCELERATION_MATRII3D;
+    planner.settings.travel_acceleration = DEFAULT_TRAVEL_ACCELERATION_MATRII3D;
+  }
+
   planner.settings.min_feedrate_mm_s = feedRate_t(DEFAULT_MINIMUMFEEDRATE);
   planner.settings.min_travel_feedrate_mm_s = feedRate_t(DEFAULT_MINTRAVELFEEDRATE);
+
 
   #if HAS_CLASSIC_JERK
     #ifndef DEFAULT_XJERK
@@ -2917,7 +2929,11 @@ void MarlinSettings::reset() {
   //
 
   #if HAS_FILAMENT_SENSOR
-    runout.enabled = FIL_RUNOUT_ENABLED_DEFAULT;
+    if(tl_com_ID==107){
+      runout.enabled = true;
+    }else{
+      runout.enabled = FIL_RUNOUT_ENABLED_DEFAULT;
+    }
     runout.reset();
     TERN_(HAS_FILAMENT_RUNOUT_DISTANCE, runout.set_runout_distance(FILAMENT_RUNOUT_DISTANCE_MM));
   #endif

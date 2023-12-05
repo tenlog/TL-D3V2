@@ -9,7 +9,7 @@
     #include "hw_iic.h"
 
     bool XE_ENA[4] = {0};
-    #define IIC_BUADRATE    400000
+    #define IIC_BUADRATE    (400000ul)
 
     void XEI2C_Write(uint8_t reg, uint8_t data) {
         uint8_t buffer[2];

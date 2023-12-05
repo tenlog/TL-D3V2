@@ -541,6 +541,9 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
           #if ENABLED(TL_L)
           case 320: M320(); break;                                // M320: print a pre selected file.
           #endif
+          #if ENABLED(CONVEYOR_BELT)
+          case 321: M321(); break;                                // M321: print next file.
+          #endif
         #endif
 
         #if ENABLED(LONG_FILENAME_HOST_SUPPORT)
@@ -1191,7 +1194,8 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
 
             if(new_atv == 0 || new_atv == 1){
               if(old_xe_atv_0 != -1){
-                sprintf(cmd, "G0 X-50 F%d", X50Speed);
+
+                sprintf(cmd, "G0 X-%d F%d", X_MIN_POS, X50Speed);
                 EXECUTE_GCODE(cmd);
                 my_sleep(0.1);
               }
@@ -1226,10 +1230,10 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
               my_sleep(1.0);
               if(sweeping_times > 0 && old_xe_atv_0 != -1){
                 for(uint8_t u8L = 0; u8L < sweeping_times; u8L++){
-                  sprintf(cmd, "G0 X-10 F%d", sweeping_speed);
+                  sprintf(cmd, "G0 X-%d F%d", X_MIN_POS+40, sweeping_speed);
                   EXECUTE_GCODE(cmd);
                   my_sleep(0.1);
-                  sprintf(cmd, "G0 X-50 F%d", sweeping_speed);
+                  sprintf(cmd, "G0 X-%d F%d", X_MIN_POS, sweeping_speed);
                   EXECUTE_GCODE(cmd);
                   my_sleep(0.1);
                 }

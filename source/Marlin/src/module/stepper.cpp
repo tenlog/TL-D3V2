@@ -1906,7 +1906,6 @@ void Stepper::pulse_phase_isr() {
   } while (--events_to_do);
 }
 
-
 #if HAS_SHAPING
 
   void Stepper::shaping_isr() {
@@ -1917,7 +1916,8 @@ void Stepper::pulse_phase_isr() {
     TERN_(INPUT_SHAPING_Y, step_needed[Y_AXIS] = !ShapingQueue::peek_y() || ShapingQueue::free_count_y() < steps_per_isr);
 
     if (bool(step_needed)) while (true) {
-      HAL_watchdog_refresh(); //by zyf
+      HAL_watchdog_refresh();  //by zyf
+      //TLDEBUG_PRINTLN("I");    //by zyf
       #if ENABLED(INPUT_SHAPING_X)
         if (step_needed[X_AXIS]) {
           const bool forward = ShapingQueue::dequeue_x();
@@ -1939,6 +1939,7 @@ void Stepper::pulse_phase_isr() {
       USING_TIMED_PULSE();
       if (bool(step_needed)) {
         HAL_watchdog_refresh(); //by zyf
+        //TLDEBUG_PRINTLN("J");    //by zyf
         #if ISR_MULTI_STEPS
           START_TIMED_PULSE();
           AWAIT_HIGH_PULSE();

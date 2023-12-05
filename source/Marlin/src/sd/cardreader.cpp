@@ -330,8 +330,10 @@ void CardReader::tl_ls(bool wifi) {
   //  TLDEBUG_PRINTLN("ls when uploading.");
   //  return;
   //}
+  
   TERN_(TL_L, ZERO(pre_print_file_name));
-  if(wifi)mount();
+  if(wifi)
+    mount();
   char cmd[96];
   int LastID = 0;
   uint16_t wifi_file_name_p = 0;
@@ -367,6 +369,31 @@ void CardReader::tl_ls(bool wifi) {
     while (root.readDir(&p0, longFilename) > 0) {
       if (is_dir_or_gcode(p0, true)){ 
         if(p0.fileSize > 5)
+          #if ENABLED(CONVEYOR_BELT)
+            createFilename(filename, p0);          
+            if(belt_next_print_file_no){
+              char longFileNameForSearch[23];
+              sprintf(longFileNameForSearch, "%d.gcode", belt_next_print_file_no);
+              TLDEBUG_PRINTLN(longFileNameForSearch);
+              bool longFileNameFound = true;
+              for(int k=0; k<22; k++){
+                if(longFileNameForSearch[k] == 0 || longFilename[k] == 0){
+                  break;
+                }
+                if(longFileNameForSearch[k] != longFilename[k]){
+                  longFileNameFound = false;
+                  break;
+                }
+              }
+              TLDEBUG_PRINTLN(longFileNameForSearch);
+              if(longFileNameFound){
+                sprintf(shortFileNameSearched, "%s", filename);
+                TLDEBUG_PRINTLN(shortFileNameSearched);
+                break;
+              }
+            }
+          
+          #endif
           fileNum++;
       }
     }

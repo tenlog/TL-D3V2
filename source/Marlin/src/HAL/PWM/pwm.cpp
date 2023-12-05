@@ -21,6 +21,13 @@ static void TimeraUnit_IrqCallback_tlts(void)
 }
 #endif
 
+#ifdef CONVEYOR_BELT
+static void TimeraUnit_IrqCallback_belt(void)
+{
+    TIMERA_ClearFlag(TAUNIT_BELT, TimeraFlagOverflow);
+}
+#endif
+
 static void TimeraUnit_IrqCallback_F0(void)
 {
     TIMERA_ClearFlag(TAUNIT_F0, TimeraFlagOverflow);
@@ -78,6 +85,13 @@ static void Tim_Config(const uint8_t UN){
     PWC_Fcg2PeriphClockCmd(TAUNIT_TLTS_CLOCK, Enable);
     PORT_SetFunc(TAUNIT_TLTS_CH_PORT, TAUNIT_TLTS_CH_PIN, TAUNIT_TLTS_CH_FUNC, Disable);
     #endif
+  }else if(UN == UN_BELT){
+    #ifdef CONVEYOR_BELT
+    PORT_Init(TAUNIT_BELT_CH_PORT, TAUNIT_BELT_CH_PIN, &stcPortInit);
+    PORT_ResetBits(TAUNIT_BELT_CH_PORT, TAUNIT_BELT_CH_PIN);
+    PWC_Fcg2PeriphClockCmd(TAUNIT_BELT_CLOCK, Enable);
+    PORT_SetFunc(TAUNIT_BELT_CH_PORT, TAUNIT_BELT_CH_PIN, TAUNIT_BELT_CH_FUNC, Disable);
+    #endif
   }
 
   /* Configuration timera unit 1 base structure */
@@ -102,6 +116,12 @@ static void Tim_Config(const uint8_t UN){
     uint32_t TIMERA_COUNT_OVERFLOW_TLTS_ = CAL_TLTS_OVERFLOW;
     stcTimeraInit.u16PeriodVal = TIMERA_COUNT_OVERFLOW_TLTS_; // 
     TIMERA_BaseInit(TAUNIT_TLTS, &stcTimeraInit);
+    #endif
+  }else if(UN == UN_BELT){
+    #ifdef CONVEYOR_BELT
+    uint32_t TIMERA_COUNT_OVERFLOW_BELT_ = CAL_BELT_OVERFLOW;
+    stcTimeraInit.u16PeriodVal = TIMERA_COUNT_OVERFLOW_BELT_; // 
+    TIMERA_BaseInit(TAUNIT_BELT, &stcTimeraInit);
     #endif
   }
   
@@ -158,6 +178,18 @@ static void Tim_Config(const uint8_t UN){
     stcIrqRegiConf.enIntSrc = TAUNIT_TLTS_OVERFLOW_INT;
     stcIrqRegiConf.enIRQn = IRQ_INDEX_INT_TIMA_CH_TLTS;
     stcIrqRegiConf.pfnCallback = &TimeraUnit_IrqCallback_tlts;
+    #endif  
+  }else if(UN == UN_BELT){
+    #ifdef CONVEYOR_BELT
+    /* Configure Channel 1 */
+    TIMERA_CompareInit(TAUNIT_BELT, TAUNIT_BELT_CH, &stcTimerCompareInit);
+    TIMERA_CompareCmd(TAUNIT_BELT, TAUNIT_BELT_CH, Enable);
+    /* Enable period count interrupt */
+    TIMERA_IrqCmd(TAUNIT_BELT, TimeraIrqOverflow, Enable);
+    /* Interrupt of timera unit 1 */
+    stcIrqRegiConf.enIntSrc = TAUNIT_BELT_OVERFLOW_INT;
+    stcIrqRegiConf.enIRQn = IRQ_INDEX_INT_TIMA_CH_BELT;
+    stcIrqRegiConf.pfnCallback = &TimeraUnit_IrqCallback_belt;
     #endif
   }
 
@@ -187,6 +219,13 @@ static void Tim_Config(const uint8_t UN){
     TIMERA_SetCompareValue( TAUNIT_TLTS,TAUNIT_TLTS_CH, TIMERA_COUNT_OVERFLOW_TLTS_*0.1);
     TIMERA_SpecifyOutputSta(TAUNIT_TLTS,TAUNIT_TLTS_CH, TimeraSpecifyOutputInvalid);	
     #endif
+  }else if(UN == UN_BELT){
+    #ifdef CONVEYOR_BELT
+    uint32_t TIMERA_COUNT_OVERFLOW_BELT_ = CAL_BELT_OVERFLOW;
+    TIMERA_Cmd(TAUNIT_BELT,Enable);	
+    TIMERA_SetCompareValue( TAUNIT_BELT,TAUNIT_BELT_CH, TIMERA_COUNT_OVERFLOW_BELT_*0.1);
+    TIMERA_SpecifyOutputSta(TAUNIT_BELT,TAUNIT_BELT_CH, TimeraSpecifyOutputInvalid);	
+    #endif
     } 
 }
 
@@ -197,6 +236,9 @@ void set_duty_cycle(uint16_t duty, uint8_t UN){
     //TLDEBUG_PRINTLN(temp);
     #ifdef TL_STEPTEST
       uint32_t TIMERA_COUNT_OVERFLOW_TLTS_ = CAL_TLTS_OVERFLOW;
+    #endif
+    #ifdef CONVEYOR_BELT
+      uint32_t TIMERA_COUNT_OVERFLOW_BELT_ = CAL_BELT_OVERFLOW;
     #endif
 
 		if(duty == 0 && UN == UN_F0){
@@ -227,8 +269,15 @@ void set_duty_cycle(uint16_t duty, uint8_t UN){
         TIMERA_SpecifyOutputSta(TAUNIT_TLTS, TAUNIT_TLTS_CH, TimeraSpecifyOutputHigh);
 				TIMERA_Cmd(TAUNIT_TLTS,Enable);
     #endif
+    #ifdef CONVEYOR_BELT
+		}else if(duty == 0 && UN == UN_BELT){
+        TIMERA_SpecifyOutputSta(TAUNIT_BELT, TAUNIT_BELT_CH, TimeraSpecifyOutputLow);
+				TIMERA_Cmd(TAUNIT_BELT, Enable);
+		}else if(duty >= TIMERA_COUNT_OVERFLOW_BELT_ && UN == UN_BELT){
+        TIMERA_SpecifyOutputSta(TAUNIT_BELT, TAUNIT_BELT_CH, TimeraSpecifyOutputHigh);
+				TIMERA_Cmd(TAUNIT_BELT, Enable);
+    #endif
 		}else{
-
 				stc_timera_compare_init_t stcTimerCompareInit;
 				MEM_ZERO_STRUCT(stcTimerCompareInit);
 			
@@ -268,6 +317,12 @@ void set_duty_cycle(uint16_t duty, uint8_t UN){
           TIMERA_CompareCmd(TAUNIT_TLTS, TAUNIT_TLTS_CH, Enable);
           TIMERA_Cmd(TAUNIT_TLTS,Enable);
           #endif
+        }else if(UN == UN_BELT){
+          #ifdef CONVEYOR_BELT
+          TIMERA_CompareInit(TAUNIT_BELT, TAUNIT_BELT_CH, &stcTimerCompareInit);
+          TIMERA_CompareCmd(TAUNIT_BELT, TAUNIT_BELT_CH, Enable);
+          TIMERA_Cmd(TAUNIT_BELT, Enable);
+          #endif
         }
 		}
 }
@@ -287,6 +342,11 @@ void set_steering_gear_dutyfactor(uint16_t dutyfactor, uint8_t UN)
   }else if(UN == UN_TLT){
     #ifdef TLTOUCH
   	dutyfactor = TIMERA_COUNT_OVERFLOW_TLT < dutyfactor ? TIMERA_COUNT_OVERFLOW_TLT : dutyfactor;
+    #endif
+  }else if(UN == UN_BELT){
+    #ifdef CONVEYOR_BELT
+    uint32_t TIMERA_COUNT_OVERFLOW_BELT_ = CAL_BELT_OVERFLOW;
+  	dutyfactor = TIMERA_COUNT_OVERFLOW_BELT_ < dutyfactor ? TIMERA_COUNT_OVERFLOW_BELT_ : dutyfactor;
     #endif
   }else if(UN == UN_TLTS){
     #ifdef TL_STEPTEST
@@ -316,6 +376,11 @@ void set_pwm_hw(uint16_t pwm_value, uint16_t max_value, uint8_t unitNo)  //0-255
     uint32_t TIMERA_COUNT_OVERFLOW_TLTS_ = CAL_TLTS_OVERFLOW;
     pwm_value_V = uint16_t(gtValue * (float)TIMERA_COUNT_OVERFLOW_TLTS_);    // 占空比
     #endif
+  }else if(unitNo == UN_BELT) {
+    #ifdef CONVEYOR_BELT
+    uint32_t TIMERA_COUNT_OVERFLOW_BELT_ = CAL_BELT_OVERFLOW;
+    pwm_value_V = uint16_t(gtValue * (float)TIMERA_COUNT_OVERFLOW_BELT_);    // 占空比
+    #endif
   }
   set_steering_gear_dutyfactor(pwm_value_V, unitNo);    // 设置占空比
 }
@@ -333,6 +398,10 @@ void pwm_init()
   #ifdef TL_STEPTEST
  	Tim_Config(UN_TLTS);
   set_pwm_hw(0, 255, UN_TLTS);
+  #endif
+  #ifdef CONVEYOR_BELT
+ 	Tim_Config(UN_BELT);
+  set_pwm_hw(0, 255, UN_BELT);
   #endif
 }
 #endif    //HWPWM

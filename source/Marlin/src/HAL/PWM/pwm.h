@@ -3,6 +3,7 @@
 
 #ifdef HWPWM
 
+#define UN_BELT 3
 #define UN_TLTS 5
 #define UN_TLT  4
 #define UN_F0   2
@@ -71,6 +72,23 @@
 #define IRQ_INDEX_INT_TIMA_CH_TLTS          (Int005_IRQn)
 #define CAL_TLTS_OVERFLOW              200000000/4/4/STEPTEST_HZ
 #endif
+
+#ifdef CONVEYOR_BELT
+    #define TAUNIT_BELT                    (M4_TMRA1) 
+    #define TAUNIT_BELT_CLOCK              (PWC_FCG2_PERIPH_TIMA1) 
+    #define TAUNIT_BELT_OVERFLOW_INT       (INT_TMRA1_OVF)
+
+    // TIMERA channel 1 Port/Pin definition
+    #define TAUNIT_BELT_CH                (TimeraCh6)
+    #define TAUNIT_BELT_CH_PORT           (PortB)     //PB0 TimerA1 PWM6
+    #define TAUNIT_BELT_CH_PIN            (Pin00)
+    #define TAUNIT_BELT_CH_FUNC           (Func_Tima0) //0
+
+    #define TIMERA_COUNT_OVERFLOW_BELT          (5208)  ////freq: 1200Hz -> 200 000 000 /4/1200HZ/4/2 = 5208(period val)
+    #define IRQ_INDEX_INT_TIMA_CH_BELT          (Int004_IRQn)
+    #define CAL_BELT_OVERFLOW              200000000/4/4/1200
+#endif
+
 void pwm_init();
 void set_pwm_hw(uint16_t pwm_value, uint16_t max_value, uint8_t unitNo=UN_F0);
 #endif
