@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "047"
+#define TL_SUBVERSION "048"
 
 //update log 
 /*
@@ -110,10 +110,11 @@ Version     033
 //#define TL_X2    //Neza
 
 //#define TL_DEBUG    //debug
-//#define DUAL_HEAD_BLTOUCH
+#define DUAL_HEAD_BLTOUCH
 #define INPUT_SHAPING
 
-//#define CONVEYOR_BELT
+//#define CONVEYOR_BELT //for test
+//#define CLK240M
 
 #if ANY(TL_LW8, TL_LW3)
   #define TL_W
@@ -215,8 +216,8 @@ Version     033
   #define Z_LENGTH   250
 #elif defined(TL_D3) 
   #define TL_MODEL_STR_0 "D3"
-  #define X_BED_SIZE 320
-  #define Y_BED_SIZE 320
+  #define X_BED_SIZE 310
+  #define Y_BED_SIZE 310
   #define Z_LENGTH   350
 #elif defined(TL_D3HS) 
   #define TL_HIGH_SPEED 1
@@ -283,9 +284,9 @@ Version     033
 #elif defined(TL_LW8)
   #define TL_HIGH_SPEED 1
   #define TL_MODEL_STR_0 "LW8"
-  #define X_BED_SIZE 820
-  #define Y_BED_SIZE 820
-  #define Z_LENGTH   100
+  #define X_BED_SIZE 800
+  #define Y_BED_SIZE 790
+  #define Z_LENGTH   65
 #elif defined(TL_LW3)
   //#define TL_HIGH_SPEED 1
   #define TL_MODEL_STR_0 "LW3"
@@ -337,7 +338,7 @@ Version     033
   #define WIFI_DEFAULT_IP_SETTINGS {192,168,0,1,255,255,255,0,192,168,0,88}
 #endif
 
-#if defined(TL_M3) || defined(TL_M3S)
+#if ANY(TL_M3,TL_M3S)
   #define INVERT_X_DIR false
 #else
   #define INVERT_X_DIR true
@@ -780,7 +781,7 @@ Version     033
 #else
   #define TEMP_SENSOR_0 1
   #if(EXTRUDERS == 2)
-  #define TEMP_SENSOR_1 1
+    #define TEMP_SENSOR_1 1
   #endif
   #define TEMP_SENSOR_BED 1
 #endif
@@ -882,7 +883,7 @@ Version     033
     #define DEFAULT_Kp  22.23
     #define DEFAULT_Ki  1.61
     #define DEFAULT_Kd  76.95
-    #define DEFAULT_Kp_MATRII3D  11.09
+    #define DEFAULT_Kp_MATRII3D  25.0
     #define DEFAULT_Ki_MATRII3D  0.31
     #define DEFAULT_Kd_MATRII3D  99.59
   #endif
@@ -1065,10 +1066,10 @@ Version     033
   #undef USE_YMAX_PLUG
   #if ANY(TL_W, TL_S)
     #undef USE_ZMAX_PLUG
-    #undef USE_XMIN_PLUG
+    #undef USE_XMAX_PLUG
   #elif ENABLED(SINGLE_HEAD)
     #undef USE_ZMAX_PLUG
-    #undef USE_XMAX_PLUG
+    //#undef USE_XMAX_PLUG
   #endif
 #else
   #undef USE_YMAX_PLUG
@@ -1102,8 +1103,13 @@ Version     033
 #endif
 
 // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
+//false 高电平触发
 #if ENABLED(TL_W)
-  #define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop. 高电平触发
+  #if X_BED_SIZE < 800
+    #define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop. false 高电平触发
+  #else
+    #define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop. false 高电平触发
+  #endif
   #define X_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
 #else
   #define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop. 低电平触发
@@ -1148,6 +1154,12 @@ Version     033
   #define Y_DRIVER_TYPE  TMC2130
   //#define Z_DRIVER_TYPE  TMC2130
   //#define Z2_DRIVER_TYPE TMC2130
+#elif X_BED_SIZE > 600
+  #define X_DRIVER_TYPE  TMC2209_STANDALONE
+  #define X2_DRIVER_TYPE TMC2209_STANDALONE
+  #define Y_DRIVER_TYPE  TMC2209_STANDALONE
+  #define Z_DRIVER_TYPE  TMC2209_STANDALONE
+  #define Z2_DRIVER_TYPE TMC2209_STANDALONE
 #else
   #define X_DRIVER_TYPE  TMC2209_STANDALONE
   #define X2_DRIVER_TYPE TMC2209_STANDALONE
@@ -1156,7 +1168,6 @@ Version     033
   #else
     #define Y_DRIVER_TYPE  TMC2209_STANDALONE
   #endif
-
   #define Z_DRIVER_TYPE  TMC2209_STANDALONE
   #define Z2_DRIVER_TYPE TMC2209_STANDALONE
 #endif
@@ -1223,7 +1234,9 @@ Version     033
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
 #if ENABLED(TL_W)
-  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 118, 118, 800, 145}
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80.6, 80.6, 400, 93}
+#elif X_BED_SIZE > 800
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 1920, 395}
 #else
   #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 800, 395}
 #endif
@@ -1235,14 +1248,18 @@ Version     033
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
 #if TL_HIGH_SPEED
-#define DEFAULT_MAX_FEEDRATE          { 200, 200, 20, 30 }
+#define DEFAULT_MAX_FEEDRATE          { 300, 300, 15, 30 }
 #else
-#define DEFAULT_MAX_FEEDRATE          { 200, 200, 10, 25 }
+  #if X_BED_SIZE > 999
+    #define DEFAULT_MAX_FEEDRATE          { 200, 200, 8, 25 }
+  #else
+    #define DEFAULT_MAX_FEEDRATE          { 200, 200, 10, 25 }
+  #endif
 #endif
 
 #define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
-  #define MAX_FEEDRATE_EDIT_VALUES    { 200, 200, 20, 30 } // ...or, set your own edit limits
+  #define MAX_FEEDRATE_EDIT_VALUES    { 300, 300, 20, 30 } // ...or, set your own edit limits
 #endif
 
 /**
@@ -1253,15 +1270,16 @@ Version     033
  */
 #if TL_HIGH_SPEED
   #define DEFAULT_MAX_ACCELERATION          {5000, 5000, 100, 1000}
-  #define DEFAULT_MAX_ACCELERATION_MATRII3D {20000, 20000, 500, 5000}
 #elif ENABLED(TL_L)
   #define DEFAULT_MAX_ACCELERATION      {3000, 3000, 20, 500}
 #else
-  #define DEFAULT_MAX_ACCELERATION      {800, 800, 100, 800}
+  #define DEFAULT_MAX_ACCELERATION      {2500, 2500, 20, 800}
 #endif
+#define DEFAULT_MAX_ACCELERATION_MATRII3D {30000, 30000, 500, 10000}
+
 #define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
-  #define MAX_ACCEL_EDIT_VALUES       { 20000, 20000, 500, 5000 } // ...or, set your own edit limits
+  #define MAX_ACCEL_EDIT_VALUES       {30000, 30000, 500, 10000 } // ...or, set your own edit limits
 #endif
 
 /**
@@ -1274,21 +1292,21 @@ Version     033
  */
 #if TL_HIGH_SPEED
   #define DEFAULT_ACCELERATION          3000    // X, Y, Z and E acceleration for printing moves
-  #define DEFAULT_RETRACT_ACCELERATION  1000    // E acceleration for retracts
+  #define DEFAULT_RETRACT_ACCELERATION  2000    // E acceleration for retracts
   #define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
-  #define DEFAULT_ACCELERATION_MATRII3D          10000    // X, Y, Z and E acceleration for printing moves
-  #define DEFAULT_RETRACT_ACCELERATION_MATRII3D  5000    // E acceleration for retracts
-  #define DEFAULT_TRAVEL_ACCELERATION_MATRII3D   10000    // X, Y, Z acceleration for travel (non printing) moves  
 #else
   #if ENABLED(TL_L)
     #define DEFAULT_ACCELERATION          1200    // X, Y, Z and E acceleration for printing moves
     #define DEFAULT_TRAVEL_ACCELERATION   1200    // X, Y, Z acceleration for travel (non printing) moves
   #else
-    #define DEFAULT_ACCELERATION          800    // X, Y, Z and E acceleration for printing moves
-    #define DEFAULT_TRAVEL_ACCELERATION   800    // X, Y, Z acceleration for travel (non printing) moves
+    #define DEFAULT_ACCELERATION          1000    // X, Y, Z and E acceleration for printing moves
+    #define DEFAULT_TRAVEL_ACCELERATION   1000    // X, Y, Z acceleration for travel (non printing) moves
   #endif
   #define DEFAULT_RETRACT_ACCELERATION  500    // E acceleration for retracts
 #endif
+#define DEFAULT_ACCELERATION_MATRII3D          6000    // X, Y, Z and E acceleration for printing moves
+#define DEFAULT_RETRACT_ACCELERATION_MATRII3D  5000    // E acceleration for retracts
+#define DEFAULT_TRAVEL_ACCELERATION_MATRII3D   6000    // X, Y, Z acceleration for travel (non printing) moves  
 /**
  * Default Jerk limits (mm/s)
  * Override with M205 X Y Z E
@@ -1300,8 +1318,8 @@ Version     033
 #define CLASSIC_JERK
 #if ENABLED(CLASSIC_JERK)
   #if TL_HIGH_SPEED
-    #define DEFAULT_XJERK 30.0
-    #define DEFAULT_YJERK 30.0
+    #define DEFAULT_XJERK 20.0
+    #define DEFAULT_YJERK 20.0
     #define DEFAULT_ZJERK  0.6
   #else
     #define DEFAULT_XJERK 10.0
@@ -1362,7 +1380,7 @@ Version     033
   #if ENABLED(USE_PROBE_FOR_Z_HOMING)
     #define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
     #if ENABLED(SINGLE_HEAD)
-      #define Z_MIN_ENDSTOP_PROBE_OFFSET
+      //#define Z_MIN_ENDSTOP_PROBE_OFFSET //并联Z机械限位和Bltouch
     #endif
   #endif
 #endif
@@ -1513,24 +1531,32 @@ Version     033
 #if ENABLED(BLTOUCH)
   #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
     #if ENABLED(TL_W)
-    #define NOZZLE_TO_PROBE_OFFSET { -45, 0, 0 }
+      #define NOZZLE_TO_PROBE_OFFSET { -45, 0, 0 }
     #else
-    #define NOZZLE_TO_PROBE_OFFSET { -35, 0, 0 }
+      #define NOZZLE_TO_PROBE_OFFSET { -35, 0, 0 }
     #endif
   #else
-    #define NOZZLE_TO_PROBE_OFFSET { 35, 15, -3.3 }
+    #if ENABLED(TL_W)
+      #define NOZZLE_TO_PROBE_OFFSET { -28, 3, -3 }
+    #else
+      #if X_BED_SIZE > 999
+        #define NOZZLE_TO_PROBE_OFFSET { 37, 10, -2.7 }
+      #else
+        #define NOZZLE_TO_PROBE_OFFSET { 35, -10, -0 }
+      #endif
+    #endif
   #endif
 #endif
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
-#define PROBING_MARGIN 10
+#define PROBING_MARGIN 5
 
 // X and Y axis travel speed (mm/min) between probes
-#define XY_PROBE_FEEDRATE (100*60)
+#define XY_PROBE_FEEDRATE (200*60)
 
 // Feedrate (mm/min) for the first approach when double-probing (MULTIPLE_PROBING == 2)
-#define Z_PROBE_FEEDRATE_FAST (8*30)
+#define Z_PROBE_FEEDRATE_FAST (8*60)
 
 // Feedrate (mm/min) for the "accurate" probe of each point
 #define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 3 * 2)
@@ -1702,7 +1728,7 @@ Version     033
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
-#if ANY(TL_W, TL_S)
+#if 0
   #define X_HOME_DIR 1
 #else
   #define X_HOME_DIR -1
@@ -1968,12 +1994,18 @@ Version     033
 
   //#define MESH_EDIT_GFX_OVERLAY   // Display a graphics overlay while editing the mesh
 
-  #if X_MIN_POS == -50
-    #define MESH_INSET 10              // Set Mesh bounds as an inset region of the bed
+  #if (X_MIN_POS == -50 && X_MAX_POS <= 500) 
+    #define MESH_INSET 42              // Set Mesh bounds as an inset region of the bed
   #elif X_MAX_POS > 600
-    #define MESH_INSET 50              
+    #if ENABLED(TL_W)
+      #define MESH_INSET 20
+    #else
+      #define MESH_INSET 50
+    #endif
   #elif X_MIN_POS == 0
-    #define MESH_INSET 55              
+    #define MESH_INSET 55
+  #else
+    #define MESH_INSET 22
   #endif  
 
   //GRID_MAX_POINTS_X Don't use more than 15 points per axis, implementation limited.
@@ -1985,9 +2017,11 @@ Version     033
     #define GRID_MAX_POINTS_X 7 
   #elif X_MAX_POS < 699
     #define GRID_MAX_POINTS_X 8 
+  #elif ENABLED(TL_W)
+    #define GRID_MAX_POINTS_X 12   
   #else
-    #define GRID_MAX_POINTS_X 10 
-  #endif  
+    #define GRID_MAX_POINTS_X 9
+  #endif
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
   #define UBL_HILBERT_CURVE       // Use Hilbert distribution for less travel when probing multiple points
   #define UBL_MESH_EDIT_MOVES_Z     // Sophisticated users prefer no movement of nozzle

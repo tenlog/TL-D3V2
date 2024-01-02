@@ -31,9 +31,9 @@
 typedef unsigned char BLTCommand;
 
 #define STOW_ALARM            true
-#define BLTOUCH_DEPLOY         65//  10  //部署 吐出
-#define BLTOUCH_STOW           160//  90  //装载 收回
-//#define BLTOUCH_SW_MODE        60
+#define BLTOUCH_DEPLOY         35//65  10  //部署 吐出
+#define BLTOUCH_STOW           122//160  90  //装载 收回
+//#define BLTOUCH_SW_MODE      60
 #define BLTOUCH_SELFTEST       207//120
 //#define BLTOUCH_MODE_STORE     130
 //#define BLTOUCH_5V_MODE        140
@@ -59,10 +59,10 @@ typedef unsigned char BLTCommand;
   #define BLTOUCH_MODE_STORE_DELAY 150
 #endif
 #ifndef BLTOUCH_DEPLOY_DELAY
-  #define BLTOUCH_DEPLOY_DELAY   500//750
+  #define BLTOUCH_DEPLOY_DELAY   750//750
 #endif
 #ifndef BLTOUCH_STOW_DELAY
-  #define BLTOUCH_STOW_DELAY    500//750
+  #define BLTOUCH_STOW_DELAY    750//750
 #endif
 #ifndef BLTOUCH_RESET_DELAY
   #define BLTOUCH_RESET_DELAY    500

@@ -113,6 +113,7 @@ extern void setup_gpio(void )
     stcPortInit.enPinMode = Pin_Mode_Out;
     stcPortInit.enExInt = Disable;
     stcPortInit.enPullUp = Disable;
+
     /* LED0 and LED1 Port/Pin initialization */
     //PORT_InitMapp(LED, &stcPortInit);
 }

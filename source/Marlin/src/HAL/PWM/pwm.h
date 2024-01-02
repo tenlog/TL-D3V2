@@ -37,23 +37,23 @@
 #define TAUNIT_F1_CH_PIN            (Pin08)
 #define TAUNIT_F1_CH_FUNC           (Func_Tima0)
 
-#define TIMERA_COUNT_OVERFLOW_F1          (25000)  //500 Hz
-#define IRQ_INDEX_INT_TIMA_CH_F1          (Int008_IRQn)
+#define TIMERA_COUNT_OVERFLOW_F1            (25000)  //500 Hz
+#define IRQ_INDEX_INT_TIMA_CH_F1            (Int008_IRQn)
 
 //for tltouch
 #ifdef TLTOUCH
-#define TAUNIT_TLT                    (M4_TMRA4) 
-#define TAUNIT_TLT_CLOCK              (PWC_FCG2_PERIPH_TIMA4) 
-#define TAUNIT_TLT_OVERFLOW_INT       (INT_TMRA4_OVF)
+#define TAUNIT_TLT                          (M4_TMRA4) 
+#define TAUNIT_TLT_CLOCK                    (PWC_FCG2_PERIPH_TIMA4) 
+#define TAUNIT_TLT_OVERFLOW_INT             (INT_TMRA4_OVF)
 
 // TIMERA channel 1 Port/Pin definition
-#define TAUNIT_TLT_CH                (TimeraCh5)
-#define TAUNIT_TLT_CH_PORT           (PortC)     //PC14 TimerA4 PWM5
-#define TAUNIT_TLT_CH_PIN            (Pin14)
-#define TAUNIT_TLT_CH_FUNC           (Func_Tima0) //0
+#define TAUNIT_TLT_CH                       (TimeraCh5)
+#define TAUNIT_TLT_CH_PORT                  (PortC)     //PC14 TimerA4 PWM5
+#define TAUNIT_TLT_CH_PIN                   (Pin14)
+#define TAUNIT_TLT_CH_FUNC                  (Func_Tima0) //0
 
-#define TIMERA_COUNT_OVERFLOW_TLT          (30000)  //500 Hz
-#define IRQ_INDEX_INT_TIMA_CH_TLT          (Int006_IRQn)
+#define TIMERA_COUNT_OVERFLOW_TLT           (40000)  //500 Hz
+#define IRQ_INDEX_INT_TIMA_CH_TLT           (Int006_IRQn)
 #endif
 
 //for tl-F

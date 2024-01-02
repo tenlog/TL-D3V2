@@ -31,6 +31,7 @@
 #include "../../module/stepper.h"
 #include "../../module/tool_change.h"
 #include "../../module/planner.h"
+#include"../../feature/bedlevel/bedlevel.h"
 
 #define DEBUG_OUT ENABLED(DEBUG_DXC_MODE)
 #include "../../core/debug_out.h"
@@ -94,6 +95,10 @@
           x_jog += .1f;
         }
         */
+        #if HAS_BED_PROBE
+          set_bed_leveling_enabled(false);
+        #endif
+
         update_software_endstops(X_AXIS); //by zyf
         SyncFanSpeed();//by zyf
         return;
@@ -102,6 +107,9 @@
       switch (dual_x_carriage_mode) {
         case DXC_FULL_CONTROL_MODE:
         case DXC_AUTO_PARK_MODE:
+        #if HAS_BED_PROBE
+          set_bed_leveling_enabled(true);          
+        #endif
           break;
         case DXC_DUPLICATION_MODE:
           // Set the X offset, but no less than the safety gap
@@ -109,6 +117,9 @@
           if (parser.seen('R')) duplicate_extruder_temp_offset = parser.value_celsius_diff();
           // Always switch back to tool 0
           if (active_extruder != 0) tool_change(0);
+          #if HAS_BED_PROBE
+            set_bed_leveling_enabled(false);
+          #endif
           break;
         default:
           dual_x_carriage_mode = DEFAULT_DUAL_X_CARRIAGE_MODE;

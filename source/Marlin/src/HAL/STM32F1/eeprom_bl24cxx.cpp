@@ -56,8 +56,9 @@ bool PersistentStore::write_data(int &pos, const uint8_t *value, size_t size, ui
       if (++written & 0x7F) delay(2); else safe_delay(2); // Avoid triggering watchdog during long EEPROM writes
       if (eeprom_read_byte(p) != v) {
         SERIAL_ECHO_MSG(STR_ERR_EEPROM_WRITE);
-        //SERIAL_ECHO_MSG(":");
-        //SERIAL_ECHO_MSG(p);
+        //char cmd[32];
+        //sprintf(" : %d", p);
+        //SERIAL_ECHO_MSG(cmd);
         return true;
       }
     }

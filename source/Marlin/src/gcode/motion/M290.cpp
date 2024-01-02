@@ -89,9 +89,9 @@ void GcodeSuite::M290() {
       #endif
 
       #if ENABLED(TENLOG_TOUCH_LCD)
-        char cmd[32];
+        char cmd[128];
         tl_Z_HOME_POS -= offs;
-        int32_t zoffset = tl_Z_HOME_POS * 1000;
+        int32_t zoffset = tl_Z_HOME_POS * 1000 + 1;
         sprintf_P(cmd, PSTR("settings.xZOffset.val=%d"), -zoffset);
         TLSTJC_println(cmd);
         sprintf_P(cmd, PSTR("xBaby.val=%d"), -zoffset);

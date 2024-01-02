@@ -165,7 +165,7 @@ uint8_t beeper_type = 0;
 char pre_print_file_name[13]={""};
 #endif
 
-uint32_t wifi_update_interval = 800;// 400;
+uint32_t wifi_update_interval = 400;// 400;
 
 #if ENABLED(TL_L)
 uint32_t last_laser_time = 0;
@@ -174,8 +174,11 @@ uint16_t laser_power = 0;
 uint8_t tl_com_ID = 0;
 ///////////////// common functions
 
-#if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
-    bool BLTouch_G28 = false;
+#if ENABLED(BLTOUCH)
+    #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
+        bool BLTouch_G28 = false;
+    #endif
+    bool G29_AFTER_G28 = false;
 #endif
 char TJCModelNo[64]={""};
 float E_Pos_read = 0;
@@ -821,9 +824,33 @@ void tlSendSettings(bool only_wifi){
         PRINTTJC(cmd);
         sprintf_P(cmd, PSTR("auto_level.xM851Y.val=%d"), M851Y);
         PRINTTJC(cmd);
-        //sprintf_P(cmd, PSTR("auto_level.xM851Z.val=%d"), M851Z);
-        //PRINTTJC(cmd);
+            //#if DISABLED(BABYSTEPPING)
+        sprintf_P(cmd, PSTR("auto_level.xM851Z.val=%d"), M851Z);
+        PRINTTJC(cmd);
+            //#endif
         #endif //HAS_BED_PROBE
+        #if ENABLED(LIN_ADVANCE)
+            uint32_t lM900 = planner.extruder_advance_K[0] * 100;
+            sprintf_P(cmd, PSTR("settings3.xM900.val=%d"),  lM900);
+            PRINTTJC(cmd);
+        #endif
+
+        #if ENABLED(INPUT_SHAPING)
+            uint32_t lM593XF = stepper.get_shaping_frequency(X_AXIS) * 100;
+            uint32_t lM593YF = stepper.get_shaping_frequency(Y_AXIS) * 100;
+            uint32_t lM593XD = stepper.get_shaping_damping_ratio(X_AXIS) * 100;
+            uint32_t lM593YD = stepper.get_shaping_damping_ratio(Y_AXIS) * 100;
+            
+            sprintf_P(cmd, PSTR("settings3.xM593XF.val=%d"),  lM593XF);
+            PRINTTJC(cmd);
+            sprintf_P(cmd, PSTR("settings3.xM593YF.val=%d"),  lM593YF);
+            PRINTTJC(cmd);
+            sprintf_P(cmd, PSTR("settings3.xM593XD.val=%d"),  lM593XD);
+            PRINTTJC(cmd);
+            sprintf_P(cmd, PSTR("settings3.xM593YD.val=%d"),  lM593YD);
+            PRINTTJC(cmd);
+        #endif
+        
     }else if(tl_TouchScreenType == 0){
         DWN_DELAY;
         DWN_Language(tl_languageID);
@@ -1173,7 +1200,9 @@ uint16_t TBT_Pause = 0;
 int8_t T01_Pause =  -1;
 
 uint8_t Idex_Mode_Pause = -1;
+#if ENABLED(DUAL_X_CARRIAGE)
 float Idex_Dup_XOffset_Pause = DEFAULT_DUPLICATION_X_OFFSET;
+#endif
 
 //M1031
 void TJCPauseResumePrinting(bool PR, bool isRunOut){
@@ -3045,9 +3074,25 @@ void process_command_gcode(long _tl_command[]) {
                     if(lT==0){
                         EXECUTE_GCODE("G29 T0");
                     }else if(lP==1){
-                        TJCMessage(8,8,26,"","","","");
-                        EXECUTE_GCODE("G29 P1");
+                        #if ENABLED(TL_W)
+                            TJCMessage(8,8,26,"","","","");
+                            EXECUTE_GCODE("G29 P1");
+                        #else
+                            TJCMessage(8,8,26,"","","","X Balancing... ");
+                            EXECUTE_GCODE("G34");
+                        #endif
                     }
+                #endif
+            } else if(lG == 34){
+                //G34
+                #if ENABLED(TL_W)
+                    TJCMessage(8,8,26,"","","","");
+                    EXECUTE_GCODE("G29 P1");
+                #else
+                    #if HAS_BED_PROBE
+                        TJCMessage(8,8,26,"","","","X Balancing... ");
+                        EXECUTE_GCODE("G34");
+                    #endif
                 #endif
             }else if(lT == 0 || lT == 1 || lT == 2 || lT == 3){                    
                 //T0 , T1
@@ -3474,7 +3519,52 @@ void process_command_gcode(long _tl_command[]) {
                         hotendOffsetChanged = true;
                     }
                 #endif //(EXTRUDERS==2)
+            }else if(lM == 900){
+                #if ENABLED(LIN_ADVANCE)
+                    //M900
+                    int32_t lR = GCodelng('R',iFrom, _tl_command);
+                    char sK[16];
+                    int32_t lK = GCodelng('K',iFrom, _tl_command);
+                    sprintf_P(sK, PSTR("K%.2f "), (float)lK/float(lR));
+                    sprintf(cmd, "M900 %s", sK);
+                    TLDEBUG_PRINTLN(cmd);
+                    EXECUTE_GCODE(cmd);
+                    EXECUTE_GCODE(PSTR("M500"));
+                #endif
+            }else if(lM == 593){
+                #if ENABLED(INPUT_SHAPING)
+                    //M593
+                    int32_t lR = GCodelng('R',iFrom, _tl_command);
+                    char cS[32];
+                    int32_t lF = GCodelng('F',iFrom, _tl_command);
+                    int32_t lD = GCodelng('D',iFrom, _tl_command);
+                    int32_t lX = GCodelng('X',iFrom, _tl_command);
+                    int32_t lY = GCodelng('Y',iFrom, _tl_command);
+                    if(lX > 0){
+                        if(lF > -9999){
+                            sprintf_P(cS, PSTR("X F%.2f "), (float)lF/float(lR));
+                        }
+                        if(lD > -9999){
+                            sprintf_P(cS, PSTR("X D%.2f "), (float)lD/float(lR));
+                        }
+                    }
+                    if(lY > 0){
+                        if(lF > -9999){
+                            sprintf_P(cS, PSTR("Y F%.2f "), (float)lF/float(lR));
+                        }
+                        if(lD > -9999){
+                            sprintf_P(cS, PSTR("Y D%.2f "), (float)lD/float(lR));
+                        }
+                    }
+                    if(lR == 100){
+                        sprintf(cmd, "M593 %s", cS);
+                        TLDEBUG_PRINTLN(cmd);
+                        EXECUTE_GCODE(cmd);
+                        EXECUTE_GCODE(PSTR("M500"));
+                    }
+                #endif
             }else if(lM == 851){
+                //M851
                 #if (HAS_BED_PROBE)
                     //nozzle to probe offset 1 //M851
                     int32_t lR = GCodelng('R',iFrom, _tl_command);
@@ -3630,16 +3720,21 @@ void process_command_gcode(long _tl_command[]) {
                 //M290 babysetp
                 float fZ = GCodelng('Z', iFrom, _tl_command);
                 uint16_t lR = GCodelng('R', iFrom, _tl_command);
-                if(fZ > -9999.0)
+                if(fZ != -9999.0)
                 {
                     if(lR == 1000){
                         fZ = (fZ / 1000.0) + tl_Z_HOME_POS;
                     }
+                    #if ENABLED(BABYSTEPPING)
                     sprintf(cmd, "M290 Z%f", fZ);
+                    #else
+                    sprintf(cmd, "M851 Z%f", fZ);
+                    #endif
                     TLDEBUG_PRINTLN(cmd);
                     EXECUTE_GCODE(cmd);
                     safe_delay(500);
                     TLSTJC_println("vOK.val=1");
+                    //EXECUTE_GCODE(PSTR("M500"));
                 }
           #if ENABLED(TL_X)
             }else if(lM == 1061){

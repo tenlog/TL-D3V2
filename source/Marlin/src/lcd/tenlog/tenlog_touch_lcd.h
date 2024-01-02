@@ -285,6 +285,7 @@ float CalDelay(float Length, uint16_t uSpeed);
     #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET)
     extern bool BLTouch_G28;
     #endif
+    extern bool G29_AFTER_G28;
 #endif
 
 #if ENABLED(TL_GRBL)

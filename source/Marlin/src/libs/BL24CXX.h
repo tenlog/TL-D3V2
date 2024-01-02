@@ -34,6 +34,7 @@ class BL24CXX;
 class IIC {
 friend class BL24CXX;
 protected:
+  static void port_init(uint8_t PinNum);                // Initialize the IO port of IIC
   static void init();                // Initialize the IO port of IIC
   static void start();               // Send IIC start signal
   static void stop();                // Send IIC stop signal

@@ -423,6 +423,7 @@ void unified_bed_leveling::G29() {
           //
           // Invalidate Entire Mesh and Automatically Probe Mesh in areas that can be reached by the probe
           //
+          safe_delay(100);
           if (!parser.seen_test('C')) {
             invalidate();
             SERIAL_ECHOLNPGM("Mesh invalidated. Probing mesh.");
@@ -439,9 +440,9 @@ void unified_bed_leveling::G29() {
           probe_deployed = true;
           //by zyf
           safe_delay(100);
-          EXECUTE_GCODE("M500");
+          EXECUTE_GCODE("M500"); //save map
           safe_delay(100);
-          EXECUTE_GCODE("G29 T0");
+          EXECUTE_GCODE("G29 T0");  //Print map
           set_bed_leveling_enabled(true);
         } break;
 
@@ -797,60 +798,60 @@ void unified_bed_leveling::shift_mesh_height() {
     }
 
     #if 0
-    do {
-      if (do_ubl_mesh_map) display_map(param.T_map_type);
+      do {
+        if (do_ubl_mesh_map) display_map(param.T_map_type);
 
-      const uint8_t point_num = (GRID_MAX_POINTS - count) + 1;
-      SERIAL_ECHOLNPAIR("Probing mesh point ", point_num, "/", GRID_MAX_POINTS, ".");
-      //TERN_(HAS_STATUS_MESSAGE, ui.status_printf_P(0, PSTR(S_FMT " %i/%i"), GET_TEXT(MSG_PROBING_MESH), point_num, int(GRID_MAX_POINTS)));
+        const uint8_t point_num = (GRID_MAX_POINTS - count) + 1;
+        SERIAL_ECHOLNPAIR("Probing mesh point ", point_num, "/", GRID_MAX_POINTS, ".");
+        //TERN_(HAS_STATUS_MESSAGE, ui.status_printf_P(0, PSTR(S_FMT " %i/%i"), GET_TEXT(MSG_PROBING_MESH), point_num, int(GRID_MAX_POINTS)));
 
-      #if HAS_LCD_MENU
-        if (ui.button_pressed()) {
-          ui.quick_feedback(false); // Preserve button state for click-and-hold
-          SERIAL_ECHOLNPGM("\nMesh only partially populated.\n");
-          ui.wait_for_release();
-          ui.quick_feedback();
-          ui.release();
-          probe.stow(); // Release UI before stow to allow for PAUSE_BEFORE_DEPLOY_STOW
-          return restore_ubl_active_state_and_leave();
+        #if HAS_LCD_MENU
+          if (ui.button_pressed()) {
+            ui.quick_feedback(false); // Preserve button state for click-and-hold
+            SERIAL_ECHOLNPGM("\nMesh only partially populated.\n");
+            ui.wait_for_release();
+            ui.quick_feedback();
+            ui.release();
+            probe.stow(); // Release UI before stow to allow for PAUSE_BEFORE_DEPLOY_STOW
+            return restore_ubl_active_state_and_leave();
+          }
+        #endif
+    
+        #if ENABLED(TENLOG_TOUCH_LCD) //by zyf
+          char TMessage[10];
+          sprintf(TMessage, "%d/%d", point_num, GRID_MAX_POINTS);
+          TJCMessage(8,8,26,"","","",TMessage);
+        #endif
+
+        // G2 P1 U=do_furthest
+        best = do_furthest
+          ? find_furthest_invalid_mesh_point()
+          : find_closest_mesh_point_of_type(INVALID, nearby, true); // INVALID
+
+        if (best.pos.x >= 0) {    // mesh point found and is reachable by probe
+          //TERN_(EXTENSIBLE_UI, ExtUI::onMeshUpdate(best.pos, ExtUI::G29_POINT_START));
+          
+          float measured_z = probe.probe_at_point(
+                        best.meshpos(),
+                        stow_probe ? PROBE_PT_STOW : PROBE_PT_RAISE, param.V_verbosity
+                      );
+          #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET) //by zyf
+          if(point_num==1 && z_min_endstop_probe_offset==0){
+            z_min_endstop_probe_offset = measured_z;
+          } 
+          measured_z -= z_min_endstop_probe_offset;
+          #endif
+          z_values[best.pos.x][best.pos.y] = measured_z;
+          
+          #if ENABLED(EXTENSIBLE_UI)
+            ExtUI::onMeshUpdate(best.pos, ExtUI::G29_POINT_FINISH);
+            ExtUI::onMeshUpdate(best.pos, measured_z);
+          #endif
+          
         }
-      #endif
-   
-      #if ENABLED(TENLOG_TOUCH_LCD) //by zyf
-        char TMessage[10];
-        sprintf(TMessage, "%d/%d", point_num, GRID_MAX_POINTS);
-        TJCMessage(8,8,26,"","","",TMessage);
-      #endif
+        SERIAL_FLUSH(); // Prevent host M105 buffer overrun.
 
-      // G2 P1 U=do_furthest
-      best = do_furthest
-        ? find_furthest_invalid_mesh_point()
-        : find_closest_mesh_point_of_type(INVALID, nearby, true); // INVALID
-
-      if (best.pos.x >= 0) {    // mesh point found and is reachable by probe
-        //TERN_(EXTENSIBLE_UI, ExtUI::onMeshUpdate(best.pos, ExtUI::G29_POINT_START));
-        
-        float measured_z = probe.probe_at_point(
-                      best.meshpos(),
-                      stow_probe ? PROBE_PT_STOW : PROBE_PT_RAISE, param.V_verbosity
-                    );
-        #if ENABLED(Z_MIN_ENDSTOP_PROBE_OFFSET) //by zyf
-        if(point_num==1 && z_min_endstop_probe_offset==0){
-          z_min_endstop_probe_offset = measured_z;
-        } 
-        measured_z -= z_min_endstop_probe_offset;
-        #endif
-        z_values[best.pos.x][best.pos.y] = measured_z;
-        
-        #if ENABLED(EXTENSIBLE_UI)
-          ExtUI::onMeshUpdate(best.pos, ExtUI::G29_POINT_FINISH);
-          ExtUI::onMeshUpdate(best.pos, measured_z);
-        #endif
-        
-      }
-      SERIAL_FLUSH(); // Prevent host M105 buffer overrun.
-
-    } while (best.pos.x >= 0 && --count);
+      } while (best.pos.x >= 0 && --count);
     #endif
 
     //TERN_(EXTENSIBLE_UI, ExtUI::onMeshUpdate(best.pos, ExtUI::G29_FINISH));

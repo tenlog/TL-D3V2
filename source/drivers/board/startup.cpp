@@ -1,6 +1,7 @@
 #define _BOARD_C_
 #include "startup.h"
 #include "../../Marlin/src/lcd/tenlog/tenlog_touch_lcd.h"
+#include "../../Marlin/Configuration.h"
 
 #define APP_START_ADDRESS 0x8000
 uint32_t F_CPU=0;
@@ -42,7 +43,11 @@ static void setup_SysClk(void){
 	stcSysClkCfg.enHclkDiv  = ClkSysclkDiv1;  /* Max 168MHz */
 	stcSysClkCfg.enExclkDiv = ClkSysclkDiv2;  /* Max 84MHz */
 	stcSysClkCfg.enPclk0Div = ClkSysclkDiv1;  /* Max 168MHz */
-	stcSysClkCfg.enPclk1Div = ClkSysclkDiv2;  /* Max 84MHz */
+	#if ENABLED(CLK240M)
+		stcSysClkCfg.enPclk1Div = ClkSysclkDiv4;// ClkSysclkDiv2;  /* Max 84MHz */ //by zyf
+	#else
+		stcSysClkCfg.enPclk1Div = ClkSysclkDiv2;// ClkSysclkDiv2;  /* Max 84MHz */ //by zyf
+	#endif
 	stcSysClkCfg.enPclk2Div = ClkSysclkDiv4;  /* Max 60MHz */
 	stcSysClkCfg.enPclk3Div = ClkSysclkDiv4;  /* Max 42MHz */
 	stcSysClkCfg.enPclk4Div = ClkSysclkDiv2;  /* Max 84MHz */
@@ -59,21 +64,22 @@ static void setup_SysClk(void){
 	/* MPLL config. */
 	/* MPLL config (XTAL / pllmDiv * plln / PllpDiv = 200M)，*/
 	stcMpllCfg.pllmDiv = 1ul;
-	stcMpllCfg.plln = 50ul;
-	#ifdef TL_HIGHSPEED
-	stcMpllCfg.PllpDiv = 2ul;
-	stcMpllCfg.PllqDiv = 2ul;
-	stcMpllCfg.PllrDiv = 2ul;
+	#if ENABLED(CLK240M)
+		stcMpllCfg.plln = 60ul;//50ul;//by zyf
 	#else
-	stcMpllCfg.PllpDiv = 4ul;
-	stcMpllCfg.PllqDiv = 4ul;
-	stcMpllCfg.PllrDiv = 4ul;
+		stcMpllCfg.plln = 50ul;
+	#endif
+	#ifdef TL_HIGHSPEED
+		stcMpllCfg.PllpDiv = 2ul;
+		stcMpllCfg.PllqDiv = 2ul;
+		stcMpllCfg.PllrDiv = 2ul;
+	#else
+		stcMpllCfg.PllpDiv = 4ul;
+		stcMpllCfg.PllqDiv = 4ul;
+		stcMpllCfg.PllrDiv = 4ul;
 	#endif
 	CLK_SetPllSource(ClkPllSrcXTAL);
 	CLK_MpllConfig(&stcMpllCfg);
-	//#ifdef TL_HIGHSPEED
-	//SystemCoreClock = 200000000;	//by zyf
-	//#endif
 
 	/* flash read wait cycle setting */
 	EFM_Unlock();

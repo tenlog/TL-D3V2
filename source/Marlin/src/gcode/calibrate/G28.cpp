@@ -430,7 +430,7 @@ void GcodeSuite::G28() {
       }
     #endif
 
-    sync_plan_position();
+    sync_plan_position();    
 
   #endif // !delta
 
@@ -560,4 +560,10 @@ void GcodeSuite::G28() {
     #endif
 
   feedrate_mm_s = original_fr; //restore it.. by zyf
+  #if HAS_BED_PROBE
+    if(G29_AFTER_G28){
+      EXECUTE_GCODE("G29 P1");
+      G29_AFTER_G28 = false;
+    }
+  #endif
 }

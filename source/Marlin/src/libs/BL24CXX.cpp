@@ -18,6 +18,7 @@
  */
 
 #include "../inc/MarlinConfig.h"
+#include "../../Configuration.h"
 
 #if ENABLED(IIC_BL24CXX_EEPROM)
 
@@ -46,12 +47,40 @@
 #define IIC_SDA_1()   WRITE(IIC_EEPROM_SDA, HIGH)
 #define READ_SDA()    READ(IIC_EEPROM_SDA)
 
+//by zyf
+#if ENABLED(CLK240M)
+  #define DBL_DELAY_4 Ddl_Delay1us(5);
+  #define DBL_DELAY_2 Ddl_Delay1us(2);
+  #define DBL_DELAY_1 Ddl_Delay1us(1);
+#else
+  #define DBL_DELAY_4 Ddl_Delay1us(4);
+  #define DBL_DELAY_2 Ddl_Delay1us(2);
+  #define DBL_DELAY_1 Ddl_Delay1us(1);
+#endif
 //
 // Simple IIC interface via libmaple
 //
 
+void IIC::port_init(uint8_t PinNum){
+	en_result_t rt=Ok;
+  stc_port_init_t stcPortInit;
+  MEM_ZERO_STRUCT(stcPortInit);
+  stcPortInit.enPullUp  = Enable;
+	stcPortInit.enPinDrv = Pin_Drv_H; //by zyf
+	rt = PORT_InitMapp(PinNum, &stcPortInit);
+
+	if(rt!=Ok)
+	{
+		printf("port init fail !,rt=%u\n",(uint8_t)rt);
+	}
+}
+
+
 // Initialize IIC
 void IIC::init() {
+  port_init(IIC_EEPROM_SCL);
+  port_init(IIC_EEPROM_SDA);
+
   SET_OUTPUT(IIC_EEPROM_SDA);
   SET_OUTPUT(IIC_EEPROM_SCL);
   IIC_SCL_1();
@@ -63,9 +92,10 @@ void IIC::start() {
   SDA_OUT();    // SDA line output
   IIC_SDA_1();
   IIC_SCL_1();
-  Ddl_Delay1us(4);
+
+  DBL_DELAY_4;
   IIC_SDA_0();  // START:when CLK is high, DATA change from high to low
-  Ddl_Delay1us(4);
+  DBL_DELAY_4;
   IIC_SCL_0();  // Clamp the I2C bus, ready to send or receive data
 }
 
@@ -74,10 +104,10 @@ void IIC::stop() {
   SDA_OUT();    // SDA line output
   IIC_SCL_0();
   IIC_SDA_0();  // STOP:when CLK is high DATA change from low to high
-  Ddl_Delay1us(4);
+  DBL_DELAY_4;
   IIC_SCL_1();
   IIC_SDA_1();  // Send I2C bus end signal
-  Ddl_Delay1us(4);
+  DBL_DELAY_4;
 }
 
 // Wait for the response signal to arrive
@@ -86,8 +116,8 @@ void IIC::stop() {
 uint8_t IIC::wait_ack() {
   uint8_t ucErrTime = 0;
   SDA_IN();      // SDA is set as input
-  IIC_SDA_1(); Ddl_Delay1us(1);
-  IIC_SCL_1(); Ddl_Delay1us(1);
+  IIC_SDA_1(); DBL_DELAY_1;
+  IIC_SCL_1(); DBL_DELAY_1;
   while (READ_SDA()) {
     if (++ucErrTime > 250) {
       stop();
@@ -103,9 +133,9 @@ void IIC::ack() {
   IIC_SCL_0();
   SDA_OUT();
   IIC_SDA_0();
-  Ddl_Delay1us(2);
+  DBL_DELAY_2;
   IIC_SCL_1();
-  Ddl_Delay1us(2);
+  DBL_DELAY_2;
   IIC_SCL_0();
 }
 
@@ -114,9 +144,9 @@ void IIC::nAck() {
   IIC_SCL_0();
   SDA_OUT();
   IIC_SDA_1();
-  Ddl_Delay1us(2);
+  DBL_DELAY_2;
   IIC_SCL_1();
-  Ddl_Delay1us(2);
+  DBL_DELAY_2;
   IIC_SCL_0();
 }
 
@@ -131,11 +161,11 @@ void IIC::send_byte(uint8_t txd) {
     // IIC_SDA = (txd & 0x80) >> 7;
     if (txd & 0x80) IIC_SDA_1(); else IIC_SDA_0();
     txd <<= 1;
-    Ddl_Delay1us(2);   // All three delays are necessary for TEA5767
+    DBL_DELAY_2;   // All three delays are necessary for TEA5767
     IIC_SCL_1();
-    Ddl_Delay1us(2);
+    DBL_DELAY_2;
     IIC_SCL_0();
-    Ddl_Delay1us(2);
+    DBL_DELAY_2;
   }
 }
 
@@ -145,11 +175,11 @@ uint8_t IIC::read_byte(unsigned char ack_chr) {
   SDA_IN(); // SDA is set as input
   LOOP_L_N(i, 8) {
     IIC_SCL_0();
-    Ddl_Delay1us(2);
+    DBL_DELAY_2;
     IIC_SCL_1();
     receive <<= 1;
     if (READ_SDA()) receive++;
-    Ddl_Delay1us(1);
+    DBL_DELAY_1;
   }
   ack_chr ? ack() : nAck(); // Send ACK / send nACK
   return receive;

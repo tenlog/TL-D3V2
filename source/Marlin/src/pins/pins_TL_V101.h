@@ -62,7 +62,7 @@
 //#define SDCARD_EEPROM_EMULATION
 
 #ifdef IIC_BL24CXX_EEPROM
-  #if defined(TL_W) || defined(TL_L)
+  #if defined(TL_L)
     #define IIC_EEPROM_SDA       PD12 
     #define IIC_EEPROM_SCL       PD13 
   #else
@@ -101,7 +101,7 @@
   #if defined(TL_S) 
     #define X_MAX_PIN         PH2// x+
   #elif defined(TL_W)
-    #define X_MAX_PIN        PC13// x+
+    #define X_MIN_PIN         PC13// x+
   #else
     #define X_MAX_PIN         PH2// x+
   #endif
@@ -130,9 +130,9 @@
 //
 // Filament Runout Sensor
 //
-#if defined(TL_W) 
-  #define FIL_RUNOUT_PIN                    PA0   // "Pulled-high"  
-#elif defined(TL_L)
+//#if defined(TL_W) 
+//  #define FIL_RUNOUT_PIN                    PA0   // "Pulled-high"  
+#if defined(TL_L)
   #define FIL_RUNOUT_PIN                    PD0   // "Pulled-high"
 #else
   #define FIL_RUNOUT_PIN                    PA15   // "Pulled-high" 
@@ -188,8 +188,6 @@
 #define Z_STEP_PIN         PE13
 #define Z_DIR_PIN          PE12
 
-
-
 #ifdef TL_W
   #define E0_STEP_PIN        PB13
   #define E0_DIR_PIN         PB12
@@ -231,7 +229,7 @@
   //#define FAN_PIN               PD0   //FAN  FC1 now use hw pwm
   //#define FAN1_PIN              PE8   //FC2 use hw pwm
 
-  #if defined(TL_W)
+  #if 0// defined(TL_W)
     #define FAN2_PIN              PD3   //FAN2 FZ1
     #define FAN3_PIN              PE7   //FZ2
   #elif defined(TL_L)
@@ -250,7 +248,7 @@
 #endif
 
 #define LED_PIN                 PE2   //LED 控制管脚
-#ifdef TL_W
+#if 0// def TL_W
   #define FAN4_PIN                PC3   
   #define CHAMEBER_PIN            FAN4_PIN   //机箱风扇口
 #elif defined(TL_L)

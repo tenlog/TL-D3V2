@@ -15,6 +15,7 @@ class Sdioc_Class
 		Sdioc_Class(M4_SDIOC_TypeDef *SDIOCx);
 		~Sdioc_Class(void);
 	public:
+		static en_result_t sdio_port_init(uint8_t PinNum);
 		static en_result_t init(void);
 		static void end(M4_SDIOC_TypeDef *SDIOCx);
 		static en_result_t erase(uint32_t BlkStartAddr,uint32_t BlkEndAddr);

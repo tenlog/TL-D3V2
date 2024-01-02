@@ -47,6 +47,11 @@
 #define DEBUG_OUT ENABLED(DEBUG_LEVELING_FEATURE)
 #include "../../core/debug_out.h"
 
+#if ENABLED(TENLOG_TOUCH_LCD)
+  #include "../../lcd/tenlog/tenlog_touch_lcd.h"
+#endif
+
+
 /**
  * G34: Z-Stepper automatic alignment
  *
@@ -419,7 +424,8 @@ void GcodeSuite::G34() {
         // After this operation the z position needs correction
         set_axis_never_homed(Z_AXIS);
         // Home Z after the alignment procedure
-        process_subcommands_now_P(PSTR("G28Z"));
+        G29_AFTER_G28 = true;
+        process_subcommands_now_P(PSTR("G28"));
       #else
         // Use the probed height from the last iteration to determine the Z height.
         // z_measured_min is used, because all steppers are aligned to z_measured_min.
