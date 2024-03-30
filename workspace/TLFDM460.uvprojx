@@ -488,6 +488,11 @@
               <FileType>8</FileType>
               <FilePath>..\source\Marlin\src\feature\tmc_util.cpp</FilePath>
             </File>
+            <File>
+              <FileName>RSA.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\source\Marlin\src\feature\RSA\RSA.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

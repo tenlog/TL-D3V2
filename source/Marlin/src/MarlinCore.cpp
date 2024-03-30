@@ -1731,6 +1731,10 @@ void setup() {
     }
   #endif
 
+  #if ENABLED(RSA_TEST)
+    rsa_test();
+  #endif
+
   #if ENABLED(TL_BEEPER)
     start_beeper(2, 1);
     safe_delay(200); //开机成功

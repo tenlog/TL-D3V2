@@ -73,7 +73,9 @@ void GcodeSuite::M1001() {
   // Stop the print job timer
   gcode.process_subcommands_now_P(PSTR("M77"));
 
-  gcode.process_subcommands_now_P(PSTR("G0 X0Y0"));
+  #if ENABLED(TL_L)
+    gcode.process_subcommands_now_P(PSTR("G0 X0Y0"));
+  #endif
 
   // Set the progress bar "done" state
   TERN_(LCD_SET_PROGRESS_MANUALLY, ui.set_progress_done());

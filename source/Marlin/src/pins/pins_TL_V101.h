@@ -189,12 +189,12 @@
 #define Z_DIR_PIN          PE12
 
 #ifdef TL_W
-  #define E0_STEP_PIN        PB13
-  #define E0_DIR_PIN         PB12
-  #define E1_STEP_PIN        PB4
-  #define E1_DIR_PIN         PB3
-  #define Z2_STEP_PIN        PB6
-  #define Z2_DIR_PIN         PB5
+  #define E0_STEP_PIN        PB4
+  #define E0_DIR_PIN         PB3
+  #define E1_STEP_PIN        PB6
+  #define E1_DIR_PIN         PB5
+  #define Z2_STEP_PIN         PE13
+  #define Z2_DIR_PIN          PE12
 #elif !defined(TL_L)
   #define Z2_STEP_PIN        PB13
   #define Z2_DIR_PIN         PB12
@@ -225,6 +225,19 @@
   #define HEATER_1_PIN          -1   
   #define FAN2_PIN              -1 
   #define FAN3_PIN              -1   
+#elif ENABLED(ELECTROMAGNETIC_VALUE_3)
+  #define ELECTROMAGNETIC_VALUE_ON            1
+  #define ELECTROMAGNETIC_VALUE_OFF           0
+  #define ELECTROMAGNETIC_VALUE_0_PIN         PA1 //FC1=1
+  #define ELECTROMAGNETIC_VALUE_1_PIN         PA0 //FZ1=2
+  #define ELECTROMAGNETIC_VALUE_2_PIN         PE7 //FZ2=3
+
+  #define FAN_PIN               -1   
+  #define FAN1_PIN              -1   
+  #define FAN2_PIN              -1 
+  #define FAN3_PIN              -1   
+  #define HEATER_BED_PIN        PE10 
+  #define HEATER_0_PIN          PA5   // HEATER0
 #else
   //#define FAN_PIN               PD0   //FAN  FC1 now use hw pwm
   //#define FAN1_PIN              PE8   //FC2 use hw pwm

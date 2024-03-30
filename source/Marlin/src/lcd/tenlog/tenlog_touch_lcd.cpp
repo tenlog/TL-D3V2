@@ -44,6 +44,10 @@
   #include "../../feature/runout.h"
 #endif
 
+#if ENABLED(RSA_TEST)
+#include "../../feature/rsa/RSA.h"
+#endif
+
 #if ENABLED(ESP8266_WIFI)
   #include "../../HAL/ESP8266_AT/esp8266_wifi.h"
 #endif
@@ -213,6 +217,25 @@ float E_Pos_read = 0;
     uint16_t extra_speed = DEFAULT_EXTRA_SPEED;
     uint16_t retract_fila_speed = DEFAULT_RETRACT_SPEED;
     
+#endif
+
+#if ENABLED(TL_V)
+    int8_t tl_ve_atv=0;
+#endif
+
+#if ENABLED(RSA_TEST)
+void rsa_test(){
+    char msg[PLAINTEXT_SIZE] = "BqpadwA";
+    unsigned long publicKey[2] = {28841, 2591};		//14351, 11 // PQ 151 191
+    unsigned long privateKey[2] = {28841, 11};//14351, 1283 //PQ 113 127
+    
+    unsigned long cipher_msg[CIPHERTEXT_SIZE];		
+	rsa.encrypt(msg, cipher_msg, publicKey);
+
+    char plain[PLAINTEXT_SIZE];
+	unsigned long cip[16] = {46,50,12,20,61,43,99,83,122,5,65,14,214,86,9,110};
+    rsa.decrypt(plain, cip, privateKey);
+}
 #endif
 
 long ConvertHexLong(long command[], int Len)
@@ -830,7 +853,7 @@ void tlSendSettings(bool only_wifi){
             //#endif
         #endif //HAS_BED_PROBE
         #if ENABLED(LIN_ADVANCE)
-            uint32_t lM900 = planner.extruder_advance_K[0] * 100;
+            uint32_t lM900 = planner.extruder_advance_K[0] * 1000;
             sprintf_P(cmd, PSTR("settings3.xM900.val=%d"),  lM900);
             PRINTTJC(cmd);
         #endif
@@ -1139,6 +1162,7 @@ void tlAbortPrinting(){
             set_pwm_hw(0, 1000);
             EXECUTE_GCODE("M999");
         #else
+            disable_all_steppers();
             queue.inject_P(PSTR("G28 XY"));
             queue.enqueue_one_now(PSTR("G92 Y0"));
             queue.enqueue_one_now(PSTR("M84"));
@@ -2536,14 +2560,14 @@ void tenlog_status_update(bool isTJC)
     const int16_t ln5  = int(thermalManager.degHotend(0) + 0.5f);
     const int16_t ln6  = int(thermalManager.degTargetHotend(1) + 0.5f);
     const int16_t ln7  = int(thermalManager.degHotend(1) + 0.5f);
-    const int8_t ln8  = int(thermalManager.degTargetBed() + 0.5f);
+    const int16_t ln8  = int(thermalManager.degTargetBed() + 0.5f);
     const int8_t ln9  = int(thermalManager.degBed() + 0.5f);
 	#else
     const int16_t ln4  = 0;
     const int16_t ln5  = 0;
     const int16_t ln6  = 0;
     const int16_t ln7  = 0;
-    const int8_t ln8  = 0;
+    const int16_t ln8  = 0;
     const int8_t ln9  = 0;		
 	#endif
 		
@@ -3525,7 +3549,7 @@ void process_command_gcode(long _tl_command[]) {
                     int32_t lR = GCodelng('R',iFrom, _tl_command);
                     char sK[16];
                     int32_t lK = GCodelng('K',iFrom, _tl_command);
-                    sprintf_P(sK, PSTR("K%.2f "), (float)lK/float(lR));
+                    sprintf_P(sK, PSTR("K%.4f "), (float)lK/float(lR));
                     sprintf(cmd, "M900 %s", sK);
                     TLDEBUG_PRINTLN(cmd);
                     EXECUTE_GCODE(cmd);

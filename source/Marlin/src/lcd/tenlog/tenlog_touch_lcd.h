@@ -330,4 +330,13 @@ float CalDelay(float Length, uint16_t uSpeed);
     extern uint16_t retract_fila_speed;
 #endif
 
+#if ENABLED(TL_V)
+    extern int8_t tl_ve_atv;
+#endif
+
+#if ENABLED(RSA_TEST)
+    void rsa_test();
+#endif
+
+
 #endif  //TENLOG_TOUCH_LCD

@@ -1303,6 +1303,12 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
 
         }
         break;
+    #elif ENABLED(TL_V)
+      case 'T':
+      {
+        if(parser.codenum < 3) tl_ve_atv = parser.codenum;
+      }
+      break;
     #else
       case 'T': T(parser.codenum); break;                           // Tn: Tool Change
     #endif

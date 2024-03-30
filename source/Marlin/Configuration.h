@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "048"
+#define TL_SUBVERSION "049"
 
 //update log 
 /*
@@ -88,12 +88,13 @@ Version     033
 20231103    Start input shaping....
             Port input shaping from 2.1.1.2
 20231104    input shaping done, test..
+    set_pwm_hw(cmd, 255, UN_TLT);
 */
 
 //TL Medels and version
 //#define TL_H2
 //#define TL_D3HS   //High Speed
-#define TL_D3
+//#define TL_D3
 //#define TL_S2   //single head
 //#define TL_S3   //single head
 //#define TL_M3
@@ -102,19 +103,29 @@ Version     033
 //#define TL_D5
 //#define TL_D5HS
 //#define TL_D6
-//#define TL_D8     
+//#define TL_D8
 //#define TL_D1000
 //#define TL_LW8   //Luminous words
 //#define TL_LW3   //
 //#define TL_X3    //
 //#define TL_X2    //Neza
+#define TL_V1
 
 //#define TL_DEBUG    //debug
-#define DUAL_HEAD_BLTOUCH
+//#define DUAL_HEAD_BLTOUCH
+#define LIN_ADVANCE
 #define INPUT_SHAPING
 
 //#define CONVEYOR_BELT //for test
-//#define CLK240M
+//#define CLK240M 
+
+//#define RSA_TEST //rsa...
+
+#if ANY(TL_V1, TL_V2)
+  #define TL_V
+  #define ELECTROMAGNETIC_VALUE_3
+  #define COREXY
+#endif
 
 #if ANY(TL_LW8, TL_LW3)
   #define TL_W
@@ -143,7 +154,7 @@ Version     033
 #endif
 
 //Headers
-#if ANY(TL_S,TL_W,TL_M3S)
+#if ANY(TL_S, TL_W, TL_M3S, TL_V)
   #define SINGLE_HEAD
   #define EXTRUDERS 1
   #if ENABLED(TL_W)
@@ -158,7 +169,9 @@ Version     033
 
 //Auto leveling.
 #if ANY(SINGLE_HEAD, DUAL_HEAD_BLTOUCH) //, TL_X
-  #ifndef TL_M3S
+  #if ANY(TL_V, TL_M3S)
+    //do nothing
+  #else
     #define BLTOUCH
     #define TLTOUCH
     #define AUTO_BED_LEVELING_UBL
@@ -168,7 +181,10 @@ Version     033
 //TL hardware.
 #define TENLOG_TOUCH_LCD
 //#define ESP8266_WIFI
-#define HWPWM
+
+#if DISABLED(TL_V)
+  #define HWPWM
+#endif
 #if DISABLED(TL_X)
 #define TL_LASER
 #endif
@@ -199,6 +215,8 @@ Version     033
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
 #if ENABLED(SINGLE_HEAD)
+  #define X_MIN_POS 0
+#elif ENABLED(TL_W)
   #define X_MIN_POS 0
 #elif ENABLED(TL_L)
   #define X_MIN_POS LASER_ENDSTOP_WIDTH
@@ -304,6 +322,11 @@ Version     033
   #define X_BED_SIZE 235
   #define Y_BED_SIZE 235
   #define Z_LENGTH   250
+#elif defined(TL_V1)
+  #define TL_MODEL_STR_0 "V1 EV"
+  #define X_BED_SIZE 180
+  #define Y_BED_SIZE 90
+  #define Z_LENGTH   70
 #endif
 
 //#define TL_STEPTEST   //给老范做的挤出机拉力测试
@@ -841,7 +864,7 @@ Version     033
 #define HEATER_5_MAXTEMP HEATER_0_MAXTEMP
 #define HEATER_6_MAXTEMP HEATER_0_MAXTEMP
 #define HEATER_7_MAXTEMP HEATER_0_MAXTEMP
-#define BED_MAXTEMP      120
+#define BED_MAXTEMP      150
 #define CHAMBER_MAXTEMP  60
 
 /**
@@ -1106,11 +1129,13 @@ Version     033
 //false 高电平触发
 #if ENABLED(TL_W)
   #if X_BED_SIZE < 800
-    #define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop. false 高电平触发
+    #define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop. true 低电平触发
   #else
     #define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop. false 高电平触发
   #endif
   #define X_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
+#elif ENABLED(TL_V)
+  #define X_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop. 高电平触发
 #else
   #define X_MIN_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop. 低电平触发
 #endif
@@ -1118,13 +1143,13 @@ Version     033
 #define Y_MIN_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop. 
 
 #if ENABLED(TL_L)
-#define X_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
-#define Y_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
-#define Z_MIN_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
+  #define X_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
+  #define Y_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
+  #define Z_MIN_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
 #else
-#define X_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
-#define Y_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
-#define Z_MIN_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
+  #define X_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
+  #define Y_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
+  #define Z_MIN_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
 #endif
 
 #define Z_MAX_ENDSTOP_INVERTING X_MIN_ENDSTOP_INVERTING // Set to true to invert the logic of the endstop.
@@ -1251,7 +1276,7 @@ Version     033
 #define DEFAULT_MAX_FEEDRATE          { 300, 300, 15, 30 }
 #else
   #if X_BED_SIZE > 999
-    #define DEFAULT_MAX_FEEDRATE          { 200, 200, 8, 25 }
+    #define DEFAULT_MAX_FEEDRATE          { 200, 200, 6, 25 }
   #else
     #define DEFAULT_MAX_FEEDRATE          { 200, 200, 10, 25 }
   #endif
@@ -1273,7 +1298,7 @@ Version     033
 #elif ENABLED(TL_L)
   #define DEFAULT_MAX_ACCELERATION      {3000, 3000, 20, 500}
 #else
-  #define DEFAULT_MAX_ACCELERATION      {2500, 2500, 20, 800}
+  #define DEFAULT_MAX_ACCELERATION      {1200, 1200, 20, 800}
 #endif
 #define DEFAULT_MAX_ACCELERATION_MATRII3D {30000, 30000, 500, 10000}
 
@@ -1537,7 +1562,11 @@ Version     033
     #endif
   #else
     #if ENABLED(TL_W)
-      #define NOZZLE_TO_PROBE_OFFSET { -28, 3, -3 }
+      #if ENABLED(TL_LW8)
+        #define NOZZLE_TO_PROBE_OFFSET { 28, 3, 1.9 }
+      #else
+        #define NOZZLE_TO_PROBE_OFFSET { 34, -10, 0}
+      #endif
     #else
       #if X_BED_SIZE > 999
         #define NOZZLE_TO_PROBE_OFFSET { 37, 10, -2.7 }
@@ -1998,7 +2027,7 @@ Version     033
     #define MESH_INSET 42              // Set Mesh bounds as an inset region of the bed
   #elif X_MAX_POS > 600
     #if ENABLED(TL_W)
-      #define MESH_INSET 20
+      #define MESH_INSET 30
     #else
       #define MESH_INSET 50
     #endif
@@ -2020,7 +2049,7 @@ Version     033
   #elif ENABLED(TL_W)
     #define GRID_MAX_POINTS_X 12   
   #else
-    #define GRID_MAX_POINTS_X 9
+    #define GRID_MAX_POINTS_X 10
   #endif
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
   #define UBL_HILBERT_CURVE       // Use Hilbert distribution for less travel when probing multiple points

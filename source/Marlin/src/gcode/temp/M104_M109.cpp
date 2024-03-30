@@ -48,7 +48,7 @@
   #include "../../module/tool_change.h"
 #endif
 
-#if BOTH(TENLOG_TOUCH_LCD, TL_X)
+#if ANY(TL_V, TL_X)
   #include "../../lcd/tenlog/tenlog_touch_lcd.h"
   #include "../../sd/cardreader.h"
 #endif
@@ -102,7 +102,7 @@ void GcodeSuite::M104() {
     if (got_temp) temp = parser.value_celsius();
   }
 
-  #if ENABLED(TL_X)
+  #if ANY(TL_X, TL_V)
     if(got_temp && IS_SD_PRINTING() && temp==0){
       got_temp = false;
     }

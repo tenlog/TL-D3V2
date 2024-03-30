@@ -1976,32 +1976,45 @@ uint32_t Stepper::block_phase_isr() {
   // If there is a current block
   if (current_block) {
 
-    #ifdef ELECTROMAGNETIC_VALUE
-    int8_t EVONOFF = ELECTROMAGNETIC_VALUE_ON;
-    if(current_block->steps.e>0)
-    {
-      if(motor_direction(E_AXIS))
+    #if ANY(ELECTROMAGNETIC_VALUE ,ELECTROMAGNETIC_VALUE_3)
+      int8_t EVONOFF = ELECTROMAGNETIC_VALUE_OFF;
+      if(current_block->steps.e>0)
+      {
+        if(motor_direction(E_AXIS))
+          EVONOFF=ELECTROMAGNETIC_VALUE_OFF;
+        else
+          EVONOFF=ELECTROMAGNETIC_VALUE_ON;      
+      }else{
         EVONOFF=ELECTROMAGNETIC_VALUE_OFF;
-      else
-        EVONOFF=ELECTROMAGNETIC_VALUE_ON;      
-    }else{
-      EVONOFF=ELECTROMAGNETIC_VALUE_OFF;
-    }
-    
-    if(extruder_duplication_enabled)        
-    {
-      WRITE(ELECTROMAGNETIC_VALUE_0_PIN, EVONOFF);
-      WRITE(ELECTROMAGNETIC_VALUE_MOTO0_PIN, !EVONOFF);
-      WRITE(ELECTROMAGNETIC_VALUE_LED0_PIN, EVONOFF);
-      //WRITE(ELECTROMAGNETIC_VALUE_1_PIN, EVONOFF);
-      //WRITE(ELECTROMAGNETIC_VALUE_LED1_PIN, EVONOFF);
-    }else if(current_block->extruder == 0){
-      WRITE(ELECTROMAGNETIC_VALUE_0_PIN, EVONOFF);
-      WRITE(ELECTROMAGNETIC_VALUE_LED0_PIN, EVONOFF);
-    }else if(current_block->extruder == 1){
-      //WRITE(ELECTROMAGNETIC_VALUE_1_PIN, EVONOFF);
-      //WRITE(ELECTROMAGNETIC_VALUE_LED1_PIN, EVONOFF);
-    }
+      }
+      
+      #if ENABLED(ELECTROMAGNETIC_VALUE)
+        if(extruder_duplication_enabled)        
+        {
+            WRITE(ELECTROMAGNETIC_VALUE_0_PIN, EVONOFF);
+            WRITE(ELECTROMAGNETIC_VALUE_MOTO0_PIN, !EVONOFF);
+            WRITE(ELECTROMAGNETIC_VALUE_LED0_PIN, EVONOFF);
+        }else if(current_block->extruder == 0){
+            WRITE(ELECTROMAGNETIC_VALUE_0_PIN, EVONOFF);
+            WRITE(ELECTROMAGNETIC_VALUE_LED0_PIN, EVONOFF);
+        }
+      #elif ENABLED(ELECTROMAGNETIC_VALUE_3)
+            if(tl_ve_atv == 0){           
+              WRITE(ELECTROMAGNETIC_VALUE_0_PIN, EVONOFF);
+              WRITE(ELECTROMAGNETIC_VALUE_1_PIN, ELECTROMAGNETIC_VALUE_OFF);
+              WRITE(ELECTROMAGNETIC_VALUE_2_PIN, ELECTROMAGNETIC_VALUE_OFF);
+            }else if(tl_ve_atv == 1){
+              WRITE(ELECTROMAGNETIC_VALUE_1_PIN, EVONOFF);
+              WRITE(ELECTROMAGNETIC_VALUE_0_PIN, ELECTROMAGNETIC_VALUE_OFF);
+              WRITE(ELECTROMAGNETIC_VALUE_2_PIN, ELECTROMAGNETIC_VALUE_OFF);
+            }else if(tl_ve_atv == 2){
+              WRITE(ELECTROMAGNETIC_VALUE_2_PIN, EVONOFF);
+              WRITE(ELECTROMAGNETIC_VALUE_1_PIN, ELECTROMAGNETIC_VALUE_OFF);
+              WRITE(ELECTROMAGNETIC_VALUE_0_PIN, ELECTROMAGNETIC_VALUE_OFF);
+            }
+      #endif
+
+
     #endif
 
     // If current block is finished, reset pointer and finalize state
@@ -2687,6 +2700,17 @@ void Stepper::init() {
     WRITE(ELECTROMAGNETIC_VALUE_MOTO0_PIN, ELECTROMAGNETIC_VALUE_OFF);
     //WRITE(ELECTROMAGNETIC_VALUE_LED1_PIN, ELECTROMAGNETIC_VALUE_OFF);
   #endif
+
+  #ifdef ELECTROMAGNETIC_VALUE_3
+    SET_OUTPUT(ELECTROMAGNETIC_VALUE_0_PIN);
+    SET_OUTPUT(ELECTROMAGNETIC_VALUE_1_PIN);
+    SET_OUTPUT(ELECTROMAGNETIC_VALUE_2_PIN);
+    WRITE(ELECTROMAGNETIC_VALUE_0_PIN, ELECTROMAGNETIC_VALUE_OFF);
+    WRITE(ELECTROMAGNETIC_VALUE_1_PIN, ELECTROMAGNETIC_VALUE_OFF);
+    WRITE(ELECTROMAGNETIC_VALUE_2_PIN, ELECTROMAGNETIC_VALUE_OFF);
+  #endif
+
+  
 
   #if HAS_E0_DIR
     E0_DIR_INIT();

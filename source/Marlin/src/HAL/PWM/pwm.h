@@ -14,7 +14,7 @@
 #define TAUNIT_F0_CLOCK              (PWC_FCG2_PERIPH_TIMA2) //3
 #define TAUNIT_F0_OVERFLOW_INT       (INT_TMRA2_OVF)//3
 
-// TIMERA channel Port/Pin definition
+// TIMERA channel Port/Pin definition PA1=FC1
 #define TAUNIT_F0_CH                (TimeraCh2)
 #define TAUNIT_F0_CH_PORT           (PortA)     //PA1
 #define TAUNIT_F0_CH_PIN            (Pin01)
@@ -27,7 +27,7 @@
 #endif
 #define IRQ_INDEX_INT_TIMA_CH_F0          (Int007_IRQn)
 
-//for fan1
+//for fan1=fc2
 #define TAUNIT_F1                    (M4_TMRA1)      
 #define TAUNIT_F1_CLOCK              (PWC_FCG2_PERIPH_TIMA1)
 #define TAUNIT_F1_OVERFLOW_INT       (INT_TMRA1_OVF)

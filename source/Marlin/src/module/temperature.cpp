@@ -2024,8 +2024,10 @@ void Temperature::updateTemperaturesFromRawValues() {
 #endif
 #if ENABLED(FAN_SOFT_PWM)
   #define _INIT_FAN_PIN(P) _INIT_SOFT_FAN(P)
-#else
+#elif ENABLED(HWPWM)
   #define _INIT_FAN_PIN(P) do{ if (PWM_PIN(P)) SET_PWM(P); else _INIT_SOFT_FAN(P); }while(0)
+#else
+  #define _INIT_FAN_PIN(P) do{ _INIT_SOFT_FAN(P); }while(0)
 #endif
 #if ENABLED(FAST_PWM_FAN)
   #define SET_FAST_PWM_FREQ(P) set_pwm_frequency(P, FAST_PWM_FAN_FREQUENCY)
@@ -2034,7 +2036,6 @@ void Temperature::updateTemperaturesFromRawValues() {
 #endif
 #define INIT_FAN_PIN(P) do{ _INIT_FAN_PIN(P); SET_FAST_PWM_FREQ(P); }while(0)
 #if EXTRUDER_AUTO_FAN_SPEED != 255
-  //#define INIT_E_AUTO_FAN_PIN(P) do{ if (P == FAN1_PIN || P == FAN2_PIN) { SET_PWM(P); SET_FAST_PWM_FREQ(P); } else SET_OUTPUT(P); }while(0)
   #define INIT_E_AUTO_FAN_PIN(P) do{ if (P == FAN2_PIN || P == FAN3_PIN) {_INIT_FAN_PIN(P); SET_FAST_PWM_FREQ(P); } else SET_OUTPUT(P); }while(0)
 #else
   #define INIT_E_AUTO_FAN_PIN(P) SET_OUTPUT(P)
