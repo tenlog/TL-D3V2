@@ -1978,8 +1978,7 @@ uint32_t Stepper::block_phase_isr() {
 
     #if ANY(ELECTROMAGNETIC_VALUE ,ELECTROMAGNETIC_VALUE_3)
       int8_t EVONOFF = ELECTROMAGNETIC_VALUE_OFF;
-      if(current_block->steps.e>0)
-      {
+      if(current_block->steps.e>0) {
         if(motor_direction(E_AXIS))
           EVONOFF=ELECTROMAGNETIC_VALUE_OFF;
         else
@@ -1987,6 +1986,14 @@ uint32_t Stepper::block_phase_isr() {
       }else{
         EVONOFF=ELECTROMAGNETIC_VALUE_OFF;
       }
+
+      #if ENABLED(ELECTROMAGNETIC_VALUE_3)
+        if(EVONOFF == ELECTROMAGNETIC_VALUE_OFF){
+          WRITE(ELECTROMAGNETIC_VALUE_0_PIN, ELECTROMAGNETIC_VALUE_OFF);
+          WRITE(ELECTROMAGNETIC_VALUE_1_PIN, ELECTROMAGNETIC_VALUE_OFF);
+          WRITE(ELECTROMAGNETIC_VALUE_2_PIN, ELECTROMAGNETIC_VALUE_OFF);
+        }
+      #endif
       
       #if ENABLED(ELECTROMAGNETIC_VALUE)
         if(extruder_duplication_enabled)        

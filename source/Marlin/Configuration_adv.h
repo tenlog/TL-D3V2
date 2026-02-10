@@ -2256,7 +2256,11 @@
  */
 #if HAS_MULTI_EXTRUDER
   // Z raise distance for tool-change, as needed for some extruders
-  #define TOOLCHANGE_ZRAISE                 0.2 // (mm)
+  #if ENABLED(TL_V)
+  #define TOOLCHANGE_ZRAISE                 5.0 // (mm) 
+  #else
+  #define TOOLCHANGE_ZRAISE                 0.2 // (mm) 
+  #endif
   //#define TOOLCHANGE_ZRAISE_BEFORE_RETRACT  // Apply raise before swap retraction (if enabled)
   //#define TOOLCHANGE_NO_RETURN              // Never return to previous position on tool-change
   #if ENABLED(TOOLCHANGE_NO_RETURN)

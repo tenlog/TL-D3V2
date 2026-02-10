@@ -29,7 +29,7 @@
  * Marlin release version identifier
  */
 #define SHORT_BUILD_VERSION "2.0.8"
-#define TL_SUBVERSION "049"
+#define TL_SUBVERSION "049.1"
 
 //update log 
 /*
@@ -93,7 +93,7 @@ Version     033
 
 //TL Medels and version
 //#define TL_H2
-//#define TL_D3HS   //High Speed
+#define TL_D3HS   //High Speed
 //#define TL_D3
 //#define TL_S2   //single head
 //#define TL_S3   //single head
@@ -103,13 +103,14 @@ Version     033
 //#define TL_D5
 //#define TL_D5HS
 //#define TL_D6
+//#define TL_D6HS
 //#define TL_D8
 //#define TL_D1000
 //#define TL_LW8   //Luminous words
 //#define TL_LW3   //
 //#define TL_X3    //
 //#define TL_X2    //Neza
-#define TL_V1
+//#define TL_V1
 
 //#define TL_DEBUG    //debug
 //#define DUAL_HEAD_BLTOUCH
@@ -120,6 +121,10 @@ Version     033
 //#define CLK240M 
 
 //#define RSA_TEST //rsa...
+
+//PT1000
+
+#define PT_1000
 
 #if ANY(TL_V1, TL_V2)
   #define TL_V
@@ -162,6 +167,7 @@ Version     033
   #endif
 #elif ENABLED(TL_L)
   #define EXTRUDERS 0
+  #define TL_L_TMC //使用uart模式
 #else //D系列独立双喷头
   #define DUAL_X_CARRIAGE
   #define EXTRUDERS 2
@@ -180,7 +186,6 @@ Version     033
 
 //TL hardware.
 #define TENLOG_TOUCH_LCD
-//#define ESP8266_WIFI
 
 #if DISABLED(TL_V)
   #define HWPWM
@@ -239,7 +244,11 @@ Version     033
   #define Z_LENGTH   350
 #elif defined(TL_D3HS) 
   #define TL_HIGH_SPEED 1
-  #define TL_MODEL_STR_0 "D3HS"
+  #if defined(PT_1000)
+    #define TL_MODEL_STR_0 "D3HS PT1000"
+  #else
+    #define TL_MODEL_STR_0 "D3HS"
+  #endif
   #define X_BED_SIZE 310
   #define Y_BED_SIZE 310
   #define Z_LENGTH   350
@@ -263,11 +272,21 @@ Version     033
   #define X_BED_SIZE 505
   #define Y_BED_SIZE 510
   #define Z_LENGTH   610
-#elif defined(TL_D5HS)
+  #elif defined(TL_D5HS)
   #define TL_HIGH_SPEED 1
   #define TL_MODEL_STR_0 "D5HS"
   #define X_BED_SIZE 505
   #define Y_BED_SIZE 510
+  #define Z_LENGTH   610
+  #elif defined(TL_D6HS)
+  #define TL_HIGH_SPEED 1
+  #if defined(PT_1000)
+    #define TL_MODEL_STR_0 "D6HS PT1000"
+  #else
+    #define TL_MODEL_STR_0 "D6HS"
+  #endif
+  #define X_BED_SIZE 605
+  #define Y_BED_SIZE 910
   #define Z_LENGTH   610
 #elif defined(TL_D8)
   #define TL_MODEL_STR_0 "D8"
@@ -367,7 +386,7 @@ Version     033
   #define INVERT_X_DIR true
 #endif
 
-#if ENABLED(TL_L)
+#if ANY(TL_L, TL_V)
   #define INVERT_Y_DIR true
 #else
   #define INVERT_Y_DIR false
@@ -802,13 +821,19 @@ Version     033
   #define TEMP_SENSOR_CHAMBER 0
   #define TEMP_SENSOR_COOLER 0
 #else
-  #define TEMP_SENSOR_0 1
-  #if(EXTRUDERS == 2)
-    #define TEMP_SENSOR_1 1
+  #if defined(PT_1000)
+    #define TEMP_SENSOR_0 1047
+    #if(EXTRUDERS == 2)
+      #define TEMP_SENSOR_1 1047
+    #endif
+  #else
+    #define TEMP_SENSOR_0 1
+    #if(EXTRUDERS == 2)
+      #define TEMP_SENSOR_1 1
+    #endif
   #endif
   #define TEMP_SENSOR_BED 1
 #endif
-
 
 // Dummy thermistor constant temperature readings, for use with 998 and 999
 #define DUMMY_THERMISTOR_998_VALUE  25
@@ -1094,10 +1119,9 @@ Version     033
     #undef USE_ZMAX_PLUG
     //#undef USE_XMAX_PLUG
   #endif
-#else
+#elif DISABLED(TL_V)
   #undef USE_YMAX_PLUG
 #endif
-
 
 // Enable pullup for all endstops to prevent a floating state
 #define ENDSTOPPULLUPS
@@ -1173,7 +1197,10 @@ Version     033
  *          TMC5130, TMC5130_STANDALONE, TMC5160, TMC5160_STANDALONE
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'L6470', 'L6474', 'POWERSTEP01', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC2209', 'TMC2209_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
-#if ENABLED(TL_SPI_DRIVE)
+#if ENABLED(TL_L_TMC)
+  #define X_DRIVER_TYPE  TMC2208
+  #define Y_DRIVER_TYPE  TMC2208
+#elif ENABLED(TL_SPI_DRIVE)
   //#define X_DRIVER_TYPE  TMC2130
   //#define X2_DRIVER_TYPE TMC2130
   #define Y_DRIVER_TYPE  TMC2130
@@ -1273,7 +1300,8 @@ Version     033
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
 #if TL_HIGH_SPEED
-#define DEFAULT_MAX_FEEDRATE          { 300, 300, 15, 30 }
+  //#define DEFAULT_MAX_FEEDRATE          { 300, 300, 15, 30 }
+  #define DEFAULT_MAX_FEEDRATE          { 800, 800, 25, 80 }
 #else
   #if X_BED_SIZE > 999
     #define DEFAULT_MAX_FEEDRATE          { 200, 200, 6, 25 }
@@ -1294,7 +1322,8 @@ Version     033
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
 #if TL_HIGH_SPEED
-  #define DEFAULT_MAX_ACCELERATION          {5000, 5000, 100, 1000}
+  //#define DEFAULT_MAX_ACCELERATION          {5000, 5000, 100, 1000}
+  #define DEFAULT_MAX_ACCELERATION          {20000, 20000, 400, 4000}
 #elif ENABLED(TL_L)
   #define DEFAULT_MAX_ACCELERATION      {3000, 3000, 20, 500}
 #else

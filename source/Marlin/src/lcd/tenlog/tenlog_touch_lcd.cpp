@@ -304,6 +304,7 @@ int DETECT_TLS(){
                 TJC_DELAY;
                 TLSTJC_println("sleep=0");
                 TenlogScreen_end();
+                TLDEBUG_PRINTLNPAIR("Baud Rate: ", lBaud);
                 TenlogScreen_begin(lBaud);
                 TJC_DELAY;
                 TLSTJC_printEmptyend();
@@ -377,7 +378,7 @@ int DETECT_TLS(){
                             if(lBaud == 9600){
                                 delay(50);
                                 //TLSTJC_println("bauds=115200");
-                                lBaud = 115200;
+                                //lBaud = 115200;
                                 iTryCount--;
                             }else {
                                 bCheckDone = true;
@@ -590,6 +591,7 @@ void tlSendSettings(bool only_wifi){
         #endif
 
         uint32_t lOffsetX = hotend_offset[1].x * 100;
+        int32_t lOffsetZ = hotend_offset[1].z * 1000;
         TERN_(ESP32_WIFI, wifi_printer_settings[20] = lOffsetX / 0x10000);
         TERN_(ESP32_WIFI, wifi_printer_settings[21] = lOffsetX / 0x100);
         TERN_(ESP32_WIFI, wifi_printer_settings[22] = lOffsetX % 0x100);
@@ -606,7 +608,7 @@ void tlSendSettings(bool only_wifi){
         TERN_(ESP32_WIFI, wifi_printer_settings[23] = lOffsetY / 0x100);
         TERN_(ESP32_WIFI, wifi_printer_settings[24] = lOffsetY % 0x100);
 
-        int32_t lOffsetZ = tl_Z_HOME_POS * -1000;
+        int32_t lBaby = tl_Z_HOME_POS * -1000;
         uint32_t lOffsetZW = tl_Z_HOME_POS * -1000 + 10000;
         TERN_(ESP32_WIFI, wifi_printer_settings[25] = lOffsetZW / 0x10000);
         TERN_(ESP32_WIFI, wifi_printer_settings[26] = lOffsetZW / 0x100);
@@ -617,12 +619,14 @@ void tlSendSettings(bool only_wifi){
             PRINTTJC(cmd);
             sprintf_P(cmd, PSTR("settings.xY2.val=%d"), lOffsetY);
             PRINTTJC(cmd);
+            sprintf_P(cmd, PSTR("settings.xZ2.val=%d"), lOffsetZ);
+            PRINTTJC(cmd);
         #else
             PRINTTJC("settings.xX2.val=0");
             PRINTTJC("settings.xY2.val=0");
         #endif
 
-        sprintf_P(cmd, PSTR("settings.xZOffset.val=%d"), lOffsetZ);
+        sprintf_P(cmd, PSTR("babystep.xBaby.val=%d"), lBaby);
         PRINTTJC(cmd);
         #if (HAS_WIFI)
         sprintf_P(cmd, PSTR("wifisetting.vMode.val=%d"), wifi_mode);
@@ -3525,7 +3529,7 @@ void process_command_gcode(long _tl_command[]) {
                     uint32_t lR = GCodelng('R',iFrom, _tl_command);
                     int32_t lS = GCodelng('S',iFrom, _tl_command);
                     
-                    if(lR == 100 && lS > -9999 ){
+                    if((lR == 100 || lR == 1000) && lS > -9999 ){
                         
                         long lAxis = lM - 1011;
                         float fOffset = (float)lS / (float)lR;
@@ -3534,10 +3538,10 @@ void process_command_gcode(long _tl_command[]) {
                         }else if(lAxis == Y_AXIS){
                             fOffset = fOffset + YShowOffset;
                             hotend_offset[1].y = fOffset;
-                        }
-                        else if(lAxis == Z_AXIS){
-                            //fOffset = fOffset;
+                        }else if(lAxis == Z_AXIS){
                             hotend_offset[1].z = fOffset;
+                            sprintf(cmd, "z offset %0.3f", fOffset);
+                            TLDEBUG_PRINTLN(cmd);
                         }
                         EXECUTE_GCODE(PSTR("M500"));
                         hotendOffsetChanged = true;

@@ -91,10 +91,10 @@ void GcodeSuite::M290() {
       #if ENABLED(TENLOG_TOUCH_LCD)
         char cmd[128];
         tl_Z_HOME_POS -= offs;
-        int32_t zoffset = tl_Z_HOME_POS * 1000 + 1;
-        sprintf_P(cmd, PSTR("settings.xZOffset.val=%d"), -zoffset);
-        TLSTJC_println(cmd);
-        sprintf_P(cmd, PSTR("xBaby.val=%d"), -zoffset);
+        int32_t zoffset = tl_Z_HOME_POS * 1000;
+        //sprintf_P(cmd, PSTR("settings.xZOffset.val=%d"), -zoffset);
+        //TLSTJC_println(cmd);
+        sprintf_P(cmd, PSTR("babystep.xBaby.val=%d"), -zoffset);
         TLSTJC_println(cmd);
         EXECUTE_GCODE(PSTR("M500"));
       #endif

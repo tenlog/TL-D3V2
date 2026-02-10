@@ -343,11 +343,11 @@ void GcodeSuite::M43() {
       if (M43_NEVER_TOUCH(i) || (!ignore_protection && pin_is_protected(pin))) continue;
       pinMode(pin, INPUT_PULLUP);
       delay(1);
-        /*
+        
         if (IS_ANALOG(pin))
           pin_state[pin - first_pin] = analogRead(DIGITAL_PIN_TO_ANALOG_PIN(pin)); // int16_t pin_state[...]
         else
-        //*/
+        
           pin_state[i - first_pin] = extDigitalRead(pin);
     }
 
@@ -364,11 +364,9 @@ void GcodeSuite::M43() {
         if (!VALID_PIN(pin)) continue;
         if (M43_NEVER_TOUCH(i) || (!ignore_protection && pin_is_protected(pin))) continue;
         const byte val =
-          /*
+          
           IS_ANALOG(pin)
             ? analogRead(DIGITAL_PIN_TO_ANALOG_PIN(pin)) : // int16_t val
-            :
-          //*/
             extDigitalRead(pin);
         if (val != pin_state[i - first_pin]) {
           report_pin_state_extended(pin, ignore_protection, false);

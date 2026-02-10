@@ -78,8 +78,8 @@
 
 #define NULLZERO(a) memset(a,'\0',sizeof(a))
 
-#define TJC_DELAY delay(3)
-#define DWN_DELAY delay(5)
+#define TJC_DELAY delay(10)
+#define DWN_DELAY delay(10)
 
 #ifdef TL_DEBUG
 #define TLDEBUG_PRINTLNPAIR      SERIAL_ECHOLNPAIR
